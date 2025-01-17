@@ -1,5 +1,6 @@
 import React from "react";
 import Register from "./_components/Register";
+import { ToastContainer } from "react-toastify";
 
 const page = () => {
   return (
@@ -8,6 +9,7 @@ const page = () => {
         <h2 className="dmserif32600">Register Now</h2>
       </div>
       <Register />
+      <ToastContainer />
     </div>
   );
 };

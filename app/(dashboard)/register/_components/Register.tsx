@@ -1,7 +1,15 @@
 "use client";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from '../../../store/store';
+import { registerUserAsync } from '../../../store/features/registerSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Register = () => {
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.register);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,10 +37,34 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
     console.log(formData);
+    try {
+      await dispatch(registerUserAsync(formData));
+      toast('Registration successful!', {
+        type: 'success',
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast('Registration failed!', {
+        type: 'error',
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   return (

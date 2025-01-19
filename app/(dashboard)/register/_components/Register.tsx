@@ -4,11 +4,12 @@ import { useAppDispatch, useAppSelector } from '../../../store/store';
 import { registerUserAsync } from '../../../store/features/registerSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useRouter } from 'next/navigation'; 
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.register);
+  const router = useRouter(); 
 
   const [formData, setFormData] = useState<any>({
     email: "",
@@ -73,6 +74,7 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    router.push('/login')
     console.log(formData);
     const mappedToSp:any = mapRequestToStoredProcedure(formData);
     dispatch(registerUserAsync(mappedToSp))

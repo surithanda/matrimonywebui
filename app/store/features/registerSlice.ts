@@ -50,7 +50,7 @@ export const registerUserAsync = createAsyncThunk(
   'register/registerUser',
   async (payload: RegisterPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/account/register', payload);
+      const response = await api.post('/account/register', payload);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed');

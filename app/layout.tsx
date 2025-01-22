@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./ui/clientStyles.css";
 import { inter } from "@/app/ui/fonts";
+import ClientProvider from "./ClientProvider";
 
 export const metadata: Metadata = {
   title: "Chaturvarnam",
@@ -15,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        <ClientProvider>{children}</ClientProvider>
+      </body>
     </html>
   );
 }

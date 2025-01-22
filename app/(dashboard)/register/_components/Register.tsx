@@ -1,8 +1,17 @@
 "use client";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from '../../../store/store';
+import { registerUserAsync } from '../../../store/features/registerSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation'; 
 
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.register);
+  const router = useRouter(); 
+
+  const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
     confirmPassword: "",
@@ -17,13 +26,47 @@ const Register = () => {
     country: "",
     zipCode: "",
     primaryPhone: "",
+    photo: null,
+    secret_question: null,
+    secret_answer: null,
+    secondary_phone: null,
+    secondary_phone_country: null,
+    secondary_phone_type: null,
+    address_line2: null,
   });
 
+  function mapRequestToStoredProcedure(requestData: any) {
+    return {
+      email: requestData.email || "newemail@example.com",
+      user_name: requestData.user_name || "newemail@example.com",
+      password: requestData.password || "Test@123",
+      primary_phone: requestData.primary_phone || "9999999787",
+      primary_phone_country: requestData.primary_phone_country || "US",
+      primary_phone_type: requestData.primary_phone_type || 1,
+      first_name: requestData.first_name || "John",
+      last_name: requestData.last_name || "Doe",
+      birth_date: requestData.birth_date || "1990-01-01",
+      gender: requestData.gender || 1,
+      address_line1: requestData.address_line1 || "123 Main St",
+      city: requestData.city || "New York",
+      state: requestData.state || "NY",
+      zip: requestData.zip || "10001",
+      country: requestData.country || "US",
+      middle_name: requestData.middle_name || "Middle",
+      secondary_phone: requestData.secondary_phone || "0987654321",
+      secondary_phone_country: requestData.secondary_phone_country || "US",
+      secondary_phone_type: requestData.secondary_phone_type || 2,
+      address_line2: requestData.address_line2 || "Apt 4B",
+      secret_question: requestData.secret_question || "What is your pet's name?",
+      secret_answer: requestData.secret_answer || "Max"
+    };
+  }
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: value,
     }));
@@ -31,8 +74,34 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
+    router.push('/login')
     console.log(formData);
+    const mappedToSp:any = mapRequestToStoredProcedure(formData);
+    dispatch(registerUserAsync(mappedToSp))
+      .then(() => {
+        toast('Registration successful!', {
+          type: 'success',
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch(() => {
+        toast('Registration failed!', {
+          type: 'error',
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
 
   return (

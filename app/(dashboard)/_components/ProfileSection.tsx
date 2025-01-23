@@ -29,7 +29,7 @@ const profilesData = [
 ];
 
 const ProfileSection = () => {
-  const user = useAppSelector((state) => state.auth.userData);
+  const { user } = useAppSelector((state) => state.auth.userData);
   const faqData = [
     {
       question: "How do I create a new profile?",

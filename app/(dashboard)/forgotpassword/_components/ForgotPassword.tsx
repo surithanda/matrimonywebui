@@ -1,60 +1,103 @@
 "use client";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { resetPasswordAsync } from "@/app/store/features/authSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const ForgotPassword = () => {
-  const [formData, setFormData] = useState({
-    email: "",
+  const [resetData, setResetData] = useState({
+    history_id: "",
+    otp: "",
+    new_password: "",
+    confirm_new_password: "",
   });
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setResetData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (resetData.new_password !== resetData.confirm_new_password) {
+      toast.error("Passwords don't match!");
+      return;
+    }
 
-    console.log(formData);
+    try {
+      await dispatch(resetPasswordAsync({
+        ...resetData,
+        history_id: parseInt(resetData.history_id)
+      }) as any).unwrap();
+      toast.success("Password reset successfully!");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error || "Failed to reset password");
+    }
   };
 
   return (
     <div className="account-details-box w-1/2 text-left">
-      <h3 className="BRCobane32600 md:mb-0 md:mt-16">Forgot password?</h3>
-      <form onSubmit={handleSubmit} className="w-full  md:mb-16">
-        {/* Email Input */}
+      <h3 className="BRCobane32600 mb-6">Reset Password</h3>
+      <form onSubmit={handleSubmit} className="w-full">
         <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Email</label>
+          <label className="block BRCobane18600 mb-2.5">History ID</label>
           <input
-            type="email"
-            name="email"
-            value={formData.email}
+            type="text"
+            name="history_id"
+            value={resetData.history_id}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Email"
+            className="account-input-field w-full"
             required
           />
         </div>
 
-        {/* Submit Button */}
-        <div className="mb-6">
-          <button
-            type="submit"
-            className="w-full yellow-btn hover:bg-orange-600"
-          >
-            Continue
-          </button>
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">OTP</label>
+          <input
+            type="text"
+            name="otp"
+            value={resetData.otp}
+            onChange={handleChange}
+            className="account-input-field w-full"
+            required
+          />
         </div>
 
-        {/* Register Link */}
-        <div className="flex gap-2">
-          <p className="BRCobane16500 opacity-50">Login to your account? </p>
-          <a href="/login" className="BRCobane16600 hover:underline">
-            Login Now
-          </a>
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">New Password</label>
+          <input
+            type="password"
+            name="new_password"
+            value={resetData.new_password}
+            onChange={handleChange}
+            className="account-input-field w-full"
+            required
+          />
         </div>
+
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">Confirm New Password</label>
+          <input
+            type="password"
+            name="confirm_new_password"
+            value={resetData.confirm_new_password}
+            onChange={handleChange}
+            className="account-input-field w-full"
+            required
+          />
+        </div>
+
+        <button type="submit" className="yellow-btn hover:bg-orange-600">
+          Reset Password
+        </button>
       </form>
     </div>
   );

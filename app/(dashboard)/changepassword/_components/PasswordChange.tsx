@@ -1,79 +1,91 @@
 "use client";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { changePasswordAsync } from "@/app/store/features/authSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const ChangePasswordForm = () => {
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
+const PasswordChange = () => {
+  const [passwords, setPasswords] = useState({
+    old_password: "",
+    new_password: "",
+    confirm_password: "",
   });
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setPasswords((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle the form submission logic here
-    console.log(formData);
+    
+    if (passwords.new_password !== passwords.confirm_password) {
+      toast.error("New passwords don't match!");
+      return;
+    }
+
+    const { confirm_password, ...changePasswordData } = passwords;
+
+    try {
+      await dispatch(changePasswordAsync(changePasswordData) as any).unwrap();
+      toast.success("Password changed successfully!");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error || "Failed to change password");
+    }
   };
 
   return (
-    <section className="account-details-box w-full">
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-        {/* Current Password */}
-        <div className="w-full">
-          <label className="block text-gray-700 mb-2">Current Password</label>
+    <div className="account-details-box w-1/2 text-left">
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">Old Password</label>
           <input
-            type="text"
-            name="firstName"
-            // value={formData.firstName}
-            placeholder="Current Password"
+            type="password"
+            name="old_password"
+            value={passwords.old_password}
             onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="account-input-field w-full"
+            required
           />
         </div>
 
-        {/* New Password */}
-        <div className="w-full">
-          <label className="block text-gray-700 mb-2">New Password</label>
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">New Password</label>
           <input
-            type="text"
-            name="firstName"
-            // value={formData.firstName}
-            placeholder="New Password"
+            type="password"
+            name="new_password"
+            value={passwords.new_password}
             onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="account-input-field w-full"
+            required
           />
         </div>
 
-        {/* Re-enter New Password */}
-        <div className="w-full">
-          <label className="block text-gray-700 mb-2">
-            Re-enter New Password
-          </label>
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block BRCobane18600 mb-2.5">Confirm New Password</label>
           <input
-            type="text"
-            name="firstName"
-            // value={formData.firstName}
-            placeholder="Re-enter New Password"
+            type="password"
+            name="confirm_password"
+            value={passwords.confirm_password}
             onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="account-input-field w-full"
+            required
           />
         </div>
 
-        {/* Buttons */}
-        <div className="flex gap-4 mt-6">
-          <button className="yellow-btn hover:bg-orange-600">Submit</button>
-          <button className="white-btn hover:bg-gray-400">Cancel</button>
-        </div>
+        <button type="submit" className="yellow-btn hover:bg-orange-600">
+          Change Password
+        </button>
       </form>
-    </section>
+    </div>
   );
 };
 
-export default ChangePasswordForm;
+export default PasswordChange;

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from '../../../store/store';
 import { registerUserAsync } from '../../../store/features/registerSlice';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; 
 
@@ -100,13 +100,13 @@ const Register = () => {
     try {
       const result = await dispatch(registerUserAsync(mappedData)).unwrap();
       toast.success('Registration successful!', {
-        position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000
       });
-      router.push('/login');
+      setTimeout(() => {
+        router.push('/login'); 
+      }, 2000); 
     } catch (error: any) {
       toast.error(error || 'Registration failed!', {
-        position: toast.POSITION.TOP_RIGHT,
         autoClose: 5000
       });
     }

@@ -36,8 +36,8 @@ const LoginForm = () => {
 
         // Navigate to OTP screen upon successful login
         setTimeout(() => {
-          router.push('/otp'); // Adjust the route as necessary
-        }, 2000); // Delay navigation to allow the user to see the toast
+          router.push('/otp'); 
+        }, 2000); 
       })
       .catch((err:any) => {
         // Show error toast

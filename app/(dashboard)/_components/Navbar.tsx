@@ -7,6 +7,7 @@ import dp from "/public/images/p-i.png";
 import Link from "next/link";
 import LoginIcon from "/public/images/LoginIcon.svg";
 import RegisterIcon from "/public/images/RegisterIcon.svg";
+import router from "next/router";
 
 const Navbar = () => {
   const [isShowDropdown, setIsShowDropdown] = useState(false);
@@ -33,10 +34,19 @@ const Navbar = () => {
     }
   }, [pathname]);
 
+  const checkToken = () => {
+    const token = localStorage.getItem("matrimony token");
+    if (token) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div className="flex justify-between h-fit md:px-[120px] z-20">
       {/* Logo */}
-      <Link href="/dashboard" className="py-2">
+      <Link href={checkToken() ? "/dashboard": "/"} className="py-2">
         <Image src={logo} alt="" className="md:w-[221px] md:h-[45px]" />
       </Link>
       {isAccountOpen && (
@@ -181,6 +191,10 @@ const Navbar = () => {
                   <a
                     href="/logout"
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
+                    onClick={() => {
+                      localStorage.removeItem("matrimony token");
+                      router.push("/login");
+                    }}
                   >
                     Logout
                   </a>

@@ -29,6 +29,7 @@ const profilesData = [
 ];
 
 const ProfileSection = () => {
+  //@ts-ignore
   const { user } = useAppSelector((state) => state.auth.userData);
   const faqData = [
     {

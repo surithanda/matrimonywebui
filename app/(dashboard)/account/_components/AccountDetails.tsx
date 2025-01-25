@@ -27,18 +27,27 @@ const AccountSettings = () => {
     zipcode: "",
     country: "",
   });
+  const [imageError, setImageError] = useState(false);
 
   const fetchProfilePhoto = async () => {
     try {
       const response = await api.get('/account/photo');
       if (response.data?.success && response.data?.data?.photo_url) {
-        // Combine the base URL with the photo path
-        const fullPhotoUrl = `${process.env.NEXT_PUBLIC_API_URL}${response.data.data.photo_url}`;
-        setProfilePhoto(fullPhotoUrl);
+        const photoPath = response.data.data.photo_url;
+        // The photo_url will be like /uploads/photos/account/<filename>
+        const photoUrl = photoPath.startsWith('http') 
+          ? photoPath 
+          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        setProfilePhoto(photoUrl);
+        setImageError(false);
+      } else {
+        setProfilePhoto(null);
+        setImageError(true);
       }
     } catch (error) {
       console.error('Error fetching profile photo:', error);
       setProfilePhoto(null);
+      setImageError(true);
     }
   };
 
@@ -63,7 +72,7 @@ const AccountSettings = () => {
     
     const file = e.target.files[0];
     setPhotoLoading(true);
-    
+    dispatch(setError(null));
     try {
       const formData = new FormData();
       formData.append('photo', file);
@@ -74,13 +83,20 @@ const AccountSettings = () => {
         },
       });
 
-      if (!response.data) throw new Error('Failed to upload photo');
-      dispatch(setError(null));
-      // Fetch updated photo after successful upload
-      await fetchProfilePhoto();
+      if (response.data?.success && response.data?.data?.photo_url) {
+        const photoPath = response.data.data.photo_url;
+        const photoUrl = photoPath.startsWith('http')
+          ? photoPath
+          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        setProfilePhoto(photoUrl);
+        setImageError(false);
+      } else {
+        throw new Error('Failed to upload photo');
+      }
     } catch (error: any) {
       console.error('Error uploading photo:', error);
       dispatch(setError(error.response?.data?.message || 'Failed to upload photo'));
+      setImageError(true);
     } finally {
       setPhotoLoading(false);
     }
@@ -89,6 +105,7 @@ const AccountSettings = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
+    dispatch(setError(null));
 
     try {
       const response = await api.put('/account/update', {
@@ -104,8 +121,9 @@ const AccountSettings = () => {
         country: formData.country,
       });
 
-      if (!response.data) throw new Error('Failed to update account');
-      dispatch(setError(null));
+      if (!response.data?.success) {
+        throw new Error(response.data?.message || 'Failed to update account');
+      }
     } catch (error: any) {
       console.error('Error updating account:', error);
       dispatch(setError(error.response?.data?.message || 'Failed to update account'));
@@ -123,14 +141,25 @@ const AccountSettings = () => {
       )}
       <div className="flex justify-between items-end w-full">
         <div className="flex items-end gap-4">
-          <Image 
-            src={profilePhoto || dp} 
-            alt="Profile" 
-            width={96}
-            height={96}
-            className="md:h-24 md:w-24 object-cover rounded-full"
-            unoptimized={!!profilePhoto} // Bypass Next.js image optimization for external URLs
-          />
+          {imageError ? (
+            <Image 
+              src={dp} 
+              alt="Profile" 
+              width={96}
+              height={96}
+              className="md:h-24 md:w-24 object-cover rounded-full"
+            />
+          ) : (
+            <Image 
+              src={profilePhoto || dp} 
+              alt="Profile" 
+              width={96}
+              height={96}
+              className="md:h-24 md:w-24 object-cover rounded-full"
+              unoptimized
+              onError={() => setImageError(true)}
+            />
+          )}
           <div>
             <input
               type="file"
@@ -152,7 +181,6 @@ const AccountSettings = () => {
 
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex justify-between flex-wrap gap-y-4">
-          {/* First Name, Middle Name, Last Name */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">First Name</label>
             <input
@@ -193,8 +221,6 @@ const AccountSettings = () => {
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Gender */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Gender</label>
             <select
@@ -209,8 +235,6 @@ const AccountSettings = () => {
               <option value="Other">Other</option>
             </select>
           </div>
-
-          {/* Email */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Email</label>
             <input
@@ -221,8 +245,6 @@ const AccountSettings = () => {
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Primary and Secondary Phone */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Primary Phone</label>
             <input
@@ -243,8 +265,6 @@ const AccountSettings = () => {
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Address */}
           <div className="w-full">
             <label className="block text-gray-700 mb-2">Address</label>
             <textarea
@@ -255,8 +275,6 @@ const AccountSettings = () => {
               rows={4}
             />
           </div>
-
-          {/* City, State, Zipcode, Country */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">City</label>
             <input
@@ -298,8 +316,6 @@ const AccountSettings = () => {
             />
           </div>
         </div>
-
-        {/* Buttons */}
         <div className="flex gap-4 mt-6">
           <button 
             type="submit" 

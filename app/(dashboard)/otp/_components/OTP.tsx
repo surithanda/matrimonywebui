@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { api } from '../../../lib/axios'; // Adjust the import path as necessary
+import { api } from '../../../lib/axios';
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setLoginResponse, setUser } from "@/app/store/features/authSlice";
@@ -72,10 +72,9 @@ const ForgotPassword = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      theme: "colored"
+        theme: "colored"
       });
       router.push("/dashboard");
-      // Handle success (e.g., navigate to reset password page or show success message)
     } catch (error: any) {
       console.error("OTP Verification failed:", error.response?.data?.message || error.message);
       setError(error.response?.data?.message || "An error occurred while verifying the OTP.");

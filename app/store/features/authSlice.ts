@@ -135,9 +135,9 @@ const authSlice = createSlice({
       state.loginResponse = action.payload;
     },
     setUser: (state, action: PayloadAction<typeof initialState.userData>) => {
-      state.userData = action.payload
+      state.userData = action.payload;
+    },
   },
-},
   extraReducers: (builder) => {
     builder
       .addCase(loginUserAsync.pending, (state) => {

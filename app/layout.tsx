@@ -3,6 +3,8 @@ import "./globals.css";
 <<<<<<< HEAD
 import "./ui/clientStyles.css";
 import { inter } from "@/app/ui/fonts";
+import ClientProvider from "./ClientProvider";
+import ReduxProvider from "./providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Chaturvarnam",
@@ -23,7 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        <ReduxProvider>
+          <ClientProvider>{children}</ClientProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

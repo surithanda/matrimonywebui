@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from 'next/navigation'; 
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
+import { loginUserAsync, setLoginResponse } from "@/app/store/features/authSlice";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
+  const router = useRouter(); 
+  const { loading, error } = useSelector((state: any) => state.auth); // Select loading and error state from Redux
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -17,8 +25,24 @@ const LoginForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log(formData);
+
+    // Dispatch the login thunk
+    dispatch(loginUserAsync(formData) as any)
+      .unwrap()
+      .then((response:any) => {
+        // Show success toast
+        toast.success("Login successful! Redirecting to OTP screen...");
+        dispatch(setLoginResponse(response.user)); // Save the login response to Redux
+
+        // Navigate to OTP screen upon successful login
+        setTimeout(() => {
+          router.push('/otp');
+        }, 2000); // Delay navigation to allow the user to see the toast
+      })
+      .catch((err:any) => {
+        // Show error toast
+        toast.error(err || "An error occurred during login.");
+      });
   };
 
   return (
@@ -68,10 +92,14 @@ const LoginForm = () => {
           <button
             type="submit"
             className="w-full yellow-btn hover:bg-orange-600"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </div>
+
+        {/* Error Message */}
+        {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
         {/* Register Link */}
         <div className="flex gap-2">
@@ -83,6 +111,19 @@ const LoginForm = () => {
           </a>
         </div>
       </form>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

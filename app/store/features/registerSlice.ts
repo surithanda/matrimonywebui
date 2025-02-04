@@ -48,12 +48,16 @@ const initialState: RegisterState = {
 // Async thunk for registering a user
 export const registerUserAsync = createAsyncThunk(
   'register/registerUser',
-  async (payload: RegisterPayload, { rejectWithValue }) => {
+  async (payload: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/account/register', payload);
-      return response.data;
+      if (response.status === 200 || response.status === 201) {
+        return response.data;
+      }
+      return rejectWithValue('Registration failed');
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      return rejectWithValue(errorMessage);
     }
   }
 );

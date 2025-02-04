@@ -1,9 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import dp from "/public/images/dashboard/dp.png";
+import { api } from "../../../lib/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading, setError } from "../../../store/features/registerSlice";
 
 const AccountSettings = () => {
+  const dispatch = useDispatch();
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const loading = useSelector((state: any) => state.register.loading);
+  const error = useSelector((state: any) => state.register.error);
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -19,6 +27,33 @@ const AccountSettings = () => {
     zipcode: "",
     country: "",
   });
+  const [imageError, setImageError] = useState(false);
+
+  const fetchProfilePhoto = async () => {
+    try {
+      const response = await api.get('/account/photo');
+      if (response.data?.success && response.data?.data?.photo_url) {
+        const photoPath = response.data.data.photo_url;
+        // The photo_url will be like /uploads/photos/account/<filename>
+        const photoUrl = photoPath.startsWith('http') 
+          ? photoPath 
+          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        setProfilePhoto(photoUrl);
+        setImageError(false);
+      } else {
+        setProfilePhoto(null);
+        setImageError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching profile photo:', error);
+      setProfilePhoto(null);
+      setImageError(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfilePhoto();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -32,19 +67,120 @@ const AccountSettings = () => {
     }));
   };
 
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    
+    const file = e.target.files[0];
+    setPhotoLoading(true);
+    dispatch(setError(null));
+    try {
+      const formData = new FormData();
+      formData.append('photo', file);
+      
+      const response = await api.post('/account/photo', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data?.success && response.data?.data?.photo_url) {
+        const photoPath = response.data.data.photo_url;
+        const photoUrl = photoPath.startsWith('http')
+          ? photoPath
+          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        setProfilePhoto(photoUrl);
+        setImageError(false);
+      } else {
+        throw new Error('Failed to upload photo');
+      }
+    } catch (error: any) {
+      console.error('Error uploading photo:', error);
+      dispatch(setError(error.response?.data?.message || 'Failed to upload photo'));
+      setImageError(true);
+    } finally {
+      setPhotoLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(setLoading(true));
+    dispatch(setError(null));
+
+    try {
+      const response = await api.put('/account/update', {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        primary_phone: formData.primaryPhone,
+        primary_phone_country: "US",
+        primary_phone_type: "MOBILE",
+        address_line1: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zip: formData.zipcode,
+        country: formData.country,
+      });
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.message || 'Failed to update account');
+      }
+    } catch (error: any) {
+      console.error('Error updating account:', error);
+      dispatch(setError(error.response?.data?.message || 'Failed to update account'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
   return (
     <section className="account-details-box w-full">
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
       <div className="flex justify-between items-end w-full">
         <div className="flex items-end gap-4">
-          <Image src={dp} alt="Profile" className="md:h-24 md:w-24" />
-          <button className="white-btn hover:bg-gray-200">Change Photo</button>
+          {imageError ? (
+            <Image 
+              src={dp} 
+              alt="Profile" 
+              width={96}
+              height={96}
+              className="md:h-24 md:w-24 object-cover rounded-full"
+            />
+          ) : (
+            <Image 
+              src={profilePhoto || dp} 
+              alt="Profile" 
+              width={96}
+              height={96}
+              className="md:h-24 md:w-24 object-cover rounded-full"
+              unoptimized
+              onError={() => setImageError(true)}
+            />
+          )}
+          <div>
+            <input
+              type="file"
+              id="photo-upload"
+              className="hidden"
+              accept="image/*"
+              onChange={handlePhotoChange}
+            />
+            <label 
+              htmlFor="photo-upload" 
+              className="white-btn hover:bg-gray-200 cursor-pointer"
+            >
+              {photoLoading ? 'Uploading...' : 'Change Photo'}
+            </label>
+          </div>
         </div>
         <button className="red-btn hover:bg-red-600">Deactivate Account</button>
       </div>
 
-      <form className="w-full">
+      <form onSubmit={handleSubmit} className="w-full">
         <div className="flex justify-between flex-wrap gap-y-4">
-          {/* First Name, Middle Name, Last Name */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">First Name</label>
             <input
@@ -85,8 +221,6 @@ const AccountSettings = () => {
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Gender */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Gender</label>
             <select
@@ -101,8 +235,6 @@ const AccountSettings = () => {
               <option value="Other">Other</option>
             </select>
           </div>
-
-          {/* Email */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Email</label>
             <input
@@ -113,8 +245,6 @@ const AccountSettings = () => {
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Primary and Secondary Phone */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Primary Phone</label>
             <input
@@ -135,8 +265,6 @@ const AccountSettings = () => {
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-          {/* Address */}
           <div className="w-full">
             <label className="block text-gray-700 mb-2">Address</label>
             <textarea
@@ -147,8 +275,6 @@ const AccountSettings = () => {
               rows={4}
             />
           </div>
-
-          {/* City, State, Zipcode, Country */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">City</label>
             <input
@@ -190,13 +316,17 @@ const AccountSettings = () => {
             />
           </div>
         </div>
-
-        {/* Buttons */}
         <div className="flex gap-4 mt-6">
-          <button className="yellow-btn hover:bg-orange-600">
-            Save Changes
+          <button 
+            type="submit" 
+            className="yellow-btn hover:bg-orange-600"
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : 'Save Changes'}
           </button>
-          <button className="white-btn hover:bg-gray-400">Cancel</button>
+          <button type="button" className="white-btn hover:bg-gray-400">
+            Cancel
+          </button>
         </div>
       </form>
     </section>

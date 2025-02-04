@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
+import { useAppSelector } from "@/app/store/store";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -26,6 +29,8 @@ const profilesData = [
 ];
 
 const ProfileSection = () => {
+  //@ts-ignore
+  const { user } = useAppSelector((state) => state.auth.userData);
   const faqData = [
     {
       question: "How do I create a new profile?",
@@ -120,47 +125,45 @@ const ProfileSection = () => {
         </div>
 
         {/* Account Info Section */}
-        <div className="dashboard-sections md:w-1/5">
+ {/* Account Info Section */}
+ <div className="dashboard-sections md:w-1/5">
           <h2 className="dmserif32600">Account Info</h2>
           <div className="dashboard-inner-sections">
             <p className="font-medium">
               <span>Full Name:</span>
-              <span className="text-gray-600">Shimla Sinha</span>
+              <span className="text-gray-600">{user?.full_name || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Email:</span>
-              <span className="text-gray-600">shimlasinha@example.com</span>
+              <span className="text-gray-600">{user?.email || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Phone:</span>{" "}
-              <span className="text-gray-600">+1 290 2390 239</span>
+              <span className="text-gray-600">{user?.phone || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Date of Birth:</span>{" "}
-              <span className="text-gray-600">10-5-1981</span>
-            </p>
-            <p className="font-medium">
-              <span>Age:</span> <span className="text-gray-600">43</span>
+              <span className="text-gray-600">{user?.date_of_birth || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Address:</span>
-              <span className="text-gray-600">191 Rau Views Suite 596</span>
+              <span className="text-gray-600">{user?.address || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>City:</span>{" "}
-              <span className="text-gray-600">Fridayside</span>
+              <span className="text-gray-600">{user?.city || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>State:</span>{" "}
-              <span className="text-gray-600">District of Columbia</span>
+              <span className="text-gray-600">{user?.state || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Country:</span>
-              <span className="text-gray-600">United States of America</span>
+              <span className="text-gray-600">{user?.country || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Zip Code:</span>{" "}
-              <span className="text-gray-600">40771-2598</span>
+              <span className="text-gray-600">{user?.zip_code || 'N/A'}</span>
             </p>
           </div>
         </div>

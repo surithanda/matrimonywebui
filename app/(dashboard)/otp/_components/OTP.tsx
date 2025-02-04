@@ -1,20 +1,33 @@
 "use client";
-import { useState } from "react";
-import { api } from '../../../lib/axios'; // Adjust the import path as necessary
-import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { api } from '../../../lib/axios';
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { setLoginResponse } from "@/app/store/features/authSlice";
+import { setLoginResponse, setUser } from "@/app/store/features/authSlice";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/app/store/store";
 
 const ForgotPassword = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { loginResponse, user } = useAppSelector((state) => state.auth);
+  
+  // Add debug logging
+  console.log("Auth State:", { loginResponse, user });
+
   const dispatch = useDispatch();
-  const loginResponse = useSelector((state: any) => state.auth.loginResponse);
   const router = useRouter();
   const history_id = loginResponse?.history_id;
+
+  // Add check for required data
+  useEffect(() => {
+    if (!history_id) {
+      router.push('/login'); // Redirect if no history_id
+      toast.error("Please login first");
+    }
+  }, [history_id, router]);
 
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -27,6 +40,11 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!history_id) {
+      toast.error("Session expired. Please login again.");
+      router.push('/login');
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -39,7 +57,13 @@ const ForgotPassword = () => {
     try {
       const response = await api.post("/auth/verify-otp", payload);
       console.log("OTP Verified:", response.data);
-      dispatch(setLoginResponse(response.data));
+      
+      // Store the JWT token in localStorage
+      if (response.data.token) {
+        localStorage.setItem('matrimony token', response.data.token);
+      }
+      
+      dispatch(setUser(response.data));
       toast.success("OTP Verified!", {
         position: "top-right",
         autoClose: 3000,
@@ -48,10 +72,9 @@ const ForgotPassword = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      theme: "colored"
+        theme: "colored"
       });
       router.push("/dashboard");
-      // Handle success (e.g., navigate to reset password page or show success message)
     } catch (error: any) {
       console.error("OTP Verification failed:", error.response?.data?.message || error.message);
       setError(error.response?.data?.message || "An error occurred while verifying the OTP.");

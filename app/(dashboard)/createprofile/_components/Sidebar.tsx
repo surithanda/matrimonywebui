@@ -23,22 +23,22 @@ const Sidebar = () => {
     {
       name: "Primary Contact",
       icon: <FaPhone />,
-      link: "createprofile/primarycontact",
+      link: "primarycontact",
     },
-    { name: "Education", icon: <FaBook />, link: "createprofile/education" },
+    { name: "Education", icon: <FaBook />, link: "education" },
     {
       name: "Profession",
       icon: <FaBriefcase />,
-      link: "createprofile/profession",
+      link: "profession",
     },
-    { name: "Hobbies", icon: <FaPaintBrush />, link: "createprofile/hobbies" },
+    { name: "Hobbies", icon: <FaPaintBrush />, link: "hobbies" },
     // { name: "Interests", icon: <FaRegNewspaper />, link: "#interests" },
-    { name: "Lifestyle", icon: <FaRunning />, link: "createprofile/lifestyle" },
-    { name: "Family", icon: <FaUsers />, link: "createprofile/family" },
-    { name: "References", icon: <FaHome />, link: "createprofile/references" },
-    { name: "Property", icon: <FaImages />, link: "createprofile/property" },
-    { name: "Photos", icon: <FaImages />, link: "createprofile/photos" },
-    { name: "Partner", icon: <FaLink />, link: "createprofile/partner" },
+    { name: "Lifestyle", icon: <FaRunning />, link: "lifestyle" },
+    { name: "Family", icon: <FaUsers />, link: "family" },
+    { name: "References", icon: <FaHome />, link: "references" },
+    { name: "Property", icon: <FaImages />, link: "property" },
+    { name: "Photos", icon: <FaImages />, link: "photos" },
+    { name: "Partner", icon: <FaLink />, link: "partner" },
   ];
 
   return (

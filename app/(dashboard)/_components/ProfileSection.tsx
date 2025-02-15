@@ -5,6 +5,7 @@ import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
 import { useAppSelector } from "@/app/store/store";
+import Link from "next/link";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -82,7 +83,7 @@ const ProfileSection = () => {
           <div className="flex justify-between items-center w-full">
             <h2 className="dmserif32600">Profiles</h2>
             <button className="px-5 py-3  bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
-              Add Profile
+            <Link href="/createprofile">  Add Profile </Link>
             </button>
           </div>
 

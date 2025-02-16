@@ -82,9 +82,11 @@ const ProfileSection = () => {
         <div className="dashboard-sections md:w-4/5">
           <div className="flex justify-between items-center w-full">
             <h2 className="dmserif32600">Profiles</h2>
-            <button className="px-5 py-3  bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
-            <Link href="/createprofile">  Add Profile </Link>
-            </button>
+            <Link href="/createprofile">
+              <button className="px-5 py-3 bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
+                Add Profile
+              </button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -15,6 +15,7 @@ const AccountSettings = () => {
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const loading = useSelector((state: any) => state.register.loading);
   const error = useSelector((state: any) => state.register.error);
+  //@ts-ignore
   const { user } = useAppSelector((state) => state.auth.userData);
   const [formData, setFormData] = useState({
     firstName: user?.full_name?.split(" ")[0] || "",

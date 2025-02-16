@@ -292,12 +292,13 @@ const Register = () => {
               <div className="flex flex-col items-start">
                 <label className="block BRCobane18600 mb-2.5">Zip Code</label>
                 <input
-                  type="text"
+                  type="number"
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Zip Code"
+                  maxLength={7}
                   required
                 />
               </div>
@@ -331,6 +332,7 @@ const Register = () => {
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Primary Phone"
+                  maxLength={10}
                   required
                 />
               </div>

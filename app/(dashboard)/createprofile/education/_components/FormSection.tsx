@@ -46,7 +46,7 @@ const FormSection = () => {
   };
 
   const moveToNext = () => {
-    const nextRoute = getNextRoute("/createprofile/employment");
+    const nextRoute = getNextRoute("/createprofile/education");
     router.push(nextRoute);
   };
 

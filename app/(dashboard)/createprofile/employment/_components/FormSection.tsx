@@ -136,12 +136,12 @@ const FormSection = () => {
           {/* City, State, Country, Zip */}
           <div className="flex w-full justify-between mt-4 gap-4">
             <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="City"
-              className="account-input-field w-1/4"
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="City"
+                className="account-input-field w-1/4"
             />
             <input
               type="text"

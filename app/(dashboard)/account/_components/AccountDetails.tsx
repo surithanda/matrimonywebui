@@ -5,27 +5,31 @@ import dp from "/public/images/dashboard/dp.png";
 import { api } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setError } from "../../../store/features/registerSlice";
+import { useAppSelector } from "@/app/store/store";
+import { useRouter } from "next/navigation";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
   const [photoLoading, setPhotoLoading] = useState(false);
+  const router = useRouter();
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const loading = useSelector((state: any) => state.register.loading);
   const error = useSelector((state: any) => state.register.error);
+  const { user } = useAppSelector((state) => state.auth.userData);
   const [formData, setFormData] = useState({
-    firstName: "",
+    firstName: user?.full_name?.split(" ")[0] || "",
     middleName: "",
-    lastName: "",
-    birthDate: "",
+    lastName: user?.full_name?.split(" ").slice(-1)[0] || "",
+    birthDate: user?.date_of_birth ||"",
     gender: "",
-    email: "",
-    primaryPhone: "",
-    secondaryPhone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipcode: "",
-    country: "",
+    email: user?.email ||"",
+    primaryPhone: user?.phone_number || "",
+    secondaryPhone: user?.secondaryPhoneNumber || "",
+    address: user?.address || "",
+    city: user?.city ||"",
+    state: user?.state || "",
+    zipcode: user?.zip_code || " ",
+    country: user?.country || " ",
   });
   const [imageError, setImageError] = useState(false);
 
@@ -120,7 +124,11 @@ const AccountSettings = () => {
         zip: formData.zipcode,
         country: formData.country,
       });
-
+      
+      if (response.data?.success) {
+        console.log('Account updated successfully');
+        router.push("/login");
+      }
       if (!response.data?.success) {
         throw new Error(response.data?.message || 'Failed to update account');
       }
@@ -252,6 +260,7 @@ const AccountSettings = () => {
               name="primaryPhone"
               value={formData.primaryPhone}
               onChange={handleChange}
+              maxLength={11}
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
@@ -262,6 +271,7 @@ const AccountSettings = () => {
               name="secondaryPhone"
               value={formData.secondaryPhone}
               onChange={handleChange}
+              maxLength={11}
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
@@ -302,6 +312,7 @@ const AccountSettings = () => {
               name="zipcode"
               value={formData.zipcode}
               onChange={handleChange}
+              maxLength={7}
               className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>

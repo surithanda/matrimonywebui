@@ -1,23 +1,24 @@
 "use client";
-import { createEducationAsync } from "@/app/store/features/profileSlice";
+import { createEmploymentAsync } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch } from "@/app/store/store";
-import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const FormSection = () => {
-  const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    education_level: 1,
-    year_completed: "",
     institution_name: "",
     address_line1: "",
     city: "",
     state: "",
     country: "",
     zip: "",
-    field_of_study: 1
+    start_year: "",
+    end_year: "",
+    job_title: "",
+    last_salary_drawn: "",
   });
 
   const handleChange = (
@@ -30,67 +31,104 @@ const FormSection = () => {
     }));
   };
 
-  const handleAddEducation = async (e: React.FormEvent) => {
+  const handleAddEmployment = async (e: React.FormEvent) => {
     e.preventDefault();
-    const educationData = {
+    const employmentData = {
       profile_id: 51, // You might want to get this dynamically
       ...formData,
-      year_completed: parseInt(formData.year_completed)
+      start_year: parseInt(formData.start_year),
+      end_year: parseInt(formData.end_year),
     };
     
-    await dispatch(createEducationAsync(educationData)).then(() => {
-      moveToNext(); 
-    }).catch((error: any) => {
-      console.error(error);
-    });
-  };
-
-  const moveToNext = () => {
-    const nextRoute = getNextRoute("/createprofile/employment");
-    debugger
-    router.push(nextRoute);
+    try {
+      const result = await dispatch(createEmploymentAsync(employmentData)).unwrap();
+      if (result) {
+        toast.success("Employment details saved successfully!");
+        router.push("/createprofile/education");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to save employment details");
+    }
   };
 
   return (
     <section className="md:py-5 w-4/5">
-      <form className="flex flex-col justify-between h-full w-full box-border md:px-6" onSubmit={handleAddEducation}>
+      <form className="flex flex-col justify-between h-full w-full box-border md:px-6" onSubmit={handleAddEmployment}>
         <div className="flex flex-wrap justify-between">
+          {/* Company and Job Title */}
           <div className="flex w-full justify-between">
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Institution Name</label>
+              <label className="block text-gray-700 mb-2">Company Name</label>
               <input
                 type="text"
                 name="institution_name"
                 value={formData.institution_name}
                 onChange={handleChange}
-                placeholder="Institution Name"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="Company Name"
+                className="account-input-field stretch w-full"
               />
             </div>
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Year Completed</label>
+              <label className="block text-gray-700 mb-2">Job Title</label>
               <input
-                type="number"
-                name="year_completed"
-                value={formData.year_completed}
+                type="text"
+                name="job_title"
+                value={formData.job_title}
                 onChange={handleChange}
-                placeholder="Year of completion"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="Job Title"
+                className="account-input-field stretch w-full"
               />
             </div>
           </div>
 
-          {/* Address Fields */}
+          {/* Start Year and End Year */}
           <div className="flex w-full justify-between mt-4">
-            <div className="w-full md:mb-4">
+            <div className="w-[49%] md:mb-4">
+              <label className="block text-gray-700 mb-2">Start Year</label>
+              <input
+                type="number"
+                name="start_year"
+                value={formData.start_year}
+                onChange={handleChange}
+                placeholder="Start Year"
+                className="account-input-field stretch w-full"
+              />
+            </div>
+            <div className="w-[49%] md:mb-4">
+              <label className="block text-gray-700 mb-2">End Year</label>
+              <input
+                type="number"
+                name="end_year"
+                value={formData.end_year}
+                onChange={handleChange}
+                placeholder="End Year"
+                className="account-input-field stretch w-full"
+              />
+            </div>
+          </div>
+
+          {/* Last Salary and Address */}
+          <div className="flex w-full justify-between mt-4">
+            <div className="w-[49%] md:mb-4">
+              <label className="block text-gray-700 mb-2">Last Salary Drawn</label>
+              <input
+                type="text"
+                name="last_salary_drawn"
+                value={formData.last_salary_drawn}
+                onChange={handleChange}
+                placeholder="Last Salary"
+                className="account-input-field stretch w-full"
+              />
+            </div>
+            <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Address</label>
               <input
                 type="text"
                 name="address_line1"
                 value={formData.address_line1}
                 onChange={handleChange}
-                placeholder="Institution Address"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="Company Address"
+                className="account-input-field stretch w-full"
               />
             </div>
           </div>
@@ -135,23 +173,17 @@ const FormSection = () => {
             type="submit"
             className="gray-btn mt-[20px] hover:bg-gray-400"
           >
-            Add Education
+            Add Employment
           </button>
         </div>
 
-        {/* Buttons */}
+        {/* Action Buttons */}
         <div className="flex justify-between mt-8">
           <div className="flex justify-start gap-4">
             <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
             <button type="button" className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
-          <button 
-            type="button" 
-            onClick={moveToNext}
-            className="gray-btn hover:bg-gray-400"
-          >
-            Skip
-          </button>
+          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() =>router.push("/createprofile/education")}>Skip</button>
         </div>
       </form>
     </section>

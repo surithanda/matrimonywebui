@@ -1,0 +1,754 @@
+@font-face {
+  font-family: "BR Cobane";
+  src: url("/fonts/BR Cobane/BRCobane-Regular-BF654d96a1718fa.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("/fonts/DM Serif Display/DMSerifDisplay-Regular.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.BRCobane16400 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.48px;
+}
+.BRCobane16500 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+}
+
+.BRCobane16500Light {
+  color: #fafafa;
+  font-family: "BR Cobane";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+}
+
+.BRCobane18400 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.BRCobane18400Light {
+  color: #fafafa;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.BRCobane20400 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.BRCobane18500 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+.BRCobane18600 {
+  color: rgba(25, 24, 35, 0.9);
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+.BRCobane48600 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -1.92px;
+}
+.BRCobane56600 {
+  color: #222;
+
+  font-family: "BR Cobane";
+  font-size: 56px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -1.68px;
+}
+
+.BRCobane56400 {
+  color: #222;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 56px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -2.24px;
+}
+
+.BRCobane64600 {
+  color: #fff;
+  font-family: "BR Cobane";
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -2.56px;
+}
+
+.dmserif20400 {
+  color: #000;
+  font-family: "DM Serif Display";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.6px;
+}
+.dmserif24400 {
+  color: #111;
+  font-family: "DM Serif Display";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.24px;
+}
+.BRCobane24400 {
+  color: #111;
+  font-family: "BR Cobane";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.72px;
+}
+
+.BRCobane24600 {
+  color: #111;
+  /* text-align: center; */
+  font-family: "BR Cobane";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.72px;
+}
+
+.BRCobane56600 {
+  color: #222;
+  /* text-align: center; */
+  font-family: "BR Cobane";
+  font-size: 56px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -2.24px;
+}
+
+.BRCobane32600 {
+  color: #111;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.64px;
+}
+
+.BRCobane32400 {
+  color: #111;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -1.02px;
+}
+
+.BRCobane48400 {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -1.92px;
+}
+
+.dmserif32400 {
+  color: #111;
+  text-align: center;
+  font-family: "DM Serif Display";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.64px;
+}
+.dmserif32600 {
+  color: #111;
+  font-family: "BR Cobane";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.96px;
+}
+.dmserif48400 {
+  color: #222;
+  font-family: "DM Serif Display";
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -1.44px;
+}
+.dmserif56400 {
+  color: #222;
+  text-align: center;
+  font-family: "DM Serif Display";
+  font-size: 56px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -1.68px;
+}
+.dmserif64400 {
+  text-align: center;
+  font-family: "DM Serif Text";
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.64px;
+}
+
+.dmserif74400 {
+  color: #222;
+  font-family: "DM Serif Display";
+  font-size: 74.356px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -2.231px;
+}
+
+.coloredTextOne {
+  color: #0c2834;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.9px;
+}
+
+.BlackBtn {
+  width: 200px;
+  display: flex;
+  padding: 12px 18px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: #222;
+  box-shadow: 0px 4px 4px 0px rgba(255, 255, 255, 0.25) inset;
+  color: #fff;
+  font-family: "BR Cobane";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.6px;
+}
+
+.WhiteBtn {
+  display: flex;
+  padding: 10px 18px;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border-radius: 10px;
+  border: 1px solid #222;
+  background: #fff;
+
+  color: #000;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.WhiteBtn span {
+  color: #000;
+  font-family: "BR Cobane", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.6px;
+}
+
+.YellowBtn {
+  display: flex;
+  padding: 12px 18px;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border-radius: 10px;
+  background: #feac00;
+  color: #000;
+  font-family: "BR Cobane", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.6px;
+}
+
+.YellowBtn span {
+}
+
+.heroSection {
+  background: url("/images/heroBg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 2;
+}
+
+.colorText {
+  color: #feac00;
+}
+
+.mainNav {
+  background-color: #000;
+}
+
+.heroHeadings h1 {
+  color: #fafafa;
+  font-family: "BR Cobane", sans-serif;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 80px; /* 125% */
+  letter-spacing: -1.92px;
+}
+
+.heroHeadings p {
+  color: #fafafa;
+  font-family: "BR Cobane", sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.review-section {
+  /* background-image: url("../public/images/cardbackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    object-fit: contain;
+    width: 100%; */
+}
+
+.carousel-item {
+  background-image: url("../../public/images/card.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center;
+  object-fit: contain;
+}
+.carousel-item-stories {
+  background-image: url("../../public/images/mothersmessage.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center;
+  object-fit: contain;
+}
+
+.name-field {
+  display: flex;
+  padding: 13px 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+
+  border-radius: 13px;
+  border: 1px solid rgba(211, 211, 211, 0.4);
+  background: #fffbf2;
+}
+.name-field-contact {
+  display: flex;
+  padding: 12px 24px;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.4);
+  background: #fffbf2;
+}
+
+input.name-field-contact::placeholder {
+  color: #0d3745;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+  width: 100%;
+  text-align: left;
+}
+
+.email-field {
+  display: flex;
+  /* width: 236px; */
+  height: 44px;
+  padding: 10px 35px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  border: 1px solid rgba(211, 211, 211, 0.4);
+  background: #fffbf2;
+}
+
+.invitation-card-btn {
+  background: url("../../public/images/invitationcardbtnbackground.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  object-fit: contain;
+  height: 51px;
+  width: 197px;
+}
+
+.new-review {
+  background: linear-gradient(
+      270deg,
+      rgba(255, 247, 231, 0) 40.68%,
+      rgba(255, 247, 231, 0.4) 72.63%
+    ),
+    url("../../public/images/newreview.png") lightgray 0px -870.076px / 100% 226.755%
+      no-repeat;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  object-fit: contain;
+  height: 947px;
+}
+
+.review-1 {
+  background: url("../../public/images/review1.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  object-fit: cover;
+  width: 100%;
+  height: 623px;
+}
+.review-2 {
+  background-image: url("../../public/images/review2.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  object-fit: cover;
+  width: 100%;
+  height: 318px;
+}
+.review-3 {
+  background: url("../../public/images/review3.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  object-fit: cover;
+  width: 100%;
+  height: 625px;
+}
+
+.footer {
+  border-radius: 20px 20px 0px 0px;
+  border: 3px solid rgba(191, 160, 84, 0.2);
+  /* background: #fff7e7cc; */
+
+  margin-left: 20px;
+  margin-right: 20px;
+  box-sizing: border-box;
+}
+.footer-contact {
+  display: flex;
+  padding: 50px 100px;
+  flex-direction: column;
+  align-items: flex-start;
+  /* gap: 30px; */
+
+  border-radius: 20px 20px 0px 0px;
+  border: 3px solid rgba(191, 160, 84, 0.2);
+  background: white;
+
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.footer ul li {
+  color: #222;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.footer p {
+  color: #222;
+  text-align: center;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+/* Styling placeholder text with a different color */
+.invitation input::placeholder {
+  color: #0d3745;
+  -webkit-text-stroke-width: 0.25;
+  -webkit-text-stroke-color: #fff8e9;
+  font-family: "Times New Roman";
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: -1.341px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Changing the font size of placeholder text */
+/* input::placeholder {
+    font-size: 14px;
+  } */
+
+.invitation-form-div {
+  background-image: url("../../public/images/invitationcard.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+  height: 927px;
+  width: 700px;
+}
+
+/* ABOUT SECTION */
+.about-hero {
+  background: url("../../public/images/aboutherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+/* ABOUT SECTION */
+.contact-hero {
+  background: url("../../public/images/contactherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+/* PRIVACY SECTION */
+.privacy-hero {
+  background: url("../../public/images/privacyherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+/* EVENT SECTION */
+.event-hero {
+  background: url("../../public/images/eventherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+
+/* STORIES SECTION */
+
+.stories-hero {
+  background: url("../../public/images/storiesherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+
+/* EVENTS */
+.event-hero {
+  background: url("../../public/images/eventherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+
+.aboutCard {
+  text-align: center;
+  border-radius: 20px;
+  border: 1px solid rgba(191, 160, 84, 0.2);
+  background: rgba(255, 247, 231, 0.8);
+  display: flex;
+  padding: 32px 48px;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  flex: 1 0 0;
+}
+
+.privacy-policy h2 {
+  color: #111;
+  font-family: "BR Cobane";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.72px;
+}
+.privacy-policy-intro {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+.privacy-policy li,
+.privacy-policy p {
+  color: #222;
+  font-family: "BR Cobane";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.54px;
+}
+
+.privacy-policy li {
+  margin-bottom: 5px;
+}
+
+.privacy-policy h2 + p {
+  margin-bottom: 10px;
+}
+
+.events-box {
+  padding: 32px;
+  flex-direction: column;
+  gap: 12px;
+  /* Remove display: flex for automatic content-based sizing */
+
+  border-radius: 20px;
+  border: 1px solid rgba(191, 160, 84, 0.2);
+  background: rgba(255, 247, 231, 0.8);
+  /* No height set, it will grow/shrink based on content */
+}
+
+.service-hero {
+  background: url("../../public/images/serviceherobackground.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+
+.servicesfeatureimage {
+  border-radius: 10px;
+  border: 1px solid #cecece;
+  background: #fff;
+  box-shadow: 0px 288px 80px 0px rgba(0, 0, 0, 0),
+    0px 184px 74px 0px rgba(0, 0, 0, 0.01),
+    0px 104px 62px 0px rgba(0, 0, 0, 0.03),
+    0px 46px 46px 0px rgba(0, 0, 0, 0.04), 0px 12px 25px 0px rgba(0, 0, 0, 0.05);
+}
+
+.stories-image {
+  box-shadow: 0px 307px 86px 0px rgba(0, 0, 0, 0),
+    0px 197px 79px 0px rgba(0, 0, 0, 0.01),
+    0px 111px 66px 0px rgba(0, 0, 0, 0.03),
+    0px 49px 49px 0px rgba(0, 0, 0, 0.04), 0px 12px 27px 0px rgba(0, 0, 0, 0.05);
+}
+
+.footer-line {
+  height: 1px;
+
+  background: radial-gradient(
+    50% 59000% at 50% 50%,
+    rgba(191, 160, 84, 0.4) 0%,
+    rgba(191, 160, 84, 0) 100%
+  );
+}

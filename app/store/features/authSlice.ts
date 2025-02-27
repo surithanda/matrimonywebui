@@ -41,6 +41,11 @@ interface AuthState {
   error: string | null;
   loginResponse: LoginResponse | null;
   userData: {
+    first_name?: string;
+    middle_name?: string;
+    last_name?: string;
+    gender?: string;
+    secondary_phone?: string;
     full_name?: string;
     email?: string;
     phone?: string;

@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { loginUserAsync, setLoginResponse } from "@/app/store/features/authSlice";
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Add this import
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false); // Add this state
   const dispatch = useDispatch();
   const router = useRouter(); 
   const { loading, error } = useSelector((state: any) => state.auth); // Select loading and error state from Redux
@@ -45,6 +47,10 @@ const LoginForm = () => {
       });
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="account-details-box w-1/2 text-left">
       <h3 className="BRCobane32600 md:mb-0">Login to Chaturvarnam</h3>
@@ -66,15 +72,24 @@ const LoginForm = () => {
         {/* Password Input */}
         <div className="mb-4 flex flex-col items-start">
           <label className="block BRCobane18600 mb-2.5">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Password"
-            required
-          />
+          <div className="relative w-full">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Password"
+              required
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+          </div>
         </div>
 
         {/* Forgot Password Link */}

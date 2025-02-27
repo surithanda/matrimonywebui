@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { api } from '../../../lib/axios';
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { setLoginResponse, setUser } from "@/app/store/features/authSlice";
+import { setUser } from "@/app/store/features/authSlice";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/app/store/store";
 
@@ -13,18 +13,15 @@ const ForgotPassword = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { loginResponse, user } = useAppSelector((state) => state.auth);
-  
-  // Add debug logging
   console.log("Auth State:", { loginResponse, user });
 
   const dispatch = useDispatch();
   const router = useRouter();
   const history_id = loginResponse?.history_id;
 
-  // Add check for required data
   useEffect(() => {
     if (!history_id) {
-      router.push('/login'); // Redirect if no history_id
+      router.push('/login');
       toast.error("Please login first");
     }
   }, [history_id, router]);
@@ -33,9 +30,25 @@ const ForgotPassword = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
+    const value = e.target.value;
+
+    // Allow only digits
+    if (!/^\d*$/.test(value)) return;
+
     const newOtp = [...otp];
-    newOtp[index] = e.target.value;
+    newOtp[index] = value;
     setOtp(newOtp);
+
+    // Move focus to next field if input is filled
+    if (value && index < otp.length - 1) {
+      (document.getElementById(`otp-${index + 1}`) as HTMLInputElement)?.focus();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      (document.getElementById(`otp-${index - 1}`) as HTMLInputElement)?.focus();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,20 +62,16 @@ const ForgotPassword = () => {
     setError(null);
 
     const otpValue = otp.join("");
-    const payload = {
-      history_id: history_id,
-      otp: otpValue,
-    };
+    const payload = { history_id, otp: otpValue };
 
     try {
       const response = await api.post("/auth/verify-otp", payload);
       console.log("OTP Verified:", response.data);
-      
-      // Store the JWT token in localStorage
+
       if (response.data.token) {
         localStorage.setItem('matrimony token', response.data.token);
       }
-      
+
       dispatch(setUser(response.data));
       toast.success("OTP Verified!", {
         position: "top-right",
@@ -98,11 +107,13 @@ const ForgotPassword = () => {
           {otp.map((digit, index) => (
             <input
               key={index}
+              id={`otp-${index}`}
               type="text"
               maxLength={1}
               value={digit}
               onChange={(e) => handleOtpChange(e, index)}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              className="account-input-field w-full text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
               autoFocus={index === 0}
             />
           ))}

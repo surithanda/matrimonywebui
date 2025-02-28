@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     property: "",
     ownership: "",
@@ -21,9 +23,13 @@ const FormSection = () => {
       [name]: value,
     }));
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+  }
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6">
+      <form className="w-full box-border md:px-6" onSubmit={handleSubmit}>
         <div className="flex flex-wrap justify-between">
           {/* First Name, Middle Name, Last Name */}
           <div className="flex w-full justify-between">
@@ -126,7 +132,7 @@ const FormSection = () => {
             <button className="yellow-btn hover:bg-orange-600">Continue</button>
             <button className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
-          <button className="gray-btn hover:bg-gray-400">Skip</button>
+          <button className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/photos")}>Skip</button>
         </div>
       </form>
     </section>

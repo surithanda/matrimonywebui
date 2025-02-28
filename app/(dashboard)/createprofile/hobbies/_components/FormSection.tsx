@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
   const [hobbies, setHobbies] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [hobbyInput, setHobbyInput] = useState("");
   const [interestInput, setInterestInput] = useState("");
+  const router = useRouter();
 
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -105,7 +107,7 @@ const FormSection = () => {
           <button className="yellow-btn hover:bg-orange-600">Continue</button>
           <button className="gray-btn hover:bg-gray-400">Cancel</button>
         </div>
-        <button className="gray-btn hover:bg-gray-400">Skip</button>
+        <button className="gray-btn hover:bg-gray-400" onClick={() =>router.push("/createprofile/lifestyle")}>Skip</button>
       </div>
     </section>
   );

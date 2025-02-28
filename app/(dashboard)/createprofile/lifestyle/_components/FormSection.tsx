@@ -79,7 +79,7 @@ const FormSection = () => {
       const result = await dispatch(createLifestyleAsync(requestData)).unwrap();
       if (result) {
         toast.success("Lifestyle information saved successfully!");
-        router.push("/createprofile/primarycontact");
+        router.push("/createprofile/family");
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to save lifestyle information");
@@ -118,7 +118,7 @@ const FormSection = () => {
           </button>
           <button className="gray-btn hover:bg-gray-400">Cancel</button>
         </div>
-        <button className="gray-btn hover:bg-gray-400">Skip</button>
+        <button className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/family")}>Skip</button>
       </div>
     </section>
   );

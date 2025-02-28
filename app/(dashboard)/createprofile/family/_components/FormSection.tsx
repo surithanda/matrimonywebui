@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullname: "",
     dob: "",
@@ -23,7 +25,11 @@ const FormSection = () => {
   };
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6">
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        router.push("/createprofile/references");
+      }}
+        className="w-full box-border md:px-6">
         <div className="flex flex-wrap justify-between">
           {/* First Name, Middle Name, Last Name */}
           <div className="flex w-full justify-between">

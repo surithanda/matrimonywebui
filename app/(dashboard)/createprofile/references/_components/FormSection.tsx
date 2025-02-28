@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullname: "",
     dob: "",
@@ -21,11 +23,18 @@ const FormSection = () => {
       [name]: value,
     }));
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Navigate to '/createprofile/property'
+    router.push("/createprofile/property");
+  };
+
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6">
+      <form onSubmit={handleSubmit} className="w-full box-border md:px-6">
         <div className="flex flex-wrap justify-between">
-          {/* First Name, Middle Name, Last Name */}
+          {/* First Name and Date of Birth */}
           <div className="flex w-full justify-between">
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Full</label>
@@ -74,7 +83,7 @@ const FormSection = () => {
             </div>
           </div>
           <div className="flex w-full justify-between">
-            {/* Relation */}
+            {/* Relationship */}
             <div className="w-full md:mb-4">
               <label className="block text-gray-700 mb-2">
                 Relationship to you
@@ -95,7 +104,7 @@ const FormSection = () => {
 
           <div className="flex w-full justify-between">
             <div className="w-full md:mb-4">
-              <button className="gray-btn mt-[20px] hover:bg-gray-400">
+              <button type="button" className="gray-btn mt-[20px] hover:bg-gray-400">
                 Add Another
               </button>
             </div>
@@ -105,10 +114,16 @@ const FormSection = () => {
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button className="yellow-btn hover:bg-orange-600">Continue</button>
-            <button className="gray-btn hover:bg-gray-400">Cancel</button>
+            <button type="submit" className="yellow-btn hover:bg-orange-600">
+              Continue
+            </button>
+            <button type="button" className="gray-btn hover:bg-gray-400">
+              Cancel
+            </button>
           </div>
-          <button className="gray-btn hover:bg-gray-400">Skip</button>
+          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/property")}>
+            Skip
+          </button>
         </div>
       </form>
     </section>

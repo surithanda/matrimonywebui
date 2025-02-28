@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     selectpartner: "",
     referalcode: "",
@@ -20,9 +22,15 @@ const FormSection = () => {
     }));
   };
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      // Navigate to '/createprofile/property'
+      router.push("/createprofile/property");
+    };
+
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6">
+      <form className="w-full box-border md:px-6" onSubmit={handleSubmit}>
         <div className="flex flex-wrap justify-between">
           <div className="flex w-full justify-between">
             {/* Gender */}
@@ -74,7 +82,7 @@ const FormSection = () => {
             <button className="yellow-btn hover:bg-orange-600">Continue</button>
             <button className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
-          <button className="gray-btn hover:bg-gray-400">Skip</button>
+          {/* <button className="gray-btn hover:bg-gray-400" onClick={() => router.push("/dashboard")}>Go to Dashboard</button> */}
         </div>
       </form>
     </section>

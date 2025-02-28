@@ -6,7 +6,6 @@ import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
 import { useAppSelector } from "@/app/store/store";
-import Link from "next/link";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -32,7 +31,7 @@ const profilesData = [
 
 const ProfileSection = () => {
   //@ts-ignore
-  const { user } = useAppSelector((state) => state.auth.userData);
+  const user = useAppSelector((state) => state.auth.userData)?.user;
   const faqData = [
     {
       question: "How do I create a new profile?",

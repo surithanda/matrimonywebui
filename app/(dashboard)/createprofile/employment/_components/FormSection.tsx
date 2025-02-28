@@ -44,7 +44,7 @@ const FormSection = () => {
       const result = await dispatch(createEmploymentAsync(employmentData)).unwrap();
       if (result) {
         toast.success("Employment details saved successfully!");
-        router.push("/createprofile/education");
+        router.push("/createprofile/hobbies");
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to save employment details");
@@ -183,7 +183,7 @@ const FormSection = () => {
             <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
             <button type="button" className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
-          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() =>router.push("/createprofile/education")}>Skip</button>
+          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() =>router.push("/createprofile/hobbies")}>Skip</button>
         </div>
       </form>
     </section>

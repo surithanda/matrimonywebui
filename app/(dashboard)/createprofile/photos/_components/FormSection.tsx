@@ -1,29 +1,49 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const FormSection = () => {
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [individualImages, setIndividualImages] = useState<string[]>([]);
 
+  // Helper to compute total number of photos
+  const getTotalPhotos = () => {
+    return (profileImage ? 1 : 0) + (coverImage ? 1 : 0) + individualImages.length;
+  };
+
+  // For single image uploads (Profile & Cover)
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
+    currentImage: string | null,
     setImage: (value: string | null) => void
   ) => {
     if (e.target.files && e.target.files[0]) {
+      // Only count as addition if there's no image yet (i.e. it's not a replacement)
+      if (currentImage === null && getTotalPhotos() >= 8) {
+        alert("Maximum of 8 photos reached");
+        return;
+      }
       const file = e.target.files[0];
       const url = URL.createObjectURL(file);
       setImage(url);
     }
   };
 
+  // For uploading multiple individual images
   const handleMultipleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (e.target.files) {
-      const newImages = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
+      const remaining = 8 - getTotalPhotos();
+      if (remaining <= 0) {
+        alert("Maximum of 8 photos reached");
+        return;
+      }
+      // Only take as many files as allowed by the remaining limit
+      const files = Array.from(e.target.files).slice(0, remaining);
+      const newImages = files.map((file) => URL.createObjectURL(file));
       setIndividualImages((prev) => [...prev, ...newImages]);
     }
   };
@@ -49,7 +69,9 @@ const FormSection = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => handleImageUpload(e, setProfileImage)}
+                  onChange={(e) =>
+                    handleImageUpload(e, profileImage, setProfileImage)
+                  }
                 />
                 <p className="text-sm">Upload Photo</p>
                 <p className="text-xs">(265 x 265)</p>
@@ -82,7 +104,9 @@ const FormSection = () => {
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => handleImageUpload(e, setCoverImage)}
+                  onChange={(e) =>
+                    handleImageUpload(e, coverImage, setCoverImage)
+                  }
                 />
                 <p className="text-sm">Upload Photo</p>
                 <p className="text-xs">(520 x 192)</p>
@@ -107,7 +131,7 @@ const FormSection = () => {
       </div>
 
       {/* Individual Pictures */}
-      <h3 className="text-lg text-start font-semibold mt-6 mb-3 BRCobane18600">
+      <h3 className="text-lg text-start font-semibold mt-6 mb-3">
         Individual Pictures
       </h3>
       <div className="flex gap-4 flex-wrap">
@@ -147,7 +171,12 @@ const FormSection = () => {
           <button className="yellow-btn hover:bg-orange-600">Continue</button>
           <button className="gray-btn hover:bg-gray-400">Cancel</button>
         </div>
-        <button className="gray-btn hover:bg-gray-400">Skip</button>
+        <button
+          className="gray-btn hover:bg-gray-400"
+          onClick={() => router.push("/createprofile/partner")}
+        >
+          Skip
+        </button>
       </div>
     </section>
   );

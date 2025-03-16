@@ -1,16 +1,7 @@
 {
-<<<<<<< HEAD
-  "extends": [
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "parser": "@typescript-eslint/parser",
+  "extends": "next/core-web-vitals",
   "rules": {
-    "@typescript-eslint/no-unused-vars": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "react/jsx-key": "error"
   }
-=======
-  "extends": ["next/core-web-vitals", "next/typescript"]
->>>>>>> 3771ea2 (Initial commit)
 }

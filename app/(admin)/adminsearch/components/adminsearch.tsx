@@ -6,7 +6,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 
-function adminsearch() {
+function AdminSearch() {
   const partners = [
     {
       id: "P1239",
@@ -160,4 +160,4 @@ function adminsearch() {
   );
 }
 
-export default adminsearch;
+export default AdminSearch;

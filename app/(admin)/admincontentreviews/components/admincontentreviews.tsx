@@ -57,7 +57,7 @@ function AdminContentReviews() {
   ]);
 
   // Function to handle delete action
-  const handleDelete = (index) => {
+  const handleDelete = (index: any) => {
     const updatedReviews = [...reviews];
     updatedReviews.splice(index, 1);
     setReviews(updatedReviews);

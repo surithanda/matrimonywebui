@@ -56,7 +56,7 @@ function AdminContentOffers() {
   ]);
 
   // Function to handle delete action
-  const handleDelete = (index) => {
+  const handleDelete = (index: any) => {
     const updatedOffers = [...offers];
     updatedOffers.splice(index, 1);
     setOffers(updatedOffers);

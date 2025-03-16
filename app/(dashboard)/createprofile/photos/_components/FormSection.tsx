@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const FormSection = () => {
   const router = useRouter();
@@ -78,7 +79,7 @@ const FormSection = () => {
               </label>
             ) : (
               <div className="w-full h-full">
-                <img
+               <Image
                   src={profileImage}
                   alt="Profile"
                   className="object-cover w-full h-full"
@@ -113,7 +114,7 @@ const FormSection = () => {
               </label>
             ) : (
               <div className="w-full h-full">
-                <img
+               <Image
                   src={coverImage}
                   alt="Cover"
                   className="object-cover w-full h-full"
@@ -140,7 +141,7 @@ const FormSection = () => {
             key={index}
             className="relative w-[200px] h-[250px] border-2 border-dashed rounded-lg bg-gray-50 overflow-hidden"
           >
-            <img
+           <Image
               src={image}
               alt={`Individual ${index + 1}`}
               className="object-cover w-full h-full"

@@ -49,7 +49,7 @@ function AdminContentEvents() {
     },
   ]);
 
-  const handleDelete = (index) => {
+  const handleDelete = (index: any) => {
     const updatedEvents = [...events];
     updatedEvents.splice(index, 1);
     setEvents(updatedEvents);

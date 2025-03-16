@@ -34,7 +34,7 @@ function AdminMasterData() {
   ]);
 
   // Function to handle delete action
-  const handleDelete = (index) => {
+  const handleDelete = (index: any) => {
     const updatedReligions = [...religions];
     updatedReligions.splice(index, 1);
     setReligions(updatedReligions);

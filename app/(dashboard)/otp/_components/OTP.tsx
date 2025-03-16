@@ -12,6 +12,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // @ts-ignore
   const { loginResponse, user } = useAppSelector((state) => state.auth);
   console.log("Auth State:", { loginResponse, user });
 

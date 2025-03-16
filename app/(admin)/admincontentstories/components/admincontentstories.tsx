@@ -57,7 +57,7 @@ function AdminContentStories() {
   ]);
 
   // Function to handle delete action
-  const handleDelete = (index) => {
+  const handleDelete = (index: any) => {
     const updatedStories = [...stories];
     updatedStories.splice(index, 1);
     setStories(updatedStories);

@@ -6,7 +6,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 
-function adminsearchmaster() {
+function AdminSearchMaster() {
   const religions = [
     {
       id: "01",
@@ -151,4 +151,4 @@ function adminsearchmaster() {
   );
 }
 
-export default adminsearchmaster;
+export default AdminSearchMaster;

@@ -6,7 +6,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import { FaChevronDown } from "react-icons/fa";
 
-function adminsearchindividual() {
+function AdminSearchIndividual() {
   const profiles = [
     {
       id: "P2239",
@@ -205,4 +205,4 @@ function adminsearchindividual() {
   );
 }
 
-export default adminsearchindividual;
+export default AdminSearchIndividual;

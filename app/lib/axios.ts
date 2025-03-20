@@ -1,18 +1,24 @@
 import axios from 'axios';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: isProduction
+    ? 'https://charming-hoover.65-254-80-213.plesk.page/api'
+    : 'http://localhost:8080/api',
   headers: {
-    'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
+    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
     'Content-Type': 'application/json',
   },
 });
 
-// Add request interceptor for auth token
+// Request interceptor for auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('matrimony token'); // Or however you store your token
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof window !== 'undefined') { // Prevent error in SSR
+    const token = localStorage.getItem('matrimony token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });

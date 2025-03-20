@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 export const api = axios.create({
   baseURL: isProduction
-    ? 'https://charming-hoover.65-254-80-213.plesk.page/api'
+    ? 'https://backend-production-fa60.up.railway.app/api'
     : 'http://localhost:8080/api',
   headers: {
     'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',

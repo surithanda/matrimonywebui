@@ -5,7 +5,10 @@ import Link from "next/link";
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
-import { useAppSelector } from "@/app/store/store";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/store/store";
+import { fetchAccountDetailsAsync } from "@/app/store/features/authSlice";
+import { decodeJWT } from "@/app/utils/jwtUtils";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -15,23 +18,35 @@ const profilesData = [
     location: "Naperville",
     imageSrc: profile1,
   },
-  {
-    name: "Rashmi Sinha",
-    age: 22,
-    location: "Pinnacles",
-    imageSrc: profile2,
-  },
-  {
-    name: "Kaushik Sinha",
-    age: 28,
-    location: "Toledo",
-    imageSrc: profile3,
-  },
+  // {
+  //   name: "Rashmi Sinha",
+  //   age: 22,
+  //   location: "Pinnacles",
+  //   imageSrc: profile2,
+  // },
+  // {
+  //   name: "Kaushik Sinha",
+  //   age: 28,
+  //   location: "Toledo",
+  //   imageSrc: profile3,
+  // },
 ];
 
 const ProfileSection = () => {
-  //@ts-ignore
-  const user = useAppSelector((state) => state.auth.userData)?.user;
+  const dispatch = useAppDispatch();
+  const userData = useAppSelector((state) => state.auth.userData);
+
+  useEffect(() => {
+    if (userData) {
+      const decodedToken = decodeJWT(userData.token);
+      console.log("decodedToken", decodedToken);
+      if (decodedToken?.email) {
+        dispatch(fetchAccountDetailsAsync(decodedToken.email));
+      }
+    }
+  }, []);
+
+  const user = userData;  
   const faqData = [
     {
       question: "How do I create a new profile?",
@@ -128,45 +143,44 @@ const ProfileSection = () => {
         </div>
 
         {/* Account Info Section */}
- {/* Account Info Section */}
  <div className="dashboard-sections md:w-1/5">
           <h2 className="dmserif32600">Account Info</h2>
           <div className="dashboard-inner-sections">
             <p className="font-medium">
               <span>Full Name:</span>
-              <span className="text-gray-600">{user?.full_name || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.first_name + " " + userData?.last_name || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Email:</span>
-              <span className="text-gray-600">{user?.email || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.email || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Phone:</span>{" "}
-              <span className="text-gray-600">{user?.phone || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.primary_phone || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Date of Birth:</span>{" "}
-              <span className="text-gray-600">{user?.date_of_birth || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.birth_date || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Address:</span>
-              <span className="text-gray-600">{user?.address || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.address_line1 || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>City:</span>{" "}
-              <span className="text-gray-600">{user?.city || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.city || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>State:</span>{" "}
-              <span className="text-gray-600">{user?.state || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.state || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Country:</span>
-              <span className="text-gray-600">{user?.country || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.country || 'N/A'}</span>
             </p>
             <p className="font-medium">
               <span>Zip Code:</span>{" "}
-              <span className="text-gray-600">{user?.zip_code || 'N/A'}</span>
+              <span className="text-gray-600">{user?.zip || 'N/A'}</span>
             </p>
           </div>
         </div>

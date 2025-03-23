@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { createPersonalProfileAsync } from "@/app/store/features/profileSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AppDispatch, useAppDispatch } from "@/app/store/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 
 // Extended form data interface
@@ -54,6 +54,7 @@ const Page = () => {
   const dispatch: AppDispatch = useAppDispatch();
     const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
+  const userData = useAppSelector((state) => state.auth.userData);
 
   // Option arrays for dropdown fields
   const maritalStatusOptions = [
@@ -148,6 +149,7 @@ const Page = () => {
   // Display error with Toastify if error changes
   useEffect(() => {
     if (error) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       toast.error(error, {
         autoClose: 2000,
         hideProgressBar: false,
@@ -215,7 +217,7 @@ const Page = () => {
   const transformFormData = (data: FormData) => {
     const inches = data.height.trim() ? Number(data.height) : 0;
     return {
-      account_id: 46, // or derive from your auth/user state if needed
+      account_id: userData?.account_id || 0, 
       first_name: data.firstName.trim() || null,
       last_name: data.lastName.trim() || null,
       middle_name: data.middleName.trim() || null,

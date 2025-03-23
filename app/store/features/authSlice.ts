@@ -37,6 +37,26 @@ interface LoginResponse {
   };
 }
 
+interface AccountDetailsResponse {
+  success: boolean;
+  data: {
+    account_id: number;
+    account_code: string;
+    email: string;
+    primary_phone: string;
+    first_name: string;
+    last_name: string;
+    middle_name: string | null;
+    birth_date: string;
+    gender: number;
+    address_line1: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+}
+
 interface AuthState {
   loginData: LoginPayload;
   otpData: OtpPayload | null;
@@ -65,7 +85,7 @@ interface AuthState {
   forgotPasswordhistory_id: number;
 }
 
-const initialState: AuthState = {
+const initialState: any = {
   loginData: {
     email: '',
     password: '',
@@ -141,6 +161,17 @@ export const forgotPasswordAsync = createAsyncThunk(
   }
 );
 
+export const fetchAccountDetailsAsync = createAsyncThunk(
+  'auth/fetchAccountDetails',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/account/${email}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch account details');
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -220,6 +251,18 @@ const authSlice = createSlice({
         state.forgotPasswordhistory_id = action.payload.history_id;
       })
       .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchAccountDetailsAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAccountDetailsAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userData = action.payload.data;
+      })
+      .addCase(fetchAccountDetailsAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

@@ -95,7 +95,7 @@ const LoginForm = () => {
         {/* Forgot Password Link */}
         <div className="text-right mb-6">
           <a
-            href="/forgot-password"
+            href="/forgotpassword"
             className="BRCobane16500 opacity-50 hover:underline"
           >
             Forgot Password?

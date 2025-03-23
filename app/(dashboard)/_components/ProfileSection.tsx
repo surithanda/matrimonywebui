@@ -12,12 +12,12 @@ import { decodeJWT } from "@/app/utils/jwtUtils";
 
 // Profile Data for dynamic rendering
 const profilesData = [
-  {
-    name: "Shruti Sinha",
-    age: 24,
-    location: "Naperville",
-    imageSrc: profile1,
-  },
+  // {
+  //   name: "Shruti Sinha",
+  //   age: 24,
+  //   location: "Naperville",
+  //   imageSrc: profile1,
+  // },
   // {
   //   name: "Rashmi Sinha",
   //   age: 22,
@@ -105,7 +105,7 @@ const ProfileSection = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {profilesData.map((profile, index) => (
+            {/* {profilesData.map((profile, index) => (
               <div
                 key={index}
                 className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
@@ -138,7 +138,7 @@ const ProfileSection = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
 

@@ -13,12 +13,13 @@ const ForgotPassword = () => {
   const [error, setError] = useState<string | null>(null);
 
   // @ts-ignore
-  const { loginResponse, user } = useAppSelector((state) => state.auth);
+  const { loginResponse, user, forgotPasswordhistory_id } = useAppSelector((state) => state.auth);
   console.log("Auth State:", { loginResponse, user });
 
   const dispatch = useDispatch();
   const router = useRouter();
   const history_id = loginResponse?.history_id;
+  const isForgotPassword = forgotPasswordhistory_id;
 
   useEffect(() => {
     if (!history_id) {
@@ -63,7 +64,7 @@ const ForgotPassword = () => {
     setError(null);
 
     const otpValue = otp.join("");
-    const payload = { history_id, otp: otpValue };
+    const payload = { history_id : isForgotPassword ? forgotPasswordhistory_id : history_id, otp: otpValue };
 
     try {
       const response = await api.post("/auth/verify-otp", payload);

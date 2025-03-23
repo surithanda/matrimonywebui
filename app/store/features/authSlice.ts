@@ -18,6 +18,10 @@ interface ResetPasswordPayload {
   confirm_new_password: string;
 }
 
+interface ForgotPasswordPayload {
+  email: string;
+}
+
 interface ChangePasswordPayload {
   old_password: string;
   new_password: string;
@@ -58,6 +62,7 @@ interface AuthState {
     account_code?: string;
     account_id?: number;
   } | null;
+  forgotPasswordhistory_id: number;
 }
 
 const initialState: AuthState = {
@@ -71,6 +76,7 @@ const initialState: AuthState = {
   error: null,
   loginResponse: null,
   userData: null,
+  forgotPasswordhistory_id: 0,
 };
 
 // Async thunk for logging in
@@ -122,6 +128,19 @@ export const changePasswordAsync = createAsyncThunk(
     }
   }
 );
+
+export const forgotPasswordAsync = createAsyncThunk(
+  'auth/forgotPassword',
+  async (payload: ForgotPasswordPayload, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/forgot-password', payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Forgot password failed');
+    }
+  }
+);
+
 
 const authSlice = createSlice({
   name: 'auth',
@@ -191,7 +210,19 @@ const authSlice = createSlice({
       .addCase(changePasswordAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(forgotPasswordAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.forgotPasswordhistory_id = action.payload.history_id;
+      })
+      .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
   },
 });
 

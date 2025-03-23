@@ -8,8 +8,10 @@ import Link from "next/link";
 import LoginIcon from "/public/images/LoginIcon.svg";
 import RegisterIcon from "/public/images/RegisterIcon.svg";
 import router from "next/router";
+import { useAppDispatch } from "@/app/store/store";
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(true);
   const pathname = usePathname();
@@ -43,6 +45,11 @@ const Navbar = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch({ type: "RESET_APP" });
+    router.push("/");
+  };
   return (
     <div className="flex justify-between h-fit md:px-[120px] z-20">
       {/* Logo */}
@@ -192,8 +199,7 @@ const Navbar = () => {
                     href="/logout"
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
                     onClick={() => {
-                      localStorage.removeItem("matrimony token");
-                      router.push("/login");
+                      handleLogout();
                     }}
                   >
                     Logout

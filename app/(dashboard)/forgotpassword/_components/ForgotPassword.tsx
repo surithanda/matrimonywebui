@@ -1,10 +1,16 @@
 "use client";
 import { useState } from "react";
-
+import { forgotPasswordAsync } from "@/app/store/features/authSlice";
+import { useAppDispatch } from "@/app/store/store";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify'; 
 const ForgotPassword = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
   });
+
+  const dispatch = useAppDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,8 +22,23 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log(formData);
+    console.info('Form Data:', formData);
+  
+    dispatch(forgotPasswordAsync(formData)).then((res: any) => {
+      console.info('Response:', res);
+  
+      if (res.payload && res.payload.success) {
+         toast.success("OTP sent successfully! Redirecting to OTP screen...");
+        setTimeout(() => {
+          router.push('/otp');
+        }, 2000);
+      } else {
+        console.error('Error: OTP not sent', res);
+        // Optionally show error message to user
+      }
+    }).catch((err: any) => {
+      console.error('Dispatch error:', err);
+    });
   };
 
   return (
@@ -56,6 +77,17 @@ const ForgotPassword = () => {
           </a>
         </div>
       </form>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

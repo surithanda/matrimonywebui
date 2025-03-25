@@ -22,7 +22,7 @@ const ForgotPassword = () => {
   const isForgotPassword = forgotPasswordhistory_id;
 
   useEffect(() => {
-    if (!history_id) {
+    if (!history_id || !isForgotPassword) {
       router.push('/login');
       toast.error("Please login first");
     }

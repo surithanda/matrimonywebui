@@ -7,7 +7,7 @@ import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
-import { fetchAccountDetailsAsync } from "@/app/store/features/authSlice";
+import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
 import { decodeJWT } from "@/app/utils/jwtUtils";
 
 // Profile Data for dynamic rendering
@@ -46,7 +46,6 @@ const ProfileSection = () => {
     }
   }, []);
 
-  const user = userData;  
   const faqData = [
     {
       question: "How do I create a new profile?",
@@ -180,7 +179,7 @@ const ProfileSection = () => {
             </p>
             <p className="font-medium">
               <span>Zip Code:</span>{" "}
-              <span className="text-gray-600">{user?.zip || 'N/A'}</span>
+              <span className="text-gray-600">{userData?.zip || 'N/A'}</span>
             </p>
           </div>
         </div>

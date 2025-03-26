@@ -18,11 +18,12 @@ const ForgotPassword = () => {
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const history_id = loginResponse?.history_id;
-  const isForgotPassword = forgotPasswordhistory_id;
+  const history_id = loginResponse?.history_id || 0;
+  const isForgotPassword: number = forgotPasswordhistory_id || 0;
 
   useEffect(() => {
-    if (!history_id || !isForgotPassword) {
+    if (history_id <=0 || (isForgotPassword <= 0)) {
+      debugger
       router.push('/login');
       toast.error("Please login first");
     }
@@ -85,6 +86,9 @@ const ForgotPassword = () => {
         progress: undefined,
         theme: "colored"
       });
+      if(isForgotPassword>0) {
+        router.push("/changepassword");
+      } else
       router.push("/dashboard");
     } catch (error: any) {
       console.error("OTP Verification failed:", error.response?.data?.message || error.message);

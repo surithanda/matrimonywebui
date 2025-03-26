@@ -5,8 +5,8 @@ import dp from "/public/images/dashboard/dp.png";
 import { api } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setError } from "../../../store/features/registerSlice";
-import { useAppSelector } from "@/app/store/store";
 import { useRouter } from "next/navigation";
+import { getGenderLabel } from "@/utils/utils";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
@@ -16,21 +16,23 @@ const AccountSettings = () => {
   const loading = useSelector((state: any) => state.register.loading);
   const error = useSelector((state: any) => state.register.error);
   //@ts-ignore
-  const { user } = useAppSelector((state) => state.auth.userData);
+  // const { user } = useAppSelector((state) => state.auth.userData);
+  const userData = useSelector((state) => state.auth.userData);
+
   const [formData, setFormData] = useState({
-    firstName: user?.full_name?.split(" ")[0] || "",
+    firstName: userData?.first_name,
     middleName: "",
-    lastName: user?.full_name?.split(" ").slice(-1)[0] || "",
-    birthDate: user?.date_of_birth ||"",
-    gender: "",
-    email: user?.email ||"",
-    primaryPhone: user?.phone_number || "",
-    secondaryPhone: user?.secondaryPhoneNumber || "",
-    address: user?.address || "",
-    city: user?.city ||"",
-    state: user?.state || "",
-    zipcode: user?.zip_code || " ",
-    country: user?.country || " ",
+    lastName: userData?.last_name,
+    birthDate: userData?.birth_date ||"",
+    gender: getGenderLabel(userData?.gender),
+    email: userData?.email ||"",
+    primaryPhone: userData?.primary_phone || "",
+    secondaryPhone: userData?.secondaryPhoneNumber || "",
+    address: `${userData?.address_line1 || ""}\n${userData?.address_line2 || ""}`,
+    city: userData?.city || "",
+    state: userData?.state || "",
+    zipcode: userData?.zip || "",
+    country: userData?.country || "",
   });
   const [imageError, setImageError] = useState(false);
 

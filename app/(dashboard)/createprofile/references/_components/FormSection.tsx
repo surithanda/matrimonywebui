@@ -48,7 +48,7 @@ const FormSection = () => {
               />
             </div>
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Date pf Birth</label>
+              <label className="block text-gray-700 mb-2">date of Birth</label>
               <input
                 type="date"
                 name="dateofbirth"

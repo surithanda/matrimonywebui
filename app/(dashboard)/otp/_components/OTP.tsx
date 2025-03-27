@@ -65,7 +65,7 @@ const ForgotPassword = () => {
     setError(null);
 
     const otpValue = otp.join("");
-    const payload = { history_id : isForgotPassword ? forgotPasswordhistory_id : history_id, otp: otpValue };
+    const payload = { history_id : history_id ? history_id : forgotPasswordhistory_id, otp: otpValue };
 
     try {
       const response = await api.post("/auth/verify-otp", payload);
@@ -86,7 +86,7 @@ const ForgotPassword = () => {
         progress: undefined,
         theme: "colored"
       });
-      if(isForgotPassword>0) {
+      if(isForgotPassword>0 && history_id < 0) {
         router.push("/changepassword");
       } else
       router.push("/dashboard");

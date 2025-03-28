@@ -1,13 +1,19 @@
 "use client";
 import { useState } from "react";
-import { forgotPasswordAsync } from "@/app/store/features/authSlice";
+import { forgotPasswordAsync, resetPasswordAsync } from "@/app/store/features/authSlice";
 import { useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from 'react-toastify'; 
+import { ToastContainer, toast } from 'react-toastify';
+
 const ForgotPassword = () => {
   const router = useRouter();
+  const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState({
     email: "",
+    otp: "",
+    new_password: "",
+    confirm_new_password: "",
+    history_id: 0
   });
 
   const dispatch = useAppDispatch();
@@ -22,29 +28,61 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.info('Form Data:', formData);
   
     dispatch(forgotPasswordAsync(formData)).then((res: any) => {
-      console.info('Response:', res);
-  
       if (res.payload && res.payload.success) {
-         toast.success("OTP sent successfully! Redirecting to OTP screen...");
-        setTimeout(() => {
-          router.push('/otp');
-        }, 2000);
+        setFormData(prev => ({
+          ...prev,
+          history_id: res.payload.history_id
+        }));
+        toast.success("OTP sent successfully!");
+        setCurrent(1);
       } else {
-        console.error('Error: OTP not sent', res);
-        // Optionally show error message to user
+        toast.error(res.payload?.message || "Failed to send OTP");
       }
     }).catch((err: any) => {
-      console.error('Dispatch error:', err);
+      toast.error("Error sending OTP");
+    });
+  };
+
+  const handleSubmitReset = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (formData.new_password !== formData.confirm_new_password) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    if (formData.new_password.length < 8) {
+      toast.error("Password must be at least 8 characters long!");
+      return;
+    }
+
+    const resetPayload = {
+      history_id: formData.history_id,
+      otp: formData.otp,
+      new_password: formData.new_password,
+      confirm_new_password: formData.confirm_new_password
+    };
+
+    dispatch(resetPasswordAsync(resetPayload)).then((res: any) => {
+      if (res.payload && res.payload.success) {
+        toast.success("Password reset successful!");
+        router.push('/dashboard');
+      } else {
+        toast.error(res.payload?.message || "Failed to reset password");
+      }
+    }).catch((err: any) => {
+      toast.error("Error resetting password");
     });
   };
 
   return (
     <div className="account-details-box w-1/2 text-left">
       <h3 className="BRCobane32600 md:mb-0 md:mt-16">Forgot password?</h3>
-      <form onSubmit={handleSubmit} className="w-full  md:mb-16">
+      <ToastContainer />
+      
+      { current === 0 && <form onSubmit={handleSubmit} className="w-full  md:mb-16">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
           <label className="block BRCobane18600 mb-2.5">Email</label>
@@ -76,18 +114,65 @@ const ForgotPassword = () => {
             Login Now
           </a>
         </div>
-      </form>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      </form> }
+
+      { current === 1 && 
+        <form onSubmit={handleSubmitReset} className="w-full md:mb-16">
+          <div className="mb-6 flex flex-col items-start">
+            <label className="block BRCobane18600 mb-2.5">OTP</label>
+            <input
+              type="text"
+              name="otp"
+              value={formData.otp}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Enter OTP"
+              required
+            />
+          </div>
+
+          <div className="mb-6 flex flex-col items-start">
+            <label className="block BRCobane18600 mb-2.5">New Password</label>
+            <input
+              type="password"
+              name="new_password"
+              value={formData.new_password}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="New Password"
+              required
+            />
+          </div>
+
+          <div className="mb-6 flex flex-col items-start">
+            <label className="block BRCobane18600 mb-2.5">Confirm New Password</label>
+            <input
+              type="password"
+              name="confirm_new_password"
+              value={formData.confirm_new_password}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Confirm New Password"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <button
+              type="submit"
+              className="w-full yellow-btn hover:bg-orange-600"
+            >
+              Reset Password
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <p className="BRCobane16500 opacity-50">Back to login page? </p>
+            <a href="/login" className="BRCobane16600 hover:underline">
+              Login Now
+            </a>
+          </div>
+        </form>
+      }
     </div>
   );
 };

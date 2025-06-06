@@ -1,8 +1,13 @@
 import React from "react";
+import { BaseHeroSection } from "@/app/_components/BaseHeroSection";
 
 const HeroSection = () => {
   return (
-    <section className="stories-hero md:h-[663px] pt-32 flex flex-col gap-[24px] items-start justify-center text-center md:px-[100px]">
+    <BaseHeroSection
+      backgroundImage="/images/storiesherobackground.png"
+      height="md:h-[663px]"
+      className="pt-32 flex flex-col gap-[24px] items-start justify-center text-center md:px-[100px]"
+    >
       <h1 className="BRCobane64600 text-start">
         Real Love Stories From
         <br /> Our Chaturvarnam Family
@@ -12,7 +17,7 @@ const HeroSection = () => {
         some heartwarming journeys of couples and families who found their
         perfect match with us.
       </p>
-    </section>
+    </BaseHeroSection>
   );
 };
 

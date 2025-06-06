@@ -1,8 +1,13 @@
 import React from "react";
+import { BaseHeroSection } from "@/app/_components/BaseHeroSection";
 
 const HeroSection = () => {
   return (
-    <section className="service-hero md:h-[610px] px-[100px] flex flex-col items-start justify-center">
+    <BaseHeroSection
+      backgroundImage="/images/serviceherobackground.png"
+      height="md:h-[610px]"
+      className="px-[100px] flex flex-col items-start justify-center"
+    >
       <div className="aboutHeadingDiv md:w-[550px] md:space-y-[20px]">
         <h1 className="BRCobane64600 text-[#fafafa] mt-32 mb-3">
           Our Services
@@ -17,7 +22,7 @@ const HeroSection = () => {
           redefine the journey of finding a life partner.
         </p>
       </div>
-    </section>
+    </BaseHeroSection>
   );
 };
 

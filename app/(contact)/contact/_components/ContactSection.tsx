@@ -41,15 +41,15 @@ const ContactSection = () => {
               className="name-field-contact w-4/5"
             />
             <select name="what" id="what" className="name-field-contact w-4/5">
-              <option value="" disabled selected hidden>
-                <span className="BRCobane18400">I am looking for</span>
+              <option value="" disabled hidden className="BRCobane18400">
+                I am looking for
               </option>
               <option value="Bride">Bride</option>
               <option value="Groom">Groom</option>
             </select>
             <select name="city" id="city" className="name-field-contact w-4/5">
-              <option value="" disabled selected hidden>
-                <span className="BRCobane18400">Preffered City</span>
+              <option value="" disabled hidden className="BRCobane18400">
+                Preffered City
               </option>
               <option value="Bride">Kolkata</option>
               <option value="Groom">Delhi</option>
@@ -66,10 +66,8 @@ const ContactSection = () => {
               id="hearse"
               className="name-field-contact w-4/5"
             >
-              <option value="" disabled selected hidden>
-                <span className="BRCobane18400">
-                  How did you hear about us?
-                </span>
+              <option value="" disabled hidden className="BRCobane18400">
+                How did you hear about us?
               </option>
               <option value="Bride">Facebook</option>
               <option value="Groom">Instagram</option>

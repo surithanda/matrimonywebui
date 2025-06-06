@@ -364,11 +364,45 @@ body::-webkit-scrollbar,
 }
 
 .heroSection {
-  background: url("/images/heroBg.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+  position: relative;
   z-index: 2;
+}
+
+/* Hero image loading styles */
+.heroSection img {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heroSection img.opacity-100 {
+  opacity: 1;
+}
+
+/* Standard hero section styles */
+.about-hero,
+.contact-hero,
+.privacy-hero,
+.event-hero,
+.stories-hero,
+.service-hero {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 100px;
+}
+
+/* Remove background images from CSS since we're using Next.js Image components */
+.about-hero,
+.contact-hero,
+.privacy-hero,
+.event-hero,
+.stories-hero,
+.service-hero {
+  background: none;
 }
 
 .colorText {

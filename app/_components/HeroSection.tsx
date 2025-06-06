@@ -1,16 +1,29 @@
-import React from "react";
+'use client';
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export const HeroSection = () => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   return (
-    <div className="heroSection w-full h-[810px] over flex flex-col md:pt-52">
-      {/* <Image
-        src="../../public/images/herobg.png"
-        alt="Hero Image"
-        className="w-full h-full absolute left-0 top-0 -z-10"
-        fill={true}
-      /> */}
+    <div className="heroSection w-full h-[600px] relative flex flex-col md:pt-52">
+      {/* Placeholder gradient that shows immediately */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0d3745] to-[#1a4d5f] -z-10" />
+      
+      {/* Main image with loading state */}
+      <Image
+        src="/images/heroBg.png"
+        alt="Hero Background"
+        fill
+        priority
+        quality={100}
+        className={`object-cover object-center -z-10 transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        sizes="100vw"
+        onLoad={() => setIsImageLoaded(true)}
+      />
+      
       <div className="heroHeadings flex md:w-2/5 flex-col ps-[120px] items-start justify-center gap-[12px]">
         <h1>Continuation of Family Legacy</h1>
         <p>

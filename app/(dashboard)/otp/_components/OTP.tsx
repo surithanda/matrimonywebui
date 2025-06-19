@@ -21,13 +21,13 @@ const ForgotPassword = () => {
   const history_id = loginResponse?.history_id || 0;
   const isForgotPassword: number = forgotPasswordhistory_id || 0;
 
-  useEffect(() => {
-    if (history_id <=0 || (isForgotPassword <= 0)) {
-      debugger
-      router.push('/login');
-      toast.error("Please login first");
-    }
-  }, [history_id, router]);
+  // useEffect(() => {
+  //   if (history_id <=0 || (isForgotPassword <= 0)) {
+  //     debugger
+  //     router.push('/login');
+  //     toast.error("Please login first");
+  //   }
+  // }, [history_id, router]);
 
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,

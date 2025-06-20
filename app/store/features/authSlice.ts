@@ -105,7 +105,7 @@ export const loginUserAsync = createAsyncThunk(
   'auth/loginUser',
   async (payload: LoginPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', payload);
+      const response = await api.post('send-otp', payload);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');

@@ -5,9 +5,12 @@ export const createPersonalProfileAsync = createAsyncThunk(
   'profile/createPersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/personal', profileData);
+      console.log('Making API call to:', '/profile');
+      const response = await api.post('/profile', profileData);
+      console.log('API response:', response);
       return response.data;
     } catch (error: any) {
+      console.error('API error:', error);
       return rejectWithValue(error.response?.data || 'An error occurred');
     }
   }

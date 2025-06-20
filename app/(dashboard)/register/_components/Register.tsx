@@ -35,30 +35,23 @@ const Register = () => {
     address_line2: null,
   });
 
-  function mapRequestToStoredProcedure(requestData: any) {
+  function formatDataForAPI(formData: any) {
     return {
-      email: requestData.email || "",
-      user_name: requestData.user_name || "",
-      password: requestData.password || "",
-      primary_phone: requestData.primary_phone || "",
-      primary_phone_country: requestData.primary_phone_country || "US",
-      primary_phone_type: requestData.primary_phone_type || 1,
-      first_name: requestData.first_name || "",
-      last_name: requestData.last_name || "",
-      birth_date: requestData.birth_date || "",
-      gender: requestData.gender || 1,
-      address_line1: requestData.address_line1 || "",
-      city: requestData.city || "",
-      state: requestData.state || "",
-      zip: requestData.zip || "",
-      country: requestData.country || "",
-      middle_name: requestData.middle_name || "",
-      secondary_phone: requestData.secondary_phone || "",
-      secondary_phone_country: requestData.secondary_phone_country || "",
-      secondary_phone_type: requestData.secondary_phone_type || 2,
-      address_line2: requestData.address_line2 || "",
-      secret_question: requestData.secret_question || "N/A",
-      secret_answer: requestData.secret_answer || "N/A",
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+      first_name: formData.firstName,
+      middle_name: formData.middleName,
+      last_name: formData.lastName,
+      birth_date: formData.birthDate,
+      gender: formData.gender,
+      complete_address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      country: formData.country,
+      zip_code: formData.zipCode,
+      contact_email: formData.email, // Using email as contact_email
+      primary_phone: formData.primaryPhone,
     };
   }
   
@@ -80,25 +73,10 @@ const Register = () => {
       return;
     }
     
-    const mappedData = mapRequestToStoredProcedure({
-      email: formData.email,
-      password: formData.password,
-      first_name: formData.firstName,
-      middle_name: formData.middleName,
-      last_name: formData.lastName,
-      birth_date: formData.birthDate,
-      gender: formData.gender === 'Male' ? 1 : formData.gender === 'Female' ? 2 : 3,
-      address_line1: formData.address,
-      city: formData.city,
-      state: formData.state,
-      country: formData.country,
-      zip: formData.zipCode,
-      primary_phone: formData.primaryPhone,
-      user_name: formData.email
-    });
+    const apiPayload = formatDataForAPI(formData);
   
     try {
-      const result = await dispatch(registerUserAsync(mappedData)).unwrap();
+      const result = await dispatch(registerUserAsync(apiPayload)).unwrap();
       toast.success('Registration successful!', {
         autoClose: 3000
       });

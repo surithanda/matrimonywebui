@@ -1,5 +1,5 @@
 "use client";
-import { createAddressAsync, createPersonalProfileAsync } from "@/app/store/features/profileSlice";
+import { createPrimaryContactAsync } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
@@ -9,15 +9,12 @@ const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
   const [formData, setFormData] = useState({
-    city: "City",
-    state: "state",
-    country: "country",
-    zip: "zip", // Changed from `zipcode` to `zip`
-    address_line1: "address_line1", // Changed from `address` to `address_line1`
-    address_line2: "address_line2",
-    phone: "phone",
-    landmark1: "landmark1",
-    landmark2: "landmark2",
+    email: localStorage.getItem("userEmail") || "",
+    city: "",
+    state: "",
+    country: "",
+    zip_code: "",
+    complete_address: "",
   });
 
   const handleChange = (
@@ -30,23 +27,18 @@ const FormSection = () => {
     }));
   };
 
-  const handleAddAddress = async (e: React.FormEvent) => {
+  const handleSubmitPrimaryContact = async (e: React.FormEvent) => {
     e.preventDefault();
-    const addressData = {
-      profile_id: 51, // You might want to get this dynamically
-      address_type: 1,
-      address_line1: formData.address_line1,
-      address_line2: formData.address_line2,
+    const primaryContactData = {
+      email: formData.email,
       city: formData.city,
       state: formData.state,
       country: formData.country,
-      zip: formData.zip, // Corrected field name
-      phone: formData.phone || "",
-      landmark1: formData.landmark1 || "",
-      landmark2: formData.landmark2 || "",
+      zip_code: formData.zip_code,
+      complete_address: formData.complete_address,
     };
 
-    await dispatch(createAddressAsync(addressData)).then(() => {
+    await dispatch(createPrimaryContactAsync(primaryContactData)).then(() => {
       moveToNext();
     }).catch((error: any) => {  
       console.error(error);
@@ -60,7 +52,7 @@ const FormSection = () => {
 
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6" onSubmit={handleAddAddress}>
+      <form className="w-full box-border md:px-6" onSubmit={handleSubmitPrimaryContact}>
         <div className="flex flex-wrap justify-between">
           {/* City & State */}
           <div className="flex w-full justify-between">
@@ -73,6 +65,7 @@ const FormSection = () => {
                 onChange={handleChange}
                 placeholder="Enter city"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                required
               />
             </div>
             <div className="w-[49%] md:mb-4">
@@ -84,6 +77,7 @@ const FormSection = () => {
                 value={formData.state}
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                required
               />
             </div>
           </div>
@@ -97,6 +91,7 @@ const FormSection = () => {
                 value={formData.country}
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                required
               >
                 <option value="">Select Country</option>
                 <option value="USA">USA</option>
@@ -109,10 +104,11 @@ const FormSection = () => {
               <input
                 placeholder="Enter zip code"
                 type="text"
-                name="zip"
-                value={formData.zip} // Fixed from `zipcode`
+                name="zip_code"
+                value={formData.zip_code}
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                required
               />
             </div>
           </div>
@@ -122,19 +118,14 @@ const FormSection = () => {
             <div className="w-full md:mb-4">
               <label className="block text-gray-700 mb-2">Complete Address</label>
               <textarea
-                name="address_line1"
-                placeholder="Complete Address"
-                value={formData.address_line1}
+                name="complete_address"
+                placeholder="Enter your complete address"
+                value={formData.complete_address}
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                rows={1}
+                rows={3}
+                required
               />
-              <button 
-                type="submit"
-                className="gray-btn mt-[20px] hover:bg-gray-400"
-              >
-                Add Address
-              </button>
             </div>
           </div>
         </div>

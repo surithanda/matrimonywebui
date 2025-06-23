@@ -64,6 +64,18 @@ export const createLifestyleAsync = createAsyncThunk(
   }
 );
 
+export const createPrimaryContactAsync = createAsyncThunk(
+  'profile/createPrimaryContact',
+  async (primaryContactData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/primarycontact', primaryContactData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 const profileSlice = createSlice({
   name: 'profile',
   initialState: {
@@ -74,6 +86,7 @@ const profileSlice = createSlice({
     education: null,
     employment: null,
     lifestyle: null,
+    primaryContact: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -135,6 +148,18 @@ const profileSlice = createSlice({
         state.lifestyle = action.payload;
       })
       .addCase(createLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(createPrimaryContactAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPrimaryContactAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.primaryContact = action.payload;
+      })
+      .addCase(createPrimaryContactAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

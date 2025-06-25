@@ -1,5 +1,5 @@
 "use client";
-import { createEducationAsync } from "@/app/store/features/profileSlice";
+import { submitEducationAsync } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
@@ -9,15 +9,15 @@ const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
   const [formData, setFormData] = useState({
-    education_level: 1,
-    year_completed: "",
+    email: localStorage.getItem("userEmail") || "",
+    degree: "",
     institution_name: "",
-    address_line1: "",
+    year_of_passing: "",
+    complete_address: "",
     city: "",
     state: "",
     country: "",
-    zip: "",
-    field_of_study: 1
+    zip_code: ""
   });
 
   const handleChange = (
@@ -30,19 +30,15 @@ const FormSection = () => {
     }));
   };
 
-  const handleAddEducation = async (e: React.FormEvent) => {
+  const handleSubmitEducation = async (e: React.FormEvent) => {
     e.preventDefault();
-    const educationData = {
-      profile_id: 51, // You might want to get this dynamically
-      ...formData,
-      year_completed: parseInt(formData.year_completed)
-    };
     
-    await dispatch(createEducationAsync(educationData)).then(() => {
+    try {
+      await dispatch(submitEducationAsync(formData)).unwrap();
       moveToNext(); 
-    }).catch((error: any) => {
-      console.error(error);
-    });
+    } catch (error: any) {
+      console.error('Education submission error:', error);
+    }
   };
 
   const moveToNext = () => {
@@ -52,10 +48,28 @@ const FormSection = () => {
 
   return (
     <section className="md:py-5 w-4/5">
-      <form className="flex flex-col justify-between h-full w-full box-border md:px-6" onSubmit={handleAddEducation}>
+      <form className="flex flex-col justify-between h-full w-full box-border md:px-6" onSubmit={handleSubmitEducation}>
         <div className="flex flex-wrap justify-between">
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
+          
+          {/* Email and Degree */}
+          <div className="flex w-full justify-between mb-4">
+            <div className="w-full">
+              <label className="block text-gray-700 mb-2">Degree</label>
+              <input
+                type="text"
+                name="degree"
+                value={formData.degree}
+                onChange={handleChange}
+                placeholder="e.g., MSc IT, B.Tech, etc."
+                required
+                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </div>
+
+          {/* Institution Name and Year of Passing */}
+          <div className="flex w-full justify-between mb-4">
+            <div className="w-[49%]">
               <label className="block text-gray-700 mb-2">Institution Name</label>
               <input
                 type="text"
@@ -63,85 +77,97 @@ const FormSection = () => {
                 value={formData.institution_name}
                 onChange={handleChange}
                 placeholder="Institution Name"
+                required
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Year Completed</label>
-              <input
-                type="number"
-                name="year_completed"
-                value={formData.year_completed}
-                onChange={handleChange}
-                placeholder="Year of completion"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-          </div>
-
-          {/* Address Fields */}
-          <div className="flex w-full justify-between mt-4">
-            <div className="w-full md:mb-4">
-              <label className="block text-gray-700 mb-2">Address</label>
+            <div className="w-[49%]">
+              <label className="block text-gray-700 mb-2">Year of Passing</label>
               <input
                 type="text"
-                name="address_line1"
-                value={formData.address_line1}
+                name="year_of_passing"
+                value={formData.year_of_passing}
                 onChange={handleChange}
-                placeholder="Institution Address"
+                placeholder="Year of Passing"
+                required
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
           </div>
 
-          {/* City, State, Country, Zip */}
-          <div className="flex w-full justify-between mt-4 gap-4">
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="City"
-              className="account-input-field w-1/4"
-            />
-            <input
-              type="text"
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              placeholder="State"
-              className="account-input-field w-1/4"
-            />
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              placeholder="Country"
-              className="account-input-field w-1/4"
-            />
-            <input
-              type="text"
-              name="zip"
-              value={formData.zip}
-              onChange={handleChange}
-              placeholder="ZIP"
-              className="account-input-field w-1/4"
-            />
+          {/* Complete Address */}
+          <div className="flex w-full justify-between mb-4">
+            <div className="w-full">
+              <label className="block text-gray-700 mb-2">Complete Address</label>
+              <textarea
+                name="complete_address"
+                value={formData.complete_address}
+                onChange={handleChange}
+                placeholder="Complete Institution Address"
+                required
+                rows={3}
+                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+              />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="gray-btn mt-[20px] hover:bg-gray-400"
-          >
-            Add Education
-          </button>
+          {/* City, State, Country, Zip Code */}
+          <div className="flex w-full justify-between mb-4 gap-4">
+            <div className="w-1/4">
+              <label className="block text-gray-700 mb-2">City</label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="City"
+                required
+                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div className="w-1/4">
+              <label className="block text-gray-700 mb-2">State</label>
+              <input
+                type="text"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                placeholder="State"
+                required
+                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div className="w-1/4">
+              <label className="block text-gray-700 mb-2">Country</label>
+              <input
+                type="text"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                placeholder="Country"
+                required
+                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div className="w-1/4">
+              <label className="block text-gray-700 mb-2">ZIP Code</label>
+              <input
+                type="text"
+                name="zip_code"
+                value={formData.zip_code}
+                onChange={handleChange}
+                placeholder="ZIP Code"
+                required
+                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Buttons */}
         <div className="flex justify-between mt-8">
           <div className="flex justify-start gap-4">
-            <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
+            <button type="submit" className="yellow-btn hover:bg-orange-600">Submit Education</button>
             <button type="button" className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
           <button 

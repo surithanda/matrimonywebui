@@ -40,6 +40,18 @@ export const createEducationAsync = createAsyncThunk(
   }
 );
 
+export const submitEducationAsync = createAsyncThunk(
+  'profile/submitEducation',
+  async (educationData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/education', educationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const createEmploymentAsync = createAsyncThunk(
   'profile/createEmployment',
   async (employmentData: any, { rejectWithValue }) => {
@@ -84,6 +96,7 @@ const profileSlice = createSlice({
     personalProfile: null,
     address: null,
     education: null,
+    submittedEducation: null,
     employment: null,
     lifestyle: null,
     primaryContact: null,
@@ -124,6 +137,18 @@ const profileSlice = createSlice({
         state.education = action.payload;
       })
       .addCase(createEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(submitEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(submitEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.submittedEducation = action.payload;
+      })
+      .addCase(submitEducationAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       })

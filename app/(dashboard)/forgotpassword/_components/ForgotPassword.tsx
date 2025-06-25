@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
   const [formData, setFormData] = useState({
     email: "",
     otp: "",

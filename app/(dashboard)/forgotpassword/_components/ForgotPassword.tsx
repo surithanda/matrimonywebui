@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
@@ -30,15 +30,14 @@ const ForgotPassword = () => {
     e.preventDefault();
   
     dispatch(forgotPasswordAsync(formData)).then((res: any) => {
-      if (res.payload && res.payload.success) {
-        setFormData(prev => ({
-          ...prev,
-          history_id: res.payload.history_id
-        }));
-        toast.success("OTP sent successfully!");
-        setCurrent(1);
+      // Check if the action was fulfilled (successful)
+      if (res.type === 'auth/forgotPassword/fulfilled') {
+        // Extract history_id from the payload
+          toast.success("OTP sent successfully!");
+          setCurrent(1);
       } else {
-        toast.error(res.payload?.message || "Failed to send OTP");
+        // Action was rejected
+        toast.error(res.payload?.message || res.error?.message || "Failed to send OTP");
       }
     }).catch((err: any) => {
       toast.error("Error sending OTP");
@@ -57,20 +56,23 @@ const ForgotPassword = () => {
       toast.error("Password must be at least 8 characters long!");
       return;
     }
-
+ 
     const resetPayload = {
+      email: formData.email,
       history_id: formData.history_id,
       otp: formData.otp,
-      new_password: formData.new_password,
-      confirm_new_password: formData.confirm_new_password
+      newPassword: formData.new_password,
+      confirmNewPassword: formData.confirm_new_password
     };
 
     dispatch(resetPasswordAsync(resetPayload)).then((res: any) => {
-      if (res.payload && res.payload.success) {
+      // Check if the action was fulfilled (successful)
+      if (res.type === 'auth/resetPassword/fulfilled') {
         toast.success("Password reset successful!");
-        router.push('/dashboard');
+        router.push('/login');
       } else {
-        toast.error(res.payload?.message || "Failed to reset password");
+        // Action was rejected
+        toast.error(res.payload?.message || res.error?.message || "Failed to reset password");
       }
     }).catch((err: any) => {
       toast.error("Error resetting password");

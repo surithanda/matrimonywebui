@@ -14,8 +14,8 @@ interface OtpPayload {
 interface ResetPasswordPayload {
   history_id: number;
   otp: string;
-  new_password: string;
-  confirm_new_password: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 interface ForgotPasswordPayload {
@@ -130,7 +130,7 @@ export const resetPasswordAsync = createAsyncThunk(
   'auth/resetPassword',
   async (payload: ResetPasswordPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/reset-password', payload);
+      const response = await api.post('/reset-password', payload);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Password reset failed');
@@ -154,7 +154,7 @@ export const forgotPasswordAsync = createAsyncThunk(
   'auth/forgotPassword',
   async (payload: ForgotPasswordPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/forgot-password', payload);
+      const response = await api.post('/forgot-password', payload);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Forgot password failed');

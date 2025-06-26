@@ -58,7 +58,14 @@ const PasswordChange = () => {
     }
 
     try {
-      await dispatch(changePasswordAsync(passwords) as any).unwrap();
+      // Transform the data to match backend expected format
+      const changePasswordData = {
+        currentPassword: passwords.current_password,
+        newPassword: passwords.new_password,
+        confirmNewPassword: passwords.confirm_new_password,
+      };
+      
+      await dispatch(changePasswordAsync(changePasswordData) as any).unwrap();
       toast.success("Password changed successfully!");
       router.push("/login");
     } catch (error: any) {

@@ -23,9 +23,9 @@ interface ForgotPasswordPayload {
 }
 
 interface ChangePasswordPayload {
-  current_password: string;
-  new_password: string;
-  confirm_new_password: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 interface LoginResponse {
@@ -142,7 +142,7 @@ export const changePasswordAsync = createAsyncThunk(
   'auth/changePassword',
   async (payload: ChangePasswordPayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/change-password', payload);
+      const response = await api.post('/change-password', payload);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Password change failed');

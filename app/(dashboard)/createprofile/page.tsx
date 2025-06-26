@@ -215,44 +215,77 @@ const Page = () => {
 
   // Transform form data to API payload
   const transformFormData = (data: FormData) => {
-    const inches = data.height.trim() ? Number(data.height) : 0;
+    // Helper functions to map dropdown values to text
+    const getMaritalStatusText = (value: string) => {
+      const option = maritalStatusOptions.find(opt => opt.value === value);
+      return option ? option.label : "Single";
+    };
+
+    const getReligionText = (value: string) => {
+      const option = religionOptions.find(opt => opt.value === value);
+      return option ? option.label : "Other";
+    };
+
+    const getNationalityText = (value: string) => {
+      const option = nationalityOptions.find(opt => opt.value === value);
+      return option ? option.label : "Other";
+    };
+
+    const getCasteText = (value: string) => {
+      const option = casteOptions.find(opt => opt.value === value);
+      return option ? option.label : "General";
+    };
+
+    const getComplexionText = (value: string) => {
+      const option = complexionOptions.find(opt => opt.value === value);
+      return option ? option.label : "Fair";
+    };
+
+    const getDisabilityText = (value: string) => {
+      const option = disabilityOptions.find(opt => opt.value === value);
+      return option ? option.label : "None";
+    };
+
+    const getProfessionText = (value: string) => {
+      const option = professionOptions.find(opt => opt.value === value);
+      return option ? option.label : "Other";
+    };
+
+    const getWeightUnitText = (value: string) => {
+      const option = weightUnitsOptions.find(opt => opt.value === value);
+      return option ? option.label : "Kilograms";
+    };
+
+    const inches = data.height.trim() ? Number(data.height) : 70;
+    const weight = data.weight.trim() ? Number(data.weight) : 75.5;
+
     return {
-      account_id: userData?.account_id || 0, 
-      first_name: data.firstName.trim() || null,
-      last_name: data.lastName.trim() || null,
-      middle_name: data.middleName.trim() || null,
-      prefix: data.prefix.trim() || null,
-      suffix: data.suffix.trim() || null,
-      gender:
-        data.gender === "Male"
-          ? 1
-          : data.gender === "Female"
-          ? 2
-          : data.gender === "Other"
-          ? 3
-          : null,
-      birth_date: data.birthDate || null,
-      phone_mobile: data.primaryPhone.trim() || null,
-      phone_home: data.homePhone.trim() || null,
-      phone_emergency: data.emergencyPhone.trim() || null,
-      email_id: data.email.trim() || null,
-      marital_status: data.maritalStatus ? Number(data.maritalStatus) : null,
-      religion: data.religion ? Number(data.religion) : null,
-      nationality: data.nationality ? Number(data.nationality) : null,
-      caste: data.caste ? Number(data.caste) : null,
-      height_inches: inches || null,
-      height_cms: inches ? Math.round(inches * 2.54) : null,
-      weight: data.weight.trim() ? Number(data.weight) : null,
-      weight_units: data.weightUnits.trim() || "kg",
-      complexion: data.complexion ? Number(data.complexion) : null,
-      linkedin: data.linkedin.trim() || null,
-      facebook: data.facebook.trim() || null,
-      instagram: data.instagram.trim() || null,
-      whatsapp_number: data.whatsappNumber.trim() || null,
-      profession: data.profession ? Number(data.profession) : null,
-      disability: data.disability ? Number(data.disability) : null,
-      created_user: "admin",
-      summary: data.summary.trim() || null,
+      email: data.email.trim() || "",
+      first_name: data.firstName.trim() || "",
+      middle_name: data.middleName.trim() || "",
+      last_name: data.lastName.trim() || "",
+      prefix: data.prefix.trim() || "",
+      suffix: data.suffix.trim() || "",
+      gender: data.gender || "Male",
+      birth_date: data.birthDate || "",
+      primary_phone: data.primaryPhone.trim() || "",
+      home_phone: data.homePhone.trim() || "",
+      emergency_phone: data.emergencyPhone.trim() || "",
+      nationality: getNationalityText(data.nationality),
+      religion: getReligionText(data.religion),
+      marital_status: getMaritalStatusText(data.maritalStatus),
+      caste: getCasteText(data.caste),
+      height_inches: inches,
+      weight: weight,
+      weight_unit: getWeightUnitText(data.weightUnits),
+      complexion: getComplexionText(data.complexion),
+      disability: getDisabilityText(data.disability),
+      profession: getProfessionText(data.profession),
+      whatsapp_number: data.whatsappNumber.trim() || "",
+      linkedin_url: data.linkedin.trim() || "",
+      facebook_url: data.facebook.trim() || "",
+      instagram_url: data.instagram.trim() || "",
+      summary: data.summary.trim() || "",
     };
   };
 

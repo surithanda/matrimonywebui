@@ -5,9 +5,12 @@ export const createPersonalProfileAsync = createAsyncThunk(
   'profile/createPersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/personal', profileData);
+      console.log('Making API call to:', '/profile');
+      const response = await api.post('/profile', profileData);
+      console.log('API response:', response);
       return response.data;
     } catch (error: any) {
+      console.error('API error:', error);
       return rejectWithValue(error.response?.data || 'An error occurred');
     }
   }
@@ -30,6 +33,18 @@ export const createEducationAsync = createAsyncThunk(
   async (educationData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/education', educationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const submitEducationAsync = createAsyncThunk(
+  'profile/submitEducation',
+  async (educationData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/education', educationData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -61,6 +76,18 @@ export const createLifestyleAsync = createAsyncThunk(
   }
 );
 
+export const createPrimaryContactAsync = createAsyncThunk(
+  'profile/createPrimaryContact',
+  async (primaryContactData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/primarycontact', primaryContactData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 const profileSlice = createSlice({
   name: 'profile',
   initialState: {
@@ -69,8 +96,10 @@ const profileSlice = createSlice({
     personalProfile: null,
     address: null,
     education: null,
+    submittedEducation: null,
     employment: null,
     lifestyle: null,
+    primaryContact: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -111,6 +140,18 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload as any;
       })
+      .addCase(submitEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(submitEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.submittedEducation = action.payload;
+      })
+      .addCase(submitEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
       .addCase(createEmploymentAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -132,6 +173,18 @@ const profileSlice = createSlice({
         state.lifestyle = action.payload;
       })
       .addCase(createLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(createPrimaryContactAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPrimaryContactAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.primaryContact = action.payload;
+      })
+      .addCase(createPrimaryContactAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { loginUserAsync, setLoginResponse } from "@/app/store/features/authSlice";
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Add this import
-import Link from 'next/link';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +35,6 @@ const LoginForm = () => {
         // Show success toast
         toast.success("Login successful! Redirecting to OTP screen...");
         dispatch(setLoginResponse(response.user)); // Save the login response to Redux
-        localStorage.setItem('userEmail', response?.email); // Save user data to localStorage
 
         // Navigate to OTP screen upon successful login
         setTimeout(() => {

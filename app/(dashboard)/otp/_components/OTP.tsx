@@ -20,15 +20,14 @@ const ForgotPassword = () => {
   const router = useRouter();
   const history_id = loginResponse?.history_id || 0;
   const isForgotPassword: number = forgotPasswordhistory_id || 0;
-  const email = localStorage.getItem('userEmail');
 
   useEffect(() => {
-    if (!email) {
-      toast.error("Please login first");
+    if (history_id <=0 || (isForgotPassword <= 0)) {
+      debugger
       router.push('/login');
-      return;
+      toast.error("Please login first");
     }
-  }, []);
+  }, [history_id, router]);
 
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -57,19 +56,19 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!history_id) {
-    //   toast.error("Session expired. Please login again.");
-    //   router.push('/login');
-    //   return;
-    // }
+    if (!history_id) {
+      toast.error("Session expired. Please login again.");
+      router.push('/login');
+      return;
+    }
     setLoading(true);
     setError(null);
 
     const otpValue = otp.join("");
-    const payload = { email, otp: otpValue };
+    const payload = { history_id : history_id ? history_id : forgotPasswordhistory_id, otp: otpValue };
 
     try {
-      const response = await api.post("login", payload);
+      const response = await api.post("/auth/verify-otp", payload);
       console.log("OTP Verified:", response.data);
 
       if (response.data.token) {
@@ -87,9 +86,9 @@ const ForgotPassword = () => {
         progress: undefined,
         theme: "colored"
       });
-      // if(isForgotPassword>0 && history_id < 0) {
-      //   router.push("/changepassword");
-      // } else
+      if(isForgotPassword>0 && history_id < 0) {
+        router.push("/changepassword");
+      } else
       router.push("/dashboard");
     } catch (error: any) {
       console.error("OTP Verification failed:", error.response?.data?.message || error.message);

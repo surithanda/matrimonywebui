@@ -50,7 +50,7 @@ export const registerUserAsync = createAsyncThunk(
   'register/registerUser',
   async (payload: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/register', payload);
+      const response = await api.post('/account/register', payload);
       if (response.status === 200 || response.status === 201) {
         return response.data;
       }

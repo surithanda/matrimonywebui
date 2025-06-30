@@ -15,7 +15,6 @@ export const api = axios.create({
 
 // Request interceptor for auth token
 api.interceptors.request.use((config) => {
-  console.log('Axios request config:', config.url, (config.baseURL || '') + (config.url || ''));
   if (typeof window !== 'undefined') { // Prevent error in SSR
     const token = localStorage.getItem('matrimony token');
     if (token) {

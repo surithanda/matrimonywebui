@@ -30,14 +30,15 @@ const ForgotPassword = () => {
     e.preventDefault();
   
     dispatch(forgotPasswordAsync(formData)).then((res: any) => {
-      // Check if the action was fulfilled (successful)
-      if (res.type === 'auth/forgotPassword/fulfilled') {
-        // Extract history_id from the payload
-          toast.success("OTP sent successfully!");
-          setCurrent(1);
+      if (res.payload && res.payload.success) {
+        setFormData(prev => ({
+          ...prev,
+          history_id: res.payload.history_id
+        }));
+        toast.success("OTP sent successfully!");
+        setCurrent(1);
       } else {
-        // Action was rejected
-        toast.error(res.payload?.message || res.error?.message || "Failed to send OTP");
+        toast.error(res.payload?.message || "Failed to send OTP");
       }
     }).catch((err: any) => {
       toast.error("Error sending OTP");
@@ -56,23 +57,20 @@ const ForgotPassword = () => {
       toast.error("Password must be at least 8 characters long!");
       return;
     }
- 
+
     const resetPayload = {
-      email: formData.email,
       history_id: formData.history_id,
       otp: formData.otp,
-      newPassword: formData.new_password,
-      confirmNewPassword: formData.confirm_new_password
+      new_password: formData.new_password,
+      confirm_new_password: formData.confirm_new_password
     };
 
     dispatch(resetPasswordAsync(resetPayload)).then((res: any) => {
-      // Check if the action was fulfilled (successful)
-      if (res.type === 'auth/resetPassword/fulfilled') {
+      if (res.payload && res.payload.success) {
         toast.success("Password reset successful!");
-        router.push('/login');
+        router.push('/dashboard');
       } else {
-        // Action was rejected
-        toast.error(res.payload?.message || res.error?.message || "Failed to reset password");
+        toast.error(res.payload?.message || "Failed to reset password");
       }
     }).catch((err: any) => {
       toast.error("Error resetting password");

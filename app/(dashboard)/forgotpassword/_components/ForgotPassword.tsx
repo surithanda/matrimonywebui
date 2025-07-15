@@ -58,8 +58,11 @@ const ForgotPassword = () => {
       return;
     }
 
+    console.log("Resetting password with payload:", formData);
+    // return
     const resetPayload = {
       history_id: formData.history_id,
+      email: formData.email,
       otp: formData.otp,
       new_password: formData.new_password,
       confirm_new_password: formData.confirm_new_password
@@ -68,7 +71,7 @@ const ForgotPassword = () => {
     dispatch(resetPasswordAsync(resetPayload)).then((res: any) => {
       if (res.payload && res.payload.success) {
         toast.success("Password reset successful!");
-        router.push('/dashboard');
+        router.push('/login');
       } else {
         toast.error(res.payload?.message || "Failed to reset password");
       }

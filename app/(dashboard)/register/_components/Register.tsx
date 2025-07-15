@@ -5,11 +5,18 @@ import { registerUserAsync } from '../../../store/features/registerSlice';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; 
+import { getStatesAsync, setMetadataCategory } from "@/app/store/features/metaDataSlice";
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.register);
+  const { countryList, stateList, genderList } = useAppSelector((state) => state.metaData);
   const router = useRouter(); 
+
+  const loadStates = async(selectedCountry:string) => {
+    let result = await dispatch(getStatesAsync({"country":selectedCountry})).unwrap();
+    dispatch(setMetadataCategory({"category":"state", "payload": result}));
+  }
 
   const [formData, setFormData] = useState<any>({
     email: "",
@@ -70,6 +77,9 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
+    if (name === 'country') {
+      loadStates(value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,6 +90,29 @@ const Register = () => {
       return;
     }
     
+    // accountData.email, // email
+    //     hashedPassword, // user_pwd
+    //     accountData.first_name,
+    //     accountData.middle_name || null,
+    //     accountData.last_name,
+    //     accountData.birth_date,
+    //     accountData.gender,
+    //     accountData.primary_phone,
+    //     accountData.primary_phone_country,
+    //     accountData.primary_phone_type,
+    //     accountData.secondary_phone || null,
+    //     accountData.secondary_phone_country || null,
+    //     accountData.secondary_phone_type || null,
+    //     accountData.address_line1,
+    //     accountData.address_line2 || null,
+    //     accountData.city,
+    //     accountData.state,
+    //     accountData.zip,
+    //     accountData.country,
+    //     accountData.photo || null,
+    //     accountData.secret_question || null,
+    //     accountData.secret_answer || null
+
     const mappedData = mapRequestToStoredProcedure({
       email: formData.email,
       password: formData.password,
@@ -94,6 +127,7 @@ const Register = () => {
       country: formData.country,
       zip: formData.zipCode,
       primary_phone: formData.primaryPhone,
+      primary_phone_country: formData.primaryPhoneCountry,
       user_name: formData.email
     });
   
@@ -228,9 +262,11 @@ const Register = () => {
                   required
                 >
                   <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                   {genderList && genderList?.map((item: any) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -267,7 +303,7 @@ const Register = () => {
               </div>
               <div className="flex flex-col items-start">
                 <label className="block  BRCobane18600 mb-2.5">State</label>
-                <input
+                {/* <input
                   type="text"
                   name="state"
                   value={formData.state}
@@ -275,11 +311,25 @@ const Register = () => {
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="State"
                   required
-                />
+                /> */}
+                <select
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                >
+                  <option value="">Select State</option>
+                  {stateList && stateList?.map((state: any) => (
+                    <option key={state.state_id} value={state.state_name}>
+                      {state.state_name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col items-start">
                 <label className="block  BRCobane18600 mb-2.5">Country</label>
-                <input
+                {/* <input
                   type="text"
                   name="country"
                   value={formData.country}
@@ -287,7 +337,21 @@ const Register = () => {
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Country"
                   required
-                />
+                /> */}
+                <select
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                >
+                  <option value="">Select Country</option>
+                  {countryList && countryList?.map((country: any) => (
+                    <option key={country.country_id} value={country.country_name}>
+                      {country.country_name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col items-start">
                 <label className="block BRCobane18600 mb-2.5">Zip Code</label>
@@ -325,6 +389,21 @@ const Register = () => {
                 <label className="block BRCobane18600 mb-2.5">
                   Primary Phone
                 </label>
+                <div className="flex w-full gap-2">
+                  <select
+                    name="primaryPhoneCountry"
+                    value={formData.primaryPhoneCountry || "+91"}
+                    onChange={handleChange}
+                    className="account-input-field w-28 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    required
+                  >
+                    <option value="">Select Country Code</option>
+                    {countryList && countryList?.map((country: any) => (
+                      <option key={country.country_id} value={country.country_code_2}>
+                        {country.flag_emoji} {country.country_calling_code}
+                      </option>
+                    ))}
+                  </select>
                 <input
                   type="text"
                   name="primaryPhone"
@@ -335,6 +414,7 @@ const Register = () => {
                   maxLength={10}
                   required
                 />
+                </div>
               </div>
             </div>
           </div>

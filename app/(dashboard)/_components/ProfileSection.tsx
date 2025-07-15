@@ -36,12 +36,21 @@ const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
 
+
   useEffect(() => {
-    if (userData) {
-      const decodedToken = decodeJWT(userData.token);
+    if (userData && userData?.token) {
+      const decodedToken = decodeJWT(userData?.token);
       console.log("decodedToken", decodedToken);
       if (decodedToken?.email) {
-        dispatch(fetchAccountDetailsAsync(decodedToken.email));
+        dispatch(fetchAccountDetailsAsync(decodedToken.email)).then((res: any) => {
+          if (res.payload && res.payload.success) {
+            dispatch(setUser(res.payload?.data?.[0]));
+          } else {
+            console.error("Failed to fetch account details:", res.payload?.message); 
+          }
+        }).catch((error: any) => {
+          console.error("Error fetching account details:", error); 
+        });
       }
     }
   }, []);

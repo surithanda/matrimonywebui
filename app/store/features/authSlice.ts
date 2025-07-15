@@ -12,10 +12,11 @@ interface OtpPayload {
 }
 
 interface ResetPasswordPayload {
-  history_id: number;
+  history_id?: number;
+  email:string;
   otp: string;
   new_password: string;
-  confirm_new_password: string;
+  confirm_new_password?: string;
 }
 
 interface ForgotPasswordPayload {
@@ -166,7 +167,7 @@ export const fetchAccountDetailsAsync = createAsyncThunk(
   'auth/fetchAccountDetails',
   async (email: string, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/account/${email}`);
+      const response = await api.post(`/account/details`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch account details');

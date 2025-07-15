@@ -32,14 +32,15 @@ const LoginForm = () => {
     dispatch(loginUserAsync(formData) as any)
       .unwrap()
       .then((response:any) => {
+        console.log("Login response:", response);
         // Show success toast
         toast.success("Login successful! Redirecting to OTP screen...");
         dispatch(setLoginResponse(response.user)); // Save the login response to Redux
 
         // Navigate to OTP screen upon successful login
         setTimeout(() => {
-          router.push('/otp');
-        }, 2000); 
+          router.push(`/otp?email=${encodeURIComponent(formData.email)}`);
+        }, 2000);
       })
       .catch((err:any) => {
         // Show error toast

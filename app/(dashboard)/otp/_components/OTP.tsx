@@ -4,13 +4,16 @@ import { api } from '../../../lib/axios';
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { setUser } from "@/app/store/features/authSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/app/store/store";
 
 const ForgotPassword = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
   // @ts-ignore
   const { loginResponse, user, forgotPasswordhistory_id } = useAppSelector((state) => state.auth);
@@ -21,13 +24,13 @@ const ForgotPassword = () => {
   const history_id = loginResponse?.history_id || 0;
   const isForgotPassword: number = forgotPasswordhistory_id || 0;
 
-  useEffect(() => {
-    if (history_id <=0 || (isForgotPassword <= 0)) {
-      debugger
-      router.push('/login');
-      toast.error("Please login first");
-    }
-  }, [history_id, router]);
+  // useEffect(() => {
+  //   if (history_id <=0 || (isForgotPassword <= 0)) {
+  //     debugger
+  //     router.push('/login');
+  //     toast.error("Please login first");
+  //   }
+  // }, [history_id, router]);
 
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -56,16 +59,16 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!history_id) {
-      toast.error("Session expired. Please login again.");
-      router.push('/login');
-      return;
-    }
+    // if (!history_id) {
+    //   toast.error("Session expired. Please login again.");
+    //   router.push('/login');
+    //   return;
+    // }
     setLoading(true);
     setError(null);
 
     const otpValue = otp.join("");
-    const payload = { history_id : history_id ? history_id : forgotPasswordhistory_id, otp: otpValue };
+    const payload = { email, otp: otpValue };
 
     try {
       const response = await api.post("/auth/verify-otp", payload);

@@ -6,6 +6,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; 
 import { getStatesAsync, setMetadataCategory } from "@/app/store/features/metaDataSlice";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -13,10 +14,12 @@ const Register = () => {
   const { countryList, stateList, genderList } = useAppSelector((state) => state.metaData);
   const router = useRouter(); 
 
-  const loadStates = async(selectedCountry:string) => {
-    let result = await dispatch(getStatesAsync({"country":selectedCountry})).unwrap();
-    dispatch(setMetadataCategory({"category":"state", "payload": result}));
-  }
+    const {loadStates} = useMetaDataLoader();
+
+  // const loadStates = async(selectedCountry:string) => {
+  //   let result = await dispatch(getStatesAsync({"country":selectedCountry})).unwrap();
+  //   dispatch(setMetadataCategory({"category":"state", "payload": result}));
+  // }
 
   const [formData, setFormData] = useState<any>({
     email: "",
@@ -289,7 +292,7 @@ const Register = () => {
   
             {/* City, State, Country, Zip Code */}
             <div className="flex md:gap-4 md:mt-4">
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start w-full">
                 <label className="block  BRCobane18600 mb-2.5">City</label>
                 <input
                   type="text"
@@ -301,7 +304,7 @@ const Register = () => {
                   required
                 />
               </div>
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start w-full">
                 <label className="block  BRCobane18600 mb-2.5">State</label>
                 {/* <input
                   type="text"
@@ -327,7 +330,7 @@ const Register = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start w-full">
                 <label className="block  BRCobane18600 mb-2.5">Country</label>
                 {/* <input
                   type="text"
@@ -353,7 +356,7 @@ const Register = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start w-full">
                 <label className="block BRCobane18600 mb-2.5">Zip Code</label>
                 <input
                   type="number"

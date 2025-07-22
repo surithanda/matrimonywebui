@@ -38,6 +38,7 @@ const ProfileSection = () => {
   const userData = useAppSelector((state) => state.auth.userData);
   const {fetchAccountDetls} = useFetchUser();
 
+
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
       // const decodedToken = decodeJWT(userData?.token);
@@ -56,7 +57,7 @@ const ProfileSection = () => {
     else if(userData && userData?.email) fetchAccountDetls();
 
   },[]);
-
+        
   const faqData = [
     {
       question: "How do I create a new profile?",

@@ -8,35 +8,37 @@ import { Navbar } from "./_components/Navbar";
 import Footer from "./_components/Footer";
 import { useEffect } from "react";
 
-import { useAppDispatch } from "./store/store";
-import { getCountriesAsync, getMetaDataAsync,  setMetadataCategory} from "./store/features/metaDataSlice";
+// import { useAppDispatch } from "./store/store";
+// import { getCountriesAsync, getMetaDataAsync,  setMetadataCategory} from "./store/features/metaDataSlice";
+import { useMetaDataLoader } from "./utils/useMetaDataLoader";
 
 export default function Home() {
-  const dispatch = useAppDispatch();
+  const {loadMetaData} = useMetaDataLoader()
+  // const dispatch = useAppDispatch();
 
-  const loadMetaData = async() => {
-    try {
-      let result = await dispatch(getMetaDataAsync({"category":"Caste"})).unwrap();
-      dispatch(setMetadataCategory({"category":"Caste", "payload": result}));
+  // const loadMetaData = async() => {
+  //   try {
+  //     let result = await dispatch(getMetaDataAsync({"category":"Caste"})).unwrap();
+  //     dispatch(setMetadataCategory({"category":"Caste", "payload": result}));
 
-      result = await dispatch(getMetaDataAsync({"category":"Gender"})).unwrap();
-      dispatch(setMetadataCategory({"category":"Gender", "payload": result}));
+  //     result = await dispatch(getMetaDataAsync({"category":"Gender"})).unwrap();
+  //     dispatch(setMetadataCategory({"category":"Gender", "payload": result}));
 
-      result = await dispatch(getCountriesAsync({})).unwrap();
-      dispatch(setMetadataCategory({"category":"country", "payload": result}));
+  //     result = await dispatch(getCountriesAsync({})).unwrap();
+  //     dispatch(setMetadataCategory({"category":"country", "payload": result}));
       
-      // toast.success('Registration successful!', {
-      //   autoClose: 3000
-      // });
-      // setTimeout(() => {
-      //   router.push('/login'); 
-      // }, 2000); 
-    } catch (error: any) {
-      // toast.error(error || 'Registration failed!', {
-      //   autoClose: 5000
-      // });
-    }
-  }
+  //     // toast.success('Registration successful!', {
+  //     //   autoClose: 3000
+  //     // });
+  //     // setTimeout(() => {
+  //     //   router.push('/login'); 
+  //     // }, 2000); 
+  //   } catch (error: any) {
+  //     // toast.error(error || 'Registration failed!', {
+  //     //   autoClose: 5000
+  //     // });
+  //   }
+  // }
 
 
   useEffect(() => {

@@ -7,6 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setError } from "../../../store/features/registerSlice";
 import { useRouter } from "next/navigation";
 import { getGenderLabel } from "@/utils/utils";
+import { IAccount } from "@/app/models/IAccount";
+import { useAppSelector } from "@/app/store/store";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { useFetchUser } from "@/app/utils/useFetchUser";
+import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
+import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
@@ -18,23 +24,12 @@ const AccountSettings = () => {
   //@ts-ignore
   // const { user } = useAppSelector((state) => state.auth.userData);
   const userData = useSelector((state) => state.auth.userData);
-
-  const [formData, setFormData] = useState({
-    firstName: userData?.first_name,
-    middleName: "",
-    lastName: userData?.last_name,
-    birthDate: userData?.birth_date ||"",
-    gender: getGenderLabel(userData?.gender),
-    email: userData?.email ||"",
-    primaryPhone: userData?.primary_phone || "",
-    secondaryPhone: userData?.secondaryPhoneNumber || "",
-    address: `${userData?.address_line1 || ""}\n${userData?.address_line2 || ""}`,
-    city: userData?.city || "",
-    state: userData?.state || "",
-    zipcode: userData?.zip || "",
-    country: userData?.country || "",
-  });
+  const { countryList, stateList, genderList } = useAppSelector((state) => state.metaData);
+  console.log(countryList, userData)
+  // gender === 'Male' ? 1 : formData.gender === 'Female' ? 2 : 3
+  const [formData, setFormData] = useState<IAccount>(userData);
   const [imageError, setImageError] = useState(false);
+  const {loadMetaData, loadStates} = useMetaDataLoader();
 
   const fetchProfilePhoto = async () => {
     try {
@@ -60,7 +55,12 @@ const AccountSettings = () => {
 
   useEffect(() => {
     fetchProfilePhoto();
+    loadMetaData(); //not required but issues with redux state, thus added
   }, []);
+
+  useEffect(() => {
+    if(userData.country) loadStates(userData.country)
+  }, [userData?.country]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -72,6 +72,9 @@ const AccountSettings = () => {
       ...prev,
       [name]: value,
     }));
+    if (name === 'country') {
+      loadStates(value);
+    }
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,28 +112,43 @@ const AccountSettings = () => {
     }
   };
 
+  const {fetchAccountDetls} = useFetchUser();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
     dispatch(setError(null));
 
+    // let accData:IAccount = {
+    //   first_name: formData.firstName,
+    //   middle_name: formData.middleName,
+    //   last_name: formData.lastName,
+    //   email: formData.email,
+    //   primary_phone: formData.primaryPhone,
+    //   primary_phone_country: "US",
+    //   primary_phone_type: "MOBILE",
+    //   birth_date: formData.birthDate,
+    //   address_line1: formData.address,
+    //   city: formData.city,
+    //   state: formData.state,
+    //   zip: formData.zipcode,
+    //   gender: formData.gender,
+    //   country: formData.country,
+    //   photo : undefined, //formData.photo || null,
+    //   secondary_phone: formData.secondaryPhone,
+    //   secondary_phone_country: "US", 
+    //   secondary_phone_type: "MOBILE",
+    // }
+    // console.log(formData)
+    // return;
+    
     try {
-      const response = await api.put('/account/update', {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        primary_phone: formData.primaryPhone,
-        primary_phone_country: "US",
-        primary_phone_type: "MOBILE",
-        address_line1: formData.address,
-        city: formData.city,
-        state: formData.state,
-        zip: formData.zipcode,
-        country: formData.country,
-      });
+      const response = await api.put('/account/update', formData);
       
       if (response.data?.success) {
         console.log('Account updated successfully');
-        router.push("/login");
+        fetchAccountDetls();
+        // router.push("/login");
+        router.push("/dashboard");
       }
       if (!response.data?.success) {
         throw new Error(response.data?.message || 'Failed to update account');
@@ -196,8 +214,8 @@ const AccountSettings = () => {
             <label className="block text-gray-700 mb-2">First Name</label>
             <input
               type="text"
-              name="firstName"
-              value={formData.firstName}
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -206,8 +224,8 @@ const AccountSettings = () => {
             <label className="block text-gray-700 mb-2">Middle Name</label>
             <input
               type="text"
-              name="middleName"
-              value={formData.middleName}
+              name="middle_name"
+              value={formData.middle_name}
               onChange={handleChange}
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -216,8 +234,8 @@ const AccountSettings = () => {
             <label className="block text-gray-700 mb-2">Last Name</label>
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -226,25 +244,28 @@ const AccountSettings = () => {
             <label className="block text-gray-700 mb-2">Birth Date</label>
             <input
               type="date"
-              name="birthDate"
-              value={formData.birthDate}
+              name="birth_date"
+              value={formData.birth_date}
               onChange={handleChange}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Gender</label>
-            <select
+            {/* <select
               name="gender"
               value={formData.gender}
               onChange={handleChange}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
+              {genderList && genderList?.map((item: any) => (
+                <option key={item.id} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select> */}
+            <MetadataSelectComponent type='gender' bindValue={formData?.gender} changeHandler={handleChange} custSelectValue={true}/>
           </div>
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Email</label>
@@ -253,41 +274,88 @@ const AccountSettings = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-          <div className="w-[24%]">
+
+          <div className="w-[48%]">
             <label className="block text-gray-700 mb-2">Primary Phone</label>
+            <CustomPhoneComponent type="primary_phone" changeHandler={handleChange} 
+                bindValue={formData.primary_phone} bindValue2={formData.primary_phone_country}/>
+            {/* <div className="flex w-full gap-2">
+            <select
+                    name="primary_phone_country"
+                    value={formData.primary_phone_country || "+91"}
+                    onChange={handleChange}
+                    className="account-input-field w-35 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="">Select Country Code</option>
+                    {countryList && countryList?.map((country: any) => (
+                      <option key={country.country_id} value={country.country_code_2}>
+                        {country.flag_emoji} {country.country_calling_code}
+                      </option>
+                    ))}
+                  </select>
             <input
               type="text"
-              name="primaryPhone"
-              value={formData.primaryPhone}
+              name="primary_phone"
+              value={formData.primary_phone}
               onChange={handleChange}
               maxLength={11}
-              className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
+            </div> */}
           </div>
-          <div className="w-[24%]">
+          
+          <div className="w-[48%]">
             <label className="block text-gray-700 mb-2">Secondary Phone</label>
+            <CustomPhoneComponent type="secondary_phone" changeHandler={handleChange} 
+                bindValue={formData.secondary_phone} bindValue2={formData.secondary_phone_country}/>
+            {/* <div className="flex w-full gap-2">
+            <select
+                    name="secondary_phone_country"
+                    value={formData.secondary_phone_country || "+91"}
+                    onChange={handleChange}
+                    className="account-input-field w-35 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    // required
+                  >
+                    <option value="">Select Country Code</option>
+                    {countryList && countryList?.map((country: any) => (
+                      <option key={country.country_id} value={country.country_code_2}>
+                        {country.flag_emoji} {country.country_calling_code}
+                      </option>
+                    ))}
+                  </select>
             <input
               type="text"
-              name="secondaryPhone"
-              value={formData.secondaryPhone}
+              name="secondary_phone"
+              value={formData.secondary_phone}
               onChange={handleChange}
               maxLength={11}
-              className="account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
+            </div> */}
           </div>
-          <div className="w-full">
+          <div className="w-[48%]">
             <label className="block text-gray-700 mb-2">Address</label>
             <textarea
-              name="address"
-              value={formData.address}
+              name="address_line1"
+              value={formData.address_line1}
               onChange={handleChange}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              rows={4}
+              rows={3}
             />
           </div>
+          {/* <div className="w-[48%]">
+            <label className="block text-gray-700 mb-2">Address Line 2</label>
+            <textarea
+              name="address2"
+              value={formData.address_line2}
+              onChange={handleChange}
+              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              rows={3}
+            />
+          </div> */}
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">City</label>
             <input
@@ -300,32 +368,65 @@ const AccountSettings = () => {
           </div>
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">State</label>
-            <input
+            {/* <input
               type="text"
               name="state"
               value={formData.state}
               onChange={handleChange}
               className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div className="w-[24%]">
-            <label className="block text-gray-700 mb-2">Zipcode</label>
-            <input
-              type="text"
-              name="zipcode"
-              value={formData.zipcode}
-              onChange={handleChange}
-              maxLength={7}
-              className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            /> */}
+            
+                {/* <select
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                >
+                  <option value="">Select State</option>
+                  {stateList && stateList?.map((state: any) => (
+                    <option key={state.state_id} value={state.state_name}>
+                      {state.state_name}
+                    </option>
+                  ))}
+                </select> */}
+                <MetadataSelectComponent type='state' bindValue={formData?.state} changeHandler={handleChange} />
           </div>
           <div className="w-[24%]">
             <label className="block text-gray-700 mb-2">Country</label>
-            <input
+            {/* <input
               type="text"
               name="country"
               value={formData.country}
               onChange={handleChange}
+              className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
+            /> */}
+            
+                {/* <select
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  required
+                >
+                  <option value="">Select Country</option>
+                  {countryList && countryList?.map((country: any) => (
+                    <option key={country.country_id} value={country.country_name}>
+                      {country.country_name}
+                    </option>
+                  ))}
+                </select> */}
+                <MetadataSelectComponent type='country' bindValue={formData?.country} changeHandler={handleChange} />
+          </div>
+          
+          <div className="w-[24%]">
+            <label className="block text-gray-700 mb-2">Zipcode</label>
+            <input
+              type="text"
+              name="zip"
+              value={formData.zip}
+              onChange={handleChange}
+              maxLength={7}
               className="w-full account-input-field focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>

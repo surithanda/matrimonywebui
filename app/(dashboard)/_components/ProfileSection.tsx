@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
 import { decodeJWT } from "@/app/utils/jwtUtils";
+import { useFetchUser } from "@/app/utils/useFetchUser";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -35,26 +36,28 @@ const profilesData = [
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
+  const {fetchAccountDetls} = useFetchUser();
 
 
   useEffect(() => {
-    if (userData && userData?.token) {
-      const decodedToken = decodeJWT(userData?.token);
-      console.log("decodedToken", decodedToken);
-      if (decodedToken?.email) {
-        dispatch(fetchAccountDetailsAsync(decodedToken.email)).then((res: any) => {
-          if (res.payload && res.payload.success) {
-            dispatch(setUser(res.payload?.data?.[0]));
-          } else {
-            console.error("Failed to fetch account details:", res.payload?.message); 
-          }
-        }).catch((error: any) => {
-          console.error("Error fetching account details:", error); 
-        });
-      }
-    }
-  }, []);
+    if (userData && userData?.token) fetchAccountDetls();
+      // const decodedToken = decodeJWT(userData?.token);
+      // console.log("decodedToken", decodedToken);
+      // if (decodedToken?.email) {
+      //   dispatch(fetchAccountDetailsAsync(decodedToken.email)).then((res: any) => {
+      //     if (res.payload && res.payload.success) {
+      //       dispatch(setUser(res.payload?.data?.[0]));
+      //     } else {
+      //       console.error("Failed to fetch account details:", res.payload?.message); 
+      //     }
+      //   }).catch((error: any) => {
+      //     console.error("Error fetching account details:", error); 
+      //   });
+      // }
+    else if(userData && userData?.email) fetchAccountDetls();
 
+  },[]);
+        
   const faqData = [
     {
       question: "How do I create a new profile?",

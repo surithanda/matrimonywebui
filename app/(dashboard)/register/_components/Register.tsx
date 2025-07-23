@@ -14,12 +14,14 @@ const Register = () => {
   const { countryList, stateList, genderList } = useAppSelector((state) => state.metaData);
   const router = useRouter(); 
 
-    const {loadStates} = useMetaDataLoader();
+
+  const {loadStates} = useMetaDataLoader();
 
   // const loadStates = async(selectedCountry:string) => {
   //   let result = await dispatch(getStatesAsync({"country":selectedCountry})).unwrap();
   //   dispatch(setMetadataCategory({"category":"state", "payload": result}));
   // }
+
 
   const [formData, setFormData] = useState<any>({
     email: "",

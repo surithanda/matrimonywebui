@@ -14,7 +14,10 @@ export const useMetaDataLoader = () => {
       dispatch(setMetadataCategory({ category: 'Gender', payload: result }));
 
       result = await dispatch(getCountriesAsync({})).unwrap();
-      dispatch(setMetadataCategory({ category: 'country', payload: result }));
+      const modifiedResult = result.map((item) => {
+        return {...item, id:item.country_id, name:item.country_name}
+      })
+      dispatch(setMetadataCategory({ category: 'country', payload: modifiedResult }));
     } catch (error) {
       // Handle error if needed
     }
@@ -23,7 +26,10 @@ export const useMetaDataLoader = () => {
   const loadStates = useCallback(async (selectedCountry: string) => {
     try {
       let result = await dispatch(getStatesAsync({ country: selectedCountry })).unwrap();
-      dispatch(setMetadataCategory({ category: 'state', payload: result }));
+      const modifiedResult = result.map((item) => {
+        return {...item, id:item.state_id, name:item.state_name}
+      })
+      dispatch(setMetadataCategory({ category: 'state', payload: modifiedResult }));
     } catch (error) {
       // Handle error if needed
     }

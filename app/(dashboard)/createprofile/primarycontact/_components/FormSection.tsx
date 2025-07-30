@@ -37,7 +37,7 @@ const FormSection = () => {
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentAddress, setCurrentAddress] = useState({ ...defaultAddress });
-  const {loadStates, formatWithMetaData} = useMetaDataLoader();
+  const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
   const {countryList} = useAppSelector((state) => state.metaData);
 
   useEffect(() => {
@@ -53,12 +53,12 @@ const FormSection = () => {
         const result = await dispatch(getAddressAsync(data)).unwrap();
         
         if (result?.success) {
-          const addresses = formatWithMetaData(result?.data?.addresses);
-          const formattedData = {
-            ...result?.data,
-            addresses
-          }
-          reset(formattedData);
+          // const addresses = formatWithMetaData(result?.data?.addresses);
+          // const formattedData = {
+          //   ...result?.data,
+          //   addresses
+          // }
+          reset(result?.data);
         }
       } catch (err: any) {
         // toast.error(err.message || "Failed to fetch profile address");
@@ -188,8 +188,8 @@ const FormSection = () => {
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 text-base">
                     <td className="px-3 py-2">{item.address_line1}</td>
                     <td className="px-3 py-2">{item.city}</td>
-                    <td className="px-3 py-2">{item.state}</td>
-                    <td className="px-3 py-2">{item.country}</td>
+                    <td className="px-3 py-2">{findStateName(item?.state || item?.state_id)}</td>
+                    <td className="px-3 py-2">{findCountryName(item?.country || item?.country_id)}</td>
                     <td className="px-3 py-2">{item.zip}</td>
                     <td className="px-3 py-2">{item.phone}</td>
                     <td className="px-3 py-2 text-center">

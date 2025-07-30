@@ -74,21 +74,23 @@ export const useMetaDataLoader = () => {
     return formattedData;
   }
 
-  const findCountryName = (compareVal:number) => {
+  const findCountryName = (compareVal:number):string => {
     let match:any;
     countryList.map((i:any) => {
+      console.log(i, compareVal)
       if(i.id === compareVal) match = i;
     })
+    console.log(match)
     return match?.name;
   }
-  const findStateName = (compareVal:number) => {
+  const findStateName = (compareVal:number):string => {
     let match:any;
     stateList.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;
   }
-  const findJobTitleName = (compareVal:number) => {
+  const findJobTitleName = (compareVal:number):string => {
     let match:any;
     job_titleList.map((i:any) => {
       if(i.id === compareVal) match = i;
@@ -96,5 +98,12 @@ export const useMetaDataLoader = () => {
     return match?.name;
   }
 
-  return { loadMetaData, loadStates, formatWithMetaData };
+  return { 
+    loadMetaData, 
+    loadStates, 
+    formatWithMetaData,
+    findCountryName,
+    findStateName,
+    findJobTitleName,
+  };
 };

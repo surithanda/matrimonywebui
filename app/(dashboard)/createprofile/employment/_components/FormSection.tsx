@@ -33,7 +33,7 @@ const FormSection = () => {
   const { fields, append, remove, update } = useFieldArray({ control, name: "employments" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentEmployment, setCurrentEmployment] = useState({ ...defaultEmployment });
-const {loadStates, formatWithMetaData} = useMetaDataLoader();
+const {loadStates, formatWithMetaData, findJobTitleName} = useMetaDataLoader();
 const { selectedProfileID } = useContext(ProfileIDContext);
 
 
@@ -52,12 +52,12 @@ const { selectedProfileID } = useContext(ProfileIDContext);
         const result = await dispatch(getEmploymentAsync(data)).unwrap();
         
         if (result?.success) {
-          const employments = formatWithMetaData(result?.data?.employments);
-          const formattedData = {
-            ...result?.data,
-            employments
-          }
-          reset(formattedData);
+          // const employments = formatWithMetaData(result?.data?.employments);
+          // const formattedData = {
+          //   ...result?.data,
+          //   employments
+          // }
+          reset(result?.data);
         }
       } catch (err: any) {
         // toast.error(err.message || "Failed to fetch profile address");
@@ -184,7 +184,7 @@ const { selectedProfileID } = useContext(ProfileIDContext);
                 {fields.map((item, index) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="px-3 py-2 text-sm">{item.institution_name}</td>
-                    <td className="px-3 py-2 text-sm">{item.job_title}</td>
+                    <td className="px-3 py-2 text-sm">{findJobTitleName(item?.job_title || item?.job_title_id)}</td>
                     <td className="px-3 py-2 text-sm">{item.start_year}</td>
                     <td className="px-3 py-2 text-sm">{item.end_year}</td>
                     <td className="px-3 py-2 text-sm">{item.last_salary_drawn}</td>

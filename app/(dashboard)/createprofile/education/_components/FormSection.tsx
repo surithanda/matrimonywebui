@@ -28,7 +28,7 @@ const FormSection = () => {
   const { fields, append, remove, update } = useFieldArray({ control, name: "educations" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentEducation, setCurrentEducation] = useState({ ...defaultEducation });
-  const {loadStates, formatWithMetaData} = useMetaDataLoader();
+  const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
 const { selectedProfileID } = useContext(ProfileIDContext);
 
   useEffect(() => {
@@ -47,13 +47,13 @@ const { selectedProfileID } = useContext(ProfileIDContext);
         
         // console.log(result)
         if (result?.success) {
-          // reset(result?.data);
-          const educations = formatWithMetaData(result?.data?.educations);
-          const formattedData = {
-            ...result?.data,
-            educations
-          }
-          reset(formattedData);
+          reset(result?.data);
+          // const educations = formatWithMetaData(result?.data?.educations);
+          // const formattedData = {
+          //   ...result?.data,
+          //   educations
+          // }
+          // reset(formattedData);
         }
       } catch (err: any) {
         // toast.error(err.message || "Failed to fetch profile address");
@@ -139,18 +139,18 @@ const { selectedProfileID } = useContext(ProfileIDContext);
 
   // On submit, dispatch all educations
   const onSubmit = async () => {
-    for (const education of fields) {
-      const educationData = {
-        profile_id: 51, // Replace with dynamic value if needed
-        ...education,
-        year_completed: parseInt(education.year_completed)
-      };
-      try {
-        await dispatch(createEducationAsync(educationData)).unwrap();
-      } catch (error: any) {
-        // handle error if needed
-      }
-    }
+    // for (const education of fields) {
+    //   const educationData = {
+    //     profile_id: 51, // Replace with dynamic value if needed
+    //     ...education,
+    //     year_completed: parseInt(education.year_completed)
+    //   };
+    //   try {
+    //     await dispatch(createEducationAsync(educationData)).unwrap();
+    //   } catch (error: any) {
+    //     // handle error if needed
+    //   }
+    // }
     moveToNext();
   };
 
@@ -185,8 +185,8 @@ const { selectedProfileID } = useContext(ProfileIDContext);
                     <td className="px-3 py-2 text-sm">{item.year_completed}</td>
                     <td className="px-3 py-2 text-sm">{item.address_line1}</td>
                     <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">{item.state}</td>
-                    <td className="px-3 py-2 text-sm">{item.country}</td>
+                    <td className="px-3 py-2 text-sm">{findStateName(item?.state || item?.state_id)}</td>
+                    <td className="px-3 py-2 text-sm">{findCountryName(item?.country || item?.country_id)}</td>
                     <td className="px-3 py-2 text-sm">{item.zip}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center">

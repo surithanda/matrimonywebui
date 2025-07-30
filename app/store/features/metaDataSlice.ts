@@ -44,7 +44,7 @@ interface MetaState {
   addresstypeList: LookupPayload[];
   phonetypeList: LookupPayload[];
   genderList: LookupPayload[];
-  contactList: LookupPayload[];
+  contactusList: LookupPayload[];
   familyList: LookupPayload[];
   referenceList: LookupPayload[];
   friendList: LookupPayload[];
@@ -57,6 +57,16 @@ interface MetaState {
   
   stateList: StatePayload[];
   countryList: CountryPayload[];
+
+  property_typeList: LookupPayload[];
+  photo_typeList: LookupPayload[];
+  ownership_typeList: LookupPayload[];
+  job_titleList: LookupPayload[];
+  field_of_studyList: LookupPayload[];
+  employment_statusList: LookupPayload[];
+  education_levelList: LookupPayload[];
+  contact_typeList: LookupPayload[];
+
   loading: boolean;
   error: string | null;
 }
@@ -65,7 +75,7 @@ const initialState: MetaState = {
   addresstypeList: [],
   phonetypeList: [],
   genderList: [],
-  contactList: [],
+  contactusList: [],
   familyList: [],
   referenceList: [],
   friendList: [],
@@ -77,6 +87,14 @@ const initialState: MetaState = {
   casteList: [],
   stateList: [],
   countryList: [],
+  property_typeList: [],
+  photo_typeList: [],
+  ownership_typeList: [],
+  job_titleList: [],
+  field_of_studyList: [],
+  employment_statusList: [],
+  education_levelList: [],
+  contact_typeList: [],
   loading: false,
   error: null,
 };

@@ -1,19 +1,43 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { getMetaDataAsync, getCountriesAsync, getStatesAsync, setMetadataCategory } from '@/app/store/features/metaDataSlice';
+import { useAppSelector } from '../store/store';
 
 export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
+  const {countryList, stateList, job_titleList} = useAppSelector((state) => state.metaData);
+
+  const loadMetaDataCategory = async(category:string) => {
+    const result = await dispatch(getMetaDataAsync({ category })).unwrap();
+    dispatch(setMetadataCategory({ category, payload: result }));
+  }
 
   const loadMetaData = useCallback(async () => {
     try {
-      let result = await dispatch(getMetaDataAsync({ category: 'Caste' })).unwrap();
-      dispatch(setMetadataCategory({ category: 'Caste', payload: result }));
+      loadMetaDataCategory('Caste')
+      loadMetaDataCategory('Gender');
+      loadMetaDataCategory('property_type');
+      loadMetaDataCategory('photo_type');
+      loadMetaDataCategory('ownership_type');
+      loadMetaDataCategory('job_title');
+      loadMetaDataCategory('field_of_study');
+      loadMetaDataCategory('employment_status');
+      loadMetaDataCategory('education_level');
+      loadMetaDataCategory('contact_type');
+      loadMetaDataCategory('Address Type');
+      loadMetaDataCategory('Disability');
+      loadMetaDataCategory('Religion');
+      loadMetaDataCategory('Family');
+      loadMetaDataCategory('Reference');
+      loadMetaDataCategory('Phone Type');
+      loadMetaDataCategory('Marital Status');
+      loadMetaDataCategory('Contact Us');
 
-      result = await dispatch(getMetaDataAsync({ category: 'Gender' })).unwrap();
-      dispatch(setMetadataCategory({ category: 'Gender', payload: result }));
+      loadMetaDataCategory('Profession');
+      loadMetaDataCategory('Nationality');
+      loadMetaDataCategory('Friend');
 
-      result = await dispatch(getCountriesAsync({})).unwrap();
+      const result = await dispatch(getCountriesAsync({})).unwrap();
       const modifiedResult = result.map((item) => {
         return {...item, id:item.country_id, name:item.country_name}
       })
@@ -23,9 +47,9 @@ export const useMetaDataLoader = () => {
     }
   }, [dispatch]);
 
-  const loadStates = useCallback(async (selectedCountry: string) => {
+  const loadStates = useCallback(async (selectedCountry?: string) => {
     try {
-      let result = await dispatch(getStatesAsync({ country: selectedCountry })).unwrap();
+      let result = await dispatch(getStatesAsync({ country: selectedCountry || null })).unwrap();
       const modifiedResult = result.map((item) => {
         return {...item, id:item.state_id, name:item.state_name}
       })
@@ -35,5 +59,42 @@ export const useMetaDataLoader = () => {
     }
   }, [dispatch]);
 
-  return { loadMetaData, loadStates };
+  const formatWithMetaData = (data:any):any => {
+    console.log(data)
+    const formattedData = data.map((item:any) => {
+      return {
+        ...item,
+        
+        ...(item?.country || item?.country_id ? { country: findCountryName(item?.country_id || item?.country) } : {}),
+        ...(item?.state || item?.state_id ? { state: findStateName(item?.state_id || item?.state) } : {}),
+        ...(item?.job_title_id ? { job_title: findJobTitleName(item?.job_title_id) } : {}),
+      }
+    })
+
+    return formattedData;
+  }
+
+  const findCountryName = (compareVal:number) => {
+    let match:any;
+    countryList.map((i:any) => {
+      if(i.id === compareVal) match = i;
+    })
+    return match?.name;
+  }
+  const findStateName = (compareVal:number) => {
+    let match:any;
+    stateList.map((i:any) => {
+      if(i.id === compareVal) match = i;
+    })
+    return match?.name;
+  }
+  const findJobTitleName = (compareVal:number) => {
+    let match:any;
+    job_titleList.map((i:any) => {
+      if(i.id === compareVal) match = i;
+    })
+    return match?.name;
+  }
+
+  return { loadMetaData, loadStates, formatWithMetaData };
 };

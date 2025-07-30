@@ -1,5 +1,6 @@
 export interface IAccount {
   account_code?: string;
+  account_id?:string;
   email: string;
   password?: string;
   primary_phone: string;

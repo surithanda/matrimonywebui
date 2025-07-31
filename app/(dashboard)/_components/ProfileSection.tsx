@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
 import { decodeJWT } from "@/app/utils/jwtUtils";
 import { useFetchUser } from "@/app/utils/useFetchUser";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -37,7 +38,7 @@ const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
   const {fetchAccountDetls} = useFetchUser();
-
+  // const {loadMetaData} = useMetaDataLoader();
 
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
@@ -55,7 +56,8 @@ const ProfileSection = () => {
       //   });
       // }
     else if(userData && userData?.email) fetchAccountDetls();
-
+    
+    // loadMetaData();
   },[]);
         
   const faqData = [

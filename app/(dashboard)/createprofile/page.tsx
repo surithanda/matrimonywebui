@@ -1,40 +1,21 @@
 "use client";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { createPersonalProfileAsync } from "@/app/store/features/profileSlice";
+import { useForm } from "react-hook-form";
+import { createPersonalProfileAsync, getPersonalProfileAsync } from "@/app/store/features/profileSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useRouter } from "next/navigation";
+import { IProfilePersonal } from "@/app/models/Profile";
+import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
+import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
+import { ProfileIDContext } from "./_components/Sidebar";
 
 // Extended form data interface
-interface FormData {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  prefix: string;
-  suffix: string;
-  gender: string;
-  birthDate: string;
-  primaryPhone: string;
-  homePhone: string;
-  emergencyPhone: string;
-  email: string;
-  maritalStatus: string;
-  religion: string;
-  nationality: string;
-  caste: string;
-  height: string; // assume inches
-  weight: string;
-  weightUnits: string;
-  disability: string;
-  complexion: string;
-  profession: string;
-  linkedin: string;
-  facebook: string;
-  instagram: string;
-  whatsappNumber: string;
+interface FormData extends IProfilePersonal {
+  phone_mobile_country:string;
   summary: string;
 }
 
@@ -52,37 +33,105 @@ interface RootState {
 
 const Page = () => {
   const dispatch: AppDispatch = useAppDispatch();
-    const router = useRouter();
+  const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
+  const { setSelectedProfileID, selectedProfileID } = useContext(ProfileIDContext);
+
+
+  const dummy = {
+    "profile_id": 1,
+    "account_id": 5,
+    "first_name": "John",
+    "last_name": "Air",
+    "middle_name": null,
+    "prefix": null,
+    "suffix": null,
+    "gender": "9",
+    "birth_date": "1990-06-06",
+    "phone_mobile": "01234567890",
+    "phone_mobile_country": "US",
+    "phone_home": null,
+    "phone_emergency": null,
+    "email_id": "john@gmail.com",
+    "marital_status": null,
+    "religion": null,
+    "nationality": 166,
+    "caste": null,
+    "height_inches": null,
+    "height_cms": null,
+    "weight": null,
+    "weight_units": "kg",
+    "complexion": null,
+    "linkedin": null,
+    "facebook": null,
+    "instagram": null,
+    "whatsapp_number": null,
+    "profession": null,
+    "disability": null,
+    "created_user": "genius.gen2k@gmail.com",
+    "summary": null,
+    "account_code": "20250712-155453-1"
+}
+
+  // React Hook Form setup
+  const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm<FormData>({
+    defaultValues: {}
+  });
+
+  useEffect(() => {
+    if(selectedProfileID && selectedProfileID !== 0) fetchProfileData();
+  }, [selectedProfileID])
+
+  const fetchProfileData = async() => {
+    const data = {
+      profile_id: selectedProfileID
+    }
+    try {
+      const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
+      
+      if (result) {
+        reset(result?.data);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to fetch profile");
+      console.error("Error getting profile details:", err);
+    }
+  }
+
+  // useEffect(() => {
+  //   if (userData) {
+  //     reset(userData);
+  //   }
+  // }, [userData, reset]);
 
   // Option arrays for dropdown fields
-  const maritalStatusOptions = [
-    { value: "1", label: "Single" },
-    { value: "2", label: "Married" },
-    { value: "3", label: "Divorced" },
-    { value: "4", label: "Widowed" },
-  ];
+  // const maritalStatusOptions = [
+  //   { value: "1", label: "Single" },
+  //   { value: "2", label: "Married" },
+  //   { value: "3", label: "Divorced" },
+  //   { value: "4", label: "Widowed" },
+  // ];
 
-  const religionOptions = [
-    { value: "1", label: "Christianity" },
-    { value: "2", label: "Islam" },
-    { value: "3", label: "Hinduism" },
-    { value: "4", label: "Buddhism" },
-    { value: "5", label: "Other" },
-  ];
+  // const religionOptions = [
+  //   { value: "1", label: "Christianity" },
+  //   { value: "2", label: "Islam" },
+  //   { value: "3", label: "Hinduism" },
+  //   { value: "4", label: "Buddhism" },
+  //   { value: "5", label: "Other" },
+  // ];
 
-  const nationalityOptions = [
-    { value: "1", label: "American" },
-    { value: "2", label: "Canadian" },
-    { value: "3", label: "Indian" },
-  ];
+  // const nationalityOptions = [
+  //   { value: "1", label: "American" },
+  //   { value: "2", label: "Canadian" },
+  //   { value: "3", label: "Indian" },
+  // ];
 
-  const casteOptions = [
-    { value: "1", label: "Brahmin" }, 
-    { value: "2", label: "Dalit" },   
-    { value: "3", label: "WASP" },    ,
-  ];
+  // const casteOptions = [
+  //   { value: "1", label: "Brahmin" }, 
+  //   { value: "2", label: "Dalit" },   
+  //   { value: "3", label: "WASP" },    ,
+  // ];
 
   const complexionOptions = [
     { value: "1", label: "Fair" },
@@ -92,13 +141,13 @@ const Page = () => {
     { value: "5", label: "Dark" },
   ];
 
-  const disabilityOptions = [
-    { value: "0", label: "None" },
-    { value: "1", label: "Visual Impairment" },
-    { value: "2", label: "Hearing Impairment" },
-    { value: "3", label: "Mobility Impairment" },
-    { value: "4", label: "Cognitive Impairment" },
-  ];
+  // const disabilityOptions = [
+  //   { value: "0", label: "None" },
+  //   { value: "1", label: "Visual Impairment" },
+  //   { value: "2", label: "Hearing Impairment" },
+  //   { value: "3", label: "Mobility Impairment" },
+  //   { value: "4", label: "Cognitive Impairment" },
+  // ];
 
   const professionOptions = [
     { value: "1", label: "Engineer" },
@@ -113,38 +162,8 @@ const Page = () => {
     { value: "lbs", label: "Pounds" },
   ];
 
-  // Autofilled initial state for testing
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    prefix: "",
-    suffix: "",
-    gender: "",
-    birthDate: "",
-    primaryPhone: "",
-    homePhone: "",
-    emergencyPhone: "",
-    email: "",
-    maritalStatus: "",
-    religion: "",
-    nationality: "",
-    caste: "",
-    height: "",
-    weight: "",
-    weightUnits: "",
-    disability: "",
-    complexion: "",
-    profession: "",
-    linkedin: "",
-    facebook: "",
-    instagram: "",
-    whatsappNumber: "",
-    summary: "",
-  });
 
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
-  const [submitAttempted, setSubmitAttempted] = useState(false);
+
 
   // Display error with Toastify if error changes
   useEffect(() => {
@@ -162,145 +181,60 @@ const Page = () => {
     }
   }, [error]);
 
-  // Validate required fields (adjust as necessary)
-  const validateForm = (): boolean => {
-    const errors: ValidationErrors = {};
 
-    if (!formData.firstName.trim()) {
-      errors.firstName = "First name is required";
-    }
-    if (!formData.lastName.trim()) {
-      errors.lastName = "Last name is required";
-    }
-    if (!formData.gender) {
-      errors.gender = "Gender is required";
-    }
-    if (!formData.birthDate) {
-      errors.birthDate = "Birth date is required";
-    }
-    if (!formData.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Invalid email format";
-    }
-    if (!formData.primaryPhone.trim()) {
-      errors.primaryPhone = "Primary phone is required";
-    }
-    if (!formData.nationality) {
-      errors.nationality = "Nationality is required";
-    }
 
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (submitAttempted) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
 
   // Transform form data to API payload
   const transformFormData = (data: FormData) => {
-    const inches = data.height.trim() ? Number(data.height) : 0;
+    const inches = data.height?.trim() ? Number(data.height) : 0;
     return {
-      account_id: userData?.account_id || 0, 
-      first_name: data.firstName.trim() || null,
-      last_name: data.lastName.trim() || null,
-      middle_name: data.middleName.trim() || null,
-      prefix: data.prefix.trim() || null,
-      suffix: data.suffix.trim() || null,
-      gender:
-        data.gender === "Male"
-          ? 1
-          : data.gender === "Female"
-          ? 2
-          : data.gender === "Other"
-          ? 3
-          : null,
-      birth_date: data.birthDate || null,
-      phone_mobile: data.primaryPhone.trim() || null,
-      phone_home: data.homePhone.trim() || null,
-      phone_emergency: data.emergencyPhone.trim() || null,
-      email_id: data.email.trim() || null,
-      marital_status: data.maritalStatus ? Number(data.maritalStatus) : null,
+      account_id: userData?.account_id || 5,
+      first_name: data.first_name?.trim() || null,
+      last_name: data.last_name?.trim() || null,
+      middle_name: data.middle_name?.trim() || null,
+      prefix: data.prefix?.trim() || null,
+      suffix: data.suffix?.trim() || null,
+      gender: data.gender || null,
+      birth_date: data.birth_date || null,
+      phone_mobile: data.phone_mobile?.trim() || null,
+      phone_mobile_country: data.phone_mobile_country?.trim() || null,
+      phone_home: data.phone_home?.trim() || null,
+      phone_emergency: data.phone_emergency?.trim() || null,
+      email_id: data.email_id?.trim() || null,
+      marital_status: data.marital_status ? Number(data.marital_status) : null,
       religion: data.religion ? Number(data.religion) : null,
       nationality: data.nationality ? Number(data.nationality) : null,
       caste: data.caste ? Number(data.caste) : null,
       height_inches: inches || null,
       height_cms: inches ? Math.round(inches * 2.54) : null,
-      weight: data.weight.trim() ? Number(data.weight) : null,
-      weight_units: data.weightUnits.trim() || "kg",
+      weight: data.weight?.trim() ? Number(data.weight) : null,
+      weight_units: data.weight_units?.trim() || "kg",
       complexion: data.complexion ? Number(data.complexion) : null,
-      linkedin: data.linkedin.trim() || null,
-      facebook: data.facebook.trim() || null,
-      instagram: data.instagram.trim() || null,
-      whatsapp_number: data.whatsappNumber.trim() || null,
+      linkedin: data.linkedin?.trim() || null,
+      facebook: data.facebook?.trim() || null,
+      instagram: data.instagram?.trim() || null,
+      whatsapp_number: data.whatsapp_number?.trim() || null,
       profession: data.profession ? Number(data.profession) : null,
       disability: data.disability ? Number(data.disability) : null,
       created_user: "admin",
-      summary: data.summary.trim() || null,
+      summary: data.summary?.trim() || null,
     };
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitAttempted(true);
 
-    if (!validateForm()) {
-      return;
-    }
-
-    const mappedData = transformFormData(formData);
+  // React Hook Form submit handler
+  const onSubmit = async (data: FormData) => {
+    const mappedData = transformFormData(data);
+    console.log(mappedData);
+    // return;
 
     try {
       const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();
+      console.log(result)
       if (result) {
+        setSelectedProfileID(result?.data?.profile_id);
         toast.success("Profile created successfully!");
-        // Reset the form after successful submission
-        setFormData({
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            prefix: "",
-            suffix: "",
-            gender: "",
-            birthDate: "",
-            primaryPhone: "",
-            homePhone: "",
-            emergencyPhone: "",
-            email: "",
-            maritalStatus: "",
-            religion: "",
-            nationality: "",
-            caste: "",
-            height: "",
-            weight: "",
-            weightUnits: "",
-            disability: "",
-            complexion: "",
-            profession: "",
-            linkedin: "",
-            facebook: "",
-            instagram: "",
-            whatsappNumber: "",
-            summary: "",
-        });
-        setValidationErrors({});
-        setSubmitAttempted(false);
+        reset();
         router.push("/createprofile/primarycontact");
       }
     } catch (err: any) {
@@ -309,51 +243,25 @@ const Page = () => {
     }
   };
 
+
   const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
-    setFormData({
-      firstName: "John",
-      middleName: "Michael",
-      lastName: "Doe",
-      prefix: "Mr",
-      suffix: "Jr",
-      gender: "Male",
-      birthDate: "1990-01-15",
-      primaryPhone: "1234567890",
-      homePhone: "0987654321",
-      emergencyPhone: "5555555555",
-      email: "john.doe@email.com",
-      maritalStatus: "1",
-      religion: "2",
-      nationality: "1",
-      caste: "3",
-      height: "70",
-      weight: "75",
-      weightUnits: "kg",
-      disability: "0",
-      complexion: "2",
-      profession: "4",
-      linkedin: "https://linkedin.com/in/johndoe",
-      facebook: "https://facebook.com/johndoe",
-      instagram: "https://instagram.com/johndoe",
-      whatsappNumber: "1234567890",
-      summary: "Test summary: This is a test profile",
-    });
-    setValidationErrors({});
-    setSubmitAttempted(false);
+    reset();
   };
 
+
+  // Helper for error display
   const getFieldError = (fieldName: keyof FormData) => {
-    return submitAttempted && validationErrors[fieldName] ? (
+    return errors[fieldName] ? (
       <span className="text-red-500 text-sm mt-1">
-        {validationErrors[fieldName]}
+        {errors[fieldName]?.message as string}
       </span>
     ) : null;
   };
 
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6" onSubmit={handleSubmit}>
+      <form className="w-full box-border md:px-6" onSubmit={handleSubmit(onSubmit)}>
         {/* Personal Details */}
         <h3 className="text-lg font-semibold mb-3">Personal Details</h3>
         <div className="flex flex-wrap justify-between">
@@ -364,24 +272,18 @@ const Page = () => {
             </label>
             <input
               type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
+              {...register("first_name", { required: "First name is required" })}
               placeholder="First Name"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.firstName ? "border-red-500" : ""
-              }`}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.first_name ? "border-red-500" : ""}`}
             />
-            {getFieldError("firstName")}
+            {getFieldError("first_name")}
           </div>
           {/* Middle Name */}
           <div className="w-[32%] md:mb-4">
             <label className="block text-gray-700 mb-2">Middle Name</label>
             <input
               type="text"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleChange}
+              {...register("middle_name")}
               placeholder="Middle Name"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -393,24 +295,18 @@ const Page = () => {
             </label>
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
+              {...register("last_name", { required: "Last name is required" })}
               placeholder="Last Name"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.lastName ? "border-red-500" : ""
-              }`}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.last_name ? "border-red-500" : ""}`}
             />
-            {getFieldError("lastName")}
+            {getFieldError("last_name")}
           </div>
           {/* Prefix */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Prefix</label>
             <input
               type="text"
-              name="prefix"
-              value={formData.prefix}
-              onChange={handleChange}
+              {...register("prefix")}
               placeholder="Mr, Ms, Dr, etc."
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -420,9 +316,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">Suffix</label>
             <input
               type="text"
-              name="suffix"
-              value={formData.suffix}
-              onChange={handleChange}
+              {...register("suffix")}
               placeholder="Jr, Sr, III, etc."
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -432,19 +326,20 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">
               Gender <span className="text-red-500">*</span>
             </label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.gender ? "border-red-500" : ""
-              }`}
+            <MetadataSelectComponent type='gender' 
+              {...register("gender", { required: "Gender is required" })}
+              value={watch("gender")}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.gender ? "border-red-500" : ""}`}
+              />
+           {/*  <select
+              {...register("gender", { required: "Gender is required" })}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.gender ? "border-red-500" : ""}`}
             >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
-            </select>
+            </select> */}
             {getFieldError("gender")}
           </div>
           <div className="w-[49%] md:mb-4">
@@ -453,14 +348,10 @@ const Page = () => {
             </label>
             <input
               type="date"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleChange}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.birthDate ? "border-red-500" : ""
-              }`}
+              {...register("birth_date", { required: "Birth date is required" })}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.birth_date ? "border-red-500" : ""}`}
             />
-            {getFieldError("birthDate")}
+            {getFieldError("birth_date")}
           </div>
         </div>
 
@@ -472,26 +363,21 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">
               Primary Phone <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              name="primaryPhone"
-              value={formData.primaryPhone}
-              onChange={handleChange}
+            <CustomPhoneComponent 
+              type="phone_mobile"
+              callingCodeBinding={{...register("phone_mobile_country", { required: "Primary country code is required" })}}
+              {...register("phone_mobile", { required: "Primary phone is required" })}
               placeholder="Primary Phone"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.primaryPhone ? "border-red-500" : ""
-              }`}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.phone_mobile ? "border-red-500" : ""}`}
             />
-            {getFieldError("primaryPhone")}
+            {getFieldError("phone_mobile")}
           </div>
           {/* Home Phone */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Home Phone</label>
             <input
               type="text"
-              name="homePhone"
-              value={formData.homePhone}
-              onChange={handleChange}
+              {...register("phone_home")}
               placeholder="Home Phone"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -501,9 +387,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">Emergency Phone</label>
             <input
               type="text"
-              name="emergencyPhone"
-              value={formData.emergencyPhone}
-              onChange={handleChange}
+              {...register("phone_emergency")}
               placeholder="Emergency Phone"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -515,15 +399,11 @@ const Page = () => {
             </label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+              {...register("email_id", { required: "Email is required", pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" } })}
               placeholder="Email"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.email ? "border-red-500" : ""
-              }`}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.email_id ? "border-red-500" : ""}`}
             />
-            {getFieldError("email")}
+            {getFieldError("email_id")}
           </div>
         </div>
 
@@ -535,73 +415,67 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">
               Nationality <span className="text-red-500">*</span>
             </label>
-            <select
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${
-                validationErrors.nationality ? "border-red-500" : ""
-              }`}
-            >
-              <option value="">Select Nationality</option>
+            <MetadataSelectComponent type='nationality' 
+            value={watch("nationality")}
+              {...register("nationality", { required: "Nationality is required" })}
+              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.nationality ? "border-red-500" : ""}`}
+            />
+              {/* <option value="">Select Nationality</option>
               {nationalityOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </select> */}
             {getFieldError("nationality")}
           </div>
           {/* Religion */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Religion</label>
-            <select
-              name="religion"
-              value={formData.religion}
-              onChange={handleChange}
+            <MetadataSelectComponent type='religion' 
+              {...register("religion")}
+               value={watch("religion")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="">Select Religion</option>
+            />
+              {/* <option value="">Select Religion</option>
               {religionOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
           {/* Marital Status */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Marital Status</label>
-            <select
-              name="maritalStatus"
-              value={formData.maritalStatus}
-              onChange={handleChange}
+            <MetadataSelectComponent type='marital_status' 
+              {...register("marital_status")}
+               value={watch("marital_status")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="">Select Marital Status</option>
+            />
+              {/* <option value="">Select Marital Status</option>
               {maritalStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
           {/* Caste */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Caste</label>
-            <select
-              name="caste"
-              value={formData.caste}
-              onChange={handleChange}
+            <MetadataSelectComponent type='caste' 
+              {...register("caste")}
+              value={watch("caste")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="">Select Caste</option>
+            />
+              {/* <option value="">Select Caste</option>
               {casteOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option?.label}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
         </div>
 
@@ -615,9 +489,7 @@ const Page = () => {
             </label>
             <input
               type="text"
-              name="height"
-              value={formData.height}
-              onChange={handleChange}
+              {...register("height")}
               placeholder="Height in inches"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -627,9 +499,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">Weight</label>
             <input
               type="text"
-              name="weight"
-              value={formData.weight}
-              onChange={handleChange}
+              {...register("weight")}
               placeholder="Weight"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -638,9 +508,7 @@ const Page = () => {
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Weight Units</label>
             <select
-              name="weightUnits"
-              value={formData.weightUnits}
-              onChange={handleChange}
+              {...register("weight_units")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               {weightUnitsOptions.map((option) => (
@@ -654,9 +522,7 @@ const Page = () => {
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Complexion</label>
             <select
-              name="complexion"
-              value={formData.complexion}
-              onChange={handleChange}
+              {...register("complexion")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Select Complexion</option>
@@ -670,18 +536,17 @@ const Page = () => {
           {/* Disability */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Disability</label>
-            <select
-              name="disability"
-              value={formData.disability}
-              onChange={handleChange}
+            <MetadataSelectComponent type="disability"
+              {...register("disability")}
+              value={watch("disability")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              {disabilityOptions.map((option) => (
+            />
+              {/* {disabilityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </select> */}
           </div>
         </div>
 
@@ -694,9 +559,7 @@ const Page = () => {
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Profession</label>
             <select
-              name="profession"
-              value={formData.profession}
-              onChange={handleChange}
+              {...register("profession")}
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Select Profession</option>
@@ -712,9 +575,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">WhatsApp Number</label>
             <input
               type="text"
-              name="whatsappNumber"
-              value={formData.whatsappNumber}
-              onChange={handleChange}
+              {...register("whatsapp_number")}
               placeholder="WhatsApp Number"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -724,9 +585,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">LinkedIn</label>
             <input
               type="text"
-              name="linkedin"
-              value={formData.linkedin}
-              onChange={handleChange}
+              {...register("linkedin")}
               placeholder="LinkedIn URL"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -736,9 +595,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">Facebook</label>
             <input
               type="text"
-              name="facebook"
-              value={formData.facebook}
-              onChange={handleChange}
+              {...register("facebook")}
               placeholder="Facebook URL"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -748,9 +605,7 @@ const Page = () => {
             <label className="block text-gray-700 mb-2">Instagram</label>
             <input
               type="text"
-              name="instagram"
-              value={formData.instagram}
-              onChange={handleChange}
+              {...register("instagram")}
               placeholder="Instagram URL"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -765,9 +620,7 @@ const Page = () => {
               Brief summary about you
             </label>
             <textarea
-              name="summary"
-              value={formData.summary}
-              onChange={handleChange}
+              {...register("summary")}
               placeholder="A success story, achievement, or any additional info"
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               rows={3}

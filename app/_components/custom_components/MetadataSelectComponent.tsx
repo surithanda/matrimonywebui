@@ -1,10 +1,19 @@
+
+// Utility function to format a string to Capital Case
+function toCapitalCase(str: string): string {
+  return str
+    .replace(/[-_\s]+/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+    .trim();
+}
 import { useAppSelector } from "@/app/store/store";
 
 type componentProps = {
     type:string,
     bindValue?:any, 
     changeHandler?:any,
-    custSelectValue?:boolean
+    custSelectValue?:boolean,
+    dontUseID?:boolean
 }
 
 
@@ -23,16 +32,11 @@ type componentProps = {
   }
 
 
-const MetadataSelectComponent = ({
-    type,
-    bindValue,
-    changeHandler,
-    custSelectValue = false
-}: componentProps) => {
+const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttributes<HTMLSelectElement>) => {
+    const { type, bindValue, changeHandler, custSelectValue = false,  dontUseID = false, ...rest } = props;
     const metaData = useAppSelector((state) => state.metaData);
-    const listName = `${type}List`;
-    const optionsList = metaData[listName];
-
+    const listName = `${type.replace('_',' ')}List`;
+    const optionsList = metaData[listName.replace(' ','')];
 
     let customValFunc;
     try {
@@ -47,10 +51,11 @@ const MetadataSelectComponent = ({
             value={bindValue}
             onChange={changeHandler}
             className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            {...rest}
         >
-            <option value="">Select {type.charAt(0).toUpperCase() + type.slice(1)}</option>
+            <option value="">Select {toCapitalCase(type)}</option>
             {optionsList && optionsList.map((item: any) => (
-                <option key={item.id} value={custSelectValue && customValFunc ? customValFunc(item.name).value : item.name}>
+                <option key={item.id} value={custSelectValue && customValFunc ? customValFunc(item.name).value : (dontUseID ? item.name : item.id)}>
                     {item.name}
                 </option>
             ))}

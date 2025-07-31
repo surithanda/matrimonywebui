@@ -1,11 +1,35 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../lib/axios';
 
+export const getPersonalProfileAsync = createAsyncThunk(
+  'profile/getPersonal',
+  async (profileData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/personalDetails', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const createPersonalProfileAsync = createAsyncThunk(
   'profile/createPersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/personal', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const getAddressAsync = createAsyncThunk(
+  'profile/getAddress',
+  async (addressData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/addressDetails', addressData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -25,11 +49,35 @@ export const createAddressAsync = createAsyncThunk(
   }
 );
 
+export const getEducationAsync = createAsyncThunk(
+  'profile/getEducation',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/educationDetails', data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const createEducationAsync = createAsyncThunk(
   'profile/createEducation',
   async (educationData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/education', educationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const getEmploymentAsync = createAsyncThunk(
+  'profile/getEmployment',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/employmentDetails', data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');

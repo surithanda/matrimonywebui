@@ -35,3 +35,10 @@ img {
 .image-loading {
   animation: imageLoad 0.3s ease-in-out;
 }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #ccc;
+  color: #666;
+}

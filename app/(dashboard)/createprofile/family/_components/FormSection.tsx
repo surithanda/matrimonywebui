@@ -1,56 +1,124 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm, useFieldArray } from "react-hook-form";
+
+const defaultFamilyMember = {
+  fullname: "",
+  dob: "",
+  contactnumber: "",
+  email: "",
+  relationshiptoyou: "",
+};
 
 const FormSection = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    fullname: "",
-    dob: "",
-    contactnumber: "",
-    email: "",
-    relationshiptoyou: "",
-  });
+  const { control, handleSubmit, reset } = useForm({ defaultValues: { family: [] } });
+  const { fields, append, remove, update } = useFieldArray({ control, name: "family" });
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [currentFamilyMember, setCurrentFamilyMember] = useState({ ...defaultFamilyMember });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
+  // Handle input changes for the local family member form
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setCurrentFamilyMember((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Add or update family member in the field array
+  const handleAddOrUpdate = () => {
+    // Prevent adding empty family member
+    if (!currentFamilyMember.fullname && !currentFamilyMember.dob && !currentFamilyMember.contactnumber && !currentFamilyMember.email && !currentFamilyMember.relationshiptoyou) {
+      return;
+    }
+    if (editIndex !== null) {
+      update(editIndex, { ...currentFamilyMember });
+      setEditIndex(null);
+    } else {
+      append({ ...currentFamilyMember });
+    }
+    setCurrentFamilyMember({ ...defaultFamilyMember });
+  };
+
+  // Load family member into form for editing
+  const handleEdit = (index: number) => {
+    setEditIndex(index);
+    setCurrentFamilyMember({ ...fields[index] });
+  };
+
+  // Remove family member and clear form if editing
+  const handleDelete = (index: number) => {
+    remove(index);
+    if (editIndex === index) {
+      setEditIndex(null);
+      setCurrentFamilyMember({ ...defaultFamilyMember });
+    }
+  };
+
+  // On submit, you can dispatch all family members if needed
+  const onSubmit = async () => {
+    // Example: send all family members to backend
+    // for (const member of fields) { ... }
+    router.push("/createprofile/references");
+  };
+
   return (
     <section className="md:py-5 w-4/5">
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        router.push("/createprofile/references");
-      }}
-        className="w-full box-border md:px-6">
+      <form onSubmit={e => { e.preventDefault(); onSubmit(); }} className="w-full box-border md:px-6">
+        {/* Family List as Table */}
+        <div className="mb-6 overflow-x-auto">
+          {fields.length > 0 && (
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">Full Name</th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">DOB</th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">Contact</th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">Email</th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">Relationship</th>
+                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fields.map((item, index) => (
+                  <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="px-3 py-2 text-sm">{item.fullname}</td>
+                    <td className="px-3 py-2 text-sm">{item.dob}</td>
+                    <td className="px-3 py-2 text-sm">{item.contactnumber}</td>
+                    <td className="px-3 py-2 text-sm">{item.email}</td>
+                    <td className="px-3 py-2 text-sm">{item.relationshiptoyou}</td>
+                    <td className="px-3 py-2 text-center">
+                      <div className="flex gap-2 justify-center">
+                        <button type="button" className="gray-btn px-2 py-1 text-xs" onClick={() => handleEdit(index)}>Edit</button>
+                        <button type="button" className="red-btn px-2 py-1 text-xs" onClick={() => handleDelete(index)}>Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        {/* Family Member Form */}
         <div className="flex flex-wrap justify-between">
-          {/* First Name, Middle Name, Last Name */}
           <div className="flex w-full justify-between">
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Full</label>
+              <label className="block text-gray-700 mb-2">Full Name</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullname}
-                onChange={handleChange}
+                name="fullname"
+                value={currentFamilyMember.fullname}
+                onChange={handleInputChange}
                 placeholder="Full Name"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">date of Birth</label>
+              <label className="block text-gray-700 mb-2">Date of Birth</label>
               <input
                 type="date"
-                name="dateofbirth"
-                value={formData.dob}
-                onChange={handleChange}
+                name="dob"
+                value={currentFamilyMember.dob}
+                onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -60,9 +128,9 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Contact Number</label>
               <input
                 type="text"
-                name="contactName"
-                value={formData.contactnumber}
-                onChange={handleChange}
+                name="contactnumber"
+                value={currentFamilyMember.contactnumber}
+                onChange={handleInputChange}
                 placeholder="Contact Number"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -73,8 +141,8 @@ const FormSection = () => {
                 type="text"
                 name="email"
                 placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
+                value={currentFamilyMember.email}
+                onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -82,13 +150,11 @@ const FormSection = () => {
           <div className="flex w-full justify-between">
             {/* Relation */}
             <div className="w-full md:mb-4">
-              <label className="block text-gray-700 mb-2">
-                Relationship to you
-              </label>
+              <label className="block text-gray-700 mb-2">Relationship to you</label>
               <select
-                name="relationship"
-                value={formData.relationshiptoyou}
-                onChange={handleChange}
+                name="relationshiptoyou"
+                value={currentFamilyMember.relationshiptoyou}
+                onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Relationship to you</option>
@@ -100,23 +166,23 @@ const FormSection = () => {
               </select>
             </div>
           </div>
-
-          <div className="flex w-full justify-between">
-            <div className="w-full md:mb-4">
-              <button className="gray-btn mt-[20px] hover:bg-gray-400">
-                Add Another
-              </button>
-            </div>
+          <div className="w-full flex justify-end">
+            <button
+              type="button"
+              className="gray-btn mt-[20px] hover:bg-gray-400"
+              onClick={handleAddOrUpdate}
+            >
+              {editIndex !== null ? "Update Member" : "Add Member"}
+            </button>
           </div>
         </div>
-
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button className="yellow-btn hover:bg-orange-600">Continue</button>
-            <button className="gray-btn hover:bg-gray-400">Cancel</button>
+            <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
+            <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => { setCurrentFamilyMember({ ...defaultFamilyMember }); setEditIndex(null); }}>Cancel</button>
           </div>
-          <button className="gray-btn hover:bg-gray-400">Skip</button>
+          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/references")}>Skip</button>
         </div>
       </form>
     </section>

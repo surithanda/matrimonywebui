@@ -36,6 +36,8 @@ export const useMetaDataLoader = () => {
       loadMetaDataCategory('Profession');
       loadMetaDataCategory('Nationality');
       loadMetaDataCategory('Friend');
+      loadMetaDataCategory('hobby');
+      loadMetaDataCategory('interest'); 
 
       const result = await dispatch(getCountriesAsync({})).unwrap();
       const modifiedResult = result.map((item) => {

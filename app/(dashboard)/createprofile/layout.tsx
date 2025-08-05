@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     loadMetaData();
-    // setTimeout(setSelectedProfileID, 500, 1);//for testing purpose only
+    setTimeout(setSelectedProfileID, 500, 1);//for testing purpose only
   }, [])
 
   return (

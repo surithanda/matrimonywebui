@@ -10,6 +10,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { ProfileIDContext } from "../../_components/Sidebar";
 
 const defaultEducation = {
+  id:"",
   education_level: 1,
   year_completed: "",
   institution_name: "",
@@ -119,7 +120,6 @@ const { selectedProfileID } = useContext(ProfileIDContext);
     }
     
     setCurrentEducation({ ...defaultEducation });
-
   }
 
   // Load education into form for editing

@@ -58,7 +58,7 @@ interface MetaState {
   stateList: StatePayload[];
   countryList: CountryPayload[];
 
-  property_typeList: LookupPayload[];
+  propertytypeList: LookupPayload[];
   photo_typeList: LookupPayload[];
   ownership_typeList: LookupPayload[];
   job_titleList: LookupPayload[];
@@ -66,6 +66,9 @@ interface MetaState {
   employment_statusList: LookupPayload[];
   education_levelList: LookupPayload[];
   contact_typeList: LookupPayload[];
+
+  hobbyList: LookupPayload[];
+  interestList: LookupPayload[]; 
 
   loading: boolean;
   error: string | null;
@@ -87,7 +90,7 @@ const initialState: MetaState = {
   casteList: [],
   stateList: [],
   countryList: [],
-  property_typeList: [],
+  propertytypeList: [],
   photo_typeList: [],
   ownership_typeList: [],
   job_titleList: [],
@@ -95,6 +98,8 @@ const initialState: MetaState = {
   employment_statusList: [],
   education_levelList: [],
   contact_typeList: [],
+  hobbyList: [],
+  interestList: [],
   loading: false,
   error: null,
 };

@@ -35,8 +35,8 @@ type componentProps = {
 const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttributes<HTMLSelectElement>) => {
     const { type, bindValue, changeHandler, custSelectValue = false,  dontUseID = false, ...rest } = props;
     const metaData = useAppSelector((state) => state.metaData);
-    const listName = `${type.replace('_',' ')}List`;
-    const optionsList = metaData[listName.replace(' ','')];
+    const listName = `${type.replace(' ', '')}List`;
+    const optionsList = metaData[listName];
 
     let customValFunc;
     try {

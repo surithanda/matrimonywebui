@@ -9,11 +9,11 @@ import { ProfileIDContext } from "../../_components/Sidebar";
 import { IProfileProperty } from "@/app/models/Profile";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
-const defaultProperty:IProfileProperty = {
+const defaultProperty = {
   profile_id: null,
-  property_type: null,
-  ownership_type: null,
-  property_value: null,
+  property_type: -1,
+  ownership_type: -1,
+  property_value: "",
   property_description: "",
   property_address: "",
 };
@@ -26,14 +26,14 @@ const FormSection = () => {
   const { control, handleSubmit, reset } = useForm({ defaultValues: { properties: [] } });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "properties" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentProperty, setCurrentProperty] = useState<IProfileProperty>({ ...defaultProperty });
+  const [currentProperty, setCurrentProperty] = useState({ ...defaultProperty });
   const [localError, setLocalError] = useState<string | null>(null);
   const {findPropertyTypeName, findOwnershipTypeName} = useMetaDataLoader();
 
   // Handle input changes for the local property form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    console.log("handleInputChange called with name:", name, "value:", value);
+    // console.log("handleInputChange called with name:", name, "value:", value);
     setCurrentProperty((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -64,8 +64,8 @@ const FormSection = () => {
       // Add new property
       try {
         const result = await dispatch(createPropertyAsync({ ...currentProperty, profile_id: selectedProfileID })).unwrap();
-        if (result && result.status === 'success') {
-          proceedWithAddUpdate(result.profile_property_id);
+        if (result && result.data.status === 'success') {
+          proceedWithAddUpdate(result.data.profile_property_id);
         }
       } catch (err: any) {
         setLocalError(err.message || "Error adding property");

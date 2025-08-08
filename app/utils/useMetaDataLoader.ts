@@ -5,7 +5,7 @@ import { useAppSelector } from '../store/store';
 
 export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
-  const {countryList, stateList, job_titleList, propertytypeList, ownership_typeList} = useAppSelector((state) => state.metaData);
+  const {countryList, stateList, job_titleList, property_typeList, ownership_typeList} = useAppSelector((state) => state.metaData);
 
   const loadMetaDataCategory = async(category:string) => {
     const result = await dispatch(getMetaDataAsync({ category })).unwrap();
@@ -70,6 +70,8 @@ export const useMetaDataLoader = () => {
         ...(item?.country || item?.country_id ? { country: findCountryName(item?.country_id || item?.country) } : {}),
         ...(item?.state || item?.state_id ? { state: findStateName(item?.state_id || item?.state) } : {}),
         ...(item?.job_title_id ? { job_title: findJobTitleName(item?.job_title_id) } : {}),
+        ...(item?.property_type ? { property_type: findPropertyTypeName(item?.property_type) } : {}),
+        ...(item?.ownership_type ? { ownership_type: findOwnershipTypeName(item?.ownership_type) } : {}),
       }
     })
 
@@ -102,7 +104,7 @@ export const useMetaDataLoader = () => {
 
   const findPropertyTypeName = (compareVal:number):string => {
     let match:any;
-    propertytypeList.map((i:any) => {
+    property_typeList.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;

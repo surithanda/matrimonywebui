@@ -85,16 +85,16 @@ export interface IProfileEmployment {
 }
 
 export interface IProfileProperty {
-  profile_id: number;
-  property_type: number;
-  ownership_type: number;
+  profile_id: number | null;
+  property_type: number | null;
+  ownership_type: number | null;
   property_address: string;
-  property_value: number;
+  property_value: number | null;
   property_description: string;
-  isoktodisclose: boolean;
-  created_by: string;
-  ip_address: string;
-  browser_profile: string;
+  isoktodisclose?: boolean;
+  created_by?: string;
+  ip_address?: string;
+  browser_profile?: string;
 }
 
 export interface IProfileFamilyReference {

@@ -6,13 +6,16 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getPropertiesAsync, createPropertyAsync, updatePropertyAsync, deletePropertyAsync } from "@/app/store/features/profileSlice";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { ProfileIDContext } from "../../_components/Sidebar";
+import { IProfileProperty } from "@/app/models/Profile";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
-const defaultProperty = {
-  property: "",
-  ownership: "",
-  area: "",
-  description: "",
-  address: "",
+const defaultProperty:IProfileProperty = {
+  profile_id: null,
+  property_type: null,
+  ownership_type: null,
+  property_value: null,
+  property_description: "",
+  property_address: "",
 };
 
 const FormSection = () => {
@@ -23,19 +26,22 @@ const FormSection = () => {
   const { control, handleSubmit, reset } = useForm({ defaultValues: { properties: [] } });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "properties" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentProperty, setCurrentProperty] = useState({ ...defaultProperty });
+  const [currentProperty, setCurrentProperty] = useState<IProfileProperty>({ ...defaultProperty });
   const [localError, setLocalError] = useState<string | null>(null);
+  const {findPropertyTypeName, findOwnershipTypeName} = useMetaDataLoader();
 
   // Handle input changes for the local property form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    console.log("handleInputChange called with name:", name, "value:", value);
     setCurrentProperty((prev) => ({ ...prev, [name]: value }));
   };
 
   // Add or update property in the field array (POST or PUT to backend)
   const handleAddOrUpdate = async () => {
+    console.log("handleAddOrUpdate called with currentProperty:", currentProperty);
     // Validation: require all key fields
-    if (!currentProperty.property || !currentProperty.ownership || !currentProperty.area || !currentProperty.address) {
+    if (!currentProperty.property_type || !currentProperty.ownership_type || !currentProperty.property_value || !currentProperty.property_address) {
       setLocalError("All fields except description are required.");
       return;
     }
@@ -59,7 +65,7 @@ const FormSection = () => {
       try {
         const result = await dispatch(createPropertyAsync({ ...currentProperty, profile_id: selectedProfileID })).unwrap();
         if (result && result.status === 'success') {
-          proceedWithAddUpdate(result.profile_property_reference_id);
+          proceedWithAddUpdate(result.profile_property_id);
         }
       } catch (err: any) {
         setLocalError(err.message || "Error adding property");
@@ -121,17 +127,16 @@ const FormSection = () => {
   };
 
   // Fetch properties from backend on mount
-  // useEffect(() => {
-  //   if (!selectedProfileID) return;
-  //   dispatch(getPropertiesAsync({ profile_id: selectedProfileID })).then((result: any) => {
-  //     if (result.payload?.data) {
-  //       replace(result.payload.data);
-  //     } else {
-  //       replace([]);
-  //     }
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [selectedProfileID, dispatch]);
+  useEffect(() => {
+    if (!selectedProfileID) return;
+    dispatch(getPropertiesAsync({ profile_id: selectedProfileID })).then((result: any) => {
+      if (result.payload?.data) {
+        reset(result.payload.data);
+      } 
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProfileID, dispatch]);
+
   return (
     <section className="md:py-5 w-4/5">
       <form className="w-full box-border md:px-6" onSubmit={e => { e.preventDefault(); onSubmit(); }}>
@@ -155,15 +160,15 @@ const FormSection = () => {
               <tbody>
                 {fields.map((item, index) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2 text-sm">{item.property}</td>
-                    <td className="px-3 py-2 text-sm">{item.ownership}</td>
-                    <td className="px-3 py-2 text-sm">{item.area}</td>
-                    <td className="px-3 py-2 text-sm">{item.description}</td>
-                    <td className="px-3 py-2 text-sm">{item.address}</td>
+                    <td className="px-3 py-2 text-sm">{findPropertyTypeName(item.property_type)}</td>
+                    <td className="px-3 py-2 text-sm">{findOwnershipTypeName(item.ownership_type)}</td>
+                    <td className="px-3 py-2 text-sm">{item.property_value}</td>
+                    <td className="px-3 py-2 text-sm">{item.property_description}</td>
+                    <td className="px-3 py-2 text-sm">{item.property_address}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center">
-                        <button type="button" className="gray-btn px-2 py-1 text-xs" onClick={() => handleEdit(index)} disabled={loading}>Edit</button>
-                        <button type="button" className="red-btn px-2 py-1 text-xs" onClick={() => handleDelete(index)} disabled={loading}>Delete</button>
+                        <button type="button" className="gray-btn px-2 py-1 text-xs" onClick={() => handleEdit(index)} disabled>Edit</button>
+                        <button type="button" className="red-btn px-2 py-1 text-xs" onClick={() => handleDelete(index)} disabled>Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -178,7 +183,7 @@ const FormSection = () => {
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Property Type</label>
               <MetadataSelectComponent type='property_type' 
-                value={currentProperty.property}
+                value={currentProperty.property_type}
                 onChange={handleInputChange}
               />
               {/* <select
@@ -198,7 +203,7 @@ const FormSection = () => {
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Ownership Type</label>
               <MetadataSelectComponent type='ownership_type' 
-                value={currentProperty.ownership}
+                value={currentProperty.ownership_type}
                 onChange={handleInputChange}
               />
               {/* <select
@@ -218,9 +223,9 @@ const FormSection = () => {
             <div className="w-full md:mb-4">
               <label className="block text-gray-700 mb-2">Complete Address</label>
               <textarea
-                name="address"
+                name="property_address"
                 placeholder="Complete Address"
-                value={currentProperty.address}
+                value={currentProperty.property_address}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                 rows={1}
@@ -232,8 +237,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Size/Area</label>
               <input
                 type="text"
-                name="area"
-                value={currentProperty.area}
+                name="property_value"
+                value={currentProperty.property_value}
                 onChange={handleInputChange}
                 placeholder="Area in sq. ft."
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -256,8 +261,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Description</label>
               <input
                 type="text"
-                name="description"
-                value={currentProperty.description}
+                name="property_description"
+                value={currentProperty.property_description}
                 onChange={handleInputChange}
                 placeholder="Description (optional)"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"

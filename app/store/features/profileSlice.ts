@@ -329,11 +329,35 @@ export const createEmploymentAsync = createAsyncThunk(
   }
 );
 
+export const getLifestyleAsync = createAsyncThunk(
+  'profile/getLifestyle',
+  async (data: { profile_id: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/lifestyleDetails', data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const createLifestyleAsync = createAsyncThunk(
   'profile/createLifestyle',
   async (lifestyleData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/lifestyle', lifestyleData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const updateLifestyleAsync = createAsyncThunk(
+  'profile/updateLifestyle',
+  async (lifestyleData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put('/profile/lifestyle', lifestyleData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -572,6 +596,30 @@ const profileSlice = createSlice({
         state.lifestyle = action.payload;
       })
       .addCase(createLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(getLifestyleAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getLifestyleAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.lifestyle = action.payload;
+      })
+      .addCase(getLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(updateLifestyleAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateLifestyleAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.lifestyle = action.payload;
+      })
+      .addCase(updateLifestyleAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       })

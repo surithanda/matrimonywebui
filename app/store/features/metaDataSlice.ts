@@ -58,7 +58,7 @@ interface MetaState {
   stateList: StatePayload[];
   countryList: CountryPayload[];
 
-  propertytypeList: LookupPayload[];
+  property_typeList: LookupPayload[];
   photo_typeList: LookupPayload[];
   ownership_typeList: LookupPayload[];
   job_titleList: LookupPayload[];

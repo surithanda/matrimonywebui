@@ -230,6 +230,7 @@ interface ProfileState {
   properties: any[];
   hobbies: string[];
   interests: string[];
+  references: any[];
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -352,6 +353,7 @@ const initialState: ProfileState = {
   properties: [],
   hobbies: [],
   interests: [],
+  references: [],
 };
 
 const profileSlice = createSlice({
@@ -360,6 +362,58 @@ const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // PERSONAL PROFILE
+      .addCase(getPersonalProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getPersonalProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.personalProfile = action.payload;
+      })
+      .addCase(getPersonalProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // ADDRESS
+      .addCase(getAddressAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.address = action.payload;
+      })
+      .addCase(getAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // EDUCATION
+      .addCase(getEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.education = action.payload;
+      })
+      .addCase(getEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // EMPLOYMENT
+      .addCase(getEmploymentAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getEmploymentAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employment = action.payload;
+      })
+      .addCase(getEmploymentAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
       // HOBBIES/INTERESTS
       // (Removed duplicate getInterestsAsync handlers)
       .addCase(getInterestsAsync.pending, (state) => {
@@ -380,8 +434,13 @@ const profileSlice = createSlice({
       })
       .addCase(getHobbiesInterestsAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.hobbies = action.payload?.hobbies || [];
-        state.interests = action.payload?.interests || [];
+        // Handle category-specific responses
+        const category = action.meta.arg.category;
+        if (category === 'hobby') {
+          state.hobbies = action.payload?.data || action.payload?.hobbies || [];
+        } else if (category === 'interest') {
+          state.interests = action.payload?.data || action.payload?.interests || [];
+        }
       })
       .addCase(getHobbiesInterestsAsync.rejected, (state, action) => {
         state.loading = false;
@@ -562,6 +621,55 @@ const profileSlice = createSlice({
         // Optionally remove from state.family
       })
       .addCase(deleteFamilyAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // REFERENCES
+      .addCase(getReferenceAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getReferenceAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.references = action.payload?.data || [];
+      })
+      .addCase(getReferenceAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(createReferenceAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createReferenceAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally push to state.references
+      })
+      .addCase(createReferenceAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(updateReferenceAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateReferenceAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update state.references
+      })
+      .addCase(updateReferenceAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteReferenceAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteReferenceAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.references
+      })
+      .addCase(deleteReferenceAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

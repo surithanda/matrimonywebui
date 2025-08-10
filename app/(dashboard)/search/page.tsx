@@ -1,64 +1,174 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
+import Link from "next/link";
+import { RootState, AppDispatch } from "@/app/store/store";
+import { searchProfiles, setFilters, clearFilters, SearchFilters, getUserPreferences } from "@/app/store/features/searchSlice";
+import { getMetaDataAsync, getCountriesAsync } from "@/app/store/features/metaDataSlice";
 import profile1 from "@/public/images/dashboard/profile1.png";
-import profile2 from "@/public/images/dashboard/profile2.png";
-import profile3 from "@/public/images/dashboard/profile3.png";
-import profile4 from "@/public/images/dashboard/profile4.png";
+import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 
 const Page = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const searchState = useSelector((state: RootState) => state.search);
+  const metaDataState = useSelector((state: RootState) => state.metaData);
+  
+  // Provide default values to prevent destructuring errors
+  const {
+    profiles = [],
+    filters = {},
+    loading = false,
+    error = null
+  } = searchState || {};
+  
+  const {
+    loading: metadataLoading = false
+  } = metaDataState || {};
+  
   const [showFilters, setShowFilters] = useState(false);
+  // Initialize with default values
+  const [localFilters, setLocalFilters] = useState<SearchFilters>({
+    min_age: 18,
+    max_age: 50,
+    profile_id: 1 // This should come from user's profile
+  });
+  
+  // Track if preferences have been loaded
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
 
-  // Data for filter options
-  const filterOptions = [
-    "Age",
-    "Religion",
-    "Education",
-    "Mother Tongue",
-    "Height",
-    "Occupation",
-    "Country",
-    "State",
-  ];
+  // Load metadata and user preferences on component mount
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        // Load metadata first
+        await Promise.all([
+          dispatch(getMetaDataAsync({ category: 'religion' })),
+          dispatch(getMetaDataAsync({ category: 'education_level' })),
+          dispatch(getMetaDataAsync({ category: 'profession' })),
+          dispatch(getMetaDataAsync({ category: 'gender' })),
+          dispatch(getMetaDataAsync({ category: 'marital_status' })),
+          dispatch(getCountriesAsync({}))
+        ]);
+        
+        // Then load user preferences if we have a profile ID
+        if (localFilters.profile_id) {
+          try {
+            const actionResult = await dispatch(getUserPreferences(localFilters.profile_id) as any);
+            const preferences = actionResult?.payload?.data;
+            
+            // If we have preferences, update the local filters
+            if (preferences) {
+              const updatedFilters: SearchFilters = { ...localFilters };
+              
+              // Update filters with preferences if they exist
+              if (preferences.min_age !== undefined) updatedFilters.min_age = preferences.min_age;
+              if (preferences.max_age !== undefined) updatedFilters.max_age = preferences.max_age;
+              if (preferences.gender) updatedFilters.gender = preferences.gender;
+              if (preferences.religion) updatedFilters.religion = preferences.religion;
+              if (preferences.occupation) updatedFilters.occupation = preferences.occupation;
+              if (preferences.marital_status) updatedFilters.marital_status = preferences.marital_status;
+              if (preferences.country) updatedFilters.country = preferences.country;
+              if (preferences.location_preference) updatedFilters.location_preference = preferences.location_preference;
+              if (preferences.distance_preference) updatedFilters.distance_preference = preferences.distance_preference;
+              
+              setLocalFilters(updatedFilters);
+              
+              // Only trigger search if we have non-default filter values
+              const hasNonDefaultFilters = 
+                (preferences.min_age !== undefined && preferences.min_age !== 18) ||
+                (preferences.max_age !== undefined && preferences.max_age !== 50) ||
+                !!preferences.gender ||
+                !!preferences.religion ||
+                !!preferences.occupation ||
+                !!preferences.marital_status ||
+                !!preferences.country ||
+                !!preferences.location_preference ||
+                preferences.distance_preference !== undefined;
+                
+              if (hasNonDefaultFilters) {
+                dispatch(setFilters(updatedFilters));
+                dispatch(searchProfiles(updatedFilters));
+              }
+            }
+          } catch (prefError) {
+            console.error('Error loading preferences:', prefError);
+            // Continue without preferences if there's an error
+          }
+        }
+        
+        setPreferencesLoaded(true);
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+        setPreferencesLoaded(true); // Still set to true to avoid infinite loading
+      }
+    };
+    
+    loadInitialData();
+    
+    // Cleanup function
+    return () => {
+      // Any cleanup if needed
+    };
+  }, [dispatch, localFilters.profile_id]);
 
-  const recommendedProfiles = [
-    {
-      name: "Shruti K.",
-      age: 24,
-      location: "Naperville",
-      imageSrc: profile1,
-    },
-    {
-      name: "Rashmi",
-      age: 23,
-      location: "Pinnacles",
-      imageSrc: profile2,
-    },
-    {
-      name: "Kaushik",
-      age: 28,
-      location: "Toledo",
-      imageSrc: profile3,
-    },
-    {
-      name: "Shruti K.",
-      age: 24,
-      location: "Austin",
-      imageSrc: profile4,
-    },
-    {
-      name: "Rashmi",
-      age: 23,
-      location: "Pinnacles",
-      imageSrc: profile2,
-    },
-  ];
+  // Handle filter changes with type safety
+  const handleFilterChange = (key: keyof SearchFilters, value: string | number | undefined) => {
+    // Convert empty strings to undefined to avoid sending empty values
+    const sanitizedValue = value === '' ? undefined : value;
+    
+    // Create new filters object with the updated value
+    const newFilters: SearchFilters = { 
+      ...localFilters, 
+      [key]: sanitizedValue 
+    };
+    
+    setLocalFilters(newFilters);
+    
+    // If the filter is being cleared, also update the search
+    if (sanitizedValue === undefined) {
+      dispatch(setFilters(newFilters));
+      dispatch(searchProfiles(newFilters));
+    }
+  };
+
+  // Apply filters and search with error handling
+  const handleSearch = async () => {
+    try {
+      // Ensure we have the latest filters
+      const currentFilters = { ...localFilters };
+      
+      // Update Redux state with current filters
+      dispatch(setFilters(currentFilters));
+      
+      // Execute the search
+      await dispatch(searchProfiles(currentFilters));
+      
+    } catch (error) {
+      console.error('Error during search:', error);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    const clearedFilters = {
+      profile_id: localFilters.profile_id, // Keep profile_id
+      min_age: 18,
+      max_age: 50
+    };
+    setLocalFilters(clearedFilters);
+    dispatch(clearFilters());
+  };
+
+  // Generate age options
+  const ageOptions = Array.from({ length: 63 }, (_, i) => i + 18);
 
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8">
+      {/* Header */}
       <div className="flex justify-between items-center w-full">
-        <h2 className="dmserif32600">Search</h2>
+        <h2 className="dmserif32600">Search Profiles</h2>
         <div className="flex gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -75,77 +185,240 @@ const Page = () => {
                 d="M18.4375 7.0625H1.5625C1.31386 7.0625 1.0754 6.96373 0.899587 6.78791C0.723772 6.6121 0.625 6.37364 0.625 6.125C0.625 5.87636 0.723772 5.6379 0.899587 5.46209C1.0754 5.28627 1.31386 5.1875 1.5625 5.1875H18.4375C18.6861 5.1875 18.9246 5.28627 19.1004 5.46209C19.2762 5.6379 19.375 5.87636 19.375 6.125C19.375 6.37364 19.2762 6.6121 19.1004 6.78791C18.9246 6.96373 18.6861 7.0625 18.4375 7.0625ZM15.3125 11.4375H4.6875C4.43886 11.4375 4.2004 11.3387 4.02459 11.1629C3.84877 10.9871 3.75 10.7486 3.75 10.5C3.75 10.2514 3.84877 10.0129 4.02459 9.83709C4.2004 9.66127 4.43886 9.5625 4.6875 9.5625H15.3125C15.5611 9.5625 15.7996 9.66127 15.9754 9.83709C16.1512 10.0129 16.25 10.2514 16.25 10.5C16.25 10.7486 16.1512 10.9871 15.9754 11.1629C15.7996 11.3387 15.5611 11.4375 15.3125 11.4375ZM11.5625 15.8125H8.4375C8.18886 15.8125 7.9504 15.7137 7.77459 15.5379C7.59877 15.3621 7.5 15.1236 7.5 14.875C7.5 14.6264 7.59877 14.3879 7.77459 14.2121C7.9504 14.0363 8.18886 13.9375 8.4375 13.9375H11.5625C11.8111 13.9375 12.0496 14.0363 12.2254 14.2121C12.4012 14.3879 12.5 14.6264 12.5 14.875C12.5 15.1236 12.4012 15.3621 12.2254 15.5379C12.0496 15.7137 11.8111 15.8125 11.5625 15.8125Z"
                 fill="#404040"
               />
-            </svg>{" "}
-            <span>Filter</span>
+            </svg>
+            <span>Filters</span>
           </button>
-          {showFilters && <button className="black-btn">Save Changes</button>}
+          {showFilters && (
+            <>
+              <button onClick={handleSearch} className="black-btn" disabled={loading}>
+                {loading ? 'Searching...' : 'Search'}
+              </button>
+              <button onClick={handleClearFilters} className="white-btn">
+                Clear All
+              </button>
+            </>
+          )}
         </div>
       </div>
-      {/* Filter Options (Visible only when showFilters is true) */}
+
+      {/* Filter Panel */}
       {showFilters && (
-        <div className="w-full">
-          <div className="flex flex-wrap justify-between gap-y-4">
-            {filterOptions.map((option, index) => (
-              <select
-                key={index}
-                className="w-[24%] tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option>{option}</option>
-                {/* Add dynamic options here */}
-              </select>
-            ))}
+        <div className="w-full bg-white p-6 rounded-lg shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Age Range */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Age Range</label>
+              <div className="flex gap-2">
+                <select
+                  value={localFilters.min_age || 18}
+                  onChange={(e) => handleFilterChange('min_age', parseInt(e.target.value))}
+                  className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="">Min Age</option>
+                  {ageOptions.map(age => (
+                    <option key={age} value={age}>{age}</option>
+                  ))}
+                </select>
+                <select
+                  value={localFilters.max_age || 50}
+                  onChange={(e) => handleFilterChange('max_age', parseInt(e.target.value))}
+                  className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <option value="">Max Age</option>
+                  {ageOptions.map(age => (
+                    <option key={age} value={age}>{age}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Religion */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Religion</label>
+              <MetadataSelectComponent
+                type="religion"
+                bindValue={localFilters.religion || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('religion', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* Education */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Education</label>
+              <MetadataSelectComponent
+                type="education_level"
+                bindValue={localFilters.max_education || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('max_education', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* Occupation */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Occupation</label>
+              <MetadataSelectComponent
+                type="profession"
+                bindValue={localFilters.occupation || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('occupation', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* Country */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Country</label>
+              <MetadataSelectComponent
+                type="nationality"
+                bindValue={localFilters.country || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('country', e.target.value || undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                dontUseID={true}
+              />
+            </div>
+
+            {/* Marital Status */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Marital Status</label>
+              <MetadataSelectComponent
+                type="marital status"
+                bindValue={localFilters.marital_status || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('marital_status', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
           </div>
         </div>
       )}
-      <div className="flex gap-6">
-        {recommendedProfiles.map((profile, index) => (
-          <div
-            key={index}
-            className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
-          >
-            <Image
-              src={profile.imageSrc}
-              alt={profile.name}
-              className="w-[282px] h-auto object-cover"
-            />
-            <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
-              <div>
-                <p className="BRCobane20600 text-white">
-                  {profile.name}, {profile.age}
-                </p>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 2.02463C5.89465 2.02463 3.375 4.29256 3.375 7.08713C3.375 11.5871 9 17.7746 9 17.7746C9 17.7746 14.625 11.5871 14.625 7.08713C14.625 4.29256 12.1054 2.02463 9 2.02463ZM9 9.89963C8.55499 9.89963 8.11998 9.76767 7.74997 9.52043C7.37996 9.2732 7.09157 8.9218 6.92127 8.51067C6.75097 8.09953 6.70642 7.64713 6.79323 7.21067C6.88005 6.77422 7.09434 6.37331 7.40901 6.05864C7.72368 5.74397 8.12459 5.52968 8.56105 5.44286C8.9975 5.35604 9.4499 5.4006 9.86104 5.5709C10.2722 5.7412 10.6236 6.02958 10.8708 6.39959C11.118 6.76961 11.25 7.20462 11.25 7.64963C11.2493 8.24616 11.0121 8.81808 10.5903 9.2399C10.1685 9.66171 9.59654 9.89898 9 9.89963Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <p className="BRCobane14500">{profile.location}</p>
-                </div>
-              </div>
-              <button className="message-btn">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="21"
-                  viewBox="0 0 20 21"
-                  fill="none"
-                >
-                  <path
-                    d="M5.625 19.0246C5.45924 19.0246 5.30027 18.9588 5.18306 18.8416C5.06585 18.7244 5 18.5654 5 18.3996V15.8996H4.0625C3.31683 15.8988 2.60194 15.6022 2.07468 15.075C1.54741 14.5477 1.25083 13.8328 1.25 13.0871V5.58713C1.25083 4.84146 1.54741 4.12657 2.07468 3.5993C2.60194 3.07204 3.31683 2.77545 4.0625 2.77463H15.9375C16.6832 2.77545 17.3981 3.07204 17.9253 3.5993C18.4526 4.12657 18.7492 4.84146 18.75 5.58713V13.0871C18.7492 13.8328 18.4526 14.5477 17.9253 15.075C17.3981 15.6022 16.6832 15.8988 15.9375 15.8996H9.59922L6.02539 18.8797C5.91292 18.9732 5.77128 19.0245 5.625 19.0246Z"
-                    fill="white"
-                  />
-                </svg>
-              </button>
+
+      {/* Error Display */}
+      {error && (
+        <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        </div>
+      )}
+
+      {/* Search Results */}
+      <div className="w-full">
+        {profiles.length > 0 ? (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">
+                {profiles.length} Profile{profiles.length !== 1 ? 's' : ''} Found
+              </h3>
             </div>
-          </div>
-        ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {profiles.map((profile: any, index: number) => {
+                // Debug: Log first profile to see available fields
+                if (index === 0) {
+                  console.log('Profile keys:', Object.keys(profile));
+                  console.log('Profile data:', profile);
+                }
+                
+                return (
+                <div
+                  key={profile.id || profile.profile_id || profile.user_id || index}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="relative">
+                    <Image
+                      src={profile.profile_image || profile1}
+                      alt={profile.first_name || 'Profile'}
+                      className="w-full h-64 object-cover"
+                      width={300}
+                      height={256}
+                    />
+                    <div className="absolute top-2 right-2">
+                      <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50">
+                        <svg
+                          className="w-5 h-5 text-gray-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg mb-1">
+                      {profile.first_name} {profile.last_name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">
+                      {profile.age} years • {profile.city || profile.country}
+                    </p>
+                    {profile.occupation && (
+                      <p className="text-gray-600 text-sm mb-2">
+                        {profile.occupation}
+                      </p>
+                    )}
+                    {profile.education && (
+                      <p className="text-gray-600 text-sm mb-3">
+                        {profile.education}
+                      </p>
+                    )}
+                    <div className="flex gap-2">
+                      <Link 
+                        href={`/profiles/${profile.id || profile.profile_id || profile.user_id || index}`}
+                        className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors text-center"
+                      >
+                        View Profile
+                      </Link>
+                      <button className="flex-1 border border-orange-500 text-orange-500 py-2 px-4 rounded-md hover:bg-orange-50 transition-colors">
+                        Send Interest
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          !loading && (
+            <div className="text-center py-12">
+              <div className="text-gray-500 text-lg mb-4">
+                {showFilters ? 'Click "Search" to find profiles' : 'No profiles found'}
+              </div>
+              {!showFilters && (
+                <button
+                  onClick={() => setShowFilters(true)}
+                  className="black-btn"
+                >
+                  Try Different Filters
+                </button>
+              )}
+            </div>
+          )
+        )}
       </div>
     </div>
   );

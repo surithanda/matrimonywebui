@@ -1,11 +1,8 @@
 "use client";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 import Link from "next/link";
-import React, { useEffect, useState, useContext } from "react";
-// ProfileID Context
-export const ProfileIDContext = React.createContext({
-  selectedProfileID: 0,
-  setSelectedProfileID: (id: number) => {},
-});
+import React, { useEffect, useState } from "react";
+
 import {
   FaUser,
   FaPhone,
@@ -22,7 +19,7 @@ import {
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("Personal");
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
 
   const menuItems = [
     { name: "Personal", icon: <FaUser />, link: "/createprofile", disabled: false },

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getHobbiesInterestsAsync, addHobbyAsync, removeHobbyAsync, addInterestAsync, removeInterestAsync } from "@/app/store/features/profileSlice";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 // const hobbySuggestions = [
 //   "Reading", "Traveling", "Cooking", "Gardening", "Photography", "Painting", "Dancing", "Music", "Sports", "Writing", "Fishing", "Hiking", "Cycling", "Yoga", "Crafts"
@@ -16,7 +16,7 @@ import { ProfileIDContext } from "../../_components/Sidebar";
 
 const FormSection = () => {
   const router = useRouter();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const reduxProfile = useAppSelector((state) => state.profile);
   const {countryList, hobbyList, interestList} = useAppSelector((state) => state.metaData);

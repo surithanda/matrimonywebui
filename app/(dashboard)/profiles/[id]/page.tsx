@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { RootState, AppDispatch } from "@/app/store/store";
 import {
@@ -11,14 +11,25 @@ import {
   getEmploymentAsync,
   getFamilyAsync,
   getPropertiesAsync,
-  getHobbiesInterestsAsync
+  getHobbiesInterestsAsync,
+  trackProfileViewAsync,
+  createFavoriteAsync,
+  deleteFavoriteAsync,
+  getFavoritesAsync
 } from "@/app/store/features/profileSlice";
-import profile1 from "@/public/images/dashboard/profile1.png";
+
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import femaleProfile from "@/public/images/dashboard/profile1.png";
+import maleProfile from "@/public/images/dashboard/profile3.png";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
+  const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
+  const fromSearch = searchParams.get('fromSearch') === 'true';
+  const { findJobTitleName, findCountryName, findStateName, findPropertyTypeName, findOwnershipTypeName } = useMetaDataLoader();
   
   const { 
     personalProfile, 
@@ -36,6 +47,28 @@ const ViewProfile = () => {
 
   const [activeTab, setActiveTab] = useState('personal');
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
+  const { selectedProfileID } = useProfileContext();
+  const accountProfileID = selectedProfileID > 0 ? selectedProfileID : 1;
+  const [favoriteProfile, setFavoriteProfile] = useState<any>();
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (accountProfileID > 0) {
+        const response = await dispatch(getFavoritesAsync({ profileId: accountProfileID })).unwrap();
+        // console.log(response, profileId);
+        response.data.map((item: any) => {
+          if(item.to_profile_id === profileId && item.is_active) {
+            setFavoriteProfile(item);
+            setIsFavorite(true);
+          }
+        })
+      }
+    };
+    console.log(accountProfileID);
+    loadFavorites();
+  }, [dispatch, accountProfileID]);
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections(prev => ({
@@ -43,6 +76,36 @@ const ViewProfile = () => {
       [sectionKey]: !prev[sectionKey]
     }));
   };
+
+  const handleToggleFavorite = async () => {
+    if (isUpdatingFavorite) return;
+    if(accountProfileID > 0) {
+      try {
+        setIsUpdatingFavorite(true);
+        if(isFavorite){
+          await dispatch(deleteFavoriteAsync({
+            profileId: accountProfileID,
+            favoriteProfileId: favoriteProfile?.profile_favorite_id,
+          })).unwrap();
+        } else {
+          const result = await dispatch(createFavoriteAsync({
+            profileId: accountProfileID,
+            favoriteProfileId: profileId,
+            isFavorite: !isFavorite
+          })).unwrap();
+          setFavoriteProfile({profile_favorite_id:result?.data?.id});
+        }
+        
+        setIsFavorite(prev => !prev);
+        // Toggle the local state if the API call is successful
+      } catch (error) {
+        console.error('Failed to update favorite status:', error);
+        // You might want to show an error toast/notification here
+      } finally {
+        setIsUpdatingFavorite(false);
+      }
+    }
+  }
 
   const ProfileSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
     return (
@@ -98,6 +161,21 @@ const ViewProfile = () => {
   };
 
   useEffect(() => {
+    console.log('Profile ID:', profileId);
+    console.log('From search:', fromSearch);
+    if (profileId && fromSearch) {
+      console.log('Tracking profile view for profile ID:', profileId);
+      try {
+        if(accountProfileID > 0){
+          dispatch(trackProfileViewAsync({ profileId: accountProfileID, viewedProfileId: profileId }));
+        }
+      } catch (error) {
+        console.error('Error tracking profile view:', error);
+      }
+    }
+  }, [profileId, fromSearch]);
+
+  useEffect(() => {
     if (profileId) {
       // Load all profile sections
       dispatch(getPersonalProfileAsync({ profile_id: profileId }));
@@ -113,18 +191,18 @@ const ViewProfile = () => {
   }, [dispatch, profileId]);
 
   // Debug: Log the Redux state data
-  useEffect(() => {
-    console.log('Redux State Debug:');
-    console.log('personalProfile:', personalProfile);
-    console.log('address:', address);
-    console.log('education:', education);
-    console.log('employment:', employment);
-    console.log('family:', family);
-    console.log('properties:', properties);
-    console.log('hobbies:', hobbies); 
-    console.log('interests:', interests);
-    console.log('references:', references);
-  }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
+  // useEffect(() => {
+  //   console.log('Redux State Debug:');
+  //   console.log('personalProfile:', personalProfile);
+  //   console.log('address:', address);
+  //   console.log('education:', education);
+  //   console.log('employment:', employment);
+  //   console.log('family:', family);
+  //   console.log('properties:', properties);
+  //   console.log('hobbies:', hobbies); 
+  //   console.log('interests:', interests);
+  //   console.log('references:', references);
+  // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
 
   if (loading) {
     return (
@@ -403,7 +481,7 @@ const ViewProfile = () => {
         <div className="space-y-4">
           {propertiesData.length > 0 ? (
             propertiesData.map((property: any, index: number) => {
-              const title = property.type || property.property_type || `Property ${index + 1}`;
+              const title = property.type || findPropertyTypeName(property.property_type) || `Property ${index + 1}`;
               return (
                 <AccordionItem
                   key={index}
@@ -412,8 +490,8 @@ const ViewProfile = () => {
                   defaultExpanded={index === 0}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Type" value={property.property_type} />
-                    <ProfileDetail title="Ownership" value={property.ownership_type} />
+                    <ProfileDetail title="Type" value={findPropertyTypeName(property.property_type)} />
+                    <ProfileDetail title="Ownership" value={findOwnershipTypeName(property.ownership_type)} />
                     <ProfileDetail title="Location" value={property.property_address} />
                     <ProfileDetail title="Value" value={property.property_value} />
                   </div>
@@ -490,7 +568,7 @@ const ViewProfile = () => {
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="relative">
             <Image
-              src={(personalProfile?.data || personalProfile)?.profile_image || profile1}
+              src={(personalProfile?.data || personalProfile)?.profile_image || (personalProfile?.data || personalProfile)?.gender === 9 ? maleProfile : femaleProfile}
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover"
               width={128}
@@ -524,8 +602,27 @@ const ViewProfile = () => {
               <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors">
                 Send Interest
               </button>
-              <button className="border border-orange-500 text-orange-500 px-6 py-2 rounded-md hover:bg-orange-50 transition-colors">
-                Add to Favorites
+              <button 
+                onClick={handleToggleFavorite}
+                disabled={isUpdatingFavorite}
+                className={`flex items-center gap-2 border ${isFavorite ? 'bg-orange-100 border-orange-500 text-orange-700' : 'border-orange-500 text-orange-500 hover:bg-orange-50'} px-6 py-2 rounded-md transition-colors`}
+              >
+                {isUpdatingFavorite ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {isFavorite ? 'Removing...' : 'Saving...'}
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    {isFavorite ? 'Favorited' : 'Add to Favorites'}
+                  </>
+                )}
               </button>
               <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors">
                 Message

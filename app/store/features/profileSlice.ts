@@ -1,3 +1,86 @@
+// Get profiles by account ID
+export const getProfilesByAccountIdAsync = createAsyncThunk(
+  'profile/getProfilesByAccountId',
+  async (accountId: number, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/profile/account_profiles/${accountId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch profiles');
+    }
+  }
+);
+
+export const createPhotoAsync = createAsyncThunk(
+  'profile/createPhoto',
+  async (data: FormData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/photo', data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+
+// Toggle Favorite Profile Thunk
+export const createFavoriteAsync = createAsyncThunk(
+  'profile/createFavorite',
+  async (payload: { profileId: number, favoriteProfileId: number, isFavorite: boolean }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/favorites', {
+        profile_id: payload.profileId,
+        favorite_profile_id: payload.favoriteProfileId,
+        is_favorite: payload.isFavorite
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to update favorite status');
+    }
+  }
+);
+
+export const getFavoritesAsync = createAsyncThunk(
+  'profile/getFavorites',
+  async (payload: { profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/favoriteList', {
+        profileId: payload.profileId,
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to get favorite status');
+    }
+  }
+);
+
+export const deleteFavoriteAsync = createAsyncThunk(
+  'profile/deleteFavorite',
+  async (payload: { profileId: number, favoriteProfileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/removeFavorites', {
+        profileId: payload.favoriteProfileId,
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to update favorite status');
+    }
+  }
+);
+// Get Interests Thunk
+export const trackProfileViewAsync = createAsyncThunk(
+  'profile/trackProfileView',
+  async (data: { profileId: number, viewedProfileId:Number }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/profile/views', data);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 // Get Interests Thunk
 export const getInterestsAsync = createAsyncThunk(
   'profile/getInterests',
@@ -222,6 +305,7 @@ interface ProfileState {
   loading: boolean;
   error: string | null;
   personalProfile: any;
+  accountProfiles: any[]; // Array to store all profiles for the account
   address: any;
   education: any;
   employment: any;
@@ -231,6 +315,7 @@ interface ProfileState {
   hobbies: string[];
   interests: string[];
   references: any[];
+  favorites: any[];
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -369,6 +454,7 @@ const initialState: ProfileState = {
   loading: false,
   error: null,
   personalProfile: null,
+  accountProfiles: [], // Initialize as empty array
   address: null,
   education: null,
   employment: null,
@@ -378,6 +464,7 @@ const initialState: ProfileState = {
   hobbies: [],
   interests: [],
   references: [],
+  favorites: [],
 };
 
 const profileSlice = createSlice({
@@ -386,6 +473,63 @@ const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // GET PROFILES BY ACCOUNT ID
+      .addCase(getProfilesByAccountIdAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProfilesByAccountIdAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Store the fetched profiles in the state
+        state.personalProfile = action.payload.data?.[0] || null; // Store first profile as personal profile
+        // You might want to store all profiles in a separate state property if needed
+      })
+      .addCase(getProfilesByAccountIdAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // TOGGLE FAVORITE
+      .addCase(createFavoriteAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createFavoriteAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // You might want to update the UI based on the favorite status
+        // For example, if you have a list of profiles, you can update the favorite status here
+      })
+      .addCase(createFavoriteAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteFavoriteAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFavoriteAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // You might want to update the UI based on the favorite status
+        // For example, if you have a list of profiles, you can update the favorite status here
+      })
+      .addCase(deleteFavoriteAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getFavoritesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getFavoritesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.favorites = action.payload;
+        // You might want to update the UI based on the favorite status
+        // For example, if you have a list of profiles, you can update the favorite status here
+      })
+      .addCase(getFavoritesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      
       // PERSONAL PROFILE
       .addCase(getPersonalProfileAsync.pending, (state) => {
         state.loading = true;

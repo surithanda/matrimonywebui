@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getPropertiesAsync, createPropertyAsync, updatePropertyAsync, deletePropertyAsync } from "@/app/store/features/profileSlice";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfileProperty } from "@/app/models/Profile";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
@@ -20,7 +20,7 @@ const defaultProperty = {
 
 const FormSection = () => {
   const router = useRouter();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const { properties, loading, error } = useAppSelector((state) => state.profile);
   const { control, handleSubmit, reset } = useForm({ defaultValues: { properties: [] } });

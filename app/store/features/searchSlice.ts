@@ -7,15 +7,16 @@ export interface SearchFilters {
   profile_id?: number;
   min_age?: number;
   max_age?: number;
-  religion?: number;
-  max_education?: number;
-  occupation?: number;
-  country?: string;
-  caste_id?: number;
-  marital_status?: number;
-  gender?: string;
-  location_preference?: string;
-  distance_preference?: number;
+  religion?: number | null;
+  max_education?: number | null;
+  occupation?: number | null;
+  country?: string | null;
+  caste_id?: number | null;
+  marital_status?: number | null;
+  gender?: string | null;
+  // For backward compatibility
+  location_preference?: string | null;
+  distance_preference?: number | null;
   [key: string]: any; // Allow additional properties for flexibility
 }
 
@@ -36,9 +37,17 @@ export interface UserPreferences {
   profile_id?: number;
   min_age?: number;
   max_age?: number;
-  gender?: string;
-  location_preference?: string;
-  distance_preference?: number;
+  gender?: string | null;
+  religion?: number | null;
+  max_education?: number | null;
+  occupation?: number | null;
+  country?: string | null;
+  caste_id?: number | null;
+  marital_status?: number | null;
+  // For backward compatibility
+  location_preference?: string | null;
+  distance_preference?: number | null;
+  created_user?: string;
 }
 
 export interface SearchState {
@@ -98,19 +107,73 @@ export const getUserPreferences = createAsyncThunk(
   async (profileId: number, { rejectWithValue }) => {
     try {
       const response = await api.get(`/profile/search/preferences/${profileId}`);
-      return response.data.data;
+      const data = response.data.data || {};
+      
+      // Map backend response to our frontend structure
+      const preferences: UserPreferences = {
+        profile_id: data.profile_id,
+        min_age: data.min_age,
+        max_age: data.max_age,
+        gender: data.gender,
+        religion: data.religion,
+        max_education: data.max_education,
+        occupation: data.occupation,
+        country: data.location_preference, // Map location_preference to country
+        caste_id: data.caste,
+        marital_status: data.marital_status,
+        created_user: data.created_user
+      };
+      
+      return preferences;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to get user preferences');
+      // If no preferences exist, return empty object instead of error
+      if (error.response?.status === 404) {
+        return {};
+      }
+      return rejectWithValue(error.response?.data?.message || 'Failed to load user preferences');
     }
   }
 );
 
+// Async thunk to save user preferences
 export const saveUserPreferences = createAsyncThunk(
   'search/saveUserPreferences',
   async (preferences: UserPreferences, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/search/preferences', preferences);
-      return response.data.data;
+      // Map frontend structure to backend API expected format
+      const requestData = {
+        profile_id: preferences.profile_id,
+        min_age: preferences.min_age,
+        max_age: preferences.max_age,
+        gender: preferences.gender,
+        religion: preferences.religion,
+        max_education: preferences.max_education,
+        occupation: preferences.occupation,
+        country: preferences.country, // This will be mapped to location_preference in the backend
+        caste: preferences.caste_id,
+        marital_status: preferences.marital_status,
+        created_user: preferences.created_user
+      };
+      
+      const response = await api.post('/profile/search/preferences', requestData);
+      
+      // Map the response back to our frontend structure
+      const responseData = response.data.data || {};
+      const savedPreferences: UserPreferences = {
+        profile_id: responseData.profile_id,
+        min_age: responseData.min_age,
+        max_age: responseData.max_age,
+        gender: responseData.gender,
+        religion: responseData.religion,
+        max_education: responseData.max_education,
+        occupation: responseData.occupation,
+        country: responseData.location_preference, // Map location_preference to country
+        caste_id: responseData.caste,
+        marital_status: responseData.marital_status,
+        created_user: responseData.created_user
+      };
+      
+      return savedPreferences;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to save user preferences');
     }

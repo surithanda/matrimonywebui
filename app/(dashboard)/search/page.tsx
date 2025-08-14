@@ -1,18 +1,33 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import { RootState, AppDispatch } from "@/app/store/store";
 import { searchProfiles, setFilters, clearFilters, SearchFilters, getUserPreferences } from "@/app/store/features/searchSlice";
 import { getMetaDataAsync, getCountriesAsync } from "@/app/store/features/metaDataSlice";
-import profile1 from "@/public/images/dashboard/profile1.png";
+import femaleProfile from "@/public/images/dashboard/profile1.png";
+import maleProfile from "@/public/images/dashboard/profile3.png";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
+import { useProfileContext } from "@/app/utils/useProfileContext";
+import { createFavoriteAsync, deleteFavoriteAsync, getFavoritesAsync } from "@/app/store/features/profileSlice";
+import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
+
+// Custom hook for toggle functionality
+const useToggle = (initialState = false) => {
+  const [state, setState] = useState(initialState);
+  const toggle = useCallback(() => setState(prev => !prev), []);
+  return { isOpen: state, onToggle: toggle, onOpen: () => setState(true), onClose: () => setState(false) };
+};
 
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const searchState = useSelector((state: RootState) => state.search);
   const metaDataState = useSelector((state: RootState) => state.metaData);
+  const { selectedProfileID } = useProfileContext();
+
+  // Use the custom toggle hook
+  const { isOpen: showFilters, onToggle: toggleFilters, onOpen: openFilters, onClose: closeFilters } = useToggle();
   
   // Provide default values to prevent destructuring errors
   const {
@@ -26,16 +41,27 @@ const Page = () => {
     loading: metadataLoading = false
   } = metaDataState || {};
   
-  const [showFilters, setShowFilters] = useState(false);
   // Initialize with default values
   const [localFilters, setLocalFilters] = useState<SearchFilters>({
     min_age: 18,
     max_age: 50,
-    profile_id: 1 // This should come from user's profile
+    profile_id: selectedProfileID // This should come from user's profile
   });
-  
+
   // Track if preferences have been loaded
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
+  const [favorites, setFavorites] = useState<any>([]);
+
+  useEffect(() => {
+      const loadFavorites = async () => {
+        if (selectedProfileID > 0) {
+          const response = await dispatch(getFavoritesAsync({ profileId: selectedProfileID })).unwrap();
+          setFavorites(response.data.map((item: any) => item.to_profile_id));
+        }
+      };
+      console.log(selectedProfileID);
+      loadFavorites();
+    }, [dispatch, selectedProfileID]);
 
   // Load metadata and user preferences on component mount
   useEffect(() => {
@@ -48,6 +74,7 @@ const Page = () => {
           dispatch(getMetaDataAsync({ category: 'profession' })),
           dispatch(getMetaDataAsync({ category: 'gender' })),
           dispatch(getMetaDataAsync({ category: 'marital_status' })),
+          dispatch(getMetaDataAsync({ category: 'caste' })),
           dispatch(getCountriesAsync({}))
         ]);
         
@@ -55,8 +82,8 @@ const Page = () => {
         if (localFilters.profile_id) {
           try {
             const actionResult = await dispatch(getUserPreferences(localFilters.profile_id) as any);
-            const preferences = actionResult?.payload?.data;
-            
+            const preferences = actionResult?.payload;
+            console.log(preferences, actionResult);
             // If we have preferences, update the local filters
             if (preferences) {
               const updatedFilters: SearchFilters = { ...localFilters };
@@ -69,8 +96,7 @@ const Page = () => {
               if (preferences.occupation) updatedFilters.occupation = preferences.occupation;
               if (preferences.marital_status) updatedFilters.marital_status = preferences.marital_status;
               if (preferences.country) updatedFilters.country = preferences.country;
-              if (preferences.location_preference) updatedFilters.location_preference = preferences.location_preference;
-              if (preferences.distance_preference) updatedFilters.distance_preference = preferences.distance_preference;
+              if (preferences.caste_id) updatedFilters.caste_id = preferences.caste_id;
               
               setLocalFilters(updatedFilters);
               
@@ -83,8 +109,7 @@ const Page = () => {
                 !!preferences.occupation ||
                 !!preferences.marital_status ||
                 !!preferences.country ||
-                !!preferences.location_preference ||
-                preferences.distance_preference !== undefined;
+                !!preferences.caste_id;
                 
               if (hasNonDefaultFilters) {
                 dispatch(setFilters(updatedFilters));
@@ -161,6 +186,24 @@ const Page = () => {
     dispatch(clearFilters());
   };
 
+  const handleToggleFavorite = async (profileId: number) => {
+    setFavorites(prev => {
+      if (prev.includes(profileId)) {
+        // await dispatch(deleteFavoriteAsync({
+        //   profileId: selectedProfileID,
+        //   favoriteProfileId: favoriteProfile?.profile_favorite_id,
+        // })).unwrap();
+        return prev.filter(id => id !== profileId);
+      } else {
+        // const result = await dispatch(createFavoriteAsync({
+        //   profileId: selectedProfileID,
+        //   favoriteProfileId: profileId,
+        // })).unwrap();
+        return [...prev, profileId];
+      }
+    });
+  }
+
   // Generate age options
   const ageOptions = Array.from({ length: 63 }, (_, i) => i + 18);
 
@@ -171,7 +214,7 @@ const Page = () => {
         <h2 className="dmserif32600">Search Profiles</h2>
         <div className="flex gap-2">
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={toggleFilters}
             className="white-btn flex gap-2 items-center"
           >
             <svg
@@ -212,7 +255,7 @@ const Page = () => {
                 <select
                   value={localFilters.min_age || 18}
                   onChange={(e) => handleFilterChange('min_age', parseInt(e.target.value))}
-                  className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="">Min Age</option>
                   {ageOptions.map(age => (
@@ -222,7 +265,7 @@ const Page = () => {
                 <select
                   value={localFilters.max_age || 50}
                   onChange={(e) => handleFilterChange('max_age', parseInt(e.target.value))}
-                  className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="">Max Age</option>
                   {ageOptions.map(age => (
@@ -278,7 +321,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Country</label>
               <MetadataSelectComponent
-                type="nationality"
+                type="country"
                 bindValue={localFilters.country || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
                   handleFilterChange('country', e.target.value || undefined)
@@ -289,11 +332,40 @@ const Page = () => {
               />
             </div>
 
+            {/* Gender */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Gender</label>
+              <MetadataSelectComponent
+                type="gender"
+                bindValue={localFilters.gender || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('gender', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                disabled={metadataLoading}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            {/* Caste */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Caste</label>
+              <MetadataSelectComponent
+                type="caste"
+                bindValue={localFilters.caste_id || ''}
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                  handleFilterChange('caste_id', e.target.value ? parseInt(e.target.value) : undefined)
+                }
+                // disabled={metadataLoading || !localFilters.religion}
+                className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
+                data-parent-id={localFilters.religion?.toString()}
+              />
+            </div>
+
             {/* Marital Status */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Marital Status</label>
               <MetadataSelectComponent
-                type="marital status"
+                type="marital_status"
                 bindValue={localFilters.marital_status || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
                   handleFilterChange('marital_status', e.target.value ? parseInt(e.target.value) : undefined)
@@ -337,6 +409,10 @@ const Page = () => {
                   console.log('Profile data:', profile);
                 }
                 
+                const isFavorite = favorites.includes(profile.profile_id);
+                // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites);
+                
+
                 return (
                 <div
                   key={profile.id || profile.profile_id || profile.user_id || index}
@@ -344,18 +420,19 @@ const Page = () => {
                 >
                   <div className="relative">
                     <Image
-                      src={profile.profile_image || profile1}
+                      src={profile.profile_image || profile.gender.toLowerCase() === 'male' ? maleProfile : femaleProfile}
                       alt={profile.first_name || 'Profile'}
                       className="w-full h-64 object-cover"
                       width={300}
                       height={256}
                     />
                     <div className="absolute top-2 right-2">
-                      <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50">
+                      <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50" onClick={() => handleToggleFavorite(profile.profile_id)}>
                         <svg
                           className="w-5 h-5 text-gray-600"
-                          fill="none"
-                          stroke="currentColor"
+                          fill={isFavorite ? "red" : "none"}
+                          stroke="red"
+                          strokeWidth="2"
                           viewBox="0 0 24 24"
                         >
                           <path
@@ -387,7 +464,7 @@ const Page = () => {
                     )}
                     <div className="flex gap-2">
                       <Link 
-                        href={`/profiles/${profile.id || profile.profile_id || profile.user_id || index}`}
+                        href={`/profiles/${profile.id || profile.profile_id || profile.user_id || index}?fromSearch=true`}
                         className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors text-center"
                       >
                         View Profile
@@ -410,7 +487,7 @@ const Page = () => {
               </div>
               {!showFilters && (
                 <button
-                  onClick={() => setShowFilters(true)}
+                  onClick={() => openFilters()}
                   className="black-btn"
                 >
                   Try Different Filters

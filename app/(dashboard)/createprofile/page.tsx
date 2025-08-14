@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { IProfilePersonal } from "@/app/models/Profile";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
-import { ProfileIDContext } from "./_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 // Extended form data interface
 interface FormData extends IProfilePersonal {
@@ -36,7 +36,7 @@ const Page = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
-  const { setSelectedProfileID, selectedProfileID } = useContext(ProfileIDContext);
+  const { setSelectedProfileID, selectedProfileID } = useProfileContext();
 
 
   const dummy = {

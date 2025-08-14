@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getFamilyAsync, createFamilyAsync, updateFamilyAsync, deleteFamilyAsync } from "@/app/store/features/profileSlice";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
 const defaultFamilyMember = {
@@ -37,7 +37,7 @@ const FormSection = ({
   actionButton_label = "Member",
 }) => {
   const router = useRouter();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const { family: familyList, loading: familyLoading, error: familyError } = useAppSelector((state) => state.profile);
   const { control, handleSubmit, reset } = useForm({ defaultValues: { family: [] } });

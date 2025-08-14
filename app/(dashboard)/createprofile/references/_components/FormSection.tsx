@@ -8,7 +8,7 @@ import { getReferenceAsync, createReferenceAsync, updateReferenceAsync, deleteRe
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const defaultReference = {
   id: "",
@@ -29,7 +29,7 @@ const defaultReference = {
 
 const FormSection = () => {
   const router = useRouter();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const { reference: referenceList, loading: referenceLoading, error: referenceError } = useAppSelector((state) => state.profile);
   const { control, handleSubmit, reset } = useForm({ defaultValues: { references: [] } });

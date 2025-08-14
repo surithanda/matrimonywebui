@@ -6,12 +6,15 @@ import { toast } from "react-toastify";
 import { setUser } from "@/app/store/features/authSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/app/store/store";
+import { useProfileContext } from "@/app/utils/useProfileContext";
+import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
 
 const ForgotPassword = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { selectedProfileID, setSelectedProfileID } = useProfileContext();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
@@ -79,6 +82,14 @@ const ForgotPassword = () => {
       }
 
       dispatch(setUser(response.data));
+
+      if(response?.data?.user) {
+        const result = await dispatch(getProfilesByAccountIdAsync(response?.data?.user?.account_id)).unwrap();
+        //fetch profile linked to user account, as we only have 1-1 mapping currently
+        setSelectedProfileID(result?.data?.[0]?.profile_id || 0); 
+      }
+      
+
       toast.success("OTP Verified!", {
         position: "top-right",
         autoClose: 3000,

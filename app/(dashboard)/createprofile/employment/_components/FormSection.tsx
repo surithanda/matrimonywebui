@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 import { formatWithMetaData } from "@/app/utils/utility";
 
 
@@ -34,7 +34,7 @@ const FormSection = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentEmployment, setCurrentEmployment] = useState({ ...defaultEmployment });
 const {loadStates, formatWithMetaData, findJobTitleName} = useMetaDataLoader();
-const { selectedProfileID } = useContext(ProfileIDContext);
+const { selectedProfileID } = useProfileContext();
 
 
   useEffect(() => {

@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'next/navigation'; 
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { loginUserAsync, setLoginResponse } from "@/app/store/features/authSlice";
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Add this import
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter(); 
   const { loading, error } = useSelector((state: any) => state.auth); // Select loading and error state from Redux
+  const { setSelectedProfileID } = useProfileContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,7 +38,7 @@ const LoginForm = () => {
         // Show success toast
         toast.success("Login successful! Redirecting to OTP screen...");
         dispatch(setLoginResponse(response.user)); // Save the login response to Redux
-
+        
         // Navigate to OTP screen upon successful login
         setTimeout(() => {
           router.push(`/otp?email=${encodeURIComponent(formData.email)}`);

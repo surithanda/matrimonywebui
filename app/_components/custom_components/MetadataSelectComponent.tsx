@@ -38,6 +38,8 @@ const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttribu
     const listName = `${type.replace(' ', '')}List`;
     const optionsList = metaData[listName];
 
+    console.log(optionsList, listName)
+
     let customValFunc;
     try {
         customValFunc = eval(`typeof get${type}Val !== 'undefined' ? get${type}Val : undefined`);

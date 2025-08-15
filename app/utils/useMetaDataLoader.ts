@@ -14,8 +14,8 @@ export const useMetaDataLoader = () => {
 
   const loadMetaData = useCallback(async () => {
     try {
-      loadMetaDataCategory('Caste')
-      loadMetaDataCategory('Gender');
+      loadMetaDataCategory('caste')
+      loadMetaDataCategory('gender');
       loadMetaDataCategory('property_type');
       loadMetaDataCategory('photo_type');
       loadMetaDataCategory('ownership_type');
@@ -24,18 +24,18 @@ export const useMetaDataLoader = () => {
       loadMetaDataCategory('employment_status');
       loadMetaDataCategory('education_level');
       loadMetaDataCategory('contact_type');
-      loadMetaDataCategory('Address Type');
-      loadMetaDataCategory('Disability');
-      loadMetaDataCategory('Religion');
-      loadMetaDataCategory('Family');
-      loadMetaDataCategory('Reference');
-      loadMetaDataCategory('Phone Type');
-      loadMetaDataCategory('Marital Status');
-      loadMetaDataCategory('Contact Us');
+      loadMetaDataCategory('address_type');
+      loadMetaDataCategory('disability');
+      loadMetaDataCategory('religion');
+      loadMetaDataCategory('family');
+      loadMetaDataCategory('reference');
+      loadMetaDataCategory('phone_type');
+      loadMetaDataCategory('marital_status');
+      loadMetaDataCategory('contact_us');
 
-      loadMetaDataCategory('Profession');
-      loadMetaDataCategory('Nationality');
-      loadMetaDataCategory('Friend');
+      loadMetaDataCategory('profession');
+      loadMetaDataCategory('nationality');
+      loadMetaDataCategory('friend');
       loadMetaDataCategory('hobby');
       loadMetaDataCategory('interest'); 
 
@@ -80,7 +80,7 @@ export const useMetaDataLoader = () => {
 
   const findCountryName = (compareVal:number):string => {
     let match:any;
-    countryList.map((i:any) => {
+    countryList?.map((i:any) => {
       console.log(i, compareVal)
       if(i.id === compareVal) match = i;
     })
@@ -89,14 +89,14 @@ export const useMetaDataLoader = () => {
   }
   const findStateName = (compareVal:number):string => {
     let match:any;
-    stateList.map((i:any) => {
+    stateList?.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;
   }
   const findJobTitleName = (compareVal:number):string => {
     let match:any;
-    job_titleList.map((i:any) => {
+    job_titleList?.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;
@@ -104,7 +104,7 @@ export const useMetaDataLoader = () => {
 
   const findPropertyTypeName = (compareVal:number):string => {
     let match:any;
-    property_typeList.map((i:any) => {
+    property_typeList?.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;
@@ -112,7 +112,7 @@ export const useMetaDataLoader = () => {
 
   const findOwnershipTypeName = (compareVal:number):string => {
     let match:any;
-    ownership_typeList.map((i:any) => {
+    ownership_typeList?.map((i:any) => {
       if(i.id === compareVal) match = i;
     })
     return match?.name;

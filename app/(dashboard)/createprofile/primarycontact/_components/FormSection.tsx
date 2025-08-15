@@ -5,7 +5,7 @@ import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
@@ -27,7 +27,7 @@ const defaultAddress = {
 const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
   const { control, handleSubmit, reset, register, watch } = useForm({
     defaultValues: { addresses: [] }
   });

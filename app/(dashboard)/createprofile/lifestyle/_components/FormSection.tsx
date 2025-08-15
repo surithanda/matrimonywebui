@@ -4,12 +4,12 @@ import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const FormSection = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
-  const { selectedProfileID } = useContext(ProfileIDContext);
+  const { selectedProfileID } = useProfileContext();
 
   const [selections, setSelections] = useState<{
     profile_lifestyle_id: number | null;

@@ -7,7 +7,7 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ProfileIDContext } from "../../_components/Sidebar";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const defaultEducation = {
   id:"",
@@ -30,7 +30,7 @@ const FormSection = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentEducation, setCurrentEducation] = useState({ ...defaultEducation });
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
-const { selectedProfileID } = useContext(ProfileIDContext);
+const { selectedProfileID } = useProfileContext();
 
   useEffect(() => {
     if(selectedProfileID && selectedProfileID !== 0) {

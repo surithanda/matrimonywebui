@@ -11,6 +11,7 @@ import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlic
 import { decodeJWT } from "@/app/utils/jwtUtils";
 import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { useProfileContext } from "@/app/utils/useProfileContext";
 
 // Profile Data for dynamic rendering
 const profilesData = [
@@ -39,6 +40,7 @@ const ProfileSection = () => {
   const userData = useAppSelector((state) => state.auth.userData);
   const {fetchAccountDetls} = useFetchUser();
   // const {loadMetaData} = useMetaDataLoader();
+   const { selectedProfileID } = useProfileContext();
 
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
@@ -112,7 +114,7 @@ const ProfileSection = () => {
             <h2 className="dmserif32600">Profiles</h2>
             <Link href="/createprofile">
               <button className="px-5 py-3 bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
-                Add Profile
+                {selectedProfileID && selectedProfileID > 0 ? "Update Profile" : "Add Profile"}
               </button>
             </Link>
           </div>

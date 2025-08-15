@@ -188,7 +188,7 @@ const Page = () => {
   const transformFormData = (data: FormData) => {
     const inches = data.height?.trim() ? Number(data.height) : 0;
     return {
-      account_id: userData?.account_id || 5,
+      account_id: userData?.account_id,
       first_name: data.first_name?.trim() || null,
       last_name: data.last_name?.trim() || null,
       middle_name: data.middle_name?.trim() || null,
@@ -226,7 +226,7 @@ const Page = () => {
   const onSubmit = async (data: FormData) => {
     const mappedData = transformFormData(data);
     console.log(mappedData);
-    // return;
+    return;
 
     try {
       const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();

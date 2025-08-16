@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import logo from "/public/images/MainLogo.svg";
 import dp from "/public/images/p-i.png";
@@ -14,11 +14,14 @@ const Navbar = () => {
   const pathname = usePathname();
 
   // Function to check if the current route is active
-  const isActive = (path: string) => {
-    return pathname === path
-      ? "opacity-100 border-b-2 border-gray-950"
-      : "opacity-50 border-b-2 border-white";
-  };
+  const isActive = useCallback(
+    (path: string) => {
+      return pathname === path
+        ? "opacity-100 border-b-2 border-gray-950"
+        : "opacity-50 border-b-2 border-white";
+    },
+    [pathname]
+  );
 
   useEffect(() => {
     if (

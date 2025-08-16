@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const ViewProfileDummy = () => {
   const badgesData = [
@@ -27,12 +28,12 @@ const ViewProfileDummy = () => {
       value: 100,
     },
   ];
-  const ProfileBadge = ({ name, value }) => (
+    const ProfileBadge = ({ name, value }: { name: string, value: number }) => (
     <p className="py-3 px-6 bg-[#FEF6E6] text-slate-600 rounded-md">
       {name} : {value}
     </p>
   );
-  const ProfileSection = ({ title, children }) => {
+    const ProfileSection = ({ title, children }: { title: string, children: React.ReactNode }) => {
     return (
       <div className="bg-[#F3F3F3] mt-10 rounded-xl overflow-hidden">
         <p className="bg-[#2F3C1F] px-6 py-4 text-white text-xl">{title}</p>
@@ -40,7 +41,7 @@ const ViewProfileDummy = () => {
       </div>
     );
   };
-  const ProfileDetail = ({ title, value, colspan = null }) => {
+    const ProfileDetail = ({ title, value, colspan = null }: { title: string, value: string | number, colspan?: number | null }) => {
     return (
       <div className={colspan ? `col-span-${colspan}` : ""}>
         <p className="text- text-slate-500">{title}</p>
@@ -49,11 +50,11 @@ const ViewProfileDummy = () => {
     );
   };
   const profileImages = [
-    "/public/assets/profiles/shruti/1.png",
-    "/public/assets/profiles/shruti/2.png",
-    "/public/assets/profiles/shruti/3.png",
-    "/public/assets/profiles/shruti/4.png",
-    "/public/assets/profiles/shruti/5.png",
+    "/assets/profiles/shruti/1.png",
+    "/assets/profiles/shruti/2.png",
+    "/assets/profiles/shruti/3.png",
+    "/assets/profiles/shruti/4.png",
+    "/assets/profiles/shruti/5.png",
   ];
   return (
     <main className="bg-[url('/assets/bg-pattern.png')] bg-cover pb-10">
@@ -61,10 +62,12 @@ const ViewProfileDummy = () => {
       <div className="bg-[url('/assets/profiles/banner_shruti.png')] h-[380px] bg-cover bg-center bg-no-repeat"></div>
       {/* Porfile Picture */}
       <div className=" -mt-[8%] flex flex-col items-center">
-        <img
+        <Image
           src="/assets/profiles/shruti.png"
-          className="w-[250px] h-[250px] rounded-full border-white border-[15px] border-solid object-cover"
-          alt=""
+          width={250}
+          height={250}
+          className="rounded-full border-white border-[15px] border-solid object-cover"
+          alt="Shruti K profile picture"
         />
         <h3 className="text-4xl font-semibold mt-3 mb-4">Shruti K</h3>
       </div>
@@ -76,8 +79,8 @@ const ViewProfileDummy = () => {
         </div>
         {/* Profile Images */}
         <div className="grid-cols-5 gap-8 grid mt-14 mb-10">
-          {profileImages.map((e) => (
-            <img src={e} alt="" />
+          {profileImages.map((e, index) => (
+            <Image key={e} src={e} alt={`Profile image ${index + 1}`} width={200} height={200} className="object-cover w-full h-full rounded-md" />
           ))}
         </div>
         <div className="border-slate-400 border"></div>
@@ -107,7 +110,7 @@ const ViewProfileDummy = () => {
             <ProfileDetail
               title={"Address"}
               value={"Apt. 459 78727 Littel Estates, Hyderabad"}
-              colspan={"2"}
+              colspan={2}
             />
             <ProfileDetail title={"Mobile"} value={"+91 0123456789"} />
             <ProfileDetail title={"Social Media"} value={"Facebook"} />

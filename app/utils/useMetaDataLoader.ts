@@ -7,10 +7,10 @@ export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
   const {countryList, stateList, job_titleList, property_typeList, ownership_typeList} = useAppSelector((state) => state.metaData);
 
-  const loadMetaDataCategory = async(category:string) => {
+  const loadMetaDataCategory = useCallback(async (category: string) => {
     const result = await dispatch(getMetaDataAsync({ category })).unwrap();
     dispatch(setMetadataCategory({ category, payload: result }));
-  }
+  }, [dispatch]);
 
   const loadMetaData = useCallback(async () => {
     try {
@@ -47,7 +47,7 @@ export const useMetaDataLoader = () => {
     } catch (error) {
       // Handle error if needed
     }
-  }, [dispatch]);
+  }, [dispatch, loadMetaDataCategory]);
 
   const loadStates = useCallback(async (selectedCountry?: string) => {
     try {

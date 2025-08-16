@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
@@ -9,33 +8,51 @@ import MetadataSelectComponent from "@/app/_components/custom_components/Metadat
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { IProfileFamilyReference } from '@/app/models/Profile';
 
-const defaultReference = {
-  id: "",
-  firstname: "",
-  lastname: "",
-  dob: "",
-  contactnumber: "",
-  contactnumber_country: "",
-  email: "",
-  relationshiptoyou: "",
-  address_line: "",
-  city: "",
-  state_id: "",
-  country_id: "",
-  zip: "",
+
+interface IReferenceFieldValue extends IProfileFamilyReference {
+  id?: string;
+  _id?: string; // for react-hook-form
+}
+
+interface IFormValues {
+  references: IReferenceFieldValue[];
+}
+
+const defaultReference: IReferenceFieldValue = {
+  profile_id: 0,
+  reference_type: 0,
+  first_name: '',
+  last_name: '',
+  gender: 0,
+  date_of_birth: new Date(),
+  religion: 0,
+  nationality: 0,
+  caste: 0,
+  marital_status: 0,
+  highest_education: 0,
+  address_line1: '',
+  city: '',
+  state: '',
+  country: '',
+  zip: '',
+  primary_phone: '',
+  can_communicate: false,
+  account_id: 0,
 };
-
 
 const FormSection = () => {
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
-  const { reference: referenceList, loading: referenceLoading, error: referenceError } = useAppSelector((state) => state.profile);
-  const { control, handleSubmit, reset } = useForm({ defaultValues: { references: [] } });
+  const { references: referenceList, loading: referenceLoading, error: referenceError } = useAppSelector((state) => state.profile);
+  const { control, handleSubmit, reset } = useForm<IFormValues>({
+    defaultValues: { references: [] },
+  });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "references" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentReference, setCurrentReference] = useState({ ...defaultReference });
+  const [currentReference, setCurrentReference] = useState<IReferenceFieldValue>({ ...defaultReference });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
@@ -43,10 +60,16 @@ const FormSection = () => {
   // Handle input changes for the local reference form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name === "reference") setCurrentReference((prev) => ({ ...prev, relationshiptoyou: value }));
-    else if (name === "country") {
-      setCurrentReference((prev) => ({ ...prev, country_id: value, state_id: "" }));
+
+    if (name === "reference") {
+      setCurrentReference((prev) => ({ ...prev, reference_type: Number(value) }));
+    } else if (name === "country") {
+      setCurrentReference((prev) => ({ ...prev, country: value, state: "" }));
       loadStates(value);
+    } else if (name === "date_of_birth") {
+      setCurrentReference((prev) => ({ ...prev, date_of_birth: new Date(value) }));
+    } else if (name === "contactnumber") {
+      setCurrentReference((prev) => ({ ...prev, primary_phone: value }));
     } else {
       setCurrentReference((prev) => ({ ...prev, [name]: value }));
     }
@@ -62,24 +85,23 @@ const FormSection = () => {
         replace([]);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProfileID, dispatch]);
+  }, [selectedProfileID, dispatch, replace]);
 
   // Add or update reference in the field array (POST or PUT to backend)
   const handleAddOrUpdate = async () => {
     // Validation: require all key fields
     if (
-      !currentReference.firstname ||
-      !currentReference.lastname ||
-      !currentReference.address_line ||
+      !currentReference.first_name ||
+      !currentReference.last_name ||
+      !currentReference.address_line1 ||
       !currentReference.city ||
-      !currentReference.state_id ||
-      !currentReference.country_id ||
+      !currentReference.state ||
+      !currentReference.country ||
       !currentReference.zip ||
-      !currentReference.dob ||
-      !currentReference.contactnumber ||
+      !currentReference.date_of_birth ||
+      !currentReference.primary_phone ||
       !currentReference.email ||
-      !currentReference.relationshiptoyou
+      !currentReference.reference_type
     ) {
       setError("All fields are required.");
       return;
@@ -123,7 +145,11 @@ const FormSection = () => {
   // Load reference into form for editing
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentReference({ ...fields[index] });
+    const referenceToEdit = fields[index];
+    setCurrentReference({
+      ...referenceToEdit,
+      date_of_birth: new Date(referenceToEdit.date_of_birth), // Ensure it's a Date object
+    });
   };
 
   // Remove reference from backend and local state
@@ -181,16 +207,16 @@ const FormSection = () => {
               <tbody>
                 {fields.map((item, index) => (
                   <tr key={item.id || item._id || index} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2 text-sm">{item.firstname}</td>
-                    <td className="px-3 py-2 text-sm">{item.lastname}</td>
-                    <td className="px-3 py-2 text-sm">{item.dob}</td>
-                    <td className="px-3 py-2 text-sm">{item.contactnumber}</td>
+                    <td className="px-3 py-2 text-sm">{item.first_name}</td>
+                    <td className="px-3 py-2 text-sm">{item.last_name}</td>
+                    <td className="px-3 py-2 text-sm">{new Date(item.date_of_birth).toLocaleDateString()}</td>
+                    <td className="px-3 py-2 text-sm">{item.primary_phone}</td>
                     <td className="px-3 py-2 text-sm">{item.email}</td>
-                    <td className="px-3 py-2 text-sm">{item.relationshiptoyou}</td>
-                    <td className="px-3 py-2 text-sm">{item.address_line}</td>
+                    <td className="px-3 py-2 text-sm">{item.reference_type}</td>
+                    <td className="px-3 py-2 text-sm">{item.address_line1}</td>
                     <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">{item.state_id}</td>
-                    <td className="px-3 py-2 text-sm">{item.country_id}</td>
+                    <td className="px-3 py-2 text-sm">{item.state}</td>
+                    <td className="px-3 py-2 text-sm">{item.country}</td>
                     <td className="px-3 py-2 text-sm">{item.zip}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center">
@@ -211,8 +237,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">First Name</label>
               <input
                 type="text"
-                name="firstname"
-                value={currentReference.firstname}
+                name="first_name"
+                value={currentReference.first_name}
                 onChange={handleInputChange}
                 placeholder="First Name"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -222,8 +248,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Last Name</label>
               <input
                 type="text"
-                name="lastname"
-                value={currentReference.lastname}
+                name="last_name"
+                value={currentReference.last_name}
                 onChange={handleInputChange}
                 placeholder="Last Name"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -235,8 +261,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Date of Birth</label>
               <input
                 type="date"
-                name="dob"
-                value={currentReference.dob}
+                name="date_of_birth"
+                value={currentReference.date_of_birth instanceof Date ? currentReference.date_of_birth.toISOString().split('T')[0] : ''}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -246,8 +272,7 @@ const FormSection = () => {
               <CustomPhoneComponent
                 type="contactnumber"
                 changeHandler={handleInputChange}
-                bindValue={currentReference.contactnumber}
-                bindValue2={currentReference.contactnumber_country}
+                bindValue={currentReference.primary_phone}
                 placeholder="Contact Number"
               />
             </div>
@@ -259,7 +284,7 @@ const FormSection = () => {
                 type="text"
                 name="email"
                 placeholder="Email"
-                value={currentReference.email}
+                value={currentReference.email || ''}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -267,7 +292,7 @@ const FormSection = () => {
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Relationship to you</label>
               <MetadataSelectComponent type='reference' 
-                value={currentReference.relationshiptoyou}
+                value={String(currentReference.reference_type)}
                 onChange={handleInputChange}
               />
             </div>
@@ -277,8 +302,8 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Address</label>
               <input
                 type="text"
-                name="address_line"
-                value={currentReference.address_line}
+                name="address_line1"
+                value={currentReference.address_line1}
                 onChange={handleInputChange}
                 placeholder="Address Line"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -301,7 +326,7 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">State</label>
               <MetadataSelectComponent
                 type="state"
-                value={currentReference.state_id}
+                value={currentReference.state}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -310,7 +335,7 @@ const FormSection = () => {
               <label className="block text-gray-700 mb-2">Country</label>
               <MetadataSelectComponent
                 type="country"
-                value={currentReference.country_id}
+                value={currentReference.country}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />

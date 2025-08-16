@@ -68,7 +68,7 @@ const ViewProfile = () => {
     };
     console.log(accountProfileID);
     loadFavorites();
-  }, [dispatch, accountProfileID]);
+  }, [dispatch, accountProfileID, profileId]);
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections(prev => ({
@@ -173,7 +173,7 @@ const ViewProfile = () => {
         console.error('Error tracking profile view:', error);
       }
     }
-  }, [profileId, fromSearch]);
+  }, [profileId, fromSearch, accountProfileID, dispatch]);
 
   useEffect(() => {
     if (profileId) {

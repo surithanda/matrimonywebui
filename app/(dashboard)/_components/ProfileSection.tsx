@@ -60,7 +60,7 @@ const ProfileSection = () => {
     else if(userData && userData?.email) fetchAccountDetls();
     
     // loadMetaData();
-  },[]);
+  },[userData, fetchAccountDetls]);
         
   const faqData = [
     {

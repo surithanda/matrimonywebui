@@ -5,9 +5,26 @@ import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+
+interface IEducation {
+  id: string | number;
+  education_level: number;
+  year_completed: string | number;
+  institution_name: string;
+  address_line1: string;
+  city: string;
+  zip: string;
+  field_of_study: number;
+  state_id?: number;
+  country_id?: number;
+}
+
+interface IFormValues {
+  educations: IEducation[];
+}
 
 const defaultEducation = {
   id:"",
@@ -16,8 +33,8 @@ const defaultEducation = {
   institution_name: "",
   address_line1: "",
   city: "",
-  state: "",
-  country: "",
+  state_id: 0,
+  country_id: 0,
   zip: "",
   field_of_study: 1
 };
@@ -25,48 +42,50 @@ const defaultEducation = {
 const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
-  const { control, handleSubmit, reset } = useForm({ defaultValues: { educations: [] } });
+    const { control, handleSubmit, reset } = useForm<IFormValues>({ defaultValues: { educations: [] } });
   const { fields, append, remove, update } = useFieldArray({ control, name: "educations" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentEducation, setCurrentEducation] = useState({ ...defaultEducation });
+    const [currentEducation, setCurrentEducation] = useState<IEducation>({ ...defaultEducation });
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
 const { selectedProfileID } = useProfileContext();
 
+  const fetchProfileData = useCallback(async () => {
+    const data = {
+      profile_id: selectedProfileID,
+    };
+    try {
+      const result = await dispatch(getEducationAsync(data)).unwrap();
+
+            if (result?.success && result.data) {
+        reset({ educations: result.data });
+      }
+    } catch (err: any) {
+      console.error("Error getting profile address details:", err);
+    }
+  }, [dispatch, reset, selectedProfileID]);
+
   useEffect(() => {
-    if(selectedProfileID && selectedProfileID !== 0) {
+    if (selectedProfileID && selectedProfileID !== 0) {
       loadStates();
       fetchProfileData();
     }
-  }, [selectedProfileID])
+  }, [selectedProfileID, fetchProfileData, loadStates]);
 
-  const fetchProfileData = async() => {
-      const data = {
-        profile_id: selectedProfileID
-      }
-      try {
-        const result = await dispatch(getEducationAsync(data)).unwrap();
-        
-        // console.log(result)
-        if (result?.success) {
-          reset(result?.data);
-          // const educations = formatWithMetaData(result?.data?.educations);
-          // const formattedData = {
-          //   ...result?.data,
-          //   educations
-          // }
-          // reset(formattedData);
-        }
-      } catch (err: any) {
-        // toast.error(err.message || "Failed to fetch profile address");
-        console.error("Error getting profile address details:", err);
-      }
-    }
 
   // Handle input changes for the local education form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setCurrentEducation((prev) => ({ ...prev, [name]: value }));
-    if(name === 'country') loadStates(e.target.value);
+  };
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const countryId = parseInt(e.target.value, 10);
+    setCurrentEducation(prev => ({ ...prev, country_id: countryId, state_id: 0 })); // Reset state when country changes
+    loadStates(countryId.toString());
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentEducation(prev => ({ ...prev, state_id: parseInt(e.target.value, 10) }));
   };
 
   // Add or update education in the field array
@@ -109,9 +128,9 @@ const { selectedProfileID } = useProfileContext();
     }
   };
 
-  const proceedwithAddUpdate = (updateID?:any) => {
+    const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of record being added/updated
-    const updatedData = updateID ? { ...currentEducation, id: updateID } : { ...currentEducation };
+        const updatedData = updateID ? { ...currentEducation, id: String(updateID) } : { ...currentEducation };
     if (editIndex !== null) {
       update(editIndex, updatedData);
       setEditIndex(null);
@@ -185,8 +204,8 @@ const { selectedProfileID } = useProfileContext();
                     <td className="px-3 py-2 text-sm">{item.year_completed}</td>
                     <td className="px-3 py-2 text-sm">{item.address_line1}</td>
                     <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">{findStateName(item?.state || item?.state_id)}</td>
-                    <td className="px-3 py-2 text-sm">{findCountryName(item?.country || item?.country_id)}</td>
+                                        <td className="px-3 py-2 text-sm">{findStateName(Number(item?.state_id || 0))}</td>
+                    <td className="px-3 py-2 text-sm">{findCountryName(Number(item?.country_id || 0))}</td>
                     <td className="px-3 py-2 text-sm">{item.zip}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center">
@@ -251,13 +270,13 @@ const { selectedProfileID } = useProfileContext();
               className="account-input-field w-1/4"
             />
             <MetadataSelectComponent type='state' 
-              value={currentEducation.state}
-              onChange={handleInputChange}
+              value={currentEducation.state_id || ''}
+              onChange={handleStateChange}
               className="account-input-field w-1/4 "
             />
             <MetadataSelectComponent type='country' 
-              value={currentEducation.country}
-              onChange={handleInputChange}
+              value={currentEducation.country_id || ''}
+              onChange={handleCountryChange}
               className="account-input-field w-1/4 "
             />
             {/* <input

@@ -6,29 +6,31 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 
+interface ILifestyleSelections {
+  profile_lifestyle_id: number | null;
+  eatingHabit: string;
+  dietHabit: string;
+  cigarettesPerDay: string;
+  drinkFrequency: string;
+  gamblingEngage: string;
+  physicalActivityLevel: string;
+  relaxationMethods: string;
+}
+
 const FormSection = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
 
-  const [selections, setSelections] = useState<{
-    profile_lifestyle_id: number | null;
-    eatingHabit: string | null;
-    dietHabit: string | null;
-    cigarettesPerDay: string | null;
-    drinkFrequency: string | null;
-    gamblingEngage: string | null;
-    physicalActivityLevel: string | null;
-    relaxationMethods: string | null;
-  }>({
+  const [selections, setSelections] = useState<ILifestyleSelections>({
     profile_lifestyle_id: null,
-    eatingHabit: null,
-    dietHabit: null,
-    cigarettesPerDay: null,
-    drinkFrequency: null,
-    gamblingEngage: null,
-    physicalActivityLevel: null,
-    relaxationMethods: null,
+    eatingHabit: "",
+    dietHabit: "",
+    cigarettesPerDay: "",
+    drinkFrequency: "",
+    gamblingEngage: "",
+    physicalActivityLevel: "",
+    relaxationMethods: "",
   });
 
   // Define categories and their options
@@ -43,7 +45,7 @@ const FormSection = () => {
   };
 
   // Mapping category labels to state keys
-  const categoryMapping: { [key: string]: keyof typeof selections } = {
+    const categoryMapping: { [key: string]: keyof ILifestyleSelections } = {
     "What best describes your eating habits?": "eatingHabit",
     "Do you follow any specific diet plan?": "dietHabit",
     "How many cigarettes do you smoke per day on average?": "cigarettesPerDay",
@@ -82,13 +84,11 @@ const FormSection = () => {
     try {
       let result;
       if (requestData.profile_lifestyle_id) {
-        console.log("Updating lifestyle with ID:", requestData.profile_lifestyle_id);
-        router.push("/createprofile/family");
-        // result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
+        result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
       } else {
         result = await dispatch(createLifestyleAsync(requestData)).unwrap();
         if (result && result.status === 'success') {
-          setSelections({...selections, profile_lifestyle_id: result.id});
+          setSelections({ ...selections, profile_lifestyle_id: result.id });
         }
       }
       if (result) {
@@ -101,32 +101,28 @@ const FormSection = () => {
   };
 
   // Helper to determine if a button should be selected
-  const isOptionSelected = (category: string, option: string, idx: number, options: string[]) => {
+  const isOptionSelected = (category: string, option: string) => {
     const key = categoryMapping[category];
-    const selected = selections[key];
-    if (selected && selected.toLowerCase() === "no") {
-      return idx === options.length - 1;
-    }
-    return option?.search(selected) !== -1;
+    return selections[key] === option;
   };
 
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(getLifestyleAsync({ profile_id: selectedProfileID })).then((result: any) => {
-      if (result?.payload?.data) {
-        const data = result.payload.data?.lifestyles[0];
-        // console.log("Fetched lifestyle data:", data);
-        setSelections(prev => ({
-          ...prev,
-          profile_lifestyle_id: data.profile_lifestyle_id,
-          eatingHabit: data.eating_habit || prev.eatingHabit,
-          dietHabit: data.diet_habit || prev.dietHabit,
-          cigarettesPerDay: data.cigarettes_per_day || prev.cigarettesPerDay,
-          drinkFrequency: data.drink_frequency || prev.drinkFrequency,
-          gamblingEngage: data.gambling_engage || prev.gamblingEngage,
-          physicalActivityLevel: data.physical_activity_level || prev.physicalActivityLevel,
-          relaxationMethods: data.relaxation_methods || prev.relaxationMethods,
-        }));
+    dispatch(getLifestyleAsync({ profile_id: selectedProfileID })).then((result) => {
+      if (result.payload?.success && result.payload.data) {
+        const data = result.payload.data.lifestyles?.[0];
+        if (data) {
+          setSelections({
+            profile_lifestyle_id: data.profile_lifestyle_id,
+            eatingHabit: data.eating_habit || "",
+            dietHabit: data.diet_habit || "",
+            cigarettesPerDay: data.cigarettes_per_day || "",
+            drinkFrequency: data.drink_frequency || "",
+            gamblingEngage: data.gambling_engage || "",
+            physicalActivityLevel: data.physical_activity_level || "",
+            relaxationMethods: data.relaxation_methods || "",
+          });
+        }
       }
     });
   }, [selectedProfileID, dispatch]);
@@ -143,7 +139,7 @@ const FormSection = () => {
                   key={option}
                   onClick={() => handleSelection(category, option)}
                   className={`w-[185px] flex p-3 items-start gap-2 flex-[1_0_0] rounded-lg border border-gray-300 font-medium ${
-                    isOptionSelected(category, option, idx, options)
+                    isOptionSelected(category, option)
                       ? "bg-gradient-to-b from-yellow-400 to-orange-500 text-black"
                       : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
                   }`}

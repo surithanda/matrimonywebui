@@ -7,6 +7,10 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getHobbiesInterestsAsync, addHobbyAsync, removeHobbyAsync, addInterestAsync, removeInterestAsync } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 
+interface HobbyInterestData {
+  hobby_interest_name: string;
+}
+
 // const hobbySuggestions = [
 //   "Reading", "Traveling", "Cooking", "Gardening", "Photography", "Painting", "Dancing", "Music", "Sports", "Writing", "Fishing", "Hiking", "Cycling", "Yoga", "Crafts"
 // ];
@@ -37,25 +41,19 @@ const [hobbies, setHobbies] = useState<string[]>([]);
   // Fetch properties from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'hobby' })).then((result: any) => {
-      if (result.payload?.data) {
-        setHobbies(
-          result.payload.data?.hobby_interests
-            ?.map((hobby: any) => hobby.hobby_interest_name)
-            ?.filter((name: string | null | undefined) => !!name && typeof name === 'string' && name.trim() !== "")
-        );
+
+    dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'hobby' })).then((result) => {
+      if (result.payload?.success && Array.isArray(result.payload.data)) {
+        const hobbyNames = result.payload.data.map((h: HobbyInterestData) => h.hobby_interest_name).filter(Boolean) as string[];
+        setHobbies(hobbyNames);
       }
     });
-    dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'interest' })).then((result: any) => {
-      if (result.payload?.data) {
-        setInterests(
-          result.payload.data?.hobby_interests
-            ?.map((interest: any) => interest.hobby_interest_name)
-            ?.filter((name: string | null | undefined) => !!name && typeof name === 'string' && name.trim() !== "")
-        );
+    dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'interest' })).then((result) => {
+      if (result.payload?.success && Array.isArray(result.payload.data)) {
+        const interestNames = result.payload.data.map((i: HobbyInterestData) => i.hobby_interest_name).filter(Boolean) as string[];
+        setInterests(interestNames);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProfileID, dispatch]);
 
   // Autosuggest handlers
@@ -86,40 +84,24 @@ const [hobbies, setHobbies] = useState<string[]>([]);
       return;
     }
     
-    let selection;
-    if (type === "hobbies") {
-      selection = hobbyList.reduce((acc, curr) => {
-        if (curr.name === value) {
-          // setLocalError("Hobby already exists.");
-          acc = curr;
-        }
-        return acc;
-      }, {id: "", name: ""});
-    }
-    else {
-      selection = interestList.reduce((acc, curr) => {
-        if (curr.name === value) {
-          // setLocalError("Interest already exists.");
-          acc = curr;
-        }
-        return acc;
-      }, {id: "", name: ""});
-    }
+        const selection = type === "hobbies" 
+      ? hobbyList.find(item => item.name === value)
+      : interestList.find(item => item.name === value);
     
     setLocalError(null);
     if (type === "hobbies") {
-      if (!value.trim() || hobbies?.includes(selection.name.trim())) return;
+          if (!selection || !value.trim() || hobbies?.includes(selection.name.trim())) return;
       try {
-        await dispatch(addHobbyAsync({ profile_id: selectedProfileID, hobby: selection?.id })).unwrap();
+              await dispatch(addHobbyAsync({ profile_id: selectedProfileID, hobby: String(selection.id) })).unwrap();
         setHobbies(prev => [...prev, selection.name.trim()]);
         setValue("hobbyInput", "");
       } catch (err: any) {
         setLocalError(err.message || "Error adding hobby");
       }
     } else {
-      if (!value.trim() || interests?.includes(selection.name.trim())) return;
+          if (!selection || !value.trim() || interests?.includes(selection.name.trim())) return;
       try {
-        await dispatch(addInterestAsync({ profile_id: selectedProfileID, hobby: selection?.id })).unwrap();
+              await dispatch(addInterestAsync({ profile_id: selectedProfileID, hobby: String(selection.id) })).unwrap();
         setInterests(prev => [...prev, selection.name.trim()]);
         setValue("interestInput", "");
       } catch (err: any) {
@@ -208,7 +190,7 @@ const [hobbies, setHobbies] = useState<string[]>([]);
                 >
                   {hobby}
                   <button
-                    // onClick={() => removeTag("hobbies", index)}
+                    onClick={() => removeTag("hobbies", index)}
                     disabled={loading}
                     className="ml-2 text-red-500 font-bold hover:text-red-700"
                   >
@@ -252,7 +234,7 @@ const [hobbies, setHobbies] = useState<string[]>([]);
                 >
                   {interest}
                   <button
-                    // onClick={() => removeTag("interests", index)}
+                    onClick={() => removeTag("interests", index)}
                     disabled={loading}
                     className="ml-2 text-red-500 font-bold hover:text-red-700"
                   >

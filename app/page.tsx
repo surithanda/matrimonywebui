@@ -43,7 +43,7 @@ export default function Home() {
 
   useEffect(() => {
     loadMetaData()
-  }, []);
+  }, [loadMetaData]);
 
   return (
     <div className="relative overflow-hidden">

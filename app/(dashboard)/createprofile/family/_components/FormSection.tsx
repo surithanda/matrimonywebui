@@ -9,7 +9,28 @@ import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhon
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
-const defaultFamilyMember = {
+interface IFamilyMember {
+  id: string;
+  firstname: string;
+  lastname: string;
+  dob: string;
+  contactnumber: string;
+  contactnumber_country: string;
+  email: string;
+  relationshiptoyou: string;
+  address_line: string;
+  city: string;
+  state_id: number;
+  country_id: number;
+  zip: string;
+  _id?: string; // for react-hook-form
+}
+
+interface IFormValues {
+  family: IFamilyMember[];
+}
+
+const defaultFamilyMember: IFamilyMember = {
   id: "",
   firstname: "",
   lastname: "",
@@ -20,8 +41,8 @@ const defaultFamilyMember = {
   relationshiptoyou: "",
   address_line: "",
   city: "",
-  state_id: "",
-  country_id: "",
+  state_id: 0,
+  country_id: 0,
   zip: "",
 };
 
@@ -40,24 +61,25 @@ const FormSection = ({
   const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const { family: familyList, loading: familyLoading, error: familyError } = useAppSelector((state) => state.profile);
-  const { control, handleSubmit, reset } = useForm({ defaultValues: { family: [] } });
+    const { control, handleSubmit, reset } = useForm<IFormValues>({ defaultValues: { family: [] } });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "family" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentFamilyMember, setCurrentFamilyMember] = useState({ ...defaultFamilyMember });
+    const [currentFamilyMember, setCurrentFamilyMember] = useState<IFamilyMember>({ ...defaultFamilyMember });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
 
-
   // Handle input changes for the local family member form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name === "family") setCurrentFamilyMember((prev) => ({ ...prev, relationshiptoyou: value }));
-    else if (name === "country") {
-      setCurrentFamilyMember((prev) => ({ ...prev, country_id: value, state_id: "" }));
+    if (name === "relationshiptoyou") {
+      setCurrentFamilyMember((prev) => ({ ...prev, relationshiptoyou: value }));
+    } else if (name === "country_id") {
+      const countryId = parseInt(value, 10);
+      setCurrentFamilyMember((prev) => ({ ...prev, country_id: countryId, state_id: 0 }));
       loadStates(value);
-    } else if (name === "state") {
-      setCurrentFamilyMember((prev) => ({ ...prev, state_id: value }));
+    } else if (name === "state_id") {
+      setCurrentFamilyMember((prev) => ({ ...prev, state_id: parseInt(value, 10) }));
     } else {
       setCurrentFamilyMember((prev) => ({ ...prev, [name]: value }));
     }
@@ -67,29 +89,27 @@ const FormSection = ({
   // Fetch family members from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(getFamilyAsync({ profile_id: selectedProfileID, type: category })).then((result: any) => {
-      console.log("Fetched family members:", result.payload?.data);
-      if (result.payload?.data) {
-        const formattedData = result.payload.data?.family?.map((item: any) => ({
-          ...item,
+                    dispatch(getFamilyAsync({ profile_id: selectedProfileID, type: category })).then((result: any) => {
+      if (result.payload?.success && result.payload.data) {
+        const formattedData = result.payload.data.map((item: any) => ({
           id: item.profile_family_reference_id,
-          relationshiptoyou: item.reference_type,
           firstname: item.first_name,
           lastname: item.last_name,
           dob: item.date_of_birth,
+          contactnumber: item.primary_phone,
+          contactnumber_country: item.contactnumber_country, // Assuming this field exists
+          email: item.email,
+          relationshiptoyou: item.reference_type,
           address_line: item.address_line1,
           city: item.city,
-          state: item.state,
-          country: item.country,
+          state_id: item.state_id,
+          country_id: item.country_id,
           zip: item.zip,
-          contactnumber: item.primary_phone,
-          email: item.email,
         }));
-        reset({...result.payload.data, family: formattedData || [] });
+        reset({ family: formattedData || [] });
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProfileID, dispatch]);
+  }, [selectedProfileID, dispatch, category, reset]);
 
   // Add or update family member in the field array (POST or PUT to backend)
   const handleAddOrUpdate = async () => {
@@ -136,9 +156,9 @@ const FormSection = ({
     }
   };
 
-  const proceedwithAddUpdate = (updateID?: any) => {
+    const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of record being added/updated
-    const updatedData = updateID ? { ...currentFamilyMember, id: updateID } : { ...currentFamilyMember };
+        const updatedData = updateID ? { ...currentFamilyMember, id: String(updateID) } : { ...currentFamilyMember };
     if (editIndex !== null) {
       update(editIndex, updatedData);
       setEditIndex(null);
@@ -211,7 +231,7 @@ const FormSection = ({
               </thead>
               <tbody>
                 {fields.map((item, index) => (
-                  <tr key={item.id || item._id || index} className="border-b border-gray-100 hover:bg-gray-50">
+                                    <tr key={item._id || item.id || index} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="px-3 py-2 text-sm">{item.firstname}</td>
                     <td className="px-3 py-2 text-sm">{item.lastname}</td>
                     <td className="px-3 py-2 text-sm">{item.relationshiptoyou}</td>
@@ -295,7 +315,9 @@ const FormSection = ({
             </div>
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Relationship to you</label>
-              <MetadataSelectComponent type={category} 
+                            <MetadataSelectComponent
+                type={category}
+                name="relationshiptoyou"
                 value={currentFamilyMember.relationshiptoyou}
                 onChange={handleInputChange}
                 disabled={loading}
@@ -331,8 +353,9 @@ const FormSection = ({
             </div>
             <div className="w-[32%] md:mb-4">
               <label className="block text-gray-700 mb-2">State</label>
-              <MetadataSelectComponent
+                            <MetadataSelectComponent
                 type="state"
+                name="state_id"
                 value={currentFamilyMember.state_id}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -341,8 +364,9 @@ const FormSection = ({
             </div>
             <div className="w-[32%] md:mb-4">
               <label className="block text-gray-700 mb-2">Country</label>
-              <MetadataSelectComponent
+                            <MetadataSelectComponent
                 type="country"
+                name="country_id"
                 value={currentFamilyMember.country_id}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"

@@ -57,7 +57,7 @@ const { selectedProfileID } = useProfileContext();
       const result = await dispatch(getEducationAsync(data)).unwrap();
 
             if (result?.success && result.data) {
-        reset({ educations: result.data });
+        reset({ educations: result.data?.educations });
       }
     } catch (err: any) {
       console.error("Error getting profile address details:", err);

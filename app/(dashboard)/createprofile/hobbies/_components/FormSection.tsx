@@ -43,14 +43,14 @@ const [hobbies, setHobbies] = useState<string[]>([]);
     if (!selectedProfileID) return;
 
     dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'hobby' })).then((result) => {
-      if (result.payload?.success && Array.isArray(result.payload.data)) {
-        const hobbyNames = result.payload.data.map((h: HobbyInterestData) => h.hobby_interest_name).filter(Boolean) as string[];
+      if (result.payload?.success && Array.isArray(result.payload.data?.hobby_interests)) {
+        const hobbyNames = result.payload.data?.hobby_interests.map((h: HobbyInterestData) => h.hobby_interest_name).filter(Boolean) as string[];
         setHobbies(hobbyNames);
       }
     });
     dispatch(getHobbiesInterestsAsync({ profile_id: selectedProfileID, category: 'interest' })).then((result) => {
-      if (result.payload?.success && Array.isArray(result.payload.data)) {
-        const interestNames = result.payload.data.map((i: HobbyInterestData) => i.hobby_interest_name).filter(Boolean) as string[];
+      if (result.payload?.success && Array.isArray(result.payload.data?.hobby_interests)) {
+        const interestNames = result.payload.data?.hobby_interests.map((i: HobbyInterestData) => i.hobby_interest_name).filter(Boolean) as string[];
         setInterests(interestNames);
       }
     });

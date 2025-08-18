@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from '../../../store/store';
 import { registerUserAsync } from '../../../store/features/registerSlice';
 import { ToastContainer, toast, Slide } from 'react-toastify';
@@ -7,15 +7,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'; 
 import { getStatesAsync, setMetadataCategory } from "@/app/store/features/metaDataSlice";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { use } from "chai";
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.register);
   const { countryList, stateList, genderList } = useAppSelector((state) => state.metaData);
   const router = useRouter(); 
+  const {loadNecessaryMetaData, loadStates} = useMetaDataLoader();
 
-
-  const {loadStates} = useMetaDataLoader();
+  useEffect(() => {
+    loadNecessaryMetaData();
+  }, [loadNecessaryMetaData]);
 
   // const loadStates = async(selectedCountry:string) => {
   //   let result = await dispatch(getStatesAsync({"country":selectedCountry})).unwrap();
@@ -58,7 +61,7 @@ const Register = () => {
       first_name: requestData.first_name || "",
       last_name: requestData.last_name || "",
       birth_date: requestData.birth_date || "",
-      gender: requestData.gender || 1,
+      gender: requestData.gender,
       address_line1: requestData.address_line1 || "",
       city: requestData.city || "",
       state: requestData.state || "",
@@ -95,29 +98,6 @@ const Register = () => {
       return;
     }
     
-    // accountData.email, // email
-    //     hashedPassword, // user_pwd
-    //     accountData.first_name,
-    //     accountData.middle_name || null,
-    //     accountData.last_name,
-    //     accountData.birth_date,
-    //     accountData.gender,
-    //     accountData.primary_phone,
-    //     accountData.primary_phone_country,
-    //     accountData.primary_phone_type,
-    //     accountData.secondary_phone || null,
-    //     accountData.secondary_phone_country || null,
-    //     accountData.secondary_phone_type || null,
-    //     accountData.address_line1,
-    //     accountData.address_line2 || null,
-    //     accountData.city,
-    //     accountData.state,
-    //     accountData.zip,
-    //     accountData.country,
-    //     accountData.photo || null,
-    //     accountData.secret_question || null,
-    //     accountData.secret_answer || null
-
     const mappedData = mapRequestToStoredProcedure({
       email: formData.email,
       password: formData.password,
@@ -125,7 +105,7 @@ const Register = () => {
       middle_name: formData.middleName,
       last_name: formData.lastName,
       birth_date: formData.birthDate,
-      gender: formData.gender === 'Male' ? 1 : formData.gender === 'Female' ? 2 : 3,
+      gender: formData.gender,
       address_line1: formData.address,
       city: formData.city,
       state: formData.state,
@@ -268,7 +248,7 @@ const Register = () => {
                 >
                   <option value="">Select Gender</option>
                    {genderList && genderList?.map((item: any) => (
-                    <option key={item.id} value={item.name}>
+                    <option key={item.id} value={item.id}>
                       {item.name}
                     </option>
                   ))}

@@ -56,7 +56,7 @@ const FormSection = () => {
       const result = await dispatch(getEmploymentAsync(data)).unwrap();
 
             if (result?.success && result.data) {
-        reset({ employments: result.data });
+        reset({ employments: result.data?.employments });
       }
     } catch (err: any) {
       console.error("Error getting profile employment details:", err);

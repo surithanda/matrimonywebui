@@ -89,9 +89,9 @@ const FormSection = ({
   // Fetch family members from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-                    dispatch(getFamilyAsync({ profile_id: selectedProfileID, type: category })).then((result: any) => {
+    dispatch(getFamilyAsync({ profile_id: selectedProfileID, type: category })).then((result: any) => {
       if (result.payload?.success && result.payload.data) {
-        const formattedData = result.payload.data.map((item: any) => ({
+        const formattedData = result.payload.data?.family?.map((item: any) => ({
           id: item.profile_family_reference_id,
           firstname: item.first_name,
           lastname: item.last_name,

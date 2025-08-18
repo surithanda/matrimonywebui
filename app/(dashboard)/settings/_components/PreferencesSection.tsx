@@ -54,12 +54,12 @@ const PreferencesSection = () => {
   }, [dispatch, selectedProfileID]);
 
   // Load metadata
-  const { loadMetaData } = useMetaDataLoader();
+  // const { loadMetaData } = useMetaDataLoader();
 
   // Load metadata and preferences on component mount
-  useEffect(() => {
-    loadMetaData();
-  }, [loadMetaData]);
+  // useEffect(() => {
+  //   loadMetaData();
+  // }, [loadMetaData]);
 
   // Update local state when userPreferences are loaded
   useEffect(() => {

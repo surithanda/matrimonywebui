@@ -407,7 +407,7 @@ const Page = () => {
           {/* Marital Status */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Marital Status</label>
-            <MetadataSelectComponent type='marital status' 
+            <MetadataSelectComponent type='marital_status' 
               {...register("marital_status")}
                value={watch("marital_status")} 
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"

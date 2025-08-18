@@ -84,9 +84,9 @@ const ForgotPassword = () => {
       dispatch(setUser(response.data));
 
       if(response?.data?.user) {
-        const result = await dispatch(getProfilesByAccountIdAsync(response?.data?.user?.account_id)).unwrap();
-        //fetch profile linked to user account, as we only have 1-1 mapping currently
-        setSelectedProfileID(result?.data?.[0]?.profile_id || 0); 
+  const result: any = await (dispatch as any)(getProfilesByAccountIdAsync(response?.data?.user?.account_id)).unwrap();
+  //fetch profile linked to user account, as we only have 1-1 mapping currently
+  setSelectedProfileID(result?.data?.[0]?.profile_id || 0); 
       }
       
 
@@ -105,8 +105,15 @@ const ForgotPassword = () => {
       } else
       router.push("/dashboard");
     } catch (error: any) {
-      console.error("OTP Verification failed:", error.response?.data?.message || error.message);
-      setError(error.response?.data?.message || "An error occurred while verifying the OTP.");
+      let message = "An error occurred while verifying the OTP.";
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const err = error as { response?: { data?: { message?: string } } };
+        message = err.response?.data?.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      console.error("OTP Verification failed:", message);
+      setError(message);
     } finally {
       setLoading(false);
     }

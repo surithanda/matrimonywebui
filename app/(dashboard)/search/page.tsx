@@ -187,7 +187,7 @@ const Page = () => {
   };
 
   const handleToggleFavorite = async (profileId: number) => {
-    setFavorites(prev => {
+    setFavorites((prev: number[]) => {
       if (prev.includes(profileId)) {
         // await dispatch(deleteFavoriteAsync({
         //   profileId: selectedProfileID,

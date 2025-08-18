@@ -67,7 +67,7 @@ const FormSection = () => {
       const result = await dispatch(getAddressAsync(data)).unwrap();
 
             if (result?.success && result.data) {
-        reset({ addresses: result.data });
+        reset({ addresses: result.data?.addresses });
       }
     } catch (err: any) {
       console.error("Error getting profile address details:", err);
@@ -196,7 +196,6 @@ const FormSection = () => {
                   <th className="px-3 py-2 text-left">State</th>
                   <th className="px-3 py-2 text-left">Country</th>
                   <th className="px-3 py-2 text-left">Zip</th>
-                  <th className="px-3 py-2 text-left">Phone</th>
                   <th className="px-3 py-2 text-center">Actions</th>
                 </tr>
               </thead>
@@ -205,10 +204,9 @@ const FormSection = () => {
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 text-base">
                     <td className="px-3 py-2">{item.address_line1}</td>
                     <td className="px-3 py-2">{item.city}</td>
-                                        <td className="px-3 py-2">{findStateName(item.state_id ?? item.state ?? 0)}</td>
-                                        <td className="px-3 py-2">{findCountryName(item.country_id ?? item.country ?? 0)}</td>
+                    <td className="px-3 py-2">{findStateName(item.state_id ?? item.state ?? 0)}</td>
+                    <td className="px-3 py-2">{findCountryName(item.country_id ?? item.country ?? 0)}</td>
                     <td className="px-3 py-2">{item.zip}</td>
-                    <td className="px-3 py-2">{item.phone}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center" >
                         <button type="button" 

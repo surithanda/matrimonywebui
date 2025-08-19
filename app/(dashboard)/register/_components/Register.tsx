@@ -332,7 +332,7 @@ const Register = () => {
                 >
                   <option value="">Select Country</option>
                   {countryList && countryList?.map((country: any) => (
-                    <option key={country.country_id} value={country.country_name}>
+                    <option key={country.country_id} value={country.country_id}>
                       {country.country_name}
                     </option>
                   ))}

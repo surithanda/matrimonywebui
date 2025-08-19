@@ -9,11 +9,20 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfileProperty } from "@/app/models/Profile";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
-const defaultProperty = {
+interface IPropertyFieldValue extends IProfileProperty {
+  id?: string;
+  _id?: string; // for react-hook-form
+}
+
+interface IFormValues {
+  properties: IPropertyFieldValue[];
+}
+
+const defaultProperty: IPropertyFieldValue = {
   profile_id: null,
   property_type: -1,
   ownership_type: -1,
-  property_value: "",
+  property_value: null,
   property_description: "",
   property_address: "",
 };
@@ -23,10 +32,10 @@ const FormSection = () => {
   const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
   const { properties, loading, error } = useAppSelector((state) => state.profile);
-  const { control, handleSubmit, reset } = useForm({ defaultValues: { properties: [] } });
+    const { control, handleSubmit, reset } = useForm<IFormValues>({ defaultValues: { properties: [] } });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "properties" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentProperty, setCurrentProperty] = useState({ ...defaultProperty });
+    const [currentProperty, setCurrentProperty] = useState<IPropertyFieldValue>({ ...defaultProperty });
   const [localError, setLocalError] = useState<string | null>(null);
   const {findPropertyTypeName, findOwnershipTypeName} = useMetaDataLoader();
 
@@ -134,8 +143,7 @@ const FormSection = () => {
         reset(result.payload.data);
       } 
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProfileID, dispatch]);
+  }, [selectedProfileID, dispatch, reset]);
 
   return (
     <section className="md:py-5 w-4/5">
@@ -160,8 +168,8 @@ const FormSection = () => {
               <tbody>
                 {fields.map((item, index) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="px-3 py-2 text-sm">{findPropertyTypeName(item.property_type)}</td>
-                    <td className="px-3 py-2 text-sm">{findOwnershipTypeName(item.ownership_type)}</td>
+                                        <td className="px-3 py-2 text-sm">{findPropertyTypeName(item.property_type ?? -1)}</td>
+                                        <td className="px-3 py-2 text-sm">{findOwnershipTypeName(item.ownership_type ?? -1)}</td>
                     <td className="px-3 py-2 text-sm">{item.property_value}</td>
                     <td className="px-3 py-2 text-sm">{item.property_description}</td>
                     <td className="px-3 py-2 text-sm">{item.property_address}</td>
@@ -183,7 +191,7 @@ const FormSection = () => {
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Property Type</label>
               <MetadataSelectComponent type='property_type' 
-                value={currentProperty.property_type}
+                                value={currentProperty.property_type ?? -1}
                 onChange={handleInputChange}
               />
               {/* <select
@@ -203,7 +211,7 @@ const FormSection = () => {
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Ownership Type</label>
               <MetadataSelectComponent type='ownership_type' 
-                value={currentProperty.ownership_type}
+                                value={currentProperty.ownership_type ?? -1}
                 onChange={handleInputChange}
               />
               {/* <select
@@ -238,7 +246,7 @@ const FormSection = () => {
               <input
                 type="text"
                 name="property_value"
-                value={currentProperty.property_value}
+                                value={currentProperty.property_value ?? ''}
                 onChange={handleInputChange}
                 placeholder="Area in sq. ft."
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"

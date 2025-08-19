@@ -90,7 +90,7 @@ const initialState: MetaState = {
   casteList: [],
   stateList: [],
   countryList: [],
-  propertytypeList: [],
+  property_typeList: [],
   photo_typeList: [],
   ownership_typeList: [],
   job_titleList: [],
@@ -161,7 +161,7 @@ const metaDataSlice = createSlice({
       const {category, payload} = action.payload;
       const formattedCategory = category.toLowerCase().replace(' ', '');
       // Dynamically set the category list based on the category name
-      state[`${formattedCategory}List`] = payload;
+      (state as any)[`${formattedCategory}List`] = payload;
       state.error = null;
     },
     

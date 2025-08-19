@@ -68,7 +68,7 @@ const ViewProfile = () => {
     };
     console.log(accountProfileID);
     loadFavorites();
-  }, [dispatch, accountProfileID]);
+  }, [dispatch, accountProfileID, profileId]);
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections(prev => ({
@@ -173,7 +173,7 @@ const ViewProfile = () => {
         console.error('Error tracking profile view:', error);
       }
     }
-  }, [profileId, fromSearch]);
+  }, [profileId, fromSearch, accountProfileID, dispatch]);
 
   useEffect(() => {
     if (profileId) {
@@ -394,7 +394,7 @@ const ViewProfile = () => {
   };
 
   const renderFamily = () => {
-    const familyList = family?.data?.family || (family ? [family] : []);
+    const familyList = (family as any)?.data?.family || (family ? [family] : []);
     
     return (
       <ProfileSection title="Family Information">
@@ -507,7 +507,7 @@ const ViewProfile = () => {
   };
 
   const renderReferences = () => {
-    const referencesList = references?.data?.family || (references ? [references] : []);
+    const referencesList = (references as any)?.data?.family || (references ? [references] : []);
     
     return (
       <ProfileSection title="References">

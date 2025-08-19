@@ -1,6 +1,6 @@
 "use client";
 import { Loader2 } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { createPersonalProfileAsync, getPersonalProfileAsync } from "@/app/store/features/profileSlice";
@@ -79,17 +79,13 @@ const Page = () => {
     defaultValues: {}
   });
 
-  useEffect(() => {
-    if(selectedProfileID && selectedProfileID !== 0) fetchProfileData();
-  }, [selectedProfileID])
-
-  const fetchProfileData = async() => {
+  const fetchProfileData = useCallback(async () => {
     const data = {
-      profile_id: selectedProfileID
-    }
+      profile_id: selectedProfileID,
+    };
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
-      
+
       if (result) {
         reset(result?.data);
       }
@@ -97,41 +93,11 @@ const Page = () => {
       toast.error(err.message || "Failed to fetch profile");
       console.error("Error getting profile details:", err);
     }
-  }
+  }, [dispatch, reset, selectedProfileID]);
 
-  // useEffect(() => {
-  //   if (userData) {
-  //     reset(userData);
-  //   }
-  // }, [userData, reset]);
-
-  // Option arrays for dropdown fields
-  // const maritalStatusOptions = [
-  //   { value: "1", label: "Single" },
-  //   { value: "2", label: "Married" },
-  //   { value: "3", label: "Divorced" },
-  //   { value: "4", label: "Widowed" },
-  // ];
-
-  // const religionOptions = [
-  //   { value: "1", label: "Christianity" },
-  //   { value: "2", label: "Islam" },
-  //   { value: "3", label: "Hinduism" },
-  //   { value: "4", label: "Buddhism" },
-  //   { value: "5", label: "Other" },
-  // ];
-
-  // const nationalityOptions = [
-  //   { value: "1", label: "American" },
-  //   { value: "2", label: "Canadian" },
-  //   { value: "3", label: "Indian" },
-  // ];
-
-  // const casteOptions = [
-  //   { value: "1", label: "Brahmin" }, 
-  //   { value: "2", label: "Dalit" },   
-  //   { value: "3", label: "WASP" },    ,
-  // ];
+  useEffect(() => {
+    if (selectedProfileID && selectedProfileID !== 0) fetchProfileData();
+  }, [selectedProfileID, fetchProfileData]);
 
   const complexionOptions = [
     { value: "1", label: "Fair" },
@@ -141,13 +107,6 @@ const Page = () => {
     { value: "5", label: "Dark" },
   ];
 
-  // const disabilityOptions = [
-  //   { value: "0", label: "None" },
-  //   { value: "1", label: "Visual Impairment" },
-  //   { value: "2", label: "Hearing Impairment" },
-  //   { value: "3", label: "Mobility Impairment" },
-  //   { value: "4", label: "Cognitive Impairment" },
-  // ];
 
   const professionOptions = [
     { value: "1", label: "Engineer" },
@@ -186,9 +145,9 @@ const Page = () => {
 
   // Transform form data to API payload
   const transformFormData = (data: FormData) => {
-    const inches = data.height?.trim() ? Number(data.height) : 0;
+    const inches = data.height ? Number(data.height) : 0;
     return {
-      account_id: userData?.account_id || 5,
+      account_id: userData?.account_id,
       first_name: data.first_name?.trim() || null,
       last_name: data.last_name?.trim() || null,
       middle_name: data.middle_name?.trim() || null,
@@ -207,7 +166,7 @@ const Page = () => {
       caste: data.caste ? Number(data.caste) : null,
       height_inches: inches || null,
       height_cms: inches ? Math.round(inches * 2.54) : null,
-      weight: data.weight?.trim() ? Number(data.weight) : null,
+      weight: data.weight ? Number(data.weight) : null,
       weight_units: data.weight_units?.trim() || "kg",
       complexion: data.complexion ? Number(data.complexion) : null,
       linkedin: data.linkedin?.trim() || null,
@@ -226,7 +185,7 @@ const Page = () => {
   const onSubmit = async (data: FormData) => {
     const mappedData = transformFormData(data);
     console.log(mappedData);
-    // return;
+    return;
 
     try {
       const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();
@@ -448,7 +407,7 @@ const Page = () => {
           {/* Marital Status */}
           <div className="w-[49%] md:mb-4">
             <label className="block text-gray-700 mb-2">Marital Status</label>
-            <MetadataSelectComponent type='marital status' 
+            <MetadataSelectComponent type='marital_status' 
               {...register("marital_status")}
                value={watch("marital_status")} 
               className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"

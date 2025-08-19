@@ -3,11 +3,30 @@ import { createAddressAsync, createPersonalProfileAsync, getAddressAsync } from 
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+
+interface IAddress {
+  id: string;
+  city: string;
+  state: number;
+  country: number;
+  zip: string;
+  address_line1: string;
+  address_line2: string;
+  landmark1: string;
+  landmark2: string;
+  phone?: string;
+  state_id?: number;
+  country_id?: number;
+}
+
+interface IFormData {
+  addresses: IAddress[];
+}
 
 
 const defaultAddress = {
@@ -28,7 +47,7 @@ const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
   const { selectedProfileID } = useProfileContext();
-  const { control, handleSubmit, reset, register, watch } = useForm({
+  const { control, handleSubmit, reset, register, watch } = useForm<IFormData>({
     defaultValues: { addresses: [] }
   });
   const { fields, append, remove, update } = useFieldArray({
@@ -36,40 +55,38 @@ const FormSection = () => {
     name: "addresses"
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentAddress, setCurrentAddress] = useState({ ...defaultAddress });
+    const [currentAddress, setCurrentAddress] = useState<IAddress>({ ...defaultAddress });
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
   const {countryList} = useAppSelector((state) => state.metaData);
 
-  useEffect(() => {
-    if(selectedProfileID && selectedProfileID !== 0) loadStates();
-    if(selectedProfileID && selectedProfileID !== 0 && countryList) fetchProfileAddress();
-  }, [selectedProfileID, countryList])
+  const fetchProfileAddress = useCallback(async () => {
+    const data = {
+      profile_id: selectedProfileID,
+    };
+    try {
+      const result = await dispatch(getAddressAsync(data)).unwrap();
 
-  const fetchProfileAddress = async() => {
-      const data = {
-        profile_id: selectedProfileID
+            if (result?.success && result.data) {
+        reset({ addresses: result.data?.addresses });
       }
-      try {
-        const result = await dispatch(getAddressAsync(data)).unwrap();
-        
-        if (result?.success) {
-          // const addresses = formatWithMetaData(result?.data?.addresses);
-          // const formattedData = {
-          //   ...result?.data,
-          //   addresses
-          // }
-          reset(result?.data);
-        }
-      } catch (err: any) {
-        // toast.error(err.message || "Failed to fetch profile address");
-        console.error("Error getting profile address details:", err);
+    } catch (err: any) {
+      console.error("Error getting profile address details:", err);
+    }
+  }, [dispatch, reset, selectedProfileID]);
+
+  useEffect(() => {
+    if (selectedProfileID && selectedProfileID !== 0) {
+      loadStates();
+      if (countryList) {
+        fetchProfileAddress();
       }
     }
+  }, [selectedProfileID, countryList, loadStates, fetchProfileAddress]);
 
   // When editing, load the address into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentAddress(fields[index]);
+        setCurrentAddress(fields[index] as IAddress);
   };
 
   // Add or update address
@@ -127,9 +144,9 @@ const FormSection = () => {
     }
   };
 
-  const proceedwithAddUpdate = (updateID?:any) => {
+    const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of the address being added/updated
-    const updatedAddress = updateID ? { ...currentAddress, id: updateID } : { ...currentAddress };
+        const updatedAddress = updateID ? { ...currentAddress, id: String(updateID) } : { ...currentAddress };
     if (editIndex !== null) {
       update(editIndex, updatedAddress);
       setEditIndex(null);
@@ -147,7 +164,7 @@ const FormSection = () => {
   };
 
   // On submit, save all addresses
-  const onSubmit = async (data: any) => {
+    const onSubmit = async (data: IFormData) => {
     // for (const address of fields) {
     //   const addressData = {
     //     profile_id: 51, // Replace with dynamic value if needed
@@ -179,7 +196,6 @@ const FormSection = () => {
                   <th className="px-3 py-2 text-left">State</th>
                   <th className="px-3 py-2 text-left">Country</th>
                   <th className="px-3 py-2 text-left">Zip</th>
-                  <th className="px-3 py-2 text-left">Phone</th>
                   <th className="px-3 py-2 text-center">Actions</th>
                 </tr>
               </thead>
@@ -188,10 +204,9 @@ const FormSection = () => {
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 text-base">
                     <td className="px-3 py-2">{item.address_line1}</td>
                     <td className="px-3 py-2">{item.city}</td>
-                    <td className="px-3 py-2">{findStateName(item?.state || item?.state_id)}</td>
-                    <td className="px-3 py-2">{findCountryName(item?.country || item?.country_id)}</td>
+                    <td className="px-3 py-2">{findStateName(item.state_id ?? item.state ?? 0)}</td>
+                    <td className="px-3 py-2">{findCountryName(item.country_id ?? item.country ?? 0)}</td>
                     <td className="px-3 py-2">{item.zip}</td>
-                    <td className="px-3 py-2">{item.phone}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center" >
                         <button type="button" 

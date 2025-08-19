@@ -23,7 +23,7 @@ type componentProps = {
     {name: 'Other', value: 3}
   ]
 
-  const getgenderVal = (name) => {
+  const getgenderVal = (name: string) => {
     let match;
     genderRefArr.map((item) => {
       if(item.name.toLowerCase() === name.toLowerCase()) match = item;
@@ -36,7 +36,7 @@ const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttribu
     const { type, bindValue, changeHandler, custSelectValue = false,  dontUseID = false, ...rest } = props;
     const metaData = useAppSelector((state) => state.metaData);
     const listName = `${type.replace(' ', '')}List`;
-    const optionsList = metaData[listName];
+    const optionsList = (metaData as any)[listName];
 
     console.log(optionsList, listName)
 

@@ -7,40 +7,92 @@ export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
   const {countryList, stateList, job_titleList, property_typeList, ownership_typeList} = useAppSelector((state) => state.metaData);
 
-  const loadMetaDataCategory = async(category:string) => {
-    const result = await dispatch(getMetaDataAsync({ category })).unwrap();
+  const loadMetaDataCategory = useCallback(async (category?: string) => {
+    const result = await (dispatch as any)(getMetaDataAsync({ category })).unwrap();
     dispatch(setMetadataCategory({ category, payload: result }));
-  }
+  }, [dispatch]);
+  
+  const categories: string[] = [
+    'caste',
+    'gender',
+    'property_type',
+    'photo_type',
+    'ownership_type',
+    'job_title',
+    'field_of_study',
+    'employment_status',
+    'education_level',
+    'contact_type',
+    'address_type',
+    'disability',
+    'religion',
+    'family',
+    'reference',
+    'phone_type',
+    'marital_status',
+    'contact_us',
+    'profession',
+    'nationality',
+    'friend',
+    'hobby',
+    'interest'
+  ];
+
+  const loadIndividualMetaData = useCallback(async () => {
+    try {
+      categories.forEach(category => {
+        loadMetaDataCategory(category);
+      });
+
+      loadCountries();
+    } catch (error) {
+      // Handle error if needed
+    }
+  }, [dispatch, loadMetaDataCategory]);
+
+  const loadNecessaryMetaData = useCallback(async () => {
+    try {
+      loadMetaDataCategory('gender');
+      loadCountries();
+    } catch (error) {
+      // Handle error if needed
+    }
+  }, [dispatch, loadMetaDataCategory]);
 
   const loadMetaData = useCallback(async () => {
     try {
-      loadMetaDataCategory('caste')
-      loadMetaDataCategory('gender');
-      loadMetaDataCategory('property_type');
-      loadMetaDataCategory('photo_type');
-      loadMetaDataCategory('ownership_type');
-      loadMetaDataCategory('job_title');
-      loadMetaDataCategory('field_of_study');
-      loadMetaDataCategory('employment_status');
-      loadMetaDataCategory('education_level');
-      loadMetaDataCategory('contact_type');
-      loadMetaDataCategory('address_type');
-      loadMetaDataCategory('disability');
-      loadMetaDataCategory('religion');
-      loadMetaDataCategory('family');
-      loadMetaDataCategory('reference');
-      loadMetaDataCategory('phone_type');
-      loadMetaDataCategory('marital_status');
-      loadMetaDataCategory('contact_us');
+      const result = await (dispatch as any)(getMetaDataAsync({ category: null })).unwrap();
+      console.log("Metadata loaded:", result);
+      
+      // Group the data by category
+      const groupedByCategory: { [key: string]: any[] } = {};
+      
+      result.forEach((item: any) => {
+        const category = item.category;
+        if (!groupedByCategory[category]) {
+          groupedByCategory[category] = [];
+        }
+        groupedByCategory[category].push(item);
+      });
+      
+      // Dispatch each category separately
+      Object.keys(groupedByCategory).forEach(category => {
+        dispatch(setMetadataCategory({ 
+          category, 
+          payload: groupedByCategory[category] 
+        }));
+      });
+      
+      loadCountries();
+    } catch (error) {
+      // Handle error if needed
+    }
+  }, [dispatch, loadMetaDataCategory]);
 
-      loadMetaDataCategory('profession');
-      loadMetaDataCategory('nationality');
-      loadMetaDataCategory('friend');
-      loadMetaDataCategory('hobby');
-      loadMetaDataCategory('interest'); 
-
-      const result = await dispatch(getCountriesAsync({})).unwrap();
-      const modifiedResult = result.map((item) => {
+  const loadCountries = useCallback(async () => {
+    try {
+      let result = await (dispatch as any)(getCountriesAsync({})).unwrap();
+      const modifiedResult = result.map((item: any) => {
         return {...item, id:item.country_id, name:item.country_name}
       })
       dispatch(setMetadataCategory({ category: 'country', payload: modifiedResult }));
@@ -51,8 +103,8 @@ export const useMetaDataLoader = () => {
 
   const loadStates = useCallback(async (selectedCountry?: string) => {
     try {
-      let result = await dispatch(getStatesAsync({ country: selectedCountry || null })).unwrap();
-      const modifiedResult = result.map((item) => {
+      let result = await (dispatch as any)(getStatesAsync({ country: selectedCountry || null })).unwrap();
+      const modifiedResult = result.map((item: any) => {
         return {...item, id:item.state_id, name:item.state_name}
       })
       dispatch(setMetadataCategory({ category: 'state', payload: modifiedResult }));
@@ -119,7 +171,10 @@ export const useMetaDataLoader = () => {
   }
 
   return { 
+    loadIndividualMetaData,
+    loadNecessaryMetaData,
     loadMetaData, 
+    loadCountries,
     loadStates, 
     formatWithMetaData,
     findCountryName,

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from 'react-toastify';
@@ -29,9 +29,9 @@ const FormSection = () => {
   const { selectedProfileID } = useProfileContext();
 
   // Helper to compute total number of photos
-  const getTotalPhotos = () => {
+  const totalPhotos = useMemo(() => {
     return (profileImage ? 1 : 0) + (coverImage ? 1 : 0) + individualImages.length;
-  };
+  }, [profileImage, coverImage, individualImages]);
 
   // Clean up object URLs when component unmounts or images change
   useEffect(() => {
@@ -63,7 +63,7 @@ const FormSection = () => {
     if (!file) return;
 
     // Only count as addition if there's no image yet (i.e. it's not a replacement)
-    if (!currentImage && getTotalPhotos() >= 8) {
+    if (!currentImage && totalPhotos >= 8) {
       toast.error('Maximum of 8 photos reached');
       return;
     }
@@ -77,13 +77,13 @@ const FormSection = () => {
     const url = URL.createObjectURL(file);
     setImage({ url, file });
     setError(null);
-  }, [getTotalPhotos]);
+  }, [totalPhotos]);
 
   // For uploading multiple individual images
   const handleMultipleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
 
-    const remaining = 8 - getTotalPhotos();
+    const remaining = 8 - totalPhotos;
     if (remaining <= 0) {
       toast.error('Maximum of 8 photos reached');
       return;
@@ -108,7 +108,7 @@ const FormSection = () => {
       setIndividualImages(prev => [...prev, ...validFiles]);
       setError(null);
     }
-  }, [getTotalPhotos]);
+  }, [totalPhotos]);
 
   const removeImage = useCallback((image: ImageFile | null, setImage: (value: ImageFile | null) => void) => {
     if (image) {
@@ -282,7 +282,7 @@ const FormSection = () => {
             </div>
           ))}
           
-          {getTotalPhotos() < 8 && (
+          {totalPhotos < 8 && (
             <div className="border-2 border-dashed rounded-lg w-[200px] h-[250px] flex justify-center items-center bg-gray-50">
               <label className="cursor-pointer text-gray-500 text-center p-4">
                 <input
@@ -297,7 +297,7 @@ const FormSection = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   <p className="text-sm">Add Photos</p>
-                  <p className="text-xs">({8 - getTotalPhotos()} remaining)</p>
+                  <p className="text-xs">({8 - totalPhotos} remaining)</p>
                 </div>
               </label>
             </div>
@@ -310,7 +310,7 @@ const FormSection = () => {
           <div className="flex gap-4">
             <button
               type="submit"
-              disabled={isLoading || getTotalPhotos() === 0}
+              disabled={isLoading || totalPhotos === 0}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Saving...' : 'Save Photos'}

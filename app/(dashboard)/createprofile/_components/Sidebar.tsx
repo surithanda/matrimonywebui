@@ -17,11 +17,7 @@ import {
   FaLink,
 } from "react-icons/fa";
 
-const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("Personal");
-  const { selectedProfileID } = useProfileContext();
-
-  const menuItems = [
+const menuItems = [
     { name: "Personal", icon: <FaUser />, link: "/createprofile", disabled: false },
     {
       name: "Primary Contact",
@@ -45,15 +41,19 @@ const Sidebar = () => {
     // { name: "Partner", icon: <FaLink />, link: "/createprofile/partner" },
   ];
 
+const Sidebar = () => {
+  const [activeItem, setActiveItem] = useState("Personal");
+  const { selectedProfileID } = useProfileContext();
+
+
   const [menu, setMenu] = useState(menuItems);
   
   useEffect(() => {
     if(selectedProfileID) {
-      let refreshedMenuItems;
-      if(selectedProfileID > 0) 
-        refreshedMenuItems = menuItems.map((item) => {return {...item, disabled: false}})
-      else
-        refreshedMenuItems = menuItems.map((item, index) => {return {...item, disabled: index === 0 ? false : true}})
+      const refreshedMenuItems = menuItems.map((item, index) => ({
+        ...item,
+        disabled: selectedProfileID > 0 ? false : index !== 0,
+      }));
 
       setMenu(refreshedMenuItems);
     }

@@ -12,18 +12,6 @@ import MetadataSelectComponent from "@/app/_components/custom_components/Metadat
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 
-// Simple debounce implementation as fallback
-const debounce = (func: Function, wait: number) => {
-  let timeout: NodeJS.Timeout;
-  return function executedFunction(...args: any[]) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
 
 // interface PreferencesSectionProps {
 //   profileId?: number;
@@ -58,7 +46,7 @@ const PreferencesSection = () => {
     if (selectedProfileID && dispatch) {
       try {
         dispatch(getUserPreferences(selectedProfileID) as any);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error loading preferences:', error);
         setSaveStatus({ type: 'error', message: 'Failed to load preferences' });
       }
@@ -66,12 +54,12 @@ const PreferencesSection = () => {
   }, [dispatch, selectedProfileID]);
 
   // Load metadata
-  const { loadMetaData } = useMetaDataLoader();
+  // const { loadMetaData } = useMetaDataLoader();
 
   // Load metadata and preferences on component mount
-  useEffect(() => {
-    loadMetaData();
-  }, [loadMetaData]);
+  // useEffect(() => {
+  //   loadMetaData();
+  // }, [loadMetaData]);
 
   // Update local state when userPreferences are loaded
   useEffect(() => {
@@ -110,19 +98,6 @@ const PreferencesSection = () => {
   //   }
   // }, [userPreferences]);
 
-  // Debounced save function
-  const debouncedSave = useCallback(
-    debounce((preferences: UserPreferences) => {
-      try {
-        if (dispatch && preferences) {
-          dispatch(saveUserPreferences(preferences) as any);
-        }
-      } catch (error) {
-        console.error('Error saving preferences:', error);
-      }
-    }, 1000),
-    [dispatch]
-  );
 
   // Handle preference changes with auto-save
   const handlePreferenceChange = (field: string, value: any) => {
@@ -166,9 +141,7 @@ const PreferencesSection = () => {
       // Save to server
       const result = await dispatch(saveUserPreferences(preferences) as any).unwrap();
       
-    // Auto-save with debounce
-    // debouncedSave(updatedPreferences);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving preferences:', error);
       setSaveStatus({ 
         type: 'error', 
@@ -182,12 +155,12 @@ const PreferencesSection = () => {
   const handleMinAgeChange = (value: number) => handlePreferenceChange('min_age', value);
   const handleMaxAgeChange = (value: number) => handlePreferenceChange('max_age', value);
   const handleGenderChange = (value: string) => handlePreferenceChange('gender', value);
-  const handleReligionChange = (value: number) => handlePreferenceChange('religion', value);
-  const handleMaxEducationChange = (value: number) => handlePreferenceChange('max_education', value);
-  const handleOccupationChange = (value: number) => handlePreferenceChange('occupation', value);
+  const handleReligionChange = (value: number | null) => handlePreferenceChange('religion', value);
+  const handleMaxEducationChange = (value: number | null) => handlePreferenceChange('max_education', value);
+  const handleOccupationChange = (value: number | null) => handlePreferenceChange('occupation', value);
   const handleCountryChange = (value: string) => handlePreferenceChange('country', value);
-  const handleCasteChange = (value: number) => handlePreferenceChange('caste_id', value);
-  const handleMaritalStatusChange = (value: number) => handlePreferenceChange('marital_status', value);
+  const handleCasteChange = (value: number | null) => handlePreferenceChange('caste_id', value);
+  const handleMaritalStatusChange = (value: number | null) => handlePreferenceChange('marital_status', value);
 
   return (
     <>

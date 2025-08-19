@@ -5,65 +5,71 @@ import { createEmploymentAsync, getEmploymentAsync } from "@/app/store/features/
 import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { formatWithMetaData } from "@/app/utils/utility";
 
+interface IEmployment {
+  id: string | number;
+  institution_name: string;
+  address_line1: string;
+  city: string;
+  state_id: number;
+  country_id: number;
+  zip: string;
+  start_year: string;
+  end_year: string;
+  job_title_id: number;
+  last_salary_drawn: string;
+}
 
-const defaultEmployment = {
-  id:"",
+const defaultEmployment: IEmployment = {
+  id: "",
   institution_name: "",
   address_line1: "",
   city: "",
-  state: "",
-  country: "",
+  state_id: 0,
+  country_id: 0,
   zip: "",
   start_year: "",
   end_year: "",
-  job_title: "",
+  job_title_id: 0,
   last_salary_drawn: "",
 };
 
 const FormSection = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
-  const { control, handleSubmit, reset } = useForm({ defaultValues: { employments: [] } });
+  const { control, handleSubmit, reset } = useForm<{ employments: IEmployment[] }>({ defaultValues: { employments: [] } });
   const { fields, append, remove, update } = useFieldArray({ control, name: "employments" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentEmployment, setCurrentEmployment] = useState({ ...defaultEmployment });
-const {loadStates, formatWithMetaData, findJobTitleName} = useMetaDataLoader();
-const { selectedProfileID } = useProfileContext();
+  const [currentEmployment, setCurrentEmployment] = useState<IEmployment>({ ...defaultEmployment });
+    const { loadStates, findCountryName, findStateName, findJobTitleName } = useMetaDataLoader();
+  const { selectedProfileID } = useProfileContext();
 
+  const fetchProfileData = useCallback(async () => {
+    const data = {
+      profile_id: selectedProfileID,
+    };
+    try {
+      const result = await dispatch(getEmploymentAsync(data)).unwrap();
+
+            if (result?.success && result.data) {
+        reset({ employments: result.data?.employments });
+      }
+    } catch (err: any) {
+      console.error("Error getting profile employment details:", err);
+    }
+    }, [dispatch, reset, selectedProfileID]);
 
   useEffect(() => {
-    if(selectedProfileID && selectedProfileID !== 0) {
+    if (selectedProfileID && selectedProfileID !== 0) {
       loadStates();
       fetchProfileData();
     }
-  }, [selectedProfileID])
+  }, [selectedProfileID, fetchProfileData, loadStates]);
 
-  const fetchProfileData = async() => {
-      const data = {
-        profile_id: selectedProfileID
-      }
-      try {
-        const result = await dispatch(getEmploymentAsync(data)).unwrap();
-        
-        if (result?.success) {
-          // const employments = formatWithMetaData(result?.data?.employments);
-          // const formattedData = {
-          //   ...result?.data,
-          //   employments
-          // }
-          reset(result?.data);
-        }
-      } catch (err: any) {
-        // toast.error(err.message || "Failed to fetch profile address");
-        console.error("Error getting profile employment details:", err);
-      }
-    }
 
 
   // Handle input changes for the local employment form
@@ -73,10 +79,14 @@ const { selectedProfileID } = useProfileContext();
     if(name === 'country') loadStates(e.target.value);
   };
 
+  const handleJobTitleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentEmployment((prev) => ({ ...prev, job_title_id: Number(e.target.value) }));
+  };
+
   // Add or update employment in the field array
   const handleAddOrUpdate = async() => {
     // Prevent adding empty employment
-    if (!currentEmployment.institution_name && !currentEmployment.job_title && !currentEmployment.start_year && !currentEmployment.end_year) {
+    if (!currentEmployment.institution_name && !currentEmployment.job_title_id && !currentEmployment.start_year && !currentEmployment.end_year) {
       return;
     }
 
@@ -113,9 +123,9 @@ const { selectedProfileID } = useProfileContext();
     }
   };
   
-  const proceedwithAddUpdate = (updateID?:any) => {
+    const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of record being added/updated
-    const updatedData = updateID ? { ...currentEmployment, id: updateID } : { ...currentEmployment };
+        const updatedData = updateID ? { ...currentEmployment, id: String(updateID) } : { ...currentEmployment };
     if (editIndex !== null) {
       update(editIndex, updatedData);
       setEditIndex(null);
@@ -129,7 +139,7 @@ const { selectedProfileID } = useProfileContext();
   // Load employment into form for editing
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentEmployment({ ...fields[index] });
+    setCurrentEmployment(fields[index] as IEmployment);
   };
 
   // Remove employment and clear form if editing
@@ -184,7 +194,7 @@ const { selectedProfileID } = useProfileContext();
                 {fields.map((item, index) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="px-3 py-2 text-sm">{item.institution_name}</td>
-                    <td className="px-3 py-2 text-sm">{findJobTitleName(item?.job_title || item?.job_title_id)}</td>
+                                        <td className="px-3 py-2 text-sm">{findJobTitleName(Number(item?.job_title_id || 0))}</td>
                     <td className="px-3 py-2 text-sm">{item.start_year}</td>
                     <td className="px-3 py-2 text-sm">{item.end_year}</td>
                     <td className="px-3 py-2 text-sm">{item.last_salary_drawn}</td>
@@ -220,18 +230,11 @@ const { selectedProfileID } = useProfileContext();
             <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Job Title</label>
               <MetadataSelectComponent type='job_title' 
-                value={currentEmployment.job_title}
-                onChange={handleInputChange}
+                value={currentEmployment.job_title_id}
+                onChange={handleJobTitleChange}
+                name="job_title_id"
                 className="account-input-field w-full stretch"
               />
-              {/* <input
-                type="text"
-                name="job_title"
-                value={currentEmployment.job_title}
-                onChange={handleInputChange}
-                placeholder="Job Title"
-                className="account-input-field stretch w-full"
-              /> */}
             </div>
           </div>
           <div className="flex w-full justify-between mt-4">
@@ -292,8 +295,10 @@ const { selectedProfileID } = useProfileContext();
               className="account-input-field w-1/4"
             />
             
-            <MetadataSelectComponent type='state' 
-              value={currentEmployment.state}
+                        <MetadataSelectComponent
+              type="state"
+              name="state_id"
+              value={currentEmployment.state_id || ""}
               onChange={handleInputChange}
               className="account-input-field w-1/4 "
             />
@@ -313,8 +318,10 @@ const { selectedProfileID } = useProfileContext();
               placeholder="Country"
               className="account-input-field w-1/4"
             /> */}
-            <MetadataSelectComponent type='country' 
-              value={currentEmployment.country}
+                        <MetadataSelectComponent
+              type="country"
+              name="country_id"
+              value={currentEmployment.country_id || ""}
               onChange={handleInputChange}
               className="account-input-field w-1/4 "
             />

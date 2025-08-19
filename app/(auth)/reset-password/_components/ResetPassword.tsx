@@ -1,11 +1,10 @@
 //No use of this code yet
 "use client";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useCallback } from "react";
 import { resetPasswordAsync } from "@/app/store/features/authSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/app/store/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 
 const ResetPassword = () => {
   const [passwords, setPasswords] = useState({
@@ -13,20 +12,19 @@ const ResetPassword = () => {
     new_password: "",
     confirm_new_password: "",
   });
-  const dispatch = useDispatch();
-    const { loginResponse, user, forgotPasswordhistory_id } = useAppSelector((state) => state.auth);
-  const history_id = loginResponse?.history_id || 0;
+  const dispatch: AppDispatch = useAppDispatch();
+  const { forgotPasswordhistory_id, email } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPasswords((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (passwords.new_password !== passwords.confirm_new_password) {
@@ -36,15 +34,16 @@ const ResetPassword = () => {
 
     try {
       await dispatch(resetPasswordAsync({
-        history_id,
+        history_id: forgotPasswordhistory_id,
+        email,
         ...passwords
-      }) as any).unwrap();
+      })).unwrap();
       toast.success("Password reset successfully!");
       router.push("/login");
     } catch (error: any) {
-      toast.error(error || "Failed to reset password");
+      toast.error(error.message || "Failed to reset password");
     }
-  };
+  }, [dispatch, passwords, forgotPasswordhistory_id, email, router]);
 
   return (
     <div className="account-details-box w-1/2 text-left">

@@ -16,7 +16,7 @@ import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
   const [state, setState] = useState(initialState);
-  const toggle = useCallback(() => setState(prev => !prev), []);
+  const toggle = useCallback(() => setState(prev => !prev), [setState]);
   return { isOpen: state, onToggle: toggle, onOpen: () => setState(true), onClose: () => setState(false) };
 };
 
@@ -135,7 +135,7 @@ const Page = () => {
     return () => {
       // Any cleanup if needed
     };
-  }, [dispatch, localFilters.profile_id]);
+  }, [dispatch, localFilters]);
 
   // Handle filter changes with type safety
   const handleFilterChange = (key: keyof SearchFilters, value: string | number | undefined) => {
@@ -187,7 +187,7 @@ const Page = () => {
   };
 
   const handleToggleFavorite = async (profileId: number) => {
-    setFavorites(prev => {
+    setFavorites((prev: number[]) => {
       if (prev.includes(profileId)) {
         // await dispatch(deleteFavoriteAsync({
         //   profileId: selectedProfileID,

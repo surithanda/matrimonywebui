@@ -2,14 +2,16 @@
 import React, { useEffect } from "react";
 import Sidebar from "./_components/Sidebar";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { ProfileContextProvider } from "@/app/utils/useProfileContext";
+import { ProfileContextProvider, useProfileContext } from "@/app/utils/useProfileContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const {loadMetaData} = useMetaDataLoader();
+  const { setSelectedProfileID } = useProfileContext();
 
   useEffect(() => {
     loadMetaData();
-  }, [])
+    // setSelectedProfileID(1); // remove this once photos work
+  }, [loadMetaData])
 
   return (
     

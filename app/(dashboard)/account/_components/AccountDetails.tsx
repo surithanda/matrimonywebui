@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import dp from "/public/images/dashboard/dp.png";
 import { api } from "../../../lib/axios";
@@ -31,7 +31,7 @@ const AccountSettings = () => {
   const [imageError, setImageError] = useState(false);
   const {loadMetaData, loadStates} = useMetaDataLoader();
 
-  const fetchProfilePhoto = async () => {
+  const fetchProfilePhoto = useCallback(async () => {
     try {
       const response = await api.get('/account/photo');
       if (response.data?.success && response.data?.data?.photo_url) {
@@ -51,16 +51,16 @@ const AccountSettings = () => {
       setProfilePhoto(null);
       setImageError(true);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProfilePhoto();
     loadMetaData(); //not required but issues with redux state, thus added
-  }, []);
+  }, [fetchProfilePhoto, loadMetaData]);
 
   useEffect(() => {
     if(userData.country) loadStates(userData.country)
-  }, [userData?.country]);
+  }, [userData?.country, loadStates]);
 
   const handleChange = (
     e: React.ChangeEvent<

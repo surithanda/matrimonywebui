@@ -14,7 +14,7 @@ import {
   getHobbiesInterestsAsync
 } from "@/app/store/features/profileSlice";
 import profile1 from "@/public/images/dashboard/profile1.png";
-import ViewProfileDummy from "../view-profile";
+import ViewProfileDummy from "./view-profile";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -332,7 +332,7 @@ const ViewProfile = () => {
   };
 
   const renderFamily = () => {
-    const familyData = family?.data.family || family;
+    const familyData = (family as any)?.data?.family || family;
     
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -489,7 +489,7 @@ const ViewProfile = () => {
   const renderReferences = () => {
     // Note: References data would come from a separate API call if available
     // For now, we'll check if there's any references data in the profile state
-    const referencesData = references?.data?.family || [];
+    const referencesData = (references as any)?.data?.family || [];
     
     return (
       <div className="bg-white rounded-lg shadow-md p-6">

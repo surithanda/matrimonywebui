@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+"use client";
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 type ProfileContextType = {
   selectedProfileID: number;
@@ -14,10 +15,10 @@ interface ProfileContextProviderProps {
 export function ProfileContextProvider({ children }: ProfileContextProviderProps) {
   const [selectedProfileID, setSelectedProfileID] = useState(0);
   
-  const value = {
+  const value = useMemo(() => ({
     selectedProfileID,
     setSelectedProfileID
-  };
+  }), [selectedProfileID, setSelectedProfileID]);
 
   return (
     <ProfileContext.Provider value={value}>

@@ -16,9 +16,8 @@ api.interceptors.request.use((config) => {
   if (config.data && !(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json';
   } else if (config.data instanceof FormData) {
-    config.headers['Content-Type'] = 'multipart/form-data';
-    // Remove Content-Type to let the browser set it with the proper boundary
-    // delete config.headers['Content-Type'];
+    // Let the browser/axios set the boundary automatically for multipart
+    delete (config.headers as any)['Content-Type'];
   }
 
   // Add auth token if available

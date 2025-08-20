@@ -23,6 +23,18 @@ export const createPhotoAsync = createAsyncThunk(
   }
 );
 
+export const getProfilePhotosAsync = createAsyncThunk(
+  'profile/getPhotos',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/profile/photos/${profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch photos');
+    }
+  }
+);
+
 
 // Toggle Favorite Profile Thunk
 export const createFavoriteAsync = createAsyncThunk(
@@ -316,6 +328,7 @@ interface ProfileState {
   interests: string[];
   references: any[];
   favorites: any[];
+  photos?: any[];
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -465,6 +478,7 @@ const initialState: ProfileState = {
   interests: [],
   references: [],
   favorites: [],
+  photos: [],
 };
 
 const profileSlice = createSlice({
@@ -528,6 +542,20 @@ const profileSlice = createSlice({
       .addCase(getFavoritesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // PHOTOS
+      .addCase(getProfilePhotosAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProfilePhotosAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // API returns { success, message, data }
+        state.photos = action.payload?.data || [];
+      })
+      .addCase(getProfilePhotosAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
       })
       
       // PERSONAL PROFILE

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -15,7 +15,8 @@ import {
   trackProfileViewAsync,
   createFavoriteAsync,
   deleteFavoriteAsync,
-  getFavoritesAsync
+  getFavoritesAsync,
+  getProfilePhotosAsync
 } from "@/app/store/features/profileSlice";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
@@ -41,9 +42,15 @@ const ViewProfile = () => {
     hobbies, 
     interests,
     references,
+    photos,
     loading, 
     error 
   } = useSelector((state: RootState) => state.profile);
+  
+  interface ImageFile {
+    url: string;
+    file?: File | null;
+  }
 
   const [activeTab, setActiveTab] = useState('personal');
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
@@ -53,6 +60,44 @@ const ViewProfile = () => {
   const accountProfileID = selectedProfileID > 0 ? selectedProfileID : 1;
   const [favoriteProfile, setFavoriteProfile] = useState<any>();
 
+  const [profileImage, setProfileImage] = useState<ImageFile | null>(null);
+  const [coverImage, setCoverImage] = useState<ImageFile | null>(null);
+  const [individualImages, setIndividualImages] = useState<ImageFile[]>([]);
+
+  // Hoisted helpers for photos (avoid hooks inside conditional renders)
+  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+  const photoTypeAssociation = useMemo(() => ({
+    profile: 450,
+    cover: 454,
+    individual: 456
+  }), []);
+
+  const toAbsoluteUrl = useCallback((u?: string | null) => {
+    if (!u || typeof u !== 'string') return null;
+    if (u.startsWith('http')) return u;
+    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
+    return u.startsWith('/') ? u : `/${u}`;
+  }, [apiOrigin]);
+
+  // Derive display images from redux photos once, not during render
+  useEffect(() => {
+    const photoData = (photos as any)?.data || photos;
+    if (!Array.isArray(photoData)) return;
+
+    const resolved = photoData
+      .map((p: any) => ({ ...p, _rawUrl: p?.url || p?.photo_url || p?.file_url }))
+      .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?._rawUrl) }))
+      .filter((p: any) => !!p._src);
+
+    const prof = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.profile);
+    const cov = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.cover);
+    const others = resolved.filter((p: any) => Number(p.photo_type) === photoTypeAssociation.individual);
+
+    setProfileImage(prof ? { url: prof._src, file: null } : null);
+    setCoverImage(cov ? { url: cov._src, file: null } : null);
+    setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
+  }, [photos, toAbsoluteUrl, photoTypeAssociation]);
+  
   useEffect(() => {
     const loadFavorites = async () => {
       if (accountProfileID > 0) {
@@ -187,6 +232,7 @@ const ViewProfile = () => {
       dispatch(getPropertiesAsync({ profile_id: profileId }));
       dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'hobby' }));
       dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'interest' }));
+      dispatch(getProfilePhotosAsync(Number(profileId)));
     }
   }, [dispatch, profileId]);
 
@@ -231,8 +277,62 @@ const ViewProfile = () => {
     { id: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦' },
     { id: 'lifestyle', label: 'Lifestyle', icon: '🌟' },
     { id: 'properties', label: 'Properties', icon: '🏠' },
-    { id: 'references', label: 'References', icon: '📋' }
+    { id: 'references', label: 'References', icon: '📋' },
+    { id: 'photos', label: 'Photos', icon: '👤'}
   ];
+
+
+  const renderPhotos = () => {
+    return (
+      <ProfileSection title="Photos">
+        {/* Photos (by type) */}
+        <div className="mt-8 w-full">
+          <div className="flex flex-wrap gap-6">
+            {/* Profile (450) */}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">Profile</p>
+              <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
+                {profileImage ? (
+                  <Image src={profileImage.url} alt="Profile photo" fill sizes="200px" className="object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                )}
+              </div>
+            </div>
+
+            {/* Cover (454) */}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">Cover</p>
+              <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
+                {coverImage ? (
+                  <Image src={coverImage.url} alt="Cover photo" fill sizes="300px" className="object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                )}
+              </div>
+            </div>
+
+            {/* Additional (456) */}
+            <div className="flex-1 min-w-full">
+              <p className="text-sm font-medium mb-2">Additional</p>
+              <div className="flex flex-wrap gap-3">
+                {individualImages && individualImages.length > 0 ? (
+                  individualImages.map((img, idx) => (
+                    <div key={idx} className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
+                      <Image src={img.url} alt={`Additional ${idx + 1}`} fill sizes="150px" className="object-cover" />
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-xs text-gray-500">No photos</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ProfileSection>
+    );
+  };
+
 
   const renderPersonalInfo = () => {
     const profileData = personalProfile?.data || personalProfile;
@@ -556,6 +656,8 @@ const ViewProfile = () => {
         return renderProperties();
       case 'references':
         return renderReferences();
+      case 'photos':
+        return renderPhotos();
       default:
         return renderPersonalInfo();
     }

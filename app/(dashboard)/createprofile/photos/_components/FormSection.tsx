@@ -4,15 +4,16 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createPhotoAsync } from "@/app/store/features/profileSlice";
-import { AppDispatch } from "@/app/store/store";
+import { createPhotoAsync, getProfilePhotosAsync } from "@/app/store/features/profileSlice";
+import { AppDispatch, useAppSelector } from "@/app/store/store";
 import { useDispatch } from "react-redux";
 import process from "process";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
 interface ImageFile {
   url: string;
-  file: File;
+  file?: File | null;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -28,6 +29,22 @@ const FormSection = () => {
   const [error, setError] = useState<string | null>(null);
   const { selectedProfileID } = useProfileContext();
 
+  const photoTypeAssociation = {
+    'profile' : 450,
+    'cover' : 454,
+    'individual' : 456
+  };
+
+  const { findPhotoTypeFromID } = useMetaDataLoader();
+  
+  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+  const toAbsoluteUrl = useCallback((u?: string | null) => {
+    if (!u || typeof u !== 'string') return null;
+    if (u.startsWith('http')) return u;
+    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
+    return u.startsWith('/') ? u : `/${u}`;
+  }, [apiOrigin]);
+
   // Helper to compute total number of photos
   const totalPhotos = useMemo(() => {
     return (profileImage ? 1 : 0) + (coverImage ? 1 : 0) + individualImages.length;
@@ -36,11 +53,38 @@ const FormSection = () => {
   // Clean up object URLs when component unmounts or images change
   useEffect(() => {
     return () => {
-      if (profileImage) URL.revokeObjectURL(profileImage.url);
-      if (coverImage) URL.revokeObjectURL(coverImage.url);
-      individualImages.forEach(img => URL.revokeObjectURL(img.url));
+      if (profileImage && profileImage.url.startsWith('blob:')) URL.revokeObjectURL(profileImage.url);
+      if (coverImage && coverImage.url.startsWith('blob:')) URL.revokeObjectURL(coverImage.url);
+      individualImages.forEach(img => { if (img.url.startsWith('blob:')) URL.revokeObjectURL(img.url); });
     };
   }, [profileImage, coverImage, individualImages]);
+
+  // Load existing photos for this profile
+  const loadPhotos = useCallback(async () => {
+    if (!selectedProfileID || selectedProfileID === 0) return;
+    try {
+      const response: any = await dispatch(getProfilePhotosAsync(selectedProfileID)).unwrap();
+      const photos: any[] = response?.data || [];
+      const resolved = photos.map((p: any) => ({
+        ...p,
+        _src: toAbsoluteUrl(p?.url)
+      })).filter((p: any) => !!p._src);
+
+      const prof = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.profile);
+      const cov = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.cover);
+      const others = resolved.filter((p: any) => Number(p.photo_type) === photoTypeAssociation.individual);
+
+      setProfileImage(prof ? { url: prof._src, file: null } : null);
+      setCoverImage(cov ? { url: cov._src, file: null } : null);
+      setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
+    } catch (e) {
+      // non-fatal
+    }
+  }, [dispatch, selectedProfileID, toAbsoluteUrl]);
+
+  useEffect(() => {
+    loadPhotos();
+  }, [loadPhotos]);
 
   // Validate file before processing
   const validateFile = (file: File): { valid: boolean; message?: string } => {
@@ -111,7 +155,7 @@ const FormSection = () => {
   }, [totalPhotos]);
 
   const removeImage = useCallback((image: ImageFile | null, setImage: (value: ImageFile | null) => void) => {
-    if (image) {
+    if (image && image.url.startsWith('blob:')) {
       URL.revokeObjectURL(image.url);
     }
     setImage(null);
@@ -120,7 +164,7 @@ const FormSection = () => {
   const removeIndividualImage = useCallback((index: number) => {
     setIndividualImages(prev => {
       const newImages = [...prev];
-      URL.revokeObjectURL(newImages[index].url);
+      if (newImages[index]?.url?.startsWith('blob:')) URL.revokeObjectURL(newImages[index].url);
       newImages.splice(index, 1);
       return newImages;
     });
@@ -132,37 +176,47 @@ const FormSection = () => {
     setError('');
 
     try {
-      // Upload profile photo if exists
-      if (profileImage) {
+      // Upload profile photo if exists and newly selected
+      if (profileImage && profileImage.file) {
         const profileFormData = new FormData();
-        profileFormData.append('photo', profileImage.file);
-        profileFormData.append('photo_type', '1'); // 1 for profile
-        profileFormData.append('profile_id', selectedProfileID.toString()); // TODO: Replace with actual profile ID
+        // Append fields before the file so multer can access them during validation
+        profileFormData.append('profile_id', selectedProfileID.toString());
+        profileFormData.append('photo_type', photoTypeAssociation.profile?.toString()); // 450 for profile
+        profileFormData.append('photo', profileImage.file as File);
+        profileFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.profile)?.name || '');
+        profileFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.profile)?.description || '');
         
         await dispatch(createPhotoAsync(profileFormData)).unwrap();
       }
       
-      // Upload cover photo if exists
-      if (coverImage) {
+      // Upload cover photo if exists and newly selected
+      if (coverImage && coverImage.file) {
         const coverFormData = new FormData();
-        coverFormData.append('photo', coverImage.file);
-        coverFormData.append('photo_type', '2'); // 2 for cover
-        coverFormData.append('profile_id', selectedProfileID.toString()); // TODO: Replace with actual profile ID
-        
+        // Append fields before the file so multer can access them during validation
+        coverFormData.append('profile_id', selectedProfileID.toString());
+        coverFormData.append('photo_type', photoTypeAssociation.cover?.toString()); // 454 for cover
+        coverFormData.append('photo', coverImage.file as File);
+        coverFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.cover)?.name || '');
+        coverFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.cover)?.description || '');
+
         await dispatch(createPhotoAsync(coverFormData)).unwrap();
       }
       
       // Upload individual images
-      for (const img of individualImages) {
+      for (const img of individualImages.filter(x => !!x.file)) {
         const imgFormData = new FormData();
-        imgFormData.append('photo', img.file);
-        imgFormData.append('photo_type', '3'); // 3 for additional photos
-        imgFormData.append('profile_id', selectedProfileID.toString()); // TODO: Replace with actual profile ID
-        
+        // Append fields before the file so multer can access them during validation
+        imgFormData.append('profile_id', selectedProfileID.toString());
+        imgFormData.append('photo_type', photoTypeAssociation.individual?.toString()); // 456 for additional photos
+        imgFormData.append('photo', img.file as File);
+        imgFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.individual)?.name || '');
+        imgFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.individual)?.description || '');
+
         await dispatch(createPhotoAsync(imgFormData)).unwrap();
       }
 
       toast.success('Photos uploaded successfully!');
+      await loadPhotos();
       // Handle successful upload (e.g., redirect or show success message)
     } catch (err) {
       console.error('Upload failed:', err);
@@ -257,6 +311,7 @@ const FormSection = () => {
           </div>
         </div>
       </div>
+
 
       {/* Individual Pictures */}
       <div className="mt-8">

@@ -5,7 +5,7 @@ import { useAppSelector } from '../store/store';
 
 export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
-  const {countryList, stateList, job_titleList, property_typeList, ownership_typeList} = useAppSelector((state) => state.metaData);
+  const {countryList, stateList, job_titleList, property_typeList, ownership_typeList, photo_typeList} = useAppSelector((state) => state.metaData);
 
   const loadMetaDataCategory = useCallback(async (category?: string) => {
     const result = await (dispatch as any)(getMetaDataAsync({ category })).unwrap();
@@ -170,6 +170,14 @@ export const useMetaDataLoader = () => {
     return match?.name;
   }
 
+  const findPhotoTypeFromID = (compareVal:number):any => {
+    let match:any;
+    photo_typeList?.map((i:any) => {
+      if(i.id === compareVal) match = i;
+    })
+    return match;
+  }
+
   return { 
     loadIndividualMetaData,
     loadNecessaryMetaData,
@@ -182,5 +190,6 @@ export const useMetaDataLoader = () => {
     findJobTitleName,
     findPropertyTypeName,
     findOwnershipTypeName,
+    findPhotoTypeFromID
   };
 };

@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 // const isProduction = true;
 
 export const api = axios.create({
-  baseURL: 'https://matrimonyservicesapi-tdcu.onrender.com/api',
+  baseURL: isProduction?'https://matrimonyservicesapi-tdcu.onrender.com/api':'http://localhost:8080/api',
   headers: {
     'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
   },

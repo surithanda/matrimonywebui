@@ -1,6 +1,7 @@
 "use client";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import {
@@ -47,6 +48,20 @@ const Sidebar = () => {
 
 
   const [menu, setMenu] = useState(menuItems);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+    // Monitor route changes
+    useEffect(() => {
+      // console.log('Route changed to:', pathname);
+      // console.log('Search params:', searchParams.toString());
+      
+      menu?.map((item) => {
+        // console.log(item.name, item.link, pathname.includes(item.link))
+        if(pathname.includes(item?.link)) setActiveItem(item?.name)
+      })
+    }, [pathname, searchParams]);
+  
   
   useEffect(() => {
     if(selectedProfileID) {

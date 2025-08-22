@@ -84,7 +84,8 @@ const FormSection = () => {
     try {
       let result;
       if (requestData.profile_lifestyle_id) {
-        result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
+        // result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
+        result = []
       } else {
         result = await dispatch(createLifestyleAsync(requestData)).unwrap();
         if (result && result.status === 'success') {

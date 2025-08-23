@@ -4,7 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 // const isProduction = true;
 
 export const api = axios.create({
-  baseURL: 'https://matrimonyservicesapi-tdcu.onrender.com/api',
+  baseURL: isProduction?'https://matrimonyservicesapi-tdcu.onrender.com/api':'http://localhost:8080/api',
   headers: {
     'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
   },
@@ -16,9 +16,8 @@ api.interceptors.request.use((config) => {
   if (config.data && !(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json';
   } else if (config.data instanceof FormData) {
-    config.headers['Content-Type'] = 'multipart/form-data';
-    // Remove Content-Type to let the browser set it with the proper boundary
-    // delete config.headers['Content-Type'];
+    // Let the browser/axios set the boundary automatically for multipart
+    delete (config.headers as any)['Content-Type'];
   }
 
   // Add auth token if available

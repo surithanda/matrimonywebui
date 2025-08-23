@@ -40,6 +40,16 @@ export interface IProfileResponse {
   };
 }
 
+
+export interface IProfile {
+  profile_id: number;
+  profile: IProfilePersonal;
+  imageSrc: string;
+  name: string;
+  location: string;
+  age: number;
+}
+
 export interface IProfileAddress {
   profile_id: number;
   address_type: number;

@@ -5,60 +5,38 @@ import Link from "next/link";
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
 import { decodeJWT } from "@/app/utils/jwtUtils";
 import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { IProfile } from "@/app/models/Profile";
 
-// Profile Data for dynamic rendering
-const profilesData = [
-  // {
-  //   name: "Shruti Sinha",
-  //   age: 24,
-  //   location: "Naperville",
-  //   imageSrc: profile1,
-  // },
-  // {
-  //   name: "Rashmi Sinha",
-  //   age: 22,
-  //   location: "Pinnacles",
-  //   imageSrc: profile2,
-  // },
-  // {
-  //   name: "Kaushik Sinha",
-  //   age: 28,
-  //   location: "Toledo",
-  //   imageSrc: profile3,
-  // },
-];
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
   const {fetchAccountDetls} = useFetchUser();
   // const {loadMetaData} = useMetaDataLoader();
-   const { selectedProfileID } = useProfileContext();
+  const { selectedProfileID } = useProfileContext();
 
+   // Profile Data for dynamic rendering
+  const [profilesData, setProfilesData] = useState<any>([]);
+  
+  useEffect(() => {
+    if(selectedProfileID) setProfilesData([{
+      name: "Shruti Sinha",
+      age: 24,
+      location: "Naperville",
+      imageSrc: profile1,
+    }])
+  }, [selectedProfileID])
+  
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
-      // const decodedToken = decodeJWT(userData?.token);
-      // console.log("decodedToken", decodedToken);
-      // if (decodedToken?.email) {
-      //   dispatch(fetchAccountDetailsAsync(decodedToken.email)).then((res: any) => {
-      //     if (res.payload && res.payload.success) {
-      //       dispatch(setUser(res.payload?.data?.[0]));
-      //     } else {
-      //       console.error("Failed to fetch account details:", res.payload?.message); 
-      //     }
-      //   }).catch((error: any) => {
-      //     console.error("Error fetching account details:", error); 
-      //   });
-      // }
     else if(userData && userData?.email) fetchAccountDetls();
-    
     // loadMetaData();
   },[userData, fetchAccountDetls]);
         
@@ -112,19 +90,33 @@ const ProfileSection = () => {
         <div className="dashboard-sections md:w-4/5">
           <div className="flex justify-between items-center w-full">
             <h2 className="dmserif32600">Profiles</h2>
+            {!(selectedProfileID && selectedProfileID > 0) && 
             <Link href="/createprofile">
               <button className="px-5 py-3 bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
-                {selectedProfileID && selectedProfileID > 0 ? "Update Profile" : "Add Profile"}
+                Add Profile
               </button>
             </Link>
+            }
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* {profilesData.map((profile, index) => (
+            {profilesData && profilesData.length > 0 && profilesData?.map((profile:IProfile, index:number) => (
               <div
                 key={index}
                 className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
               >
+                <div>
+                    <Link href={`/profiles/${selectedProfileID}`}>
+                      <button className="bg-gray-950 text-white hover:bg-gray-600 w-full">
+                        View Profile
+                      </button>
+                    </Link>
+                    <Link href="/createprofile">
+                      <button className="bg-gray-950 text-white hover:bg-gray-600 w-full">
+                        Update Profile
+                      </button>
+                    </Link>
+                    </div>
                 <Image
                   src={profile.imageSrc}
                   alt={profile.name}
@@ -133,9 +125,9 @@ const ProfileSection = () => {
                 <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
                   <div>
                     <p className="BRCobane20600 text-white">
-                      {profile.name}, {profile.age}
+                      {/* {profile.name}, {profile.age} */}
                     </p>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"
@@ -149,11 +141,11 @@ const ProfileSection = () => {
                         />
                       </svg>
                       <p className="BRCobane14500">{profile.location}</p>
-                    </div>
+                    </div> */}     
                   </div>
                 </div>
               </div>
-            ))} */}
+            ))}
           </div>
         </div>
 

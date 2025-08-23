@@ -10,10 +10,11 @@ export const useFetchUser = () => {
 //   const decodedToken = (userData && userData?.token) ? decodeJWT(userData?.token) : '';
 
   const fetchAccountDetls = useCallback(async () => {
-    if (userData?.email) {
+    if (userData?.user?.email) {
       try {
-                const res = await dispatch(fetchAccountDetailsAsync(userData.email));
+        const res = await dispatch(fetchAccountDetailsAsync(userData?.user?.email));
         if (res.payload && res.payload.success) {
+          console.log("Fetched account details")
           dispatch(setUser(res.payload?.data?.[0]));
         } else {
           console.error("Failed to fetch account details:", res.payload?.message);

@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     domains: [
       'localhost',
+      'matrimonyservicesapi-tdcu.onrender.com',
       'charming-hoover.65-254-80-213.plesk.page', // Production domain
     ],
     remotePatterns: [
@@ -11,13 +12,13 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         port: '8080',
-        pathname: '/api/account/photos/**',
+        pathname: '/uploads/**',
       },
       // Production pattern
       {
         protocol: 'https',
-        hostname: 'charming-hoover.65-254-80-213.plesk.page',
-        pathname: '/api/account/photos/**',
+        hostname: 'matrimonyservicesapi-tdcu.onrender.com',
+        pathname: '/uploads/**',
       },
     ],
     // Optimized settings for better quality

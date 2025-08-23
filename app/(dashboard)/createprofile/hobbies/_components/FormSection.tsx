@@ -250,7 +250,7 @@ const [hobbies, setHobbies] = useState<string[]>([]);
       {(localError || error) && <div className="mb-2 text-red-600">{localError || error}</div>}
       <div className="flex justify-between mt-[250px]">
         <div className="flex justify-start gap-4">
-          <button className="yellow-btn hover:bg-orange-600">Continue</button>
+          <button className="yellow-btn hover:bg-orange-600" onClick={() =>router.push("/createprofile/lifestyle")}>Continue</button>
           <button className="gray-btn hover:bg-gray-400">Cancel</button>
         </div>
         <button className="gray-btn hover:bg-gray-400" onClick={() =>router.push("/createprofile/lifestyle")}>Skip</button>

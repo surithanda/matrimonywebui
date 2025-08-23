@@ -184,16 +184,20 @@ const Page = () => {
   // React Hook Form submit handler
   const onSubmit = async (data: FormData) => {
     const mappedData = transformFormData(data);
-    console.log(mappedData);
-    return;
+    console.log(mappedData, selectedProfileID);
 
     try {
-      const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();
-      console.log(result)
-      if (result) {
-        setSelectedProfileID(result?.data?.profile_id);
-        toast.success("Profile created successfully!");
-        reset();
+      if(!selectedProfileID) {
+        const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();
+        // console.log(result)
+        if (result) {
+          setSelectedProfileID(result?.data?.profile_id);
+          toast.success("Profile created successfully!");
+          reset();
+          router.push("/createprofile/primarycontact");
+        }
+      } else {
+        //update 
         router.push("/createprofile/primarycontact");
       }
     } catch (err: any) {

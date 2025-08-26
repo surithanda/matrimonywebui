@@ -23,6 +23,7 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import femaleProfile from "@/public/images/dashboard/profile1.png";
 import maleProfile from "@/public/images/dashboard/profile3.png";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { profile } from "console";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -669,13 +670,18 @@ const ViewProfile = () => {
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="relative">
-            <Image
-              src={(personalProfile?.data || personalProfile)?.profile_image || (personalProfile?.data || personalProfile)?.gender === 9 ? maleProfile : femaleProfile}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover"
-              width={128}
-              height={128}
-            />
+            {profileImage ? (
+              <Image
+                src={profileImage?.url}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover"
+                width={128}
+                height={128}
+              />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                )}
+            
           </div>
           <div className="flex-1 text-center md:text-left">
             {(() => {

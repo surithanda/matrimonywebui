@@ -8,6 +8,7 @@ import { searchProfiles, setFilters, clearFilters, SearchFilters, getUserPrefere
 import { getMetaDataAsync, getCountriesAsync } from "@/app/store/features/metaDataSlice";
 import femaleProfile from "@/public/images/dashboard/profile1.png";
 import maleProfile from "@/public/images/dashboard/profile3.png";
+import defaultAvatar from "@/public/images/dashboard/profile1.png"; // Using as generic avatar
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { createFavoriteAsync, deleteFavoriteAsync, getFavoritesAsync } from "@/app/store/features/profileSlice";
@@ -36,7 +37,9 @@ const Page = () => {
     loading = false,
     error = null
   } = searchState || {};
-  
+
+  // console.log(profiles);
+
   const {
     loading: metadataLoading = false
   } = metaDataState || {};
@@ -203,6 +206,33 @@ const Page = () => {
       }
     });
   }
+
+  // Helper function to get profile image with fallback
+  const getProfileImage = (profile: any) => {
+    // Return actual image if available
+    if (profile?.profile_image) return profile.profile_image;
+    if (profile?.url) return profile.url;
+    
+    // Return null for avatar fallback
+    return null;
+  };
+
+  // Helper function to get initials from name
+  const getInitials = (firstName: string = '', lastName: string = '') => {
+    const first = firstName?.charAt(0)?.toUpperCase() || '';
+    const last = lastName?.charAt(0)?.toUpperCase() || '';
+    return first + last || 'U'; // 'U' for Unknown if no name
+  };
+
+  // Helper function to generate a background color based on name
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 
+      'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500'
+    ];
+    const index = name.length % colors.length;
+    return colors[index];
+  };
 
   // Generate age options
   const ageOptions = Array.from({ length: 63 }, (_, i) => i + 18);
@@ -410,7 +440,7 @@ const Page = () => {
                 }
                 
                 const isFavorite = favorites.includes(profile.profile_id);
-                // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites);
+                // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites, selectedProfileID);
                 
 
                 return (
@@ -419,13 +449,19 @@ const Page = () => {
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="relative">
-                    <Image
-                      src={profile.profile_image || profile.gender.toLowerCase() === 'male' ? maleProfile : femaleProfile}
-                      alt={profile.first_name || 'Profile'}
-                      className="w-full h-64 object-cover"
-                      width={300}
-                      height={256}
-                    />
+                    {getProfileImage(profile) ? (
+                      <Image
+                        src={getProfileImage(profile)}
+                        alt={profile.first_name || 'Profile'}
+                        className="w-full h-64 object-cover"
+                        width={300}
+                        height={256}
+                      />
+                    ) : (
+                      <div className={`w-full h-64 flex items-center justify-center text-white text-4xl font-bold ${getAvatarColor(profile.first_name || 'Unknown')}`}>
+                        {getInitials(profile.first_name, profile.last_name)}
+                      </div>
+                    )}
                     <div className="absolute top-2 right-2">
                       <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50" onClick={() => handleToggleFavorite(profile.profile_id)}>
                         <svg

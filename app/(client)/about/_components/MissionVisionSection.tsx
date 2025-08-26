@@ -4,30 +4,32 @@ import Image from "next/image";
 
 const MissionVisionSection = () => {
   return (
-    <section className="pt-[120px] pb-[120px] md:px-[100px]">
-      <div className="text-center mb-12">
-        <p className="BRCobane32400 md:w-[90%] mx-auto">
+    <section className="pt-16 pb-16 sm:pt-20 sm:pb-20 md:pt-[120px] md:pb-[120px] px-4 sm:px-8 md:px-[100px]">
+      <div className="text-center mb-8 sm:mb-12">
+        <p className="BRCobane32400 text-base sm:text-lg md:text-xl md:w-[90%] mx-auto leading-relaxed">
           Our platform goes beyond traditional matchmaking by offering
           personalized tools and insights to help you connect with someone who
           truly complements you. With advanced technology and a human touch, we
           ensure your experience is safe, trustworthy, and tailored to your
           needs.
         </p>
-        <h2 className="BRCobane56400  mt-[120px] mb-[50px]">
+        <h2 className="BRCobane56400 mt-16 sm:mt-20 md:mt-[120px] mb-8 sm:mb-12 md:mb-[50px] text-4xl sm:text-3xl md:text-5xl lg:text-6xl">
           Our Mission and Vision
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-[56px]">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-[56px]">
         {/* Mission Section */}
-        <div className="aboutCard">
+        <div className="aboutCard text-center md:text-left">
           <Image
             src={mission}
             alt="Mission Illustration"
-            className="w-[84px] h-[84px] mb-0"
+            className="w-16 h-16 sm:w-[72px] sm:h-[72px] md:w-[84px] md:h-[84px] mb-4 mx-auto md:mx-0"
           />
-          <h3 className="BRCobane24400 mb-3">Mission</h3>
-          <p className="BRCobane16400 mx-auto md:w-4/5">
+          <h3 className="BRCobane24400 mb-3 text-lg sm:text-xl md:text-2xl">
+            Mission
+          </h3>
+          <p className="BRCobane16400 text-sm sm:text-base leading-relaxed mx-auto md:mx-0 md:w-4/5">
             To empower individuals to build lasting relationships based on love,
             trust, and compatibility. We are committed to creating a reliable,
             inclusive, and secure environment that transforms the process of
@@ -38,14 +40,16 @@ const MissionVisionSection = () => {
         </div>
 
         {/* Vision Section */}
-        <div className="aboutCard">
+        <div className="aboutCard text-center md:text-left">
           <Image
             src={vision}
-            alt="Mission Illustration"
-            className="w-[84px] h-[84px] mb-0"
+            alt="Vision Illustration"
+            className="w-16 h-16 sm:w-[72px] sm:h-[72px] md:w-[84px] md:h-[84px] mb-4 mx-auto md:mx-0"
           />
-          <h3 className="BRCobane24400 mb-3">Vision</h3>
-          <p className="BRCobane16400 mx-auto md:w-4/5">
+          <h3 className="BRCobane24400 mb-3 text-lg sm:text-xl md:text-2xl">
+            Vision
+          </h3>
+          <p className="BRCobane16400 text-sm sm:text-base leading-relaxed mx-auto md:mx-0 md:w-4/5">
             Lorem ipsum dolor sit amet consectetur. Mattis rhoncus est integer
             ut et ut purus sem. Vitae sit lacus dictum mauris convallis in at
             pellentesque. Quis amet fusce augue massa orci. Felis quis ultrices

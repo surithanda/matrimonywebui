@@ -8,10 +8,10 @@ import invitationcardcurtain from "@/public/images/invitationcardcurtain.png";
 
 const ContactSection = () => {
   return (
-    <section className="flex flex-col px-[100px] w-full">
-      <div className="flex items-center justify-center w-full relative">
-        <div className="flex flex-col md:w-1/2 justify-center">
-          <p className="BRCobane56600 w-full">
+    <section className="flex flex-col px-4 sm:px-6 md:px-10 lg:px-20 w-full">
+      <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 lg:gap-12 relative">
+        <div className="flex flex-col lg:w-1/2 justify-center ">
+          <p className="BRCobane56600 text-4xl mt-5 lg:mt-0 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-3 sm:mb-4 md:mb-2.5 leading-tight">
             Share your <br />
             details with us
           </p>
@@ -20,7 +20,7 @@ const ContactSection = () => {
             matchmaking experts help write your beautiful love story.
           </p>
         </div>
-        <div className="invitation-form-div relative z-10 w-[30%] flex flex-col justify-center items-center">
+        <div className="invitation-form-div relative z-10 w-full h-[100vh] md:h-[927px] max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl flex flex-col justify-center items-center mx-4 sm:mx-6">
           <form
             action=""
             className="flex flex-col z-20 justify-center items-center gap-3 mt-0 w-full"
@@ -79,28 +79,33 @@ const ContactSection = () => {
           </form>
         </div>
       </div>
-      <div className="bg-white py-[42px] my-28 relative flex items-center justify-between w-full rounded-[20px] overflow-hidden">
-        <div className="flex flex-col items-center gap-3 md:w-1/2">
+
+      {/* Contact Info Section */}
+      <div className="bg-white py-10 mt-16 mb-4 md:mb-5 relative flex flex-col md:flex-row items-center justify-between gap-10 w-full rounded-2xl overflow-hidden">
+        <div className="flex flex-col items-center gap-3 w-full md:w-1/2 text-center">
           <Image
             src={phone}
-            alt="invitation card top"
-            className="w-[84px] h-[84px] object-cover"
+            alt="phone icon"
+            className="w-16 h-16 object-cover"
           />
           <span className="BRCobane18400">
             Let’s talk about your Perfect Match
           </span>
-          <Link href="tel:+91 (425) 786-6010" className="BRCobane24600">
+          <Link href="tel:+914257866010" className="BRCobane24600">
             +91 (425) 786-6010
           </Link>
         </div>
-        <div className="flex flex-col items-center gap-3 md:w-1/2">
+        <div className="flex flex-col items-center gap-3 w-full md:w-1/2 text-center">
           <Image
             src={email}
-            alt="invitation card top"
-            className="w-[84px] h-[84px] object-cover"
+            alt="email icon"
+            className="w-16 h-16 object-cover"
           />
           <span className="BRCobane18400">Write to us about your Journey</span>
-          <Link href="mailto:+91 (425) 786-6010" className="BRCobane24600">
+          <Link
+            href="mailto:surithanda1971@gmail.com"
+            className="BRCobane24600"
+          >
             surithanda1971@gmail.com
           </Link>
         </div>

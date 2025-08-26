@@ -18,26 +18,36 @@ const StorySection = () => {
       alt: "Kumar Iyer Story",
     },
   ];
+
   return (
-    <section className="md:p-[100px_100px]">
-      <div className="flex flex-col gap-[120px]">
+    <section className="p-4 sm:p-6 md:p-12 lg:p-16 xl:p-[100px]">
+      <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-20 xl:gap-[120px]">
         {stories.map((story, index) => (
           <div
             key={index}
-            className={`flex justify-between items-center md:gap-[50px] ${
-              index % 2 === 0 ? "flex-row-reverse" : "flex-row"
-            }`}
+            className={`flex flex-col gap-6 sm:gap-8 items-center ${
+              index % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
+            } md:justify-between md:items-center md:gap-8 lg:gap-12 xl:gap-[50px]`}
           >
-            <div className="relative md:w-3/5 h-full">
+            {/* Image Container */}
+            <div className="relative w-full md:w-3/5 h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-full">
               <Image
                 src={story.imageUrl}
                 alt={story.alt}
-                className="w-full h-full stories-image rounded-[20px]"
+                className="w-full h-full object-cover stories-image rounded-[12px] sm:rounded-[16px] md:rounded-[20px]"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 60vw"
               />
             </div>
-            <div className="md:w-1/2">
-              <h3 className="BRCobane48400">{story.title}</h3>
-              <p className="mt-5 BRCobane18400">{story.description}</p>
+
+            {/* Content Container */}
+            <div className="w-full md:w-1/2 text-center md:text-left">
+              <h3 className="BRCobane48400 text-4xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-tight md:leading-snug">
+                {story.title}
+              </h3>
+              <p className="mt-3 sm:mt-4 md:mt-5 BRCobane18400 text-sm sm:text-base md:text-lg leading-relaxed">
+                {story.description}
+              </p>
             </div>
           </div>
         ))}

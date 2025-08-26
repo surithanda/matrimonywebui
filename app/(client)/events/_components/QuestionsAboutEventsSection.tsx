@@ -35,7 +35,7 @@ const faqData = [
       "If you feel uncomfortable or need any assistance during the event, please approach one of our event coordinators or staff members. We are here to ensure everyone has a positive experience.",
   },
   {
-    question: "What if I couldn’t attend an event I registered for?",
+    question: "What if I couldn't attend an event I registered for?",
     answer:
       "Please inform us at least 24 hours before the event if you're unable to attend. We can either reschedule your participation or offer you a refund, depending on the situation.",
   },
@@ -43,16 +43,27 @@ const faqData = [
 
 const QuestionsAboutEventsSection = () => {
   return (
-    <section className="md:px-[100px] md:pb-[100px]">
-      <div className="text-center md:mb-[50px]">
-        <h2 className="BRCobane56600">Questions about our Events</h2>
+    <section className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-[100px] pb-12 sm:pb-16 md:pb-20 lg:pb-24 xl:pb-[100px]">
+      {/* Section Heading */}
+      <div className="text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-[50px]">
+        <h2 className="BRCobane56600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight max-w-4xl mx-auto">
+          Questions about our Events
+        </h2>
       </div>
 
-      <div className="flex flex-col items-start md:h-[771px] flex-wrap md:gap-6">
+      {/* FAQ Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-8 xl:gap-12 max-w-7xl mx-auto">
         {faqData.map((faq, index) => (
-          <div key={index} className="events-box md:w-1/2">
-            <h3 className="BRCobane24600 text-left w-full">{faq.question}</h3>
-            <p className="BRCobane18400 mt-3">{faq.answer}</p>
+          <div 
+            key={index} 
+            className="events-box bg-white p-4 sm:p-5 md:p-6 lg:p-6 xl:p-8 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+          >
+            <h3 className="BRCobane24600 text-lg sm:text-xl md:text-xl lg:text-2xl text-left w-full mb-3 sm:mb-4 leading-tight text-gray-900">
+              {faq.question}
+            </h3>
+            <p className="BRCobane18400 text-sm sm:text-base md:text-base lg:text-lg leading-relaxed text-gray-600">
+              {faq.answer}
+            </p>
           </div>
         ))}
       </div>

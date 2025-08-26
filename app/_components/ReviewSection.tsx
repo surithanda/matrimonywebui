@@ -17,12 +17,12 @@ const ReviewSection = () => {
         className="w-[100%] absolute left-0 top-0 h-full -z-10"
       />
       <div className="md:h-1/2 text-center">
-        <p className="BRCobane56600 text-[#222] mb-[50px]">
+        <p className="BRCobane56600 text-[#222] mb-[50px] text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl sm:mb-4 md:mb-2.5 leading-tight">
           Love Stories That Started Here
         </p>
         <div className="carousel mx-auto w-fit">
-          <div className="carousel-item flex flex-col justify-center items-center h-[306px] w-[1032.212px] gap-6">
-            <p className="BRCobane32400 text-[#111] w-3/4">
+          <div className="carousel-item flex flex-col justify-center items-center h-[130px] md:h-[306px] w-[1032.212px] gap-0 md:gap-6">
+            <p className="BRCobane32400 text-[#111] w-[35%]  md:w-3/4">
               "Finding a life partner who shares the same values was our biggest
               concern. Chaturvarnam made it simple with their verified profiles
               and family-focused approach."
@@ -40,9 +40,9 @@ const ReviewSection = () => {
           <span>Begin Your Journey</span>
         </Link>
       </div>
-      <div className="flex items-center gap-[50px] mt-64 md:h-1/2">
-        <div className="flex flex-col md:ps-[50px] gap-[20px] md:w-[500px] justify-center">
-          <p className="BRCobane56600 w-full">
+      <div className="flex flex-col lg:flex-row lg:justify-evenly items-center gap-10 sm:gap-12 lg:gap-[50px] mt-16 sm:mt-24 md:mt-10 lg:mt-40 xl:mt-64 md:h-auto lg:h-1/2">
+        <div className="flex flex-col md:ps-[50px] gap-[20px] md:w-[500px] justify-center items-center lg:items-start">
+          <p className="BRCobane56600 text-4xl w-full text-center lg:text-start sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-3 sm:mb-4 md:mb-2.5 leading-tight">
             Find Your <br /> Perfect Match
           </p>
           <p className="BRCobane18400 w-3/4">
@@ -53,8 +53,8 @@ const ReviewSection = () => {
             Register Now
           </Link>
         </div>
-        <div className="invitation-form-div relative z-10 w-[30%] flex flex-col justify-center items-center">
-          <h1 className="coloredTextOne w-3/4">
+        <div className="invitation-form-div relative z-10 w-[90%] h-[70vh] md:h-[90vh] lg:w-[40%] lg:h-[927px] flex flex-col justify-center items-center">
+          <h1 className="coloredTextOne w-3/4 md:text-2xl">
             Our platform goes beyond traditional matchmaking by offering
             personalized tools and insights to help you connect with someone who
             truly complements you. With advanced technology and a human touch,

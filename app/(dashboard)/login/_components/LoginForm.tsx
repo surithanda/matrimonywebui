@@ -55,8 +55,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="account-details-box w-1/2 text-left">
-      <h3 className="BRCobane32600 md:mb-0">Login to Chaturvarnam</h3>
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left">
+      <h3 className="BRCobane32600 md:mb-0 text-2xl md:text-3xl">Login to Chaturvarnam</h3>
       <form onSubmit={handleSubmit} className="w-full">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
@@ -73,7 +73,7 @@ const LoginForm = () => {
         </div>
 
         {/* Password Input */}
-        <div className="mb-4 flex flex-col items-start">
+        <div className="mb-2 flex flex-col items-start">
           <label className="block BRCobane18600 mb-2.5">Password</label>
           <div className="relative w-full">
             <input
@@ -106,10 +106,10 @@ const LoginForm = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="mb-6">
+        <div className="mb-3">
           <button
             type="submit"
-            className="w-full yellow-btn hover:bg-orange-600"
+            className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-xl font-semibold"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
@@ -117,10 +117,10 @@ const LoginForm = () => {
         </div>
 
         {/* Error Message */}
-        {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+        {/* {error && <div className="text-red-500 text-sm mb-4">{error}</div>} */}
 
         {/* Register Link */}
-        <div className="flex gap-2">
+        <div className="flex justify-center items-center gap-2">
           <p className="BRCobane16500 opacity-50">
             Don't have an account yet?{" "}
           </p>

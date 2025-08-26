@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import WhyTrust from "../_components/WhyTrust";
 import FlowerImgOne from "/public/images/FlowerImg.svg";
 import FlowerImgTwo from "/public/images/FlowerImg2.svg";
@@ -10,7 +10,6 @@ import privacyapproach from "@/public/icons/privacyapproach.png";
 import expertguidance from "@/public/icons/expertguidance.png";
 import personalizedmatch from "@/public/icons/personalizedmatch.png";
 import premiummembership from "@/public/icons/premiummembership.png";
-import { StaticImageData } from "next/image";
 
 export const AboutSection = () => {
   const whyTrustData: {
@@ -40,37 +39,43 @@ export const AboutSection = () => {
       imageSrc: personalizedmatch,
       title: "Personalized Matchmaking",
       description:
-        "Lorem ipsum dolor sit amet consectetur. Odio in a sagittis mauris ut leo amet. Cursus duis hac.",
+        "We focus on your unique needs, values, and preferences to help you find a perfect match.",
     },
     {
       imageSrc: premiummembership,
       title: "Premium Memberships",
       description:
-        "Lorem ipsum dolor sit amet consectetur. Consectetur id leo cursus varius leo mi ultricies.",
+        "Enjoy exclusive features, more visibility, and better matchmaking options.",
     },
   ];
+
   return (
-    <div className="aboutSection relative w-full mx-auto pt-[120px] flex flex-col items-center self-stretch overflow-hidden">
+    <section className="aboutSection relative w-full mx-auto py-16 md:py-24 lg:py-32 flex flex-col items-center overflow-hidden">
+      {/* Background Flower Images */}
       <Image
         src={FlowerImgOne}
-        alt=""
-        className="md:w-[153px] md:h-[446px] absolute top-[-10px] right-10 "
+        alt="Decorative Flower"
+        className="absolute top-0 right-2 md:right-10 w-20 lg:w-[153px] h-auto opacity-50 md:opacity-100"
       />
       <Image
         src={FlowerImgTwo}
-        alt=""
-        className="md:w-[180px] md:h-[559px] absolute top-[-100px] left-10"
+        alt="Decorative Flower"
+        className="absolute top-[-50px] left-2 md:left-10 w-24 lg:w-[180px] h-auto opacity-50 md:opacity-100"
       />
-      <p className="w-3/5 BRCobane32600">
-        Marriage is considered a sacred and spiritual union oftwo souls, where
-        two individuals come together to share their lives, values,aspirations,
-        joys, sorrows, responsibilities, and journey through life aspartners for
-        lifetime. This connection should not end at any cost till death.
+
+      {/* About Text */}
+      <p className="text-center text-sm md:text-base lg:text-lg text-gray-800 leading-relaxed max-w-lg lg:max-w-4xl px-6 md:px-10 mb-10 md:mb-16 font-medium">
+        Marriage is considered a sacred and spiritual union of two souls, where
+        two individuals come together to share their lives, values, aspirations,
+        joys, sorrows, responsibilities, and journey through life as partners
+        for a lifetime. This connection should not end at any cost till death.
       </p>
+
+      {/* Why Trust Section */}
       <WhyTrust
         whyTrustData={whyTrustData}
-        heading={"Why Thousands Trust Chaturvarnam"}
+        heading="Why Thousands Trust Chaturvarnam"
       />
-    </div>
+    </section>
   );
 };

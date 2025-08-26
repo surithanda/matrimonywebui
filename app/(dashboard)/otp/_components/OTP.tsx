@@ -120,8 +120,8 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="account-details-box w-1/2 text-left">
-      <h3 className="BRCobane32600 md:mb-0 md:mt-16">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left">
+      <h3 className="BRCobane32600 text-2xl md:mb-0 mt-4">
         Enter the OTP sent to your email
       </h3>
       <form
@@ -129,7 +129,7 @@ const ForgotPassword = () => {
         className="w-full flex flex-col items-start md:mb-16"
       >
         {/* OTP Input */}
-        <label className="block BRCobane18600 mb-2.5 text-left">OTP</label>
+        {/* <label className="block BRCobane18600 mb-2.5 text-left">OTP</label> */}
         <div className="flex justify-between gap-4 mb-6">
           {otp.map((digit, index) => (
             <input
@@ -150,7 +150,7 @@ const ForgotPassword = () => {
         <div className="mb-6 w-full">
           <button
             type="submit"
-            className="w-full yellow-btn hover:bg-orange-600"
+            className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-lg font-semibold"
             disabled={loading}
           >
             {loading ? "Verifying OTP..." : "Submit"}

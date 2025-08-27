@@ -247,7 +247,7 @@ const { selectedProfileID } = useProfileContext();
           </div>
           {/* Address Fields */}
           <div className="flex w-full justify-between mt-4">
-            <div className="w-full md:mb-4">
+            <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Address</label>
               <input
                 type="text"
@@ -257,6 +257,17 @@ const { selectedProfileID } = useProfileContext();
                 placeholder="Institution Address"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
+            </div>
+
+            {/* field of study */}
+            <div className="w-[49%] md:mb-4">
+
+              <label className="block text-gray-700 mb-2">Field of Study</label>
+              <MetadataSelectComponent type='field_of_study' 
+              value={currentEducation.field_of_study}
+              onChange={handleInputChange}
+              className="account-input-field w-full"
+            />
             </div>
           </div>
           {/* City, State, Country, Zip */}

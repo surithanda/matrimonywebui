@@ -55,12 +55,12 @@ export const AboutSection = () => {
       <Image
         src={FlowerImgOne}
         alt="Decorative Flower"
-        className="absolute top-0 right-2 md:right-10 w-20 lg:w-[153px] h-auto opacity-50 md:opacity-100"
+        className="absolute top-0 right-2 md:right-10 w-20 lg:w-[153px] h-auto opacity-30 -z-10 md:opacity-100"
       />
       <Image
         src={FlowerImgTwo}
         alt="Decorative Flower"
-        className="absolute top-[-50px] left-2 md:left-10 w-24 lg:w-[180px] h-auto opacity-50 md:opacity-100"
+        className="absolute top-[-50px] left-2 md:left-10 w-24 lg:w-[180px] h-auto opacity-30 -z-10 md:opacity-100"
       />
 
       {/* About Text */}

@@ -14,11 +14,7 @@ export const Navbar = () => {
   // Detect scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -88,112 +84,110 @@ export const Navbar = () => {
             />
             Login
           </Link>
-          {/* <Link href="/register" className="YellowBtn flex items-center gap-2">
-            <Image
-              src={RegisterIcon}
-              alt="Register"
-              className="w-[20px] h-[20px] md:w-[24px] md:h-[24px]"
-            />
-            Register
-          </Link> */}
         </div>
 
         {/* Mobile Menu Toggle */}
         <button
           className="md:hidden flex items-center bg-white/80 rounded p-1"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMenuOpen(true)}
         >
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          <Menu size={28} />
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-white shadow-md absolute w-full left-0 top-[70px] px-5 py-4">
-          <ul className="flex flex-col gap-4 mb-4">
-            <li>
-              <Link
-                href="/"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/stories"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                Stories
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/services"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/events"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="block hover:text-yellow-500"
-                onClick={() => setMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="WhiteBtn flex items-center justify-center gap-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Image
-                src={LoginIcon}
-                alt="Login"
-                className="w-[20px] h-[20px]"
-              />
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="YellowBtn flex items-center justify-center gap-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Image
-                src={RegisterIcon}
-                alt="Register"
-                className="w-[20px] h-[20px]"
-              />
-              Register
-            </Link>
-          </div>
+      {/* OFF-CANVAS MENU */}
+      <div
+        className={`fixed top-0 right-0 w-[75%] sm:w-[60%] h-full bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Close Button */}
+        <div className="flex justify-between items-center px-4 py-6 border-b bg-black">
+          <Link href="/" >
+            <Image src={Logo} alt="Logo" className="w-[180px]" />
+          </Link>
+          <button onClick={() => setMenuOpen(false)}>
+            <X color="white" size={28} />
+          </button>
         </div>
+
+        {/* Links */}
+        <ul className="flex flex-col gap-6 p-5 text-lg">
+          <li>
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/about"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              About Us
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/stories"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              Stories
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/services"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              Services
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/events"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              Events
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/contact"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-yellow-500"
+            >
+              Contact
+            </Link>
+          </li>
+        </ul>
+
+        {/* Login Button */}
+        <div className="px-5 mt-6">
+          <Link
+            href="/login"
+            className="WhiteBtn flex items-center justify-center gap-2 w-full"
+            onClick={() => setMenuOpen(false)}
+          >
+            <Image src={LoginIcon} alt="Login" className="w-[20px] h-[20px]" />
+            Login
+          </Link>
+        </div>
+      </div>
+
+      {/* DARK OVERLAY */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setMenuOpen(false)}
+        ></div>
       )}
     </nav>
   );

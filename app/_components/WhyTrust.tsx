@@ -21,7 +21,7 @@ const WhyTrust: React.FC<WhyTrustProps> = ({ whyTrustData, heading }) => {
       </h2>
 
       {/* Responsive Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-8 xl:gap-10 2xl:gap-12 max-w-8xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-8 xl:gap-10 2xl:gap-12 max-w-8xl mx-auto">
         {whyTrustData.map((data, index) => (
           <div
             key={index}

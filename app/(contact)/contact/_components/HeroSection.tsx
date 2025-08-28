@@ -5,8 +5,8 @@ const HeroSection = () => {
   return (
     <BaseHeroSection
       backgroundImage="/images/contactherobackground.png"
-    height="h-[600px] sm:h-[450px] md:h-[613px]"
-      className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 flex flex-col items-center sm:items-start justify-center sm:text-left"
+      height="min-h-[500px] sm:min-h-[550px] lg:min-h-[600px] xl:min-h-[650px]"
+      className="px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 flex flex-col items-start justify-center"
     >
       <div className="aboutHeadingDiv w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl py-8 sm:py-12 md:py-16 lg:py-20">
         <h1 className="BRCobane64600 text-[#fafafa] mb-4 sm:mb-5 md:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight">

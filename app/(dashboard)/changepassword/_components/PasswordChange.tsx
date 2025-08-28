@@ -16,14 +16,13 @@ const PasswordChange = () => {
   const router = useRouter();
 
   const validatePassword = (password: string) => {
-    const rules = {
+    return {
       length: password.length >= 8,
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
       number: /[0-9]/.test(password),
       special: /[!@#$%^&*]/.test(password),
     };
-    return rules;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,16 +37,19 @@ const PasswordChange = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let newErrors: Record<string, string> = {};
-    
-    // Validate new password
+
     const validationRules = validatePassword(passwords.new_password);
-    if (!validationRules.length) newErrors.new_password = "Password must be at least 8 characters long";
-    if (!validationRules.uppercase || !validationRules.lowercase) 
-      newErrors.new_password = "Password must contain both uppercase and lowercase letters";
-    if (!validationRules.number) newErrors.new_password = "Password must contain at least one number";
-    if (!validationRules.special) newErrors.new_password = "Password must contain at least one special character";
-    
-    // Check if passwords match
+    if (!validationRules.length)
+      newErrors.new_password = "Password must be at least 8 characters long";
+    if (!validationRules.uppercase || !validationRules.lowercase)
+      newErrors.new_password =
+        "Password must contain both uppercase and lowercase letters";
+    if (!validationRules.number)
+      newErrors.new_password = "Password must contain at least one number";
+    if (!validationRules.special)
+      newErrors.new_password =
+        "Password must contain at least one special character";
+
     if (passwords.new_password !== passwords.confirm_new_password) {
       newErrors.confirm_new_password = "Passwords don't match";
     }
@@ -67,51 +69,68 @@ const PasswordChange = () => {
   };
 
   return (
-    <div className="account-details-box w-1/2 text-left">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/3 mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <form onSubmit={handleSubmit} className="w-full">
-        <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Current Password</label>
+        {/* Current Password */}
+        <div className="mb-6 flex flex-col">
+          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+            Current Password
+          </label>
           <input
             type="password"
             name="current_password"
             value={passwords.current_password}
             onChange={handleChange}
-            className="account-input-field w-full"
+            className="account-input-field w-full text-sm sm:text-base"
             required
           />
         </div>
 
-        <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">New Password</label>
+        {/* New Password */}
+        <div className="mb-6 flex flex-col">
+          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+            New Password
+          </label>
           <input
             type="password"
             name="new_password"
             value={passwords.new_password}
             onChange={handleChange}
-            className="account-input-field w-full"
+            className="account-input-field w-full text-sm sm:text-base"
             required
           />
           {errors.new_password && (
-            <span className="text-red-500 text-sm mt-1">{errors.new_password}</span>
+            <span className="text-red-500 text-sm mt-1">
+              {errors.new_password}
+            </span>
           )}
         </div>
 
-        <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Confirm New Password</label>
+        {/* Confirm Password */}
+        <div className="mb-6 flex flex-col">
+          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+            Confirm New Password
+          </label>
           <input
             type="password"
             name="confirm_new_password"
             value={passwords.confirm_new_password}
             onChange={handleChange}
-            className="account-input-field w-full"
+            className="account-input-field w-full text-sm sm:text-base"
             required
           />
           {errors.confirm_new_password && (
-            <span className="text-red-500 text-sm mt-1">{errors.confirm_new_password}</span>
+            <span className="text-red-500 text-sm mt-1">
+              {errors.confirm_new_password}
+            </span>
           )}
         </div>
 
-        <button type="submit" className="yellow-btn hover:bg-orange-600">
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="yellow-btn hover:bg-orange-600 w-full sm:w-auto px-6 py-3 text-sm sm:text-base"
+        >
           Change Password
         </button>
       </form>

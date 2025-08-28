@@ -5,8 +5,8 @@ const HeroSection = () => {
   return (
     <BaseHeroSection
       backgroundImage="/images/storiesherobackground.png"
-      height="h-[600px] sm:h-[500px] md:h-[500px] lg:h-[663px]"
-      className="pt-16 sm:pt-20 md:pt-24 lg:pt-32 flex flex-col gap-4 sm:gap-5 md:gap-6 items-start justify-center text-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px]"
+        height="min-h-[500px] sm:min-h-[550px] lg:min-h-[600px] xl:min-h-[650px]"
+      className="px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 flex flex-col items-start justify-center"
     >
       <h1 className="BRCobane64600 text-start text-4xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight sm:leading-tight md:leading-snug">
         Real Love Stories From

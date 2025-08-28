@@ -8,7 +8,7 @@ export const HeroSection = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
-    <section className="heroSection w-full h-screen relative flex flex-col justify-center">
+    <section className="heroSection w-full h-[600px] sm:h-[450px] md:h-screen relative flex flex-col justify-center">
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0d3745] to-[#1a4d5f] -z-10" />
 
@@ -19,7 +19,7 @@ export const HeroSection = () => {
         fill
         priority
         quality={100}
-        className={` object-cover md:object-center -z-10 transition-opacity duration-500 ${
+        className={` object-cover object-center md:object-center -z-10 transition-opacity duration-500 ${
           isImageLoaded ? "opacity-100" : "opacity-0"
         }`}
         sizes="100vw"
@@ -28,7 +28,7 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="heroHeadings flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
-        <h1 className="text-xs md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+        <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
           Continuation of Family Legacy
         </h1>
         <p className="text-sm md:text-lg lg:text-xl text-white/90 max-w-xl">

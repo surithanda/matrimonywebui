@@ -417,11 +417,9 @@ body::-webkit-scrollbar,
 .heroHeadings h1 {
   color: #fafafa;
   font-family: "BR Cobane", sans-serif;
-  font-size: 64px;
+  /* font-size: 64px; */
   font-style: normal;
-  font-weight: 400;
-  line-height: 80px; /* 125% */
-  letter-spacing: -1.92px;
+  font-weight: 700;
 }
 
 .heroHeadings p {

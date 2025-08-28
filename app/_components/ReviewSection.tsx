@@ -17,19 +17,19 @@ const ReviewSection = () => {
         className="w-[100%] absolute left-0 top-0 h-full -z-10"
       />
       <div className="md:h-1/2 text-center">
-        <p className="BRCobane56600 text-[#222] mb-[50px] text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl sm:mb-4 md:mb-2.5 leading-tight">
+        <p className="BRCobane56600 text-[#222] mb-[50px] text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl sm:mb-4 md:mb-12 leading-tight">
           Love Stories That Started Here
         </p>
         <div className="carousel mx-auto w-fit">
-          <div className="carousel-item flex flex-col justify-center items-center h-[130px] md:h-[306px] w-[1032.212px] gap-0 md:gap-6">
-            <p className="BRCobane32400 text-[#111] w-[35%]  md:w-3/4">
+          <div className="carousel-item flex flex-col justify-center items-center h-[130px] md:h-[206px] lg:h-[306px] w-[1032.212px] gap-0 md:gap-6">
+            <p className="BRCobane32400 text-[#111] w-[35%] md:w-3/5 lg:w-3/4 lg:text-3xl">
               "Finding a life partner who shares the same values was our biggest
               concern. Chaturvarnam made it simple with their verified profiles
               and family-focused approach."
             </p>
-            <div className="flex items-center gap-5">
-              <Image src={dp} alt="DP" className="w-8 h-8" />
-              <span className="BRCobane16400">
+            <div className="flex items-center gap-5 mt-2 md:mt-0">
+              <Image src={dp} alt="DP" className="w-6 h-6 md:w-" />
+              <span className="BRCobane16400 text-sm lg:text-xl">
                 Priya & Rahul, Matched in 2023
               </span>
             </div>
@@ -40,12 +40,12 @@ const ReviewSection = () => {
           <span>Begin Your Journey</span>
         </Link>
       </div>
-      <div className="flex flex-col lg:flex-row lg:justify-evenly items-center gap-10 sm:gap-12 lg:gap-[50px] mt-16 sm:mt-24 md:mt-10 lg:mt-40 xl:mt-64 md:h-auto lg:h-1/2">
-        <div className="flex flex-col md:ps-[50px] gap-[20px] md:w-[500px] justify-center items-center lg:items-start">
+      <div className="flex flex-col lg:flex-row lg:justify-evenly items-center gap-10 sm:gap-12 md:gap-0  mt-16 sm:mt-24 md:mt-10 lg:mt-40 xl:mt-52 md:h-auto lg:h-1/2">
+        <div className="flex flex-col lg:ps-[50px] gap-[20px] md:w-[500px] justify-center items-center lg:items-start">
           <p className="BRCobane56600 text-4xl w-full text-center lg:text-start sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-3 sm:mb-4 md:mb-2.5 leading-tight">
             Find Your <br /> Perfect Match
           </p>
-          <p className="BRCobane18400 w-3/4">
+          <p className="BRCobane18400 w-3/4 text-center lg:text-start">
             Fill in your details in this auspicious card, and let our
             matchmaking experts help write your beautiful love story.
           </p>
@@ -53,7 +53,7 @@ const ReviewSection = () => {
             Register Now
           </Link>
         </div>
-        <div className="invitation-form-div relative z-10 w-[90%] h-[70vh] md:h-[90vh] lg:w-[40%] lg:h-[927px] flex flex-col justify-center items-center">
+        <div className="invitation-form-div relative z-10 w-[90%] h-[70vh] md:h-[90vh] md:w-[80%] lg:w-[80%] xl:w-[40%] lg:h-[727px] xl:h-[927px]   flex flex-col justify-center items-center">
           <h1 className="coloredTextOne w-3/4 md:text-2xl">
             Our platform goes beyond traditional matchmaking by offering
             personalized tools and insights to help you connect with someone who

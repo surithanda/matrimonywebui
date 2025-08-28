@@ -372,7 +372,7 @@ const Navbar = () => {
                 <span className="truncate">Login</span>
               </Link>
 
-              <Link
+              {/* <Link
                 href="/register"
                 className="YellowBtn flex items-center justify-center text-center 
                text-xs xs:text-sm sm:text-sm md:text-base lg:text-base 
@@ -388,7 +388,7 @@ const Navbar = () => {
                   className="inline-block w-[16px] h-[16px] xs:w-[18px] xs:h-[18px] sm:w-[20px] sm:h-[20px] md:w-[22px] md:h-[22px] lg:w-[24px] lg:h-[24px] mr-1 xs:mr-2 sm:mr-2 flex-shrink-0"
                 />
                 <span className="truncate">Register Now</span>
-              </Link>
+              </Link> */}
             </div>
           </>
         )}

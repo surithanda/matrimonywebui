@@ -120,7 +120,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left shadow-xl">
       <h3 className="BRCobane32600 text-2xl md:mb-0 mt-4">
         Enter the OTP sent to your email
       </h3>
@@ -140,7 +140,7 @@ const ForgotPassword = () => {
               value={digit}
               onChange={(e) => handleOtpChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="account-input-field w-full text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full text-center focus:outline-none focus:border-b focus:border-[#f7ac03]"
               autoFocus={index === 0}
             />
           ))}
@@ -162,8 +162,8 @@ const ForgotPassword = () => {
 
         {/* Login Link */}
         <div className="flex gap-2">
-          <p className="BRCobane16500 opacity-50">Login to your account? </p>
-          <a href="/login" className="BRCobane16600 hover:underline">
+          <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">Login to your account? </p>
+          <a href="/login" className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-lg">
             Login Now
           </a>
         </div>

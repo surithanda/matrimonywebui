@@ -1,5 +1,7 @@
 import Image from "next/image";
 import storyimage from "@/public/images/storyimage.png";
+import coupleOne from "@/public/images/affectionate-indian-couple-celebrating-propose-day-together.jpg";
+import coupleTwo from "@/public/images/indian-couple-celebrating-propose-day-by-being-romantic-with-each-other.jpg";
 
 const StorySection = () => {
   const stories = [
@@ -7,14 +9,14 @@ const StorySection = () => {
       title: "25 Years and Counting: The Mehtas' Journey",
       description:
         "From their first meeting at a temple to celebrating their silver jubilee, Raj and Pinga Mehta share how their arranged match turned into a lifetime of love.",
-      imageUrl: storyimage,
+      imageUrl: coupleOne,
       alt: "Mehtas Journey",
     },
     {
       title: "When North Met South: The Kumar-Iyer Story",
       description:
         "Despite cultural differences, the families of Amit Kumar and Anjali Iyer found common ground through Chaturvarnam's guidance.",
-      imageUrl: storyimage,
+      imageUrl: coupleTwo,
       alt: "Kumar Iyer Story",
     },
   ];
@@ -30,13 +32,14 @@ const StorySection = () => {
             } md:justify-between md:items-center md:gap-8 lg:gap-12 xl:gap-[50px]`}
           >
             {/* Image Container */}
-            <div className="relative w-full md:w-3/5 h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-full">
+            <div className="relative w-full md:w-3/5 h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
               <Image
                 src={story.imageUrl}
                 alt={story.alt}
-                className="w-full h-full object-cover stories-image rounded-[12px] sm:rounded-[16px] md:rounded-[20px]"
+                className="object-cover rounded-[12px] sm:rounded-[16px] md:rounded-[20px]"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 60vw"
+                priority
               />
             </div>
 

@@ -1,9 +1,15 @@
 import Image from "next/image";
-import dp from "@/public/images/dp.png"; // Replace with your actual image path
+import dp from "@/public/images/dp.png";
+import cardbackground from "@/public/images/h3-bacground-img-1.png";
 
 const TestimonialSection = () => {
   return (
-    <section className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:py-[120px] xl:px-[100px]">
+    <section className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:py-[50px] xl:px-[100px] relative">
+      <Image
+        src={cardbackground}
+        alt="card background"
+        className="w-[100%] absolute left-0 -top-32 -z-10"
+      />
       <div className="text-center w-full max-w-6xl mx-auto">
         {/* Section Title */}
         <h2 className="BRCobane56400 text-4xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[50px] leading-tight">

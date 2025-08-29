@@ -25,13 +25,12 @@ export const HeroSection = () => {
         sizes="100vw"
         onLoad={() => setIsImageLoaded(true)}
       />
-
       {/* Content */}
-      <div className="heroHeadings flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
-        <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+      <div className="heroHeadings w-full sm:w-full md:w-[500px] lg:w-full flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
+        <h1 className="text-5xl sm:text-3xl md:text-5xl lg:text-6xl  text-white leading-tight">
           Continuation of Family Legacy
         </h1>
-        <p className="text-sm md:text-lg lg:text-xl text-white/90 max-w-xl">
+        <p className="text-lg md:text-lg lg:text-2xl text-white/90 max-w-xl">
           Marriage ensures the continuation of family lineage, ancestral
           traditions, cultural heritage, customs, rituals, values, beliefs,
           practices, and passes on family legacy, stories, wisdom, and teachings

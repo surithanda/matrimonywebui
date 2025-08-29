@@ -91,7 +91,7 @@ h6 {
   letter-spacing: -0.54px;
 }
 .BRCobane18700 {
-  color: #191823;
+  color: #f9ac05;
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;
@@ -174,7 +174,7 @@ input[type="range"] {
   accent-color: #feac00;
 }
 .dashboard-background {
-  background: linear-gradient(180deg, rgba(255, 200, 170, 0.3) 0%, #fff 100%);
+  /* background: linear-gradient(180deg, rgba(255, 200, 170, 0.3) 0%, #fff 100%); */
 }
 .age-slider-background {
   display: flex;
@@ -400,8 +400,8 @@ input[type="range"] {
   gap: 10px;
   align-self: stretch;
 
-  border-radius: 10px;
-  border: 1px solid #bbb;
+  /* border-radius: 0 0 0 0; */
+  border-bottom: 1px solid #bbb;
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.02) 0%,
@@ -409,7 +409,7 @@ input[type="range"] {
   );
 }
 .account-details-box label {
-  color: rgba(25, 24, 35, 0.9);
+  color: rgba(25, 24, 35, 0.6);
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;

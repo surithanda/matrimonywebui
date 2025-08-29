@@ -16,7 +16,7 @@ const WhyTrust: React.FC<WhyTrustProps> = ({ whyTrustData, heading }) => {
   return (
     <section className="py-8 px-4 sm:py-12 sm:px-6 md:py-16 md:px-8 lg:py-20 lg:px-10 xl:py-24 xl:px-12 2xl:py-32 2xl:px-16">
       {/* Heading */}
-      <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20 text-center leading-tight max-w-5xl mx-auto text-gray-900">
+      <h2 className="font-bold text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-6xl mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20 text-center leading-tight max-w-5xl mx-auto text-gray-900">
         {heading}
       </h2>
 

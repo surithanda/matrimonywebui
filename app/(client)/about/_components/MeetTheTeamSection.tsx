@@ -1,14 +1,13 @@
 import team1 from "@/public/images/team1.png";
 import team2 from "@/public/images/team2.png";
-import team3 from "@/public/images/team3.png";
-import team4 from "@/public/images/team4.png";
+import suresh from "@/public/images/founders/suresh.jpeg";
 import Image from "next/image";
 
 const teamMembers = [
   {
     name: "Suresh Thanda",
     position: "Founder & CEO",
-    image: team2,
+    image: suresh,
     alt: "Suresh Thanda",
   },
   {
@@ -20,6 +19,12 @@ const teamMembers = [
   {
     name: "Sadanandam Bharata",
     position: "Vice President",
+    image: team2,
+    alt: "Sadanandam Bharata",
+  },
+  {
+    name: "Ramesh Thanda",
+    position: "CFO India",
     image: team2,
     alt: "Sadanandam Bharata",
   },

@@ -6,7 +6,7 @@ const MissionVisionSection = () => {
   return (
     <section className="pt-16 pb-16 sm:pt-20 sm:pb-20 md:pt-[120px] md:pb-[120px] px-4 sm:px-8 md:px-[100px]">
       <div className="text-center mb-8 sm:mb-12">
-        <p className="BRCobane32400 text-base sm:text-lg md:text-xl md:w-[90%] mx-auto leading-relaxed">
+        <p className="BRCobane32400 text-base sm:text-lg md:text-xl lg:text-3xl xl:text-[34px] md:w-[90%] mx-auto leading-relaxed">
           Our platform goes beyond traditional matchmaking by offering
           personalized tools and insights to help you connect with someone who
           truly complements you. With advanced technology and a human touch, we

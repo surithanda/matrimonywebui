@@ -6,6 +6,7 @@ import { inter } from "@/app/ui/fonts";
 import ClientProvider from "./ClientProvider";
 import ReduxProvider from "./providers/ReduxProvider";
 import { ProfileContextProvider } from "./utils/useProfileContext";
+import BackToTopButton from "./components/BackToTopButton";
 
 // export const metadata: Metadata = {
 //   title: "Chaturvarnam",
@@ -19,9 +20,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+      <body
+        className={`${inter.className} antialiased`}
+        suppressHydrationWarning
+      >
         <ReduxProvider>
-          <ClientProvider><ProfileContextProvider>{children}</ProfileContextProvider></ClientProvider>
+          <ClientProvider>
+            <ProfileContextProvider>
+              {children}
+              <BackToTopButton />
+            </ProfileContextProvider>
+          </ClientProvider>
         </ReduxProvider>
       </body>
     </html>

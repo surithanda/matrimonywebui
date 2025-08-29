@@ -1,111 +1,108 @@
 import React from "react";
 import Link from "next/link";
-import MainLogo from "@/public/images/MainLogo.svg";
-import footerleaves from "@/public/images/footerleaves.png";
 import Image from "next/image";
+import MainLogo from "@/public/images/MainLogo.svg";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="footer bg-[#fff7e7cc] flex flex-col items-center gap-8 sm:gap-10 md:gap-8 lg:gap-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-8 sm:py-10 md:py-12 lg:py-12 relative mb-8 md:mb-2">
-      {/* Contact Information */}
-      <div className="text-center max-w-4xl">
-        <p className="text-sm sm:text-base md:text-lg leading-relaxed">
-          If you have any further queries, feel free to reach us at:
-          <br className="sm:hidden" />
-          <a
-            href="tel:+832-547-8554"
-            className="inline-block mt-1 sm:mt-0 sm:ml-1 hover:text-blue-600 transition-colors duration-200"
-          >
-            <strong>(832) 547-8554</strong>
-          </a>
-          <span className="hidden sm:inline"> or </span>
-          <br className="sm:hidden" />
-          <a
-            href="mailto:surithanda1971@gmail.com"
-            className="inline-block mt-1 sm:mt-0 sm:ml-1 hover:text-blue-600 transition-colors duration-200 break-all sm:break-normal"
-          >
-            <strong>surithanda1971@gmail.com</strong>
-          </a>
-        </p>
+    <footer className="footer  px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-10 sm:py-12 md:py-14 lg:py-10 relative mt-12 mb-3">
+      {/* TOP SECTION */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-28 xl:gap-80 items-center text-center lg:text-left">
+        {/* Logo + Description */}
+        <div className="flex flex-col items-center lg:items-start gap-3">
+          <Image src={MainLogo} alt="Logo" className="w-40 md:w-48" />
+          <p className="text-sm md:text-base text-gray-700 max-w-md">
+            Chaturvarnam Matrimony Services – Connecting hearts and building
+            lifelong relationships.
+          </p>
+        </div>
+
+        {/* Social Media */}
+        <div className="flex flex-col justify-center items-center lg:items-start gap-3">
+          <p className="text-sm md:text-base font-medium text-gray-700 text-left">
+            Follow us
+          </p>
+          <div className="flex gap-4">
+            <Link
+              href="https://facebook.com"
+              target="_blank"
+              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+            >
+              <Facebook size={22} className="text-blue-600" />
+            </Link>
+            <Link
+              href="https://instagram.com"
+              target="_blank"
+              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+            >
+              <Instagram size={22} className="text-pink-500" />
+            </Link>
+            <Link
+              href="https://linkedin.com"
+              target="_blank"
+              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+            >
+              <Linkedin size={22} className="text-blue-700" />
+            </Link>
+            <Link
+              href="https://twitter.com"
+              target="_blank"
+              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+            >
+              <Twitter size={22} className="text-sky-500" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Contact Info */}
+        <div className="flex flex-col items-center lg:items-start gap-2">
+          <p className="text-sm md:text-base text-gray-700">
+            Have questions? Reach us at:
+          </p>
+          <p className="text-sm md:text-base">
+            <a
+              href="tel:+832-547-8554"
+              className="font-semibold hover:text-yellow-500 transition-colors"
+            >
+              +(832) 547-8554
+            </a>{" "}
+            |{" "}
+            <a
+              href="mailto:Swapna@mysticmindds.com"
+              className="font-semibold hover:text-yellow-500 transition-colors"
+            >
+              Swapna@mysticmindds.com
+            </a>
+          </p>
+        </div>
       </div>
 
-      {/* Navigation Section */}
-      <div className="w-full max-w-6xl">
-        {/* Top divider line */}
-        <div className="footer-line w-full h-px bg-gray-300 sm:mb-8 md:mb-6"></div>
+      {/* DIVIDER */}
+      <div className="w-full h-px bg-gray-300 my-8"></div>
 
-        {/* Navigation Links */}
-        <nav className="py-4 md:py-0">
-          <ul className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 text-center lg:text-left">
-            <li>
-              <Link
-                href="/"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/services"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/stories"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                Stories
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/events"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="block py-2 px-3 text-sm sm:text-base md:text-lg hover:text-blue-600 hover:underline transition-all duration-200 rounded-md hover:bg-white hover:bg-opacity-50"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Bottom divider line */}
-        <div className="footer-line w-full h-px bg-gray-300 sm:mt-8 md:mt-6"></div>
-      </div>
-
-      {/* Copyright */}
-      <div className="text-center">
+      {/* BOTTOM SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
         <p className="text-xs sm:text-sm md:text-base text-gray-600">
           © {currentYear} Chaturvarnam Matrimony Services. All rights reserved.
         </p>
+        <div className="flex gap-6 text-sm md:text-base">
+          <Link
+            href="/terms-and-conditions"
+            className="hover:text-yellow-500 transition"
+          >
+            Terms & Conditions
+          </Link>
+          <Link
+            href="/privacy-policy"
+            className="hover:text-yellow-500 transition"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </div>
-
-      {/* Optional: Footer leaves decoration for larger screens */}
-      <Image
-        src={footerleaves}
-        alt="Footer decoration"
-        className="hidden xl:block absolute bottom-0 right-0 w-32 h-32 opacity-30 pointer-events-none"
-      />
     </footer>
   );
 };

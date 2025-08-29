@@ -3,34 +3,21 @@ import Register from "./_components/Register";
 import { ToastContainer } from "react-toastify";
 import Image from "next/image";
 import lantern from "/public/images/lantern.png";
+import patternbackground from "@/public/images/pattern.png";
+import flowerbackground from "@/public/images/flower.png";
 
 const page = () => {
   return (
-    <div className="dashboard-background px-[20px] md:px-[60px] lg:px-[120px] md:py-8 flex flex-col items-center md:gap-8 relative">
-      {/* Responsive lantern image */}
+    <div className="dashboard-background mt-16 md:mt-0 px-[20px] md:px-[60px] lg:px-[120px] md:py-24 flex flex-col items-center md:gap-8 relative">
       <Image
-        src={lantern}
-        alt="lantern"
-        className="hidden md:block md:h-[300px] w-auto absolute -top-3 left-[50px] md:left-[5px]"
+        src={patternbackground}
+        alt="card background"
+        className="w-full absolute left-0 top-0 h-full -z-10 opacity-50"
       />
-
       <Image
-        src={lantern}
-        alt="lantern"
-        className="hidden md:block md:h-[400px] w-auto absolute -top-4 right-[50px] md:right-[5px] scale-x-[-1]"
-      />
-
-      {/* Mobile lantern - smaller and positioned differently */}
-      <Image
-        src={lantern}
-        alt="lantern"
-        className="block md:hidden h-[100px] w-auto absolute -top-1 left-5 opacity-70"
-      />
-
-      <Image
-        src={lantern}
-        alt="lantern"
-        className="block md:hidden h-[240px] w-auto absolute -top-1 right-1 opacity-70 scale-x-[-1]"
+        src={flowerbackground}
+        alt="card background"
+        className="w-[100%] absolute left-0 top-0 h-full -z-10 scale-x-[-1] opacity-50"
       />
 
       <div className="w-full py-4 md:py-0 text-center">

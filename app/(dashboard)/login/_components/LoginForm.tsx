@@ -1,11 +1,14 @@
 "use client";
 import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from 'next/navigation'; 
-import { ToastContainer, toast } from 'react-toastify'; 
-import 'react-toastify/dist/ReactToastify.css'; 
-import { loginUserAsync, setLoginResponse } from "@/app/store/features/authSlice";
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Add this import
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  loginUserAsync,
+  setLoginResponse,
+} from "@/app/store/features/authSlice";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Add this import
 import { useProfileContext } from "@/app/utils/useProfileContext";
 
 const LoginForm = () => {
@@ -15,7 +18,7 @@ const LoginForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false); // Add this state
   const dispatch = useDispatch();
-  const router = useRouter(); 
+  const router = useRouter();
   const { loading, error } = useSelector((state: any) => state.auth); // Select loading and error state from Redux
   const { setSelectedProfileID } = useProfileContext();
 
@@ -33,18 +36,18 @@ const LoginForm = () => {
     // Dispatch the login thunk
     dispatch(loginUserAsync(formData) as any)
       .unwrap()
-      .then((response:any) => {
+      .then((response: any) => {
         console.log("Login response:", response);
         // Show success toast
         toast.success("Login successful! Redirecting to OTP screen...");
         dispatch(setLoginResponse(response.user)); // Save the login response to Redux
-        
+
         // Navigate to OTP screen upon successful login
         setTimeout(() => {
           router.push(`/otp?email=${encodeURIComponent(formData.email)}`);
         }, 2000);
       })
-      .catch((err:any) => {
+      .catch((err: any) => {
         // Show error toast
         toast.error(err || "An error occurred during login.");
       });
@@ -55,8 +58,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left">
-      <h3 className="BRCobane32600 md:mb-0 text-2xl md:text-3xl">Login to Chaturvarnam</h3>
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-1/2 xl:w-1/4 text-left shadow-xl">
+      {/* <h3 className="BRCobane32600 md:mb-0 text-2xl md:text-3xl">Login to Chaturvarnam</h3> */}
       <form onSubmit={handleSubmit} className="w-full">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
@@ -66,7 +69,7 @@ const LoginForm = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="account-input-field w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
             placeholder="Email"
             required
           />
@@ -81,7 +84,7 @@ const LoginForm = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
               placeholder="Password"
               required
             />
@@ -99,7 +102,7 @@ const LoginForm = () => {
         <div className="text-right mb-6">
           <a
             href="/forgotpassword"
-            className="BRCobane16500 opacity-50 hover:underline"
+            className="BRCobane16500 opacity-50 hover:text-[#e69a00]"
           >
             Forgot Password?
           </a>
@@ -120,11 +123,14 @@ const LoginForm = () => {
         {/* {error && <div className="text-red-500 text-sm mb-4">{error}</div>} */}
 
         {/* Register Link */}
-        <div className="flex justify-center items-center gap-2">
-          <p className="BRCobane16500 opacity-50">
-            Don't have an account yet?{" "}
+        <div className="flex justify-center items-center gap-2 mt-6 flex-wrap text-center">
+          <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
+            Don't have an account yet?
           </p>
-          <a href="/register" className="BRCobane16600 hover:underline">
+          <a
+            href="/register"
+            className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-lg"
+          >
             Register Now
           </a>
         </div>

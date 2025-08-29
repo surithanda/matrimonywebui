@@ -137,18 +137,18 @@ const Register = () => {
 
   return (
     <>
-     <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0">
+     <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
         <form
           onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-4 sm:gap-6 text-left"
+          className="w-full flex flex-col gap-4 sm:gap-4 text-left"
         >
           {/* Login Information */}
-          <h3 className="BRCobane18700 opacity-30 mb-2 sm:mb-4 text-sm sm:text-base">
+          <h3 className="BRCobane18700  sm:mb-4 lg:mb-0 text-sm sm:text-base">
             LOGIN INFORMATION
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="grow">
-              <label className="block text-gray-700 mb-2 text-sm sm:text-base">
+              <label className="block text-gray-100 mb-2 text-sm sm:text-base">
                 Email
               </label>
               <input
@@ -156,9 +156,9 @@ const Register = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Email"
-                required
+                
               />
             </div>
             <div className="grow">
@@ -170,9 +170,9 @@ const Register = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Password"
-                required
+                
               />
             </div>
             <div className="grow">
@@ -184,16 +184,16 @@ const Register = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Re-enter Password"
-                required
+                
               />
             </div>
           </div>
 
           {/* Personal Information */}
-          <div className="pb-4 sm:pb-6 border-b">
-            <h3 className="BRCobane18700 opacity-30 mb-2 sm:mb-4 text-sm sm:text-base">
+          <div className="pb-4 sm:pb-6">
+            <h3 className="BRCobane18700  mb-2 sm:mb-4 text-sm sm:text-base">
               PERSONAL INFORMATION
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -206,9 +206,9 @@ const Register = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="First Name"
-                  required
+                  
                 />
               </div>
               <div className="grow flex flex-col items-start">
@@ -220,7 +220,7 @@ const Register = () => {
                   name="middleName"
                   value={formData.middleName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Middle Name"
                 />
               </div>
@@ -233,9 +233,9 @@ const Register = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Last Name"
-                  required
+                  
                 />
               </div>
             </div>
@@ -250,8 +250,8 @@ const Register = () => {
                   name="birthDate"
                   value={formData.birthDate}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
-                  required
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  
                 />
               </div>
               <div className="grow flex flex-col items-start">
@@ -262,8 +262,8 @@ const Register = () => {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
-                  required
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  
                 >
                   <option value="">Select Gender</option>
                   {genderList &&
@@ -286,9 +286,9 @@ const Register = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Complete Address"
-                  required
+                  
                 />
               </div>
             </div>
@@ -304,9 +304,9 @@ const Register = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="City"
-                  required
+                  
                 />
               </div>
               <div className="flex flex-col items-start w-full">
@@ -317,8 +317,8 @@ const Register = () => {
                   name="state"
                   value={formData.state}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
-                  required
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  
                 >
                   <option value="">Select State</option>
                   {stateList &&
@@ -337,8 +337,8 @@ const Register = () => {
                   name="country"
                   value={formData.country}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
-                  required
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  
                 >
                   <option value="">Select Country</option>
                   {countryList &&
@@ -361,10 +361,10 @@ const Register = () => {
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Zip Code"
                   maxLength={7}
-                  required
+                  
                 />
               </div>
             </div>
@@ -372,7 +372,7 @@ const Register = () => {
 
           {/* Contact Information */}
           <div className="">
-            <h3 className="BRCobane18700 opacity-30 mb-2 sm:mb-4 text-sm sm:text-base">
+            <h3 className="BRCobane18700  mb-2 sm:mb-4 text-sm sm:text-base">
               CONTACT INFORMATION
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
@@ -385,9 +385,9 @@ const Register = () => {
                   name="contactEmail"
                   value={formData.email}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Email"
-                  required
+                  
                 />
               </div>
               <div className="mb-4 grow flex flex-col items-start">
@@ -399,8 +399,8 @@ const Register = () => {
                     name="primaryPhoneCountry"
                     value={formData.primaryPhoneCountry || "+91"}
                     onChange={handleChange}
-                    className="account-input-field sm:w-32 md:w-52 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs sm:text-sm"
-                    required
+                    className="account-input-field sm:w-32 md:w-52 focus:outline-none focus:border-b focus:border-[#f7ac03] text-xs sm:text-sm"
+                    
                   >
                     <option value="">Select Country Code</option>
                     {countryList &&
@@ -418,10 +418,10 @@ const Register = () => {
                     name="primaryPhone"
                     value={formData.primaryPhone}
                     onChange={handleChange}
-                    className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
+                    className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                     placeholder="Primary Phone"
                     maxLength={10}
-                    required
+                    
                   />
                 </div>
               </div>

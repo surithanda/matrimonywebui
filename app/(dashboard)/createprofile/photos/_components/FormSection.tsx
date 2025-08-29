@@ -30,9 +30,9 @@ const FormSection = () => {
   const { selectedProfileID } = useProfileContext();
 
   const photoTypeAssociation = {
-    'profile' : 450,
-    'cover' : 454,
-    'individual' : 456
+    'profile' : 450,     // Frontend standard for profile
+    'cover' : 454,       // Frontend standard for cover  
+    'individual' : 456   // Frontend standard for additional
   };
 
   const { findPhotoTypeFromID } = useMetaDataLoader();
@@ -181,10 +181,10 @@ const FormSection = () => {
         const profileFormData = new FormData();
         // Append fields before the file so multer can access them during validation
         profileFormData.append('profile_id', selectedProfileID.toString());
-        profileFormData.append('photo_type', photoTypeAssociation.profile?.toString()); // 450 for profile
+        profileFormData.append('photo_type', photoTypeAssociation.profile.toString()); // 450 for profile
         profileFormData.append('photo', profileImage.file as File);
-        profileFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.profile)?.name || '');
-        profileFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.profile)?.description || '');
+        profileFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.profile)?.name || 'Profile Photo');
+        profileFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.profile)?.description || 'Profile picture');
         
         await dispatch(createPhotoAsync(profileFormData)).unwrap();
       }
@@ -194,10 +194,10 @@ const FormSection = () => {
         const coverFormData = new FormData();
         // Append fields before the file so multer can access them during validation
         coverFormData.append('profile_id', selectedProfileID.toString());
-        coverFormData.append('photo_type', photoTypeAssociation.cover?.toString()); // 454 for cover
+        coverFormData.append('photo_type', photoTypeAssociation.cover.toString()); // 454 for cover
         coverFormData.append('photo', coverImage.file as File);
-        coverFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.cover)?.name || '');
-        coverFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.cover)?.description || '');
+        coverFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.cover)?.name || 'Cover Photo');
+        coverFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.cover)?.description || 'Cover image');
 
         await dispatch(createPhotoAsync(coverFormData)).unwrap();
       }
@@ -207,10 +207,10 @@ const FormSection = () => {
         const imgFormData = new FormData();
         // Append fields before the file so multer can access them during validation
         imgFormData.append('profile_id', selectedProfileID.toString());
-        imgFormData.append('photo_type', photoTypeAssociation.individual?.toString()); // 456 for additional photos
+        imgFormData.append('photo_type', photoTypeAssociation.individual.toString()); // 456 for additional photos
         imgFormData.append('photo', img.file as File);
-        imgFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.individual)?.name || '');
-        imgFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.individual)?.description || '');
+        imgFormData.append('caption', findPhotoTypeFromID(photoTypeAssociation.individual)?.name || 'Additional Photo');
+        imgFormData.append('description', findPhotoTypeFromID(photoTypeAssociation.individual)?.description || 'Additional image');
 
         await dispatch(createPhotoAsync(imgFormData)).unwrap();
       }
@@ -218,10 +218,11 @@ const FormSection = () => {
       toast.success('Photos uploaded successfully!');
       await loadPhotos();
       // Handle successful upload (e.g., redirect or show success message)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Upload failed:', err);
-      setError('Failed to upload photos. Please try again.');
-      toast.error('Failed to upload photos');
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to upload photos. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

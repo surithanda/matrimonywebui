@@ -479,19 +479,22 @@ const Page = () => {
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="relative">
-                    {getProfileImage(profile) ? (
-                      <Image
-                        src={getProfileImage(profile)}
-                        alt={profile.first_name || 'Profile'}
-                        className="w-full h-64 object-cover"
-                        width={300}
-                        height={256}
-                      />
-                    ) : (
-                      <div className={`w-full h-64 flex items-center justify-center text-white text-4xl font-bold ${getAvatarColor(profile.first_name || 'Unknown')}`}>
-                        {getInitials(profile.first_name, profile.last_name)}
-                      </div>
-                    )}
+                    {(() => {
+                      const profileImage = getProfileImage(profile);
+                      return profileImage ? (
+                        <Image
+                          src={profileImage}
+                          alt={profile.first_name || 'Profile'}
+                          className="w-full h-64 object-cover"
+                          width={300}
+                          height={256}
+                        />
+                      ) : (
+                        <div className={`w-full h-64 flex items-center justify-center text-white text-4xl font-bold ${getAvatarColor(profile.first_name || 'Unknown')}`}>
+                          {getInitials(profile.first_name, profile.last_name)}
+                        </div>
+                      );
+                    })()}
                     <div className="absolute top-2 right-2">
                       <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50" onClick={() => handleToggleFavorite(profile.profile_id)}>
                         <svg

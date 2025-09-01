@@ -21,7 +21,7 @@ import {
 const menuItems = [
     { name: "Personal", icon: <FaUser />, link: "/createprofile", disabled: false },
     {
-      name: "Primary Contact",
+      name: "Contact Address",
       icon: <FaPhone />,
       link: "/createprofile/primarycontact",
       disabled: true

@@ -45,9 +45,25 @@ const FormSection = () => {
     const { control, handleSubmit, reset } = useForm<IFormValues>({ defaultValues: { educations: [] } });
   const { fields, append, remove, update } = useFieldArray({ control, name: "educations" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [currentEducation, setCurrentEducation] = useState<IEducation>({ ...defaultEducation });
+  const [currentEducation, setCurrentEducation] = useState<IEducation>({ ...defaultEducation });
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
 const { selectedProfileID } = useProfileContext();
+
+  // Check if currentEducation has any meaningful data
+  const hasUnsavedEducationData = () => {
+    return !!(
+      currentEducation.institution_name ||
+      currentEducation.year_completed ||
+      currentEducation.education_level !== 1 ||
+      currentEducation.field_of_study !== 1 ||
+      currentEducation.address_line1 ||
+      currentEducation.city ||
+      currentEducation.zip ||
+      currentEducation.state_id ||
+      currentEducation.country_id
+    );
+  };
 
   const fetchProfileData = useCallback(async () => {
     const data = {
@@ -156,21 +172,41 @@ const { selectedProfileID } = useProfileContext();
     }
   };
 
-  // On submit, dispatch all educations
+  // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = async () => {
-    // for (const education of fields) {
-    //   const educationData = {
-    //     profile_id: 51, // Replace with dynamic value if needed
-    //     ...education,
-    //     year_completed: parseInt(education.year_completed)
-    //   };
-    //   try {
-    //     await dispatch(createEducationAsync(educationData)).unwrap();
-    //   } catch (error: any) {
-    //     // handle error if needed
-    //   }
-    // }
+    if (hasUnsavedEducationData()) {
+      setShowConfirmation(true);
+    } else {
+      moveToNext();
+    }
+  };
+
+  // Handle confirmation - save education and proceed
+  const handleConfirmSaveAndContinue = async () => {
+    setShowConfirmation(false);
+    try {
+      await handleAddOrUpdate();
+      // Wait a bit for the education to be saved, then move to next
+      setTimeout(() => {
+        moveToNext();
+      }, 500);
+    } catch (error) {
+      console.error('Error saving education:', error);
+      // Still move to next even if save fails
+      moveToNext();
+    }
+  };
+
+  // Handle confirmation - discard changes and proceed
+  const handleDiscardAndContinue = () => {
+    setShowConfirmation(false);
+    setCurrentEducation({ ...defaultEducation });
     moveToNext();
+  };
+
+  // Handle confirmation - cancel and stay on page
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   const moveToNext = () => {
@@ -340,6 +376,40 @@ const { selectedProfileID } = useProfileContext();
           </button>
         </div>
       </form>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Save Education Changes?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              You have unsaved education information. Would you like to save this education record before continuing to the next step?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmSaveAndContinue}
+                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+              >
+                Save & Continue
+              </button>
+              <button
+                onClick={handleDiscardAndContinue}
+                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+              >
+                Discard & Continue
+              </button>
+              <button
+                onClick={handleCancelConfirmation}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

@@ -218,6 +218,10 @@ const FormSection = () => {
       toast.success('Photos uploaded successfully!');
       await loadPhotos();
       // Handle successful upload (e.g., redirect or show success message)
+
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
     } catch (err: any) {
       console.error('Upload failed:', err);
       const errorMessage = err?.response?.data?.message || err?.message || 'Failed to upload photos. Please try again.';
@@ -384,14 +388,14 @@ const FormSection = () => {
               Clear All
             </button>
           </div>
-          <button
+          {/* <button
             type="button"
             onClick={() => router.push('/createprofile/partner')}
             disabled={isLoading}
             className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Skip
-          </button>
+          </button> */}
         </div>
       </form>
     </section>

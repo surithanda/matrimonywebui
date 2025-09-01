@@ -31,7 +31,10 @@ const WhyChoose = () => {
     <div>
       <div className="whyChooseDiv flex flex-col items-center gap-8 sm:gap-10 md:gap-12 lg:gap-[50px] p-4 sm:p-6 md:p-8 lg:p-12 xl:p-[32px_100px] mb-8 sm:mb-10 md:mb-12 lg:mb-[60px]">
         {/* Main Heading */}
-        <h1 className="BRCobane56600 text-5xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-6xl text-center">
+        <h1
+          data-aos="fade-up"
+          className="BRCobane56600 text-5xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-6xl text-center"
+        >
           Why Choose us?
         </h1>
 
@@ -39,6 +42,9 @@ const WhyChoose = () => {
         <div className="whyChooseCardRow flex flex-col sm:flex-col md:flex-row justify-center items-start gap-6 sm:gap-8 md:gap-4 lg:gap-6 xl:gap-[24px] w-full max-w-7xl">
           {features.map((feature, index) => (
             <div
+              data-aos="fade-up"
+              data-aos-delay={`${index * 200}`} // 👈 Delay increases for each card
+              data-aos-duration="1000"
               key={index}
               className="chooseCard flex flex-col items-center gap-3 sm:gap-4 md:gap-[12px] text-center w-full sm:max-w-md md:w-[300px] lg:w-[350px] xl:w-[400px] mx-auto md:mx-0"
             >

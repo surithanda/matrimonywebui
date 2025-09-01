@@ -2,7 +2,9 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import MainLogo from "@/public/images/MainLogo.svg";
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -25,34 +27,34 @@ const Footer = () => {
           <p className="text-sm md:text-base font-medium text-gray-700 text-left">
             Follow us
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-6">
             <Link
               href="https://facebook.com"
               target="_blank"
-              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+              className=" hover:scale-110 transition-transform"
             >
-              <Facebook size={22} className="text-blue-600" />
+              <FaFacebook size={26} />
             </Link>
             <Link
               href="https://instagram.com"
               target="_blank"
-              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+              className=" hover:scale-110 transition-transform"
             >
-              <Instagram size={22} className="text-pink-500" />
+              <FaInstagram size={26} />
             </Link>
             <Link
               href="https://linkedin.com"
               target="_blank"
-              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+              className=" hover:scale-110 transition-transform"
             >
-              <Linkedin size={22} className="text-blue-700" />
+              <FaYoutube size={26} />
             </Link>
             <Link
               href="https://twitter.com"
               target="_blank"
-              className="p-2 rounded-full bg-white shadow hover:scale-110 transition-transform"
+              className=" hover:scale-110 transition-transform"
             >
-              <Twitter size={22} className="text-sky-500" />
+              <FaSquareXTwitter size={26} />
             </Link>
           </div>
         </div>

@@ -56,7 +56,7 @@ body::-webkit-scrollbar,
 }
 
 .BRCobane18400 {
-  color: #222;
+  /* color: #222; */
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;
@@ -165,7 +165,7 @@ body::-webkit-scrollbar,
 .BRCobane24400 {
   color: #111;
   font-family: "BR Cobane";
-  font-size: 24px;
+  /* font-size: 24px; */
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -207,7 +207,7 @@ body::-webkit-scrollbar,
 
 .BRCobane32400 {
   color: #111;
-  text-align: center;
+  /* text-align: center; */
   font-family: "BR Cobane";
   /* font-size: 34px; */
   font-style: normal;
@@ -693,14 +693,14 @@ input.name-field-contact::placeholder {
 
 .aboutCard {
   text-align: center;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   border: 1px solid rgba(191, 160, 84, 0.2);
   background: rgba(255, 247, 231, 0.8);
   display: flex;
   padding: 32px 48px;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   flex: 1 0 0;
 }
 

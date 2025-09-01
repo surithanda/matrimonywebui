@@ -56,6 +56,8 @@ const QuestionsAboutEventsSection = () => {
         {faqData.map((faq, index) => (
           <div 
             key={index} 
+            data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
+            data-aos-delay={index * 150}
             className="events-box bg-white p-4 sm:p-5 md:p-6 lg:p-6 xl:p-8 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
           >
             <h3 className="BRCobane24600 text-lg sm:text-xl md:text-xl lg:text-2xl text-left w-full mb-3 sm:mb-4 leading-tight text-gray-900">

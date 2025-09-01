@@ -50,15 +50,21 @@ const Features = () => {
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 60vw"
                 priority={index === 0}
                 quality={85}
+                data-aos={index % 3 === 0 ? "fade-left" : "fade-right"}
+                data-aos-duration="1000"
               />
             </div>
 
             {/* Content Container */}
-            <div className="w-full md:w-1/2 text-center md:text-left px-2 sm:px-4 md:px-0">
+            <div
+              data-aos={index % 3 === 0 ? "fade-right" : "fade-left"}
+              data-aos-duration="1000"
+              className="w-full md:w-1/2 text-center md:text-left px-2 sm:px-4 md:px-0"
+            >
               <h3 className="BRCobane48600 text-4xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-tight sm:leading-tight md:leading-snug mb-3 sm:mb-4 md:mb-5 text-gray-900">
                 {story.title}
               </h3>
-              <p className="BRCobane18400 text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-gray-600 max-w-prose mx-auto md:mx-0">
+              <p className="BRCobane18400  text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-gray-600 max-w-prose mx-auto md:mx-0">
                 {story.description}
               </p>
             </div>
@@ -70,40 +76,3 @@ const Features = () => {
 };
 
 export default Features;
-
-// import Image from "next/image";
-// import storyimage from "@/public/images/storyimage.png";
-
-//   return (
-//     <section className="">
-//       <div className="flex flex-col gap-8">
-//         {stories.map((story, index) => (
-//           <div
-//             key={index}
-//             className={`flex justify-between ${
-//               index % 2 === 0 ? "flex-row-reverse" : "flex-row"
-//             }`}
-//           >
-//             <div className="relative">
-//               <Image
-//                 src={story.imageUrl}
-//                 alt={story.alt}
-//                 className="w-full h-64 object-cover"
-//                 width={600}
-//                 height={400}
-//               />
-//             </div>
-//             <div className="p-6">
-//               <h3 className="text-xl font-semibold text-gray-800">
-//                 {story.title}
-//               </h3>
-//               <p className="mt-2 text-gray-600">{story.description}</p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Features;

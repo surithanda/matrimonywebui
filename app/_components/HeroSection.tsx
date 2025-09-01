@@ -14,7 +14,7 @@ export const HeroSection = () => {
 
       {/* Background Image */}
       <Image
-        src="/images/heroBg.png"
+        src="/images/diwali-happy-festive-diya-candle-light-abstract-india-holiday-celebration-decoration-wate.jpg"
         alt="Hero Background"
         fill
         priority
@@ -25,8 +25,9 @@ export const HeroSection = () => {
         sizes="100vw"
         onLoad={() => setIsImageLoaded(true)}
       />
+      <div className="absolute bg-black/40 top-0 w-full h-full -z-10"></div>
       {/* Content */}
-      <div className="heroHeadings w-full sm:w-full md:w-[500px] lg:w-full flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
+      <div data-aos='fade-right' className="heroHeadings w-full sm:w-full md:w-[500px] lg:w-full flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
         <h1 className="text-5xl sm:text-3xl md:text-5xl lg:text-6xl  text-white leading-tight">
           Continuation of Family Legacy
         </h1>

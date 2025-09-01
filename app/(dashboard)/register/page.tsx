@@ -17,7 +17,7 @@ const page = () => {
       <Image
         src={flowerbackground}
         alt="card background"
-        className="w-[100%] absolute left-0 top-0 h-full -z-10 scale-x-[-1] opacity-50"
+        className="w-[100%] absolute left-0 -top-64 h-full -z-10 scale-x-[-1] opacity-25"
       />
 
       <div className="w-full py-4 md:py-0 text-center">

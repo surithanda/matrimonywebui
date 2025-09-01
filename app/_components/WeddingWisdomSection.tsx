@@ -40,7 +40,7 @@ const WeddingWisdomSection = () => {
             contemporary celebrations.
           </p>
         </article>
-                {/* Card 3 */}
+        {/* Card 3 */}
         <article className="group cursor-pointer md:col-span-2 xl:col-span-1">
           <div className="overflow-hidden rounded-lg mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Image
@@ -56,7 +56,6 @@ const WeddingWisdomSection = () => {
             Meet power couples who are redefining traditional marriage dynamics.
           </p>
         </article>
-
         {/* Card 2 */}
         <article className="group cursor-pointer">
           <div className="overflow-hidden rounded-lg mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -74,8 +73,6 @@ const WeddingWisdomSection = () => {
             break your future together.
           </p>
         </article>
-
-
       </div>
     </section>
   );

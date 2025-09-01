@@ -40,10 +40,12 @@ const MomentsThatMatterSection = ({
       </div>
 
       {/* Moments Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 max-w-8xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 max-w-8xl mx-auto">
         {moments.map((moment, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
+            data-aos={index % 2 === 0 ? "flip-left" : "flip-right"}
+            data-aos-delay={index * 200} 
             className="group overflow-hidden rounded-[10px] sm:rounded-[12px] md:rounded-[16px] aspect-square w-full max-w-xs mx-auto sm:max-w-none shadow-md hover:shadow-xl transition-all duration-300 ease-in-out"
           >
             <Image

@@ -7,6 +7,7 @@ import ClientProvider from "./ClientProvider";
 import ReduxProvider from "./providers/ReduxProvider";
 import { ProfileContextProvider } from "./utils/useProfileContext";
 import BackToTopButton from "./components/BackToTopButton";
+import { useAOS } from "./utils/aos";
 
 // export const metadata: Metadata = {
 //   title: "Chaturvarnam",
@@ -18,6 +19,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useAOS();
   return (
     <html lang="en">
       <body

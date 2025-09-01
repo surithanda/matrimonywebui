@@ -58,7 +58,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-1/2 xl:w-1/4 text-left shadow-xl">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-1/2 xl:w-1/3 text-left shadow-xl">
       {/* <h3 className="BRCobane32600 md:mb-0 text-2xl md:text-3xl">Login to Chaturvarnam</h3> */}
       <form onSubmit={handleSubmit} className="w-full">
         {/* Email Input */}

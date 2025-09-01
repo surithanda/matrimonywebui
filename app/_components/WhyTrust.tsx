@@ -25,6 +25,9 @@ const WhyTrust: React.FC<WhyTrustProps> = ({ whyTrustData, heading }) => {
         {whyTrustData.map((data, index) => (
           <div
             key={index}
+            data-aos="fade-up"
+            data-aos-delay={index * 200}
+            data-aos-duration="1000"
             className="text-center flex flex-col items-center p-4 sm:p-6 md:p-8 lg:p-6 xl:p-8 group hover:transform hover:scale-105 hover:shadow-lg transition-all duration-300 ease-in-out rounded-lg hover:bg-gray-50/50"
           >
             {/* Icon/Image Container */}

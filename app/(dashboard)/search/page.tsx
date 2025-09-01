@@ -8,10 +8,12 @@ import { searchProfiles, setFilters, clearFilters, SearchFilters, getUserPrefere
 import { getMetaDataAsync, getCountriesAsync } from "@/app/store/features/metaDataSlice";
 import femaleProfile from "@/public/images/dashboard/profile1.png";
 import maleProfile from "@/public/images/dashboard/profile3.png";
+import defaultAvatar from "@/public/images/dashboard/profile1.png"; // Using as generic avatar
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { createFavoriteAsync, deleteFavoriteAsync, getFavoritesAsync } from "@/app/store/features/profileSlice";
 import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
+import { useURLFormatter } from "@/app/utils/utility";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -21,6 +23,7 @@ const useToggle = (initialState = false) => {
 };
 
 const Page = () => {
+  const { toAbsoluteUrl } = useURLFormatter();
   const dispatch = useDispatch<AppDispatch>();
   const searchState = useSelector((state: RootState) => state.search);
   const metaDataState = useSelector((state: RootState) => state.metaData);
@@ -36,14 +39,16 @@ const Page = () => {
     loading = false,
     error = null
   } = searchState || {};
-  
+
+  // console.log(profiles);
+
   const {
     loading: metadataLoading = false
   } = metaDataState || {};
   
   // Initialize with default values
   const [localFilters, setLocalFilters] = useState<SearchFilters>({
-    min_age: 18,
+    min_age: 21,
     max_age: 50,
     profile_id: selectedProfileID // This should come from user's profile
   });
@@ -51,6 +56,16 @@ const Page = () => {
   // Track if preferences have been loaded
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [favorites, setFavorites] = useState<any>([]);
+
+  // Reset preferences loaded when profile changes
+  useEffect(() => {
+    setPreferencesLoaded(false);
+    setLocalFilters({
+      min_age: 21,
+      max_age: 50,
+      profile_id: selectedProfileID
+    });
+  }, [selectedProfileID]);
 
   useEffect(() => {
       const loadFavorites = async () => {
@@ -65,28 +80,37 @@ const Page = () => {
 
   // Load metadata and user preferences on component mount
   useEffect(() => {
+    // Prevent multiple executions and ensure we have a valid profile ID
+    if (preferencesLoaded || !selectedProfileID || selectedProfileID <= 0) {
+      return;
+    }
+
     const loadInitialData = async () => {
       try {
         // Load metadata first
-        await Promise.all([
-          dispatch(getMetaDataAsync({ category: 'religion' })),
-          dispatch(getMetaDataAsync({ category: 'education_level' })),
-          dispatch(getMetaDataAsync({ category: 'profession' })),
-          dispatch(getMetaDataAsync({ category: 'gender' })),
-          dispatch(getMetaDataAsync({ category: 'marital_status' })),
-          dispatch(getMetaDataAsync({ category: 'caste' })),
-          dispatch(getCountriesAsync({}))
-        ]);
+        // await Promise.all([
+        //   dispatch(getMetaDataAsync({ category: 'religion' })),
+        //   dispatch(getMetaDataAsync({ category: 'education_level' })),
+        //   dispatch(getMetaDataAsync({ category: 'profession' })),
+        //   dispatch(getMetaDataAsync({ category: 'gender' })),
+        //   dispatch(getMetaDataAsync({ category: 'marital_status' })),
+        //   dispatch(getMetaDataAsync({ category: 'caste' })),
+        //   dispatch(getCountriesAsync({}))
+        // ]);
         
         // Then load user preferences if we have a profile ID
-        if (localFilters.profile_id) {
+        if (selectedProfileID) {
           try {
-            const actionResult = await dispatch(getUserPreferences(localFilters.profile_id) as any);
+            const actionResult = await dispatch(getUserPreferences(selectedProfileID) as any);
             const preferences = actionResult?.payload;
             console.log(preferences, actionResult);
             // If we have preferences, update the local filters
             if (preferences) {
-              const updatedFilters: SearchFilters = { ...localFilters };
+              const updatedFilters: SearchFilters = { 
+                min_age: 21,
+                max_age: 50,
+                profile_id: selectedProfileID
+              };
               
               // Update filters with preferences if they exist
               if (preferences.min_age !== undefined) updatedFilters.min_age = preferences.min_age;
@@ -102,7 +126,7 @@ const Page = () => {
               
               // Only trigger search if we have non-default filter values
               const hasNonDefaultFilters = 
-                (preferences.min_age !== undefined && preferences.min_age !== 18) ||
+                (preferences.min_age !== undefined && preferences.min_age !== 21) ||
                 (preferences.max_age !== undefined && preferences.max_age !== 50) ||
                 !!preferences.gender ||
                 !!preferences.religion ||
@@ -135,7 +159,7 @@ const Page = () => {
     return () => {
       // Any cleanup if needed
     };
-  }, [dispatch, localFilters]);
+  }, [dispatch, preferencesLoaded]); // Removed localFilters and preferencesLoaded from dependencies
 
   // Handle filter changes with type safety
   const handleFilterChange = (key: keyof SearchFilters, value: string | number | undefined) => {
@@ -179,7 +203,7 @@ const Page = () => {
   const handleClearFilters = () => {
     const clearedFilters = {
       profile_id: localFilters.profile_id, // Keep profile_id
-      min_age: 18,
+      min_age: 21,
       max_age: 50
     };
     setLocalFilters(clearedFilters);
@@ -204,8 +228,36 @@ const Page = () => {
     });
   }
 
+  // Helper function to get profile image with fallback
+  const getProfileImage = (profile: any) => {
+    // Return actual image if available
+    console.log(profile);
+    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
+    if (profile?.url) return toAbsoluteUrl(profile.url);
+
+    // Return null for avatar fallback
+    return null;
+  };
+
+  // Helper function to get initials from name
+  const getInitials = (firstName: string = '', lastName: string = '') => {
+    const first = firstName?.charAt(0)?.toUpperCase() || '';
+    const last = lastName?.charAt(0)?.toUpperCase() || '';
+    return first + last || 'U'; // 'U' for Unknown if no name
+  };
+
+  // Helper function to generate a background color based on name
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 
+      'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500'
+    ];
+    const index = name.length % colors.length;
+    return colors[index];
+  };
+
   // Generate age options
-  const ageOptions = Array.from({ length: 63 }, (_, i) => i + 18);
+  const ageOptions = Array.from({ length: 63 }, (_, i) => i + 21);
 
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8">
@@ -253,7 +305,7 @@ const Page = () => {
               <label className="block text-sm font-medium text-gray-700">Age Range</label>
               <div className="flex gap-2">
                 <select
-                  value={localFilters.min_age || 18}
+                  value={localFilters.min_age || 21}
                   onChange={(e) => handleFilterChange('min_age', parseInt(e.target.value))}
                 className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
@@ -263,7 +315,7 @@ const Page = () => {
                   ))}
                 </select>
                 <select
-                  value={localFilters.max_age || 50}
+                  value={localFilters.max_age || 85}
                   onChange={(e) => handleFilterChange('max_age', parseInt(e.target.value))}
                 className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
@@ -279,11 +331,13 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Religion</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="religion"
                 bindValue={localFilters.religion || ''}
-                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
+                changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  // console.log('Selected religion:', e.target.value ? parseInt(e.target.value) : undefined);
                   handleFilterChange('religion', e.target.value ? parseInt(e.target.value) : undefined)
-                }
+                }}
                 disabled={metadataLoading}
                 className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -293,6 +347,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Education</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="education_level"
                 bindValue={localFilters.max_education || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -307,6 +362,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Occupation</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="profession"
                 bindValue={localFilters.occupation || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -321,6 +377,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Country</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="country"
                 bindValue={localFilters.country || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -336,6 +393,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Gender</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="gender"
                 bindValue={localFilters.gender || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -350,6 +408,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Caste</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="caste"
                 bindValue={localFilters.caste_id || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -365,6 +424,7 @@ const Page = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Marital Status</label>
               <MetadataSelectComponent
+                hasAny={true}
                 type="marital_status"
                 bindValue={localFilters.marital_status || ''}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => 
@@ -404,13 +464,13 @@ const Page = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {profiles.map((profile: any, index: number) => {
                 // Debug: Log first profile to see available fields
-                if (index === 0) {
-                  console.log('Profile keys:', Object.keys(profile));
-                  console.log('Profile data:', profile);
-                }
+                // if (index === 0) {
+                //   console.log('Profile keys:', Object.keys(profile));
+                //   console.log('Profile data:', profile);
+                // }
                 
                 const isFavorite = favorites.includes(profile.profile_id);
-                // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites);
+                // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites, selectedProfileID);
                 
 
                 return (
@@ -419,13 +479,22 @@ const Page = () => {
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="relative">
-                    <Image
-                      src={profile.profile_image || profile.gender.toLowerCase() === 'male' ? maleProfile : femaleProfile}
-                      alt={profile.first_name || 'Profile'}
-                      className="w-full h-64 object-cover"
-                      width={300}
-                      height={256}
-                    />
+                    {(() => {
+                      const profileImage = getProfileImage(profile);
+                      return profileImage ? (
+                        <Image
+                          src={profileImage}
+                          alt={profile.first_name || 'Profile'}
+                          className="w-full h-64 object-cover"
+                          width={300}
+                          height={256}
+                        />
+                      ) : (
+                        <div className={`w-full h-64 flex items-center justify-center text-white text-4xl font-bold ${getAvatarColor(profile.first_name || 'Unknown')}`}>
+                          {getInitials(profile.first_name, profile.last_name)}
+                        </div>
+                      );
+                    })()}
                     <div className="absolute top-2 right-2">
                       <button className="bg-white rounded-full p-2 shadow-md hover:bg-gray-50" onClick={() => handleToggleFavorite(profile.profile_id)}>
                         <svg

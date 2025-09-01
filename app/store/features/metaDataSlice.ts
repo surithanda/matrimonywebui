@@ -48,7 +48,7 @@ interface MetaState {
   familyList: LookupPayload[];
   referenceList: LookupPayload[];
   friendList: LookupPayload[];
-  maritalstatusList: LookupPayload[];
+  marital_statusList: LookupPayload[];
   professionList: LookupPayload[];
   religionList: LookupPayload[];
   disabilityList: LookupPayload[];
@@ -82,7 +82,7 @@ const initialState: MetaState = {
   familyList: [],
   referenceList: [],
   friendList: [],
-  maritalstatusList: [],
+  marital_statusList: [],
   professionList: [],
   religionList: [],
   disabilityList: [],
@@ -161,7 +161,7 @@ const metaDataSlice = createSlice({
       const {category, payload} = action.payload;
       const formattedCategory = category.toLowerCase().replace(' ', '');
       // Dynamically set the category list based on the category name
-      (state as any)[`${formattedCategory}List`] = payload;
+      (state as any)[`${formattedCategory}List`] = Array.isArray(payload) ? payload : [];
       state.error = null;
     },
     
@@ -180,9 +180,40 @@ const metaDataSlice = createSlice({
       })
       .addCase(getMetaDataAsync.fulfilled, (state, action) => {
         state.loading = false;
-        // state.data = action.payload.data;
+        // Extract category from the action meta (the original payload)
+        const category = action.meta.arg.category;
+        if(category) {
+          const formattedCategory = category.toLowerCase().replace(' ', '');
+          // Dynamically set the category list based on the category name
+          (state as any)[`${formattedCategory}List`] = Array.isArray(action.payload) ? action.payload : [];
+          state.error = null;
+        }
       })
       .addCase(getMetaDataAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getCountriesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCountriesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.countryList = Array.isArray(action.payload) ? action.payload : [];
+      })
+      .addCase(getCountriesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getStatesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getStatesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.stateList = Array.isArray(action.payload) ? action.payload : [];
+      })
+      .addCase(getStatesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
@@ -190,5 +221,37 @@ const metaDataSlice = createSlice({
 });
 
 export const { setMetadataCategory, setLoading, setError } = metaDataSlice.actions;
+
+// Selector helper to get metadata by category
+export const getMetadataByCategory = (state: { metaData: MetaState }, category: string): LookupPayload[] => {
+  const categoryMap: { [key: string]: keyof MetaState } = {
+    'religion': 'religionList',
+    'education_level': 'education_levelList',
+    'profession': 'professionList',
+    'gender': 'genderList',
+    'marital_status': 'marital_statusList',
+    'caste': 'casteList',
+    'photo_type': 'photo_typeList',
+    'addresstype': 'addresstypeList',
+    'phonetype': 'phonetypeList',
+    'contactus': 'contactusList',
+    'family': 'familyList',
+    'reference': 'referenceList',
+    'friend': 'friendList',
+    'disability': 'disabilityList',
+    'nationality': 'nationalityList',
+    'property_type': 'property_typeList',
+    'ownership_type': 'ownership_typeList',
+    'job_title': 'job_titleList',
+    'field_of_study': 'field_of_studyList',
+    'employment_status': 'employment_statusList',
+    'contact_type': 'contact_typeList',
+    'hobby': 'hobbyList',
+    'interest': 'interestList'
+  };
+  
+  const stateKey = categoryMap[category.toLowerCase()];
+  return stateKey ? (state.metaData as any)[stateKey] || [] : [];
+};
 
 export default metaDataSlice.reducer;

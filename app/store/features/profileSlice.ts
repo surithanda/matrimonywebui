@@ -892,6 +892,20 @@ const profileSlice = createSlice({
       .addCase(deleteReferenceAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
+      })
+      // PHOTO UPLOAD
+      .addCase(createPhotoAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPhotoAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally refresh photos state
+        // state.photos could be updated here if needed
+      })
+      .addCase(createPhotoAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
       });
   },
 });

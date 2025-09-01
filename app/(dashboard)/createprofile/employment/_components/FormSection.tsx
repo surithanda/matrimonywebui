@@ -45,8 +45,25 @@ const FormSection = () => {
   const { fields, append, remove, update } = useFieldArray({ control, name: "employments" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentEmployment, setCurrentEmployment] = useState<IEmployment>({ ...defaultEmployment });
-    const { loadStates, findCountryName, findStateName, findJobTitleName } = useMetaDataLoader();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { loadStates, findCountryName, findStateName, findJobTitleName } = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+
+  // Check if currentEmployment has any meaningful data
+  const hasUnsavedEmploymentData = () => {
+    return !!(
+      currentEmployment.institution_name ||
+      currentEmployment.address_line1 ||
+      currentEmployment.city ||
+      currentEmployment.zip ||
+      currentEmployment.start_year ||
+      currentEmployment.end_year ||
+      currentEmployment.job_title_id ||
+      currentEmployment.last_salary_drawn ||
+      currentEmployment.state_id ||
+      currentEmployment.country_id
+    );
+  };
 
   const fetchProfileData = useCallback(async () => {
     const data = {
@@ -151,23 +168,41 @@ const FormSection = () => {
     }
   };
 
-  // On submit, dispatch all employments
+  // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = async () => {
-    // for (const employment of fields) {
-    //   const employmentData = {
-    //     profile_id: 51, // Replace with dynamic value if needed
-    //     ...employment,
-    //     start_year: parseInt(employment.start_year),
-    //     end_year: parseInt(employment.end_year),
-    //   };
-    //   try {
-    //     await dispatch(createEmploymentAsync(employmentData)).unwrap();
-    //   } catch (error: any) {
-    //     toast.error(error.message || "Failed to save employment details");
-    //   }
-    // }
-    // toast.success("Employment details saved successfully!");
+    if (hasUnsavedEmploymentData()) {
+      setShowConfirmation(true);
+    } else {
+      router.push("/createprofile/hobbies");
+    }
+  };
+
+  // Handle confirmation - save employment and proceed
+  const handleConfirmSaveAndContinue = async () => {
+    setShowConfirmation(false);
+    try {
+      await handleAddOrUpdate();
+      // Wait a bit for the employment to be saved, then move to next
+      setTimeout(() => {
+        router.push("/createprofile/hobbies");
+      }, 500);
+    } catch (error) {
+      console.error('Error saving employment:', error);
+      // Still move to next even if save fails
+      router.push("/createprofile/hobbies");
+    }
+  };
+
+  // Handle confirmation - discard changes and proceed
+  const handleDiscardAndContinue = () => {
+    setShowConfirmation(false);
+    setCurrentEmployment({ ...defaultEmployment });
     router.push("/createprofile/hobbies");
+  };
+
+  // Handle confirmation - cancel and stay on page
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   return (
@@ -353,6 +388,40 @@ const FormSection = () => {
           <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/hobbies")}>Skip</button>
         </div>
       </form>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Save Employment Changes?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              You have unsaved employment information. Would you like to save this employment record before continuing to the next step?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmSaveAndContinue}
+                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+              >
+                Save & Continue
+              </button>
+              <button
+                onClick={handleDiscardAndContinue}
+                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+              >
+                Discard & Continue
+              </button>
+              <button
+                onClick={handleCancelConfirmation}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

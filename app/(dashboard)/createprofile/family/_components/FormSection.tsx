@@ -64,10 +64,28 @@ const FormSection = ({
     const { control, handleSubmit, reset } = useForm<IFormValues>({ defaultValues: { family: [] } });
   const { fields, append, remove, update, replace } = useFieldArray({ control, name: "family" });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [currentFamilyMember, setCurrentFamilyMember] = useState<IFamilyMember>({ ...defaultFamilyMember });
+  const [currentFamilyMember, setCurrentFamilyMember] = useState<IFamilyMember>({ ...defaultFamilyMember });
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
+
+  // Check if currentFamilyMember has any meaningful data
+  const hasUnsavedFamilyData = () => {
+    return !!(
+      currentFamilyMember.firstname ||
+      currentFamilyMember.lastname ||
+      currentFamilyMember.dob ||
+      currentFamilyMember.contactnumber ||
+      currentFamilyMember.email ||
+      currentFamilyMember.relationshiptoyou ||
+      currentFamilyMember.address_line ||
+      currentFamilyMember.city ||
+      currentFamilyMember.zip ||
+      currentFamilyMember.state_id ||
+      currentFamilyMember.country_id
+    );
+  };
 
   // Handle input changes for the local family member form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -205,9 +223,41 @@ const FormSection = ({
   }
 
 
-  // On submit, just continue (family members are already saved)
+  // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = async () => {
+    if (hasUnsavedFamilyData()) {
+      setShowConfirmation(true);
+    } else {
+      router.push(next_url);
+    }
+  };
+
+  // Handle confirmation - save family member and proceed
+  const handleConfirmSaveAndContinue = async () => {
+    setShowConfirmation(false);
+    try {
+      await handleAddOrUpdate();
+      // Wait a bit for the family member to be saved, then move to next
+      setTimeout(() => {
+        router.push(next_url);
+      }, 500);
+    } catch (error) {
+      console.error(`Error saving ${actionButton_label.toLowerCase()}:`, error);
+      // Still move to next even if save fails
+      router.push(next_url);
+    }
+  };
+
+  // Handle confirmation - discard changes and proceed
+  const handleDiscardAndContinue = () => {
+    setShowConfirmation(false);
+    setCurrentFamilyMember({ ...defaultFamilyMember });
     router.push(next_url);
+  };
+
+  // Handle confirmation - cancel and stay on page
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   return (
@@ -408,6 +458,40 @@ const FormSection = ({
           <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/references")}>Skip</button>
         </div>
       </form>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Save {actionButton_label} Changes?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              You have unsaved {actionButton_label.toLowerCase()} information. Would you like to save this family member before continuing to the next step?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmSaveAndContinue}
+                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+              >
+                Save & Continue
+              </button>
+              <button
+                onClick={handleDiscardAndContinue}
+                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+              >
+                Discard & Continue
+              </button>
+              <button
+                onClick={handleCancelConfirmation}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

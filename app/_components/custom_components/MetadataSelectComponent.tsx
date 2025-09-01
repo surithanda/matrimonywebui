@@ -13,6 +13,7 @@ type componentProps = {
     bindValue?:any, 
     changeHandler?:any,
     custSelectValue?:boolean,
+    hasAny?:boolean,
     dontUseID?:boolean
 }
 
@@ -33,12 +34,12 @@ type componentProps = {
 
 
 const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttributes<HTMLSelectElement>) => {
-    const { type, bindValue, changeHandler, custSelectValue = false,  dontUseID = false, ...rest } = props;
+    const { type, bindValue, changeHandler, custSelectValue = false, hasAny, dontUseID = false, ...rest } = props;
     const metaData = useAppSelector((state) => state.metaData);
     const listName = `${type.replace(' ', '')}List`;
     const optionsList = (metaData as any)[listName];
 
-    console.log(optionsList, listName)
+    // console.log(optionsList, listName)
 
     let customValFunc;
     try {
@@ -55,7 +56,7 @@ const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttribu
             className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
             {...rest}
         >
-            <option value="">Select {toCapitalCase(type)}</option>
+            <option value={hasAny ? -1 : ""}>Select {hasAny ? 'Any' : toCapitalCase(type)}</option>
             {optionsList && optionsList.map((item: any) => (
                 <option key={item.id} value={custSelectValue && customValFunc ? customValFunc(item.name).value : (dontUseID ? item.name : item.id)}>
                     {item.name}

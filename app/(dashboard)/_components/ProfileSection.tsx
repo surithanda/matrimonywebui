@@ -22,7 +22,7 @@ const ProfileSection = () => {
   const personalProfile = useAppSelector((state) => state.profile.personalProfile);
   const profilePhotos = useAppSelector((state) => state.profile.photos);
   const {fetchAccountDetls} = useFetchUser();
-  // const {loadMetaData} = useMetaDataLoader();
+  const {loadMetaData} = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
 
   // API origin and image URL utility
@@ -86,7 +86,7 @@ const ProfileSection = () => {
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
     else if(userData && userData?.email) fetchAccountDetls();
-    // loadMetaData();
+    loadMetaData();
   },[userData, fetchAccountDetls]);
         
   const faqData = [

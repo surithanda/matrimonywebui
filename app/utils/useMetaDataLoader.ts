@@ -62,7 +62,7 @@ export const useMetaDataLoader = () => {
   const loadMetaData = useCallback(async () => {
     try {
       const result = await (dispatch as any)(getMetaDataAsync({ category: null })).unwrap();
-      console.log("Metadata loaded:", result);
+      // console.log("Metadata loaded:", result);
       
       // Group the data by category
       const groupedByCategory: { [key: string]: any[] } = {};
@@ -133,10 +133,10 @@ export const useMetaDataLoader = () => {
   const findCountryName = (compareVal:number):string => {
     let match:any;
     countryList?.map((i:any) => {
-      console.log(i, compareVal)
+      // console.log(i, compareVal)
       if(i.id === compareVal) match = i;
     })
-    console.log(match)
+    // console.log(match)
     return match?.name;
   }
   const findStateName = (compareVal:number):string => {

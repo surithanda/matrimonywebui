@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 
 type ProfileContextType = {
   selectedProfileID: number;
@@ -13,8 +13,12 @@ interface ProfileContextProviderProps {
 }
 
 export function ProfileContextProvider({ children }: ProfileContextProviderProps) {
-  const [selectedProfileID, setSelectedProfileID] = useState(0);
-  
+  const [selectedProfileID, setSelectedProfileID] = useState<number>(Number(localStorage.getItem("profile")) || 0);
+
+  useEffect(() => {
+    localStorage.setItem("profile", String(selectedProfileID));
+  }, [selectedProfileID]);
+
   const value = useMemo(() => ({
     selectedProfileID,
     setSelectedProfileID

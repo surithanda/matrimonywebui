@@ -29,8 +29,8 @@ const PreferencesSection = () => {
   } = searchState || {};
 
   // Initialize state with default values from userPreferences
-  const [minAge, setMinAge] = useState<number>(18);
-  const [maxAge, setMaxAge] = useState<number>(35);
+  const [minAge, setMinAge] = useState<number>(21);
+  const [maxAge, setMaxAge] = useState<number>(50);
   const [gender, setGender] = useState<string>("");
   const [religion, setReligion] = useState<number | null>(null);
   const [maxEducation, setMaxEducation] = useState<number | null>(null);
@@ -75,8 +75,8 @@ const PreferencesSection = () => {
       if (userPreferences.marital_status !== undefined) setMaritalStatus(userPreferences.marital_status);
     } else {
       // Set default values if no preferences exist
-      setMinAge(18);
-      setMaxAge(35);
+      setMinAge(21);
+      setMaxAge(50);
       setGender("");
       setReligion(null);
       setMaxEducation(null);
@@ -91,7 +91,7 @@ const PreferencesSection = () => {
   // useEffect(() => {
   //   if (userPreferences && typeof userPreferences === 'object') {
   //     setMinAge(userPreferences.min_age || 18);
-  //     setMaxAge(userPreferences.max_age || 35);
+  //     setMaxAge(userPreferences.max_age || 50);
   //     setGender(userPreferences.gender || "");
   //     setLocationPreference(userPreferences.location_preference || "");
   //     setDistancePreference(userPreferences.distance_preference || 50);
@@ -203,8 +203,8 @@ const PreferencesSection = () => {
             <label className="block text-sm text-gray-600 mb-1">Min Age</label>
             <input
               type="range"
-              min="18"
-              max="60"
+              min="21"
+              max="85"
               value={minAge}
               onChange={(e) => handleMinAgeChange(Number(e.target.value))}
               className="w-full bg-[#CDCDCD] rounded-full h-2"
@@ -215,8 +215,8 @@ const PreferencesSection = () => {
             <label className="block text-sm text-gray-600 mb-1">Max Age</label>
             <input
               type="range"
-              min="18"
-              max="60"
+              min="21"
+              max="85"
               value={maxAge}
               onChange={(e) => handleMaxAgeChange(Number(e.target.value))}
               className="w-full bg-[#CDCDCD] rounded-full h-2"

@@ -5,9 +5,10 @@ import Link from "next/link";
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
+import { getPersonalProfileAsync, getProfilePhotosAsync } from "@/app/store/features/profileSlice";
 import { decodeJWT } from "@/app/utils/jwtUtils";
 import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
@@ -18,26 +19,74 @@ import { IProfile } from "@/app/models/Profile";
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
+  const personalProfile = useAppSelector((state) => state.profile.personalProfile);
+  const profilePhotos = useAppSelector((state) => state.profile.photos);
   const {fetchAccountDetls} = useFetchUser();
-  // const {loadMetaData} = useMetaDataLoader();
+  const {loadMetaData} = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+
+  // API origin and image URL utility
+  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+  const toAbsoluteUrl = useCallback((u?: string | null) => {
+    if (!u || typeof u !== 'string') return null;
+    if (u.startsWith('http')) return u;
+    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
+    return u.startsWith('/') ? u : `/${u}`;
+  }, [apiOrigin]);
 
    // Profile Data for dynamic rendering
   const [profilesData, setProfilesData] = useState<any>([]);
   
   useEffect(() => {
-    if(selectedProfileID) setProfilesData([{
-      name: "Shruti Sinha",
-      age: 24,
-      location: "Naperville",
-      imageSrc: profile1,
-    }])
-  }, [selectedProfileID])
+    if(selectedProfileID && selectedProfileID > 0) {
+      // Fetch profile data and photos
+      (dispatch as any)(getPersonalProfileAsync({profile_id: selectedProfileID}));
+      (dispatch as any)(getProfilePhotosAsync(selectedProfileID));
+    }
+  }, [selectedProfileID, dispatch])
+
+  // Transform API data to component format
+  useEffect(() => {
+    if (personalProfile && selectedProfileID) {
+      const calculateAge = (birthDate: string) => {
+        if (!birthDate) return null;
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+          age--;
+        }
+        return age;
+      };
+
+      const getProfileImage = () => {
+        if (profilePhotos && profilePhotos.length > 0) {
+          // Find profile photo (photo_type === 450) or use first available
+          const profilePhoto = profilePhotos.find(photo => photo.photo_type === 450) || profilePhotos[0];
+          return toAbsoluteUrl(profilePhoto.url);
+        }
+        return profile1; // fallback to default image
+      };
+
+      const profile = personalProfile?.data || personalProfile;
+      const transformedData = {
+        name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
+        age: calculateAge(profile.birth_date),
+        location: profile?.current_city,// || `${profile.city || ''}, ${profile.state || ''}`.replace(', ,', '').trim(),
+        imageSrc: getProfileImage(),
+      };
+
+      console.log('Transformed Profile Data:', transformedData, personalProfile); // Debug log
+
+      setProfilesData([transformedData]);
+    }
+  }, [personalProfile, profilePhotos, selectedProfileID])
   
   useEffect(() => {
     if (userData && userData?.token) fetchAccountDetls();
     else if(userData && userData?.email) fetchAccountDetls();
-    // loadMetaData();
+    loadMetaData();
   },[userData, fetchAccountDetls]);
         
   const faqData = [
@@ -101,11 +150,14 @@ const ProfileSection = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {profilesData && profilesData.length > 0 && profilesData?.map((profile:IProfile, index:number) => (
+              <Link href={`/profiles/${selectedProfileID}`} key={index}>
+                
               <div
                 key={index}
-                className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
+                className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                title={`${profile.name}, ${profile.age} years old`}
               >
-                <div>
+                {/* <div>
                     <Link href={`/profiles/${selectedProfileID}`}>
                       <button className="bg-gray-950 text-white hover:bg-gray-600 w-full">
                         View Profile
@@ -116,18 +168,21 @@ const ProfileSection = () => {
                         Update Profile
                       </button>
                     </Link>
-                    </div>
+                    </div> */}
                 <Image
                   src={profile.imageSrc}
                   alt={profile.name}
+                  width={typeof profile.imageSrc === 'string' && profile.imageSrc.startsWith('http') ? 282 : undefined}
+                  height={typeof profile.imageSrc === 'string' && profile.imageSrc.startsWith('http') ? 300 : undefined}
                   className="w-[282px] h-auto object-cover"
                 />
                 <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
                   <div>
-                    <p className="BRCobane20600 text-white">
-                      {/* {profile.name}, {profile.age} */}
+                    <p className="BRCobane20600 text-yellow-50 text-sm">
+                      {profile.name}, {profile.age}
                     </p>
-                    {/* <div className="flex items-center gap-1">
+                    {profile.location && 
+                    <div className="flex items-center gap-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"
@@ -141,10 +196,12 @@ const ProfileSection = () => {
                         />
                       </svg>
                       <p className="BRCobane14500">{profile.location}</p>
-                    </div> */}     
+                    </div>   
+                    } 
                   </div>
                 </div>
               </div>
+              </Link>
             ))}
           </div>
         </div>

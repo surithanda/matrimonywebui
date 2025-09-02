@@ -37,6 +37,7 @@ const FormSection = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
     const [currentProperty, setCurrentProperty] = useState<IPropertyFieldValue>({ ...defaultProperty });
   const [localError, setLocalError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const {findPropertyTypeName, findOwnershipTypeName} = useMetaDataLoader();
 
   // Handle input changes for the local property form
@@ -133,6 +134,44 @@ const FormSection = () => {
   // On submit, just continue (properties are already saved)
   const onSubmit = async () => {
     router.push("/createprofile/photos");
+  };
+
+  // Check if there are unsaved property data
+  const hasUnsavedPropertyData = () => {
+    return (
+      currentProperty.property_type !== -1 ||
+      currentProperty.ownership_type !== -1 ||
+      currentProperty.property_value ||
+      currentProperty.property_description ||
+      currentProperty.property_address
+    );
+  };
+
+  // Handle continue button click with confirmation
+  const handleContinue = () => {
+    if (hasUnsavedPropertyData()) {
+      setShowConfirmation(true);
+    } else {
+      router.push("/createprofile/photos");
+    }
+  };
+
+  // Handle confirmation actions
+  const handleSaveAndContinue = async () => {
+    await handleAddOrUpdate();
+    setShowConfirmation(false);
+    router.push("/createprofile/photos");
+  };
+
+  const handleDiscardAndContinue = () => {
+    setCurrentProperty({ ...defaultProperty });
+    setEditIndex(null);
+    setShowConfirmation(false);
+    router.push("/createprofile/photos");
+  };
+
+  const handleCancel = () => {
+    setShowConfirmation(false);
   };
 
   // Fetch properties from backend on mount
@@ -291,12 +330,44 @@ const FormSection = () => {
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
+            <button type="button" className="yellow-btn hover:bg-orange-600" onClick={handleContinue}>Continue</button>
             <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => { setCurrentProperty({ ...defaultProperty }); setEditIndex(null); }}>Cancel</button>
           </div>
           <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/photos")}>Skip</button>
         </div>
       </form>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Unsaved Property Data</h3>
+            <p className="text-gray-600 mb-6">
+              You have unsaved property data. Would you like to save it before continuing?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCancel}
+                className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDiscardAndContinue}
+                className="px-4 py-2 text-red-600 bg-red-100 rounded hover:bg-red-200"
+              >
+                Discard & Continue
+              </button>
+              <button
+                onClick={handleSaveAndContinue}
+                className="px-4 py-2 text-white bg-orange-500 rounded hover:bg-orange-600"
+              >
+                Save & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

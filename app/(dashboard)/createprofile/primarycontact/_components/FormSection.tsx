@@ -55,9 +55,24 @@ const FormSection = () => {
     name: "addresses"
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [currentAddress, setCurrentAddress] = useState<IAddress>({ ...defaultAddress });
+  const [currentAddress, setCurrentAddress] = useState<IAddress>({ ...defaultAddress });
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
   const {countryList} = useAppSelector((state) => state.metaData);
+
+  // Check if currentAddress has any meaningful data
+  const hasUnsavedAddressData = () => {
+    return !!(
+      currentAddress.city ||
+      currentAddress.state ||
+      currentAddress.country ||
+      currentAddress.zip ||
+      currentAddress.address_line1 ||
+      currentAddress.address_line2 ||
+      currentAddress.landmark1 ||
+      currentAddress.landmark2
+    );
+  };
 
   const fetchProfileAddress = useCallback(async () => {
     const data = {
@@ -163,18 +178,42 @@ const FormSection = () => {
     setCurrentAddress({ ...defaultAddress });
   };
 
-  // On submit, save all addresses
-    const onSubmit = async (data: IFormData) => {
-    // for (const address of fields) {
-    //   const addressData = {
-    //     profile_id: 51, // Replace with dynamic value if needed
-    //     address_type: 1,
-    //     ...address
-    //   };
-    //   console.log(addressData)
-    //   await dispatch(createAddressAsync(addressData));
-    // }
+  // On submit, check for unsaved data and show confirmation if needed
+  const onSubmit = async (data: IFormData) => {
+    console.log("Form submitted:", data, hasUnsavedAddressData());
+    if (hasUnsavedAddressData()) {
+      setShowConfirmation(true);
+    } else {
+      moveToNext();
+    }
+  };
+
+  // Handle confirmation - save address and proceed
+  const handleConfirmSaveAndContinue = async () => {
+    setShowConfirmation(false);
+    try {
+      await handleAddOrUpdate();
+      // Wait a bit for the address to be saved, then move to next
+      setTimeout(() => {
+        moveToNext();
+      }, 500);
+    } catch (error) {
+      console.error('Error saving address:', error);
+      // Still move to next even if save fails
+      moveToNext();
+    }
+  };
+
+  // Handle confirmation - discard changes and proceed
+  const handleDiscardAndContinue = () => {
+    setShowConfirmation(false);
+    setCurrentAddress({ ...defaultAddress });
     moveToNext();
+  };
+
+  // Handle confirmation - cancel and stay on page
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   const moveToNext = () => {
@@ -371,6 +410,40 @@ const FormSection = () => {
           </button>
         </div>
       </form>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Save Address Changes?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              You have unsaved address information. Would you like to save this address before continuing to the next step?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmSaveAndContinue}
+                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+              >
+                Save & Continue
+              </button>
+              <button
+                onClick={handleDiscardAndContinue}
+                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+              >
+                Discard & Continue
+              </button>
+              <button
+                onClick={handleCancelConfirmation}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

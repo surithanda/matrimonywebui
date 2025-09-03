@@ -192,23 +192,23 @@ input[type="range"] {
   );
 }
 .dashboard-sections {
-  display: flex;
-  padding: 24px;
+  /* display: flex; */
+  /* padding: 24px; */
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
   flex: 1 0 0;
   /* align-self: stretch; */
   border-radius: 19px;
-  background: rgba(17, 17, 17, 0.05);
+  /* background: rgba(17, 17, 17, 0.05); */
 }
 .dashboard-inner-sections {
   display: flex;
-  padding: 20px;
+  /* padding: 20px;  */
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 15px;
+  /* gap: 15px; */
   align-self: stretch;
   border-radius: 16px;
   background: #ffffff66;

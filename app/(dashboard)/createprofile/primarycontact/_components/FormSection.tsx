@@ -1,5 +1,9 @@
 "use client";
-import { createAddressAsync, createPersonalProfileAsync, getAddressAsync } from "@/app/store/features/profileSlice";
+import {
+  createAddressAsync,
+  createPersonalProfileAsync,
+  getAddressAsync,
+} from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useRouter } from "next/navigation";
@@ -28,9 +32,8 @@ interface IFormData {
   addresses: IAddress[];
 }
 
-
 const defaultAddress = {
-  id:"",
+  id: "",
   city: "",
   state: 0,
   country: 0,
@@ -42,23 +45,25 @@ const defaultAddress = {
   landmark2: "",
 };
 
-
 const FormSection = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useAppDispatch();
   const { selectedProfileID } = useProfileContext();
   const { control, handleSubmit, reset, register, watch } = useForm<IFormData>({
-    defaultValues: { addresses: [] }
+    defaultValues: { addresses: [] },
   });
   const { fields, append, remove, update } = useFieldArray({
     control,
-    name: "addresses"
+    name: "addresses",
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentAddress, setCurrentAddress] = useState<IAddress>({ ...defaultAddress });
+  const [currentAddress, setCurrentAddress] = useState<IAddress>({
+    ...defaultAddress,
+  });
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
-  const {countryList} = useAppSelector((state) => state.metaData);
+  const { loadStates, formatWithMetaData, findCountryName, findStateName } =
+    useMetaDataLoader();
+  const { countryList } = useAppSelector((state) => state.metaData);
 
   // Check if currentAddress has any meaningful data
   const hasUnsavedAddressData = () => {
@@ -81,7 +86,7 @@ const FormSection = () => {
     try {
       const result = await dispatch(getAddressAsync(data)).unwrap();
 
-            if (result?.success && result.data) {
+      if (result?.success && result.data) {
         reset({ addresses: result.data?.addresses });
       }
     } catch (err: any) {
@@ -101,11 +106,11 @@ const FormSection = () => {
   // When editing, load the address into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-        setCurrentAddress(fields[index] as IAddress);
+    setCurrentAddress(fields[index] as IAddress);
   };
 
   // Add or update address
-  const handleAddOrUpdate = async() => {
+  const handleAddOrUpdate = async () => {
     if (
       !currentAddress.city &&
       !currentAddress.state &&
@@ -126,14 +131,15 @@ const FormSection = () => {
 
     //update db and on positive response proceed ahead
     const addressData = {
-      profile_id: selectedProfileID, 
+      profile_id: selectedProfileID,
       address_type: 1,
-      ...currentAddress
+      ...currentAddress,
     };
-    console.log(addressData)
+    console.log(addressData);
     // return;
-    
-    if (editIndex !== null) { //update
+
+    if (editIndex !== null) {
+      //update
       // try {
       //   const result = await dispatch(updateAddressAsync(addressData)).unwrap();
       //   if (result && result.status === 'success') {
@@ -144,11 +150,12 @@ const FormSection = () => {
       //   // toast.error(err.message || "Failed to update address.");
       //   console.error("Error submitting form:", err);
       // }
-    } else { //add
+    } else {
+      //add
       try {
         const result = await dispatch(createAddressAsync(addressData)).unwrap();
-        console.log(result)
-        if (result && result.status === 'success') {
+        console.log(result);
+        if (result && result.status === "success") {
           // toast.success("Address added successfully!");
           proceedwithAddUpdate(result?.profile_address_id);
         }
@@ -159,9 +166,11 @@ const FormSection = () => {
     }
   };
 
-    const proceedwithAddUpdate = (updateID?: string | number) => {
+  const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of the address being added/updated
-        const updatedAddress = updateID ? { ...currentAddress, id: String(updateID) } : { ...currentAddress };
+    const updatedAddress = updateID
+      ? { ...currentAddress, id: String(updateID) }
+      : { ...currentAddress };
     if (editIndex !== null) {
       update(editIndex, updatedAddress);
       setEditIndex(null);
@@ -169,7 +178,7 @@ const FormSection = () => {
       append(updatedAddress);
     }
     setCurrentAddress({ ...defaultAddress });
-  }
+  };
 
   // Delete address
   const handleDelete = (index: number) => {
@@ -198,7 +207,7 @@ const FormSection = () => {
         moveToNext();
       }, 500);
     } catch (error) {
-      console.error('Error saving address:', error);
+      console.error("Error saving address:", error);
       // Still move to next even if save fails
       moveToNext();
     }
@@ -223,7 +232,10 @@ const FormSection = () => {
 
   return (
     <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="w-full box-border md:px-6"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         {/* Address List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
@@ -240,22 +252,37 @@ const FormSection = () => {
               </thead>
               <tbody>
                 {fields.map((item, index) => (
-                  <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 text-base">
+                  <tr
+                    key={item.id}
+                    className="border-b border-gray-100 hover:bg-gray-50 text-base"
+                  >
                     <td className="px-3 py-2">{item.address_line1}</td>
                     <td className="px-3 py-2">{item.city}</td>
-                    <td className="px-3 py-2">{findStateName(item.state_id ?? item.state ?? 0)}</td>
-                    <td className="px-3 py-2">{findCountryName(item.country_id ?? item.country ?? 0)}</td>
+                    <td className="px-3 py-2">
+                      {findStateName(item.state_id ?? item.state ?? 0)}
+                    </td>
+                    <td className="px-3 py-2">
+                      {findCountryName(item.country_id ?? item.country ?? 0)}
+                    </td>
                     <td className="px-3 py-2">{item.zip}</td>
                     <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center" >
-                        <button type="button" 
-                          className="gray-btn px-2 py-1 text-xs" 
-                          disabled={true} 
-                          onClick={() => handleEdit(index)}>Edit</button>
-                        <button type="button" 
-                          className="red-btn px-2 py-1 text-xs" 
-                          disabled={true} 
-                          onClick={() => handleDelete(index)}>Delete</button>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          type="button"
+                          className="gray-btn px-2 py-1 text-xs"
+                          disabled={true}
+                          onClick={() => handleEdit(index)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="red-btn px-2 py-1 text-xs"
+                          disabled={true}
+                          onClick={() => handleDelete(index)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -268,40 +295,15 @@ const FormSection = () => {
         <div className="flex flex-wrap justify-between">
           <div className="flex w-full justify-between">
             <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">City</label>
-              <input
-                type="text"
-                value={currentAddress.city}
-                onChange={e => setCurrentAddress({ ...currentAddress, city: e.target.value })}
-                placeholder="Enter city"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">State</label>
-              <MetadataSelectComponent type='state' 
-                value={currentAddress.state}
-                onChange={e => {
-                  setCurrentAddress({ ...currentAddress, state: Number(e.target.value) })
-                }}
-                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              {/* <input
-                type="text"
-                value={currentAddress.state}
-                onChange={e => setCurrentAddress({ ...currentAddress, state: e.target.value })}
-                placeholder="Enter state"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              /> */}
-            </div>
-          </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Country</label>
-              <MetadataSelectComponent type='country' 
+              <MetadataSelectComponent
+                type="country"
                 value={currentAddress.country}
-                onChange={e => {
-                  setCurrentAddress({ ...currentAddress, country: Number(e.target.value) })
+                onChange={(e) => {
+                  setCurrentAddress({
+                    ...currentAddress,
+                    country: Number(e.target.value),
+                  });
                   loadStates(e.target.value);
                 }}
                 // dontUseID={true}
@@ -319,11 +321,48 @@ const FormSection = () => {
               </select> */}
             </div>
             <div className="w-[49%] md:mb-4">
+              <label className="block text-gray-700 mb-2">State</label>
+              <MetadataSelectComponent
+                type="state"
+                value={currentAddress?.state}
+                onChange={(e) => {
+                  setCurrentAddress({
+                    ...currentAddress,
+                    state: Number(e.target.value),
+                  });
+                }}
+                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              {/* <input
+                type="text"
+                value={currentAddress.state}
+                onChange={e => setCurrentAddress({ ...currentAddress, state: e.target.value })}
+                placeholder="Enter state"
+                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              /> */}
+            </div>
+          </div>
+          <div className="flex w-full justify-between">
+            <div className="w-[49%] md:mb-4">
+              <label className="block text-gray-700 mb-2">City</label>
+              <input
+                type="text"
+                value={currentAddress.city}
+                onChange={(e) =>
+                  setCurrentAddress({ ...currentAddress, city: e.target.value })
+                }
+                placeholder="Enter city"
+                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div className="w-[49%] md:mb-4">
               <label className="block text-gray-700 mb-2">Zip Code</label>
               <input
                 type="text"
                 value={currentAddress.zip}
-                onChange={e => setCurrentAddress({ ...currentAddress, zip: e.target.value })}
+                onChange={(e) =>
+                  setCurrentAddress({ ...currentAddress, zip: e.target.value })
+                }
                 placeholder="Enter zip code"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -331,10 +370,17 @@ const FormSection = () => {
           </div>
           <div className="flex w-full justify-between">
             <div className="w-full md:mb-4">
-              <label className="block text-gray-700 mb-2">Complete Address</label>
+              <label className="block text-gray-700 mb-2">
+                Complete Address
+              </label>
               <textarea
                 value={currentAddress.address_line1}
-                onChange={e => setCurrentAddress({ ...currentAddress, address_line1: e.target.value })}
+                onChange={(e) =>
+                  setCurrentAddress({
+                    ...currentAddress,
+                    address_line1: e.target.value,
+                  })
+                }
                 placeholder="Complete Address"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                 rows={1}
@@ -347,7 +393,12 @@ const FormSection = () => {
               <input
                 type="text"
                 value={currentAddress.address_line2}
-                onChange={e => setCurrentAddress({ ...currentAddress, address_line2: e.target.value })}
+                onChange={(e) =>
+                  setCurrentAddress({
+                    ...currentAddress,
+                    address_line2: e.target.value,
+                  })
+                }
                 placeholder="Address Line 2"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -369,7 +420,12 @@ const FormSection = () => {
               <input
                 type="text"
                 value={currentAddress.landmark1}
-                onChange={e => setCurrentAddress({ ...currentAddress, landmark1: e.target.value })}
+                onChange={(e) =>
+                  setCurrentAddress({
+                    ...currentAddress,
+                    landmark1: e.target.value,
+                  })
+                }
                 placeholder="Landmark 1"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -379,7 +435,12 @@ const FormSection = () => {
               <input
                 type="text"
                 value={currentAddress.landmark2}
-                onChange={e => setCurrentAddress({ ...currentAddress, landmark2: e.target.value })}
+                onChange={(e) =>
+                  setCurrentAddress({
+                    ...currentAddress,
+                    landmark2: e.target.value,
+                  })
+                }
                 placeholder="Landmark 2"
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -398,8 +459,16 @@ const FormSection = () => {
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button type="submit" className="yellow-btn hover:bg-orange-600">Continue</button>
-            <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => reset({ addresses: [defaultAddress] })}>Cancel</button>
+            <button type="submit" className="yellow-btn hover:bg-orange-600">
+              Continue
+            </button>
+            <button
+              type="button"
+              className="gray-btn hover:bg-gray-400"
+              onClick={() => reset({ addresses: [defaultAddress] })}
+            >
+              Cancel
+            </button>
           </div>
           <button
             type="button"
@@ -419,7 +488,8 @@ const FormSection = () => {
               Save Address Changes?
             </h3>
             <p className="text-gray-600 mb-6">
-              You have unsaved address information. Would you like to save this address before continuing to the next step?
+              You have unsaved address information. Would you like to save this
+              address before continuing to the next step?
             </p>
             <div className="flex gap-3">
               <button

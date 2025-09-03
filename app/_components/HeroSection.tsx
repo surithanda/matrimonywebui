@@ -14,7 +14,7 @@ export const HeroSection = () => {
 
       {/* Background Image */}
       <Image
-        src="/images/diwali-happy-festive-diya-candle-light-abstract-india-holiday-celebration-decoration-wate.jpg"
+        src="/images/homePageHeroSection.jpg"
         alt="Hero Background"
         fill
         priority

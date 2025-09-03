@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     
-      <div className="dashboard-background md:px-[120px] md:py-8 flex flex-col items-center md:gap-8">
+      <div className="dashboard-background mt-16 md:px-[120px] md:py-8 flex flex-col items-center md:gap-8">
         <div className="flex justify-between items-center w-full">
           <h2 className="dmserif32600">Create Profile</h2>
         </div>

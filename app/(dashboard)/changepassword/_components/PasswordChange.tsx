@@ -69,7 +69,7 @@ const PasswordChange = () => {
   };
 
   return (
-    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/3 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/3 mx-auto px-4 sm:px-6 lg:px-8 py-6 shadow-lg">
       <form onSubmit={handleSubmit} className="w-full">
         {/* Current Password */}
         <div className="mb-6 flex flex-col">

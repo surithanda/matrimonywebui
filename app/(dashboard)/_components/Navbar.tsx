@@ -9,20 +9,20 @@ import LoginIcon from "/public/images/LoginIcon.svg";
 import RegisterIcon from "/public/images/RegisterIcon.svg";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/store/store";
+import { LogIn, Menu, User } from "lucide-react";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   // Function to check if the current route is active
   const isActive = (path: string) => {
-    return pathname === path
-      ? "opacity-100 border-b-2 border-gray-950"
-      : "opacity-50 border-b-2 border-white";
+    return pathname === path ? "opacity-100 border-b-2 border-gray-950" : "";
   };
 
   useEffect(() => {
@@ -57,6 +57,13 @@ const Navbar = () => {
     };
   }, [isMobileMenuOpen]);
 
+  // Scroll detection for background
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const checkToken = () => {
     const token = localStorage.getItem("matrimony token");
     if (token) {
@@ -82,18 +89,24 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center h-fit px-4 py-2 sm:px-6 md:px-6 lg:px-2 xl:px-[120px] z-20 relative">
+      <div
+        className={`flex justify-between items-center fixed top-0 left-0 w-full  transition-colors duration-300 h-fit px-4 py-2 sm:px-6 md:px-6 lg:px-2 xl:px-[120px] z-50 ${
+          isScrolled
+            ? "bg-[#0d0d0d]/60 shadow-lg backdrop-blur-md"
+            : "bg-transparent"
+        }`}
+      >
         {/* Logo */}
-        <Link href={checkToken() ? "/dashboard" : "/"} className="py-2">
+        <Link href={checkToken() ? "/dashboard" : "/"}>
           <Image
             src={logo}
-            alt=""
-            className="w-[160px] h-[32px] sm:w-[180px] sm:h-[36px] md:w-[200px] md:h-[40px] lg:w-[221px] lg:h-[45px]"
+            alt="logo"
+            className="w-[160px] md:w-[200px] lg:w-[221px]"
           />
         </Link>
 
         {/* Desktop Navigation Menu */}
-        <div className="hidden lg:flex lg:items-center lg:flex-grow">
+        <div className="hidden md:flex gap-4 lg:gap-6 xl:gap-8 BRCobane16500Light text-white">
           {isAccountOpen && (
             <ul className="flex flex-row justify-center gap-6 xl:gap-9 grow items-center h-[61px] px-4 xl:px-9">
               <li
@@ -102,7 +115,7 @@ const Navbar = () => {
                   pathname === "/account" ||
                   pathname === "/changepassword"
                     ? "opacity-100 border-b-2 border-gray-950"
-                    : "opacity-50 border-b-2 border-white"
+                    : ""
                 } `}
               >
                 <Link
@@ -116,7 +129,7 @@ const Navbar = () => {
                 className={`nav-item h-full flex items-center px-2 xl:px-0 ${
                   pathname === "/profiles"
                     ? "opacity-100 border-b-2 border-gray-950"
-                    : "opacity-50 border-b-2 border-white"
+                    : ""
                 }`}
               >
                 <Link
@@ -180,7 +193,7 @@ const Navbar = () => {
           {!isAccountOpen && (
             <>
               <ul className="flex flex-row justify-center gap-0 xl:gap-5 grow items-center h-[61px] px-4 xl:px-9">
-                <li className="nav-item h-full flex items-center px-2 xl:px-0 opacity-50 border-b-2 border-white">
+                <li className="nav-item h-full flex items-center px-2 xl:px-0">
                   <Link
                     className="nav-link h-full flex items-center BRCobane18600 text-lg"
                     href="/"
@@ -195,7 +208,7 @@ const Navbar = () => {
                 >
                   <Link
                     className="nav-link h-full flex items-center BRCobane18600 text-lg"
-                    href="/profiles"
+                    href="/about"
                   >
                     About us
                   </Link>
@@ -249,26 +262,30 @@ const Navbar = () => {
                   </Link>
                 </li>
               </ul>
-
-              {/* Desktop Login/Register Buttons */}
-              <div className="navBtnDiv flex flex-row items-center gap-[4px] xl:gap-[12px]">
-                <Link
-                  href="/login"
-                  className="WhiteBtn flex items-center justify-center text-center 
-                   text-base px-6 py-3 min-w-[80px] xl:min-w-[160px]
-                   whitespace-nowrap transition-all duration-200 hover:scale-105"
-                >
-                  <Image
-                    src={LoginIcon}
-                    alt="icon"
-                    className="inline-block w-[24px] h-[24px] mr-2 flex-shrink-0"
-                  />
-                  <span className="truncate">Login</span>
-                </Link>
-              </div>
             </>
           )}
         </div>
+
+        {/* Desktop Login/Register Buttons */}
+        {!isAccountOpen && (
+
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/login"
+            className=" hover:text-[#e69a00] flex items-center gap-2 text-sm md:text-sm lg:text-lg xl:text-xl"
+          >
+            <LogIn />
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className=" hover:text-[#e69a00] flex items-center gap-2 text-sm md:text-sm lg:text-lg xl:text-xl"
+          >
+            <User />
+            Register
+          </Link>
+        </div>
+        )}
 
         {/* Desktop profile section when account is open */}
         {isAccountOpen && (
@@ -309,31 +326,10 @@ const Navbar = () => {
 
         {/* Mobile/Tablet menu toggle button */}
         <button
+          className="md:hidden flex items-center bg-white/80 rounded-full p-1"
           onClick={toggleMobileMenu}
-          className="lg:hidden focus:outline-none p-2 z-50 relative"
-          aria-label="Toggle mobile menu"
         >
-          <div className="w-6 h-6 flex flex-col justify-center items-center">
-            <span
-              className={`bg-gray-800 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${
-                isMobileMenuOpen
-                  ? "rotate-45 translate-y-1"
-                  : "-translate-y-0.5"
-              }`}
-            ></span>
-            <span
-              className={`bg-gray-800 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5 ${
-                isMobileMenuOpen ? "opacity-0" : "opacity-100"
-              }`}
-            ></span>
-            <span
-              className={`bg-gray-800 block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm ${
-                isMobileMenuOpen
-                  ? "-rotate-45 -translate-y-1"
-                  : "translate-y-0.5"
-              }`}
-            ></span>
-          </div>
+          <Menu size={28} color="black" />
         </button>
       </div>
 
@@ -380,37 +376,6 @@ const Navbar = () => {
           <div className="flex-1 overflow-y-auto">
             {isAccountOpen && (
               <>
-                {/* User Profile Section */}
-                <div className="flex items-center space-x-4 p-4 border-b border-gray-200">
-                  <Image
-                    src={dp}
-                    alt="Profile"
-                    className="h-10 w-10 rounded-full"
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      User Profile
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      View and manage account
-                    </p>
-                  </div>
-                  <button className="p-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="21"
-                      viewBox="0 0 24 25"
-                      fill="none"
-                    >
-                      <path
-                        d="M20.5145 16.3631C20.4374 16.2702 20.3616 16.1773 20.2873 16.0876C19.2652 14.8513 18.6468 14.1052 18.6468 10.6053C18.6468 8.79339 18.2133 7.30667 17.3589 6.19164C16.7289 5.3679 15.8773 4.74301 14.7548 4.2812C14.7404 4.27317 14.7275 4.26263 14.7167 4.25007C14.313 2.89809 13.2082 1.99258 11.9621 1.99258C10.7161 1.99258 9.61172 2.89809 9.20798 4.24868C9.19723 4.26079 9.18451 4.271 9.17035 4.27888C6.55094 5.35721 5.27794 7.42608 5.27794 10.6039C5.27794 14.1052 4.66048 14.8513 3.63744 16.0862C3.5631 16.1759 3.48737 16.2669 3.41025 16.3617C3.21103 16.602 3.0848 16.8943 3.04652 17.204C3.00823 17.5138 3.05948 17.828 3.19421 18.1095C3.48087 18.7135 4.09181 19.0885 4.78918 19.0885H19.1402C19.8343 19.0885 20.4411 18.714 20.7287 18.1128C20.864 17.8312 20.9157 17.5167 20.8777 17.2066C20.8398 16.8965 20.7137 16.6038 20.5145 16.3631ZM11.9621 22.8066C12.6335 22.8061 13.2922 22.6239 13.8684 22.2793C14.4445 21.9346 14.9167 21.4405 15.2348 20.8493C15.2498 20.821 15.2572 20.7892 15.2563 20.7572C15.2554 20.7251 15.2462 20.6939 15.2296 20.6664C15.2131 20.639 15.1897 20.6163 15.1618 20.6005C15.1339 20.5848 15.1024 20.5765 15.0703 20.5766H8.85489C8.8228 20.5765 8.79122 20.5847 8.76324 20.6004C8.73526 20.6161 8.71182 20.6388 8.69522 20.6662C8.67861 20.6937 8.6694 20.725 8.66847 20.7571C8.66755 20.7891 8.67495 20.8209 8.68996 20.8493C9.00799 21.4405 9.48008 21.9345 10.0562 22.2791C10.6322 22.6237 11.2908 22.806 11.9621 22.8066Z"
-                        fill="#DCDCDC"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
                 {/* Navigation Links */}
                 <nav className="py-2">
                   <Link
@@ -419,8 +384,8 @@ const Navbar = () => {
                       pathname === "/dashboard" ||
                       pathname === "/account" ||
                       pathname === "/changepassword"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >
@@ -430,8 +395,8 @@ const Navbar = () => {
                     href="/profiles"
                     className={`flex items-center px-4 py-3 text-base font-medium transition-colors ${
                       pathname === "/profiles"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >
@@ -441,8 +406,8 @@ const Navbar = () => {
                     href="/settings"
                     className={`flex items-center px-4 py-3 text-base font-medium transition-colors ${
                       pathname === "/settings"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >
@@ -452,8 +417,8 @@ const Navbar = () => {
                     href="/search"
                     className={`flex items-center px-4 py-3 text-base font-medium transition-colors ${
                       pathname === "/search"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >
@@ -463,8 +428,8 @@ const Navbar = () => {
                     href="/recommendations"
                     className={`flex items-center px-4 py-3 text-base font-medium transition-colors ${
                       pathname === "/recommendations"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >
@@ -474,8 +439,8 @@ const Navbar = () => {
                     href="/favourites"
                     className={`flex items-center px-4 py-3 text-base font-medium transition-colors ${
                       pathname === "/favourites"
-                        ? "text-gray-900 bg-gray-100 border-r-2 border-gray-950"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                        ? "text-yellow-500 font-semibold"
+                        : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
                     onClick={closeMobileMenu}
                   >

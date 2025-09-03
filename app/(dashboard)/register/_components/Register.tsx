@@ -137,7 +137,7 @@ const Register = () => {
 
   return (
     <>
-     <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
+      <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
         <form
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-4 sm:gap-4 text-left"
@@ -158,7 +158,6 @@ const Register = () => {
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Email"
-                
               />
             </div>
             <div className="grow">
@@ -172,7 +171,6 @@ const Register = () => {
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Password"
-                
               />
             </div>
             <div className="grow">
@@ -186,7 +184,6 @@ const Register = () => {
                 onChange={handleChange}
                 className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Re-enter Password"
-                
               />
             </div>
           </div>
@@ -208,7 +205,6 @@ const Register = () => {
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="First Name"
-                  
                 />
               </div>
               <div className="grow flex flex-col items-start">
@@ -235,7 +231,6 @@ const Register = () => {
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Last Name"
-                  
                 />
               </div>
             </div>
@@ -251,7 +246,6 @@ const Register = () => {
                   value={formData.birthDate}
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  
                 />
               </div>
               <div className="grow flex flex-col items-start">
@@ -263,7 +257,6 @@ const Register = () => {
                   value={formData.gender}
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  
                 >
                   <option value="">Select Gender</option>
                   {genderList &&
@@ -288,47 +281,12 @@ const Register = () => {
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Complete Address"
-                  
                 />
               </div>
             </div>
 
             {/* City, State, Country, Zip Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="City"
-                  
-                />
-              </div>
-              <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  State
-                </label>
-                <select
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  
-                >
-                  <option value="">Select State</option>
-                  {stateList &&
-                    stateList?.map((state: any) => (
-                      <option key={state.state_id} value={state.state_name}>
-                        {state.state_name}
-                      </option>
-                    ))}
-                </select>
-              </div>
               <div className="flex flex-col items-start w-full">
                 <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
                   Country
@@ -338,7 +296,6 @@ const Register = () => {
                   value={formData.country}
                   onChange={handleChange}
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  
                 >
                   <option value="">Select Country</option>
                   {countryList &&
@@ -354,6 +311,39 @@ const Register = () => {
               </div>
               <div className="flex flex-col items-start w-full">
                 <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
+                  State
+                </label>
+                <select
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                >
+                  <option value="">Select State</option>
+                  {stateList &&
+                    stateList?.map((state: any) => (
+                      <option key={state.state_id} value={state.state_name}>
+                        {state.state_name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex flex-col items-start w-full">
+                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
+                  City
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  placeholder="City"
+                />
+              </div>
+
+              <div className="flex flex-col items-start w-full">
+                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
                   Zip Code
                 </label>
                 <input
@@ -364,7 +354,6 @@ const Register = () => {
                   className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Zip Code"
                   maxLength={7}
-                  
                 />
               </div>
             </div>
@@ -378,20 +367,6 @@ const Register = () => {
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4 grow flex flex-col items-start">
                 <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="contactEmail"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="Email"
-                  
-                />
-              </div>
-              <div className="mb-4 grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
                   Primary Phone
                 </label>
                 <div className="flex w-full gap-2">
@@ -400,7 +375,6 @@ const Register = () => {
                     value={formData.primaryPhoneCountry || "+91"}
                     onChange={handleChange}
                     className="account-input-field sm:w-32 md:w-52 focus:outline-none focus:border-b focus:border-[#f7ac03] text-xs sm:text-sm"
-                    
                   >
                     <option value="">Select Country Code</option>
                     {countryList &&
@@ -421,9 +395,22 @@ const Register = () => {
                     className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                     placeholder="Primary Phone"
                     maxLength={10}
-                    
                   />
                 </div>
+              </div>
+              <div className="mb-4 grow flex flex-col items-start">
+                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="contactEmail"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base cursor-not-allowed"
+                  placeholder="Email"
+                  readOnly
+                />
               </div>
             </div>
           </div>

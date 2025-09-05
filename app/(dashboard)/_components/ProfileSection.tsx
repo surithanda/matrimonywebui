@@ -14,6 +14,8 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
 import { FaPlus } from "react-icons/fa6";
+import { FaqSection } from "@/components/blocks/faq";
+
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
@@ -272,47 +274,8 @@ const ProfileSection = () => {
         <h2 className="dmserif32600 mb-4 sm:mb-6 text-center text-xl sm:text-2xl lg:text-3xl">
           Frequently Asked Questions
         </h2>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 xl:gap-8 auto-rows-auto">
-            {faqData.map((faq, index) => (
-              <div
-                key={`faq-${index}`}
-                className="dashboard-inner-sections rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 bg-white transition-shadow duration-200 hover:shadow-md"
-              >
-                {/* Question */}
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  className="flex justify-between items-start sm:items-center w-full text-left p-3 sm:p-4 lg:p-5 gap-3 sm:gap-4 transition-colors duration-200 hover:bg-gray-50"
-                >
-                  <h3 className="BRCobane18600 text-sm sm:text-base lg:text-lg leading-relaxed flex-1 pr-2">
-                    {faq.question}
-                  </h3>
-                  <span
-                    className={`text-lg sm:text-xl font-bold text-gray-600 flex-shrink-0 mt-0.5 sm:mt-0 transition-transform duration-300 ease-in-out ${
-                      openIndex === index ? "rotate-45" : "rotate-0"
-                    }`}
-                  >
-                    {openIndex === index ? "−" : "+"}
-                  </span>
-                </button>
-
-                {/* Answer */}
-                <div
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    openIndex === index
-                      ? "max-h-96 opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="px-3 pb-3 sm:px-4 sm:pb-4 lg:px-5 lg:pb-5">
-                    <p className="BRCobane18500 opacity-70 text-sm sm:text-base leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="max-w-7xl mx-auto">  
+          <FaqSection items={faqData} />
         </div>
       </div>
     </section>

@@ -9,6 +9,7 @@ import LoginIcon from "../../public/images/LoginIcon.svg";
 import RegisterIcon from "../../public/images/RegisterIcon.svg";
 import dp from "../../public/images/p-i.png";
 import { useAppDispatch, useAppSelector } from "../store/store";
+import { useProfileContext } from "../utils/useProfileContext";
 
 export const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const userData = useAppSelector((state) => state.auth.userData);
+    const { selectedProfileID } = useProfileContext();
 
   const checkToken = () => !!localStorage.getItem("matrimony token");
 
@@ -69,7 +71,9 @@ export const Navbar = () => {
     "/createprofile/property",
     "/createprofile/photos",
     "/account",
-    "/changepassword"
+    "/changepassword",
+    `/profiles/${selectedProfileID}`,
+    "/dashboard/create-profile"
   ];
   const isDarkPage = darkPages.includes(pathname);
 
@@ -95,9 +99,9 @@ export const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-colors backdrop-blur-md duration-300 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-colors  duration-300 ${
         isDarkPage
-          ? "bg-[#0d0d0d]/50"
+          ? "bg-[#0d0d0d]/50 shadow-lg backdrop-blur-md"
           : isScrolled
           ? "bg-[#0d0d0d]/60 shadow-lg backdrop-blur-md"
           : "bg-transparent"

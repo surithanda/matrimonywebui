@@ -51,8 +51,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CiMail } from "react-icons/ci";
-import { AddAddressModal } from "../_components/modals/AddAddressModal";
-import { EditAddressModal } from "../_components/modals/EditAddressModal";
+import { AddAddressModal } from "../../profiles/_components/modals/AddAddressModal";
+import { EditAddressModal } from "../../profiles/_components/modals/EditAddressModal";
+
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();

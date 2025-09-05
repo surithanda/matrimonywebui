@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 
 import {
   FaUser,
-  FaPhone,
   FaBook,
   FaBriefcase,
   FaPaintBrush,
@@ -17,11 +16,13 @@ import {
   FaImages,
   FaLink,
 } from "react-icons/fa";
+import { FaPhone } from "react-icons/fa6";
+import { SiHomepage } from "react-icons/si";
 
 const menuItems = [
     { name: "Personal", icon: <FaUser />, link: "/createprofile", disabled: false },
     {
-      name: "Contact Address",
+      name: "Contact Info",
       icon: <FaPhone />,
       link: "/createprofile/primarycontact",
       disabled: true
@@ -33,11 +34,12 @@ const menuItems = [
       link: "/createprofile/employment",
       disabled: true
     },
+        { name: "Family", icon: <FaUsers />, link: "/createprofile/family", disabled: true },
+    { name: "References", icon: <FaHome />, link: "/createprofile/references", disabled: true },
     { name: "Hobbies", icon: <FaPaintBrush />, link: "/createprofile/hobbies", disabled: true },
     { name: "Lifestyle", icon: <FaRunning />, link: "/createprofile/lifestyle", disabled: true },
-    { name: "Family", icon: <FaUsers />, link: "/createprofile/family", disabled: true },
-    { name: "References", icon: <FaHome />, link: "/createprofile/references", disabled: true },
-    { name: "Property", icon: <FaImages />, link: "/createprofile/property", disabled: true },
+
+    { name: "Property", icon: <SiHomepage  />, link: "/createprofile/property", disabled: true },
     { name: "Photos", icon: <FaImages />, link: "/createprofile/photos", disabled: true },
     // { name: "Partner", icon: <FaLink />, link: "/createprofile/partner" },
   ];

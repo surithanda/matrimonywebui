@@ -404,7 +404,6 @@ const ViewProfile = () => {
     { id: "education", label: "Education", icon: "🎓" },
     { id: "employment", label: "Employment", icon: "💼" },
     { id: "family", label: "Family", icon: "👨‍👩‍👧‍👦" },
-
     { id: "references", label: "Friends & References", icon: "🧘" },
     { id: "photos", label: "Photos", icon: "📸" },
     { id: "lifestyle", label: "Lifestyle", icon: "🌟" },
@@ -528,7 +527,7 @@ const ViewProfile = () => {
       //   </div>
       // </ProfileSection>
       <div className="overflow-hidden">
-        <div className="flex flex-row justify-between items-center gap-6 px-6 py-4">
+        <div className="flex flex-row justify-between items-center gap-6 px-6 py-6">
           <h2
             className=" text-black text-xl font-bold"
             style={{ fontFamily: "BR Cobane" }}
@@ -542,7 +541,7 @@ const ViewProfile = () => {
           </button>
         </div>
 
-        <div className="px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8">
+        <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
           <ProfileDetail title="First Name" value={profileData?.first_name} />
           <ProfileDetail title="Last Name" value={profileData?.last_name} />
           <ProfileDetail title="Email" value={personalProfile?.data?.email} />
@@ -1465,7 +1464,7 @@ const ViewProfile = () => {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-gray-200 overflow-x-auto sm:overflow-visible">
+            <div className="flex border-b border-gray-200 overflow-x-auto sm:overflow-">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}

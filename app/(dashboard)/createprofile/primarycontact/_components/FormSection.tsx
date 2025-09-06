@@ -12,6 +12,10 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface IAddress {
   id: string;
@@ -231,9 +235,9 @@ const FormSection = () => {
   };
 
   return (
-    <section className="md:py-5 w-4/5">
+    <section className="px-2 md:px-0 md:py-2 w-full">
       <form
-        className="w-full box-border md:px-6"
+        className="w-full px-2"
         onSubmit={handleSubmit(onSubmit)}
       >
         {/* Address List as Table */}
@@ -291,11 +295,12 @@ const FormSection = () => {
             </table>
           )}
         </div>
+
         {/* Address Form */}
-        <div className="flex flex-wrap justify-between">
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Country</label>
+        <div className="">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label>Country</Label>
               <MetadataSelectComponent
                 type="country"
                 value={currentAddress.country}
@@ -307,12 +312,12 @@ const FormSection = () => {
                   loadStates(e.target.value);
                 }}
                 // dontUseID={true}
-                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
               {/* <select
                 value={currentAddress.country}
                 onChange={e => setCurrentAddress({ ...currentAddress, country: e.target.value })}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               >
                 <option value="">Select Country</option>
                 <option value="USA">USA</option>
@@ -320,8 +325,8 @@ const FormSection = () => {
                 <option value="Other">Other</option>
               </select> */}
             </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">State</label>
+            <div>
+              <Label>State</Label>
               <MetadataSelectComponent
                 type="state"
                 value={currentAddress?.state}
@@ -331,49 +336,47 @@ const FormSection = () => {
                     state: Number(e.target.value),
                   });
                 }}
-                className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
               {/* <input
                 type="text"
                 value={currentAddress.state}
                 onChange={e => setCurrentAddress({ ...currentAddress, state: e.target.value })}
                 placeholder="Enter state"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               /> */}
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">City</label>
-              <input
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label className="block text-gray-700 mb-2">City</Label>
+              <Input
                 type="text"
                 value={currentAddress.city}
                 onChange={(e) =>
                   setCurrentAddress({ ...currentAddress, city: e.target.value })
                 }
                 placeholder="Enter city"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Zip Code</label>
-              <input
+            <div>
+              <Label>Zip Code</Label>
+              <Input
                 type="text"
                 value={currentAddress.zip}
                 onChange={(e) =>
                   setCurrentAddress({ ...currentAddress, zip: e.target.value })
                 }
                 placeholder="Enter zip code"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-full md:mb-4">
-              <label className="block text-gray-700 mb-2">
-                Complete Address
-              </label>
-              <textarea
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label>Complete Address</Label>
+              <Input
                 value={currentAddress.address_line1}
                 onChange={(e) =>
                   setCurrentAddress({
@@ -382,14 +385,11 @@ const FormSection = () => {
                   })
                 }
                 placeholder="Complete Address"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                rows={1}
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
-          </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Address Line 2</label>
+            <div>
+              <Label className="block text-gray-700 mb-2">Address Line 2</Label>
               <input
                 type="text"
                 value={currentAddress.address_line2}
@@ -400,24 +400,15 @@ const FormSection = () => {
                   })
                 }
                 placeholder="Address Line 2"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
-            {/* <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Phone</label>
-              <input
-                type="text"
-                value={currentAddress.phone}
-                onChange={e => setCurrentAddress({ ...currentAddress, phone: e.target.value })}
-                placeholder="Phone"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div> */}
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Landmark 1</label>
-              <input
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label className="block text-gray-700 mb-2">Landmark 1</Label>
+              <Input
                 type="text"
                 value={currentAddress.landmark1}
                 onChange={(e) =>
@@ -427,12 +418,12 @@ const FormSection = () => {
                   })
                 }
                 placeholder="Landmark 1"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Landmark 2</label>
-              <input
+            <div>
+              <Label className="block text-gray-700 mb-2">Landmark 2</Label>
+              <Input
                 type="text"
                 value={currentAddress.landmark2}
                 onChange={(e) =>
@@ -442,41 +433,42 @@ const FormSection = () => {
                   })
                 }
                 placeholder="Landmark 2"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
           </div>
           <div className="w-full flex justify-end">
-            <button
+            <Button
               type="button"
               className="gray-btn mt-[20px] hover:bg-gray-400"
               onClick={handleAddOrUpdate}
             >
               {editIndex !== null ? "Update Address" : "Add Address"}
-            </button>
+            </Button>
           </div>
         </div>
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button type="submit" className="yellow-btn hover:bg-orange-600">
-              Continue
-            </button>
-            <button
+            <Button
               type="button"
               className="gray-btn hover:bg-gray-400"
               onClick={() => reset({ addresses: [defaultAddress] })}
             >
               Cancel
-            </button>
+            </Button>
+            <Button
+              type="button"
+              onClick={moveToNext}
+              className="gray-btn hover:bg-gray-400"
+            >
+              Skip
+            </Button>
           </div>
-          <button
-            type="button"
-            onClick={moveToNext}
-            className="gray-btn hover:bg-gray-400"
-          >
-            Skip
-          </button>
+
+          <Button type="submit" className="yellow-btn hover:bg-orange-600">
+            Continue
+          </Button>
         </div>
       </form>
 

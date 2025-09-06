@@ -158,7 +158,7 @@ const [hobbies, setHobbies] = useState<string[]>([]);
   };
 
   return (
-    <section className="md:py-5 w-4/5 mx-[50px]">
+    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
       {/* Hobbies Section */}
       <div className="mb-6">
         <h3 className="BRCobane18600 mb-3">Hobbies</h3>

@@ -3,13 +3,18 @@ import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
-import { getReferenceAsync, createReferenceAsync, updateReferenceAsync, deleteReferenceAsync } from "@/app/store/features/profileSlice";
+import {
+  getReferenceAsync,
+  createReferenceAsync,
+  updateReferenceAsync,
+  deleteReferenceAsync,
+} from "@/app/store/features/profileSlice";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { IProfileFamilyReference } from '@/app/models/Profile';
-
+import { IProfileFamilyReference } from "@/app/models/Profile";
+import { Button } from "@/components/ui/button";
 
 interface IReferenceFieldValue extends IProfileFamilyReference {
   id?: string;
@@ -23,8 +28,8 @@ interface IFormValues {
 const defaultReference: IReferenceFieldValue = {
   profile_id: 0,
   reference_type: 0,
-  first_name: '',
-  last_name: '',
+  first_name: "",
+  last_name: "",
   gender: 0,
   date_of_birth: new Date(),
   religion: 0,
@@ -32,12 +37,12 @@ const defaultReference: IReferenceFieldValue = {
   caste: 0,
   marital_status: 0,
   highest_education: 0,
-  address_line1: '',
-  city: '',
-  state: '',
-  country: '',
-  zip: '',
-  primary_phone: '',
+  address_line1: "",
+  city: "",
+  state: "",
+  country: "",
+  zip: "",
+  primary_phone: "",
   can_communicate: false,
   account_id: 0,
 };
@@ -46,29 +51,47 @@ const FormSection = () => {
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
-  const { references: referenceList, loading: referenceLoading, error: referenceError } = useAppSelector((state) => state.profile);
+  const {
+    references: referenceList,
+    loading: referenceLoading,
+    error: referenceError,
+  } = useAppSelector((state) => state.profile);
   const { control, handleSubmit, reset } = useForm<IFormValues>({
     defaultValues: { references: [] },
   });
-  const { fields, append, remove, update, replace } = useFieldArray({ control, name: "references" });
+  const { fields, append, remove, update, replace } = useFieldArray({
+    control,
+    name: "references",
+  });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [currentReference, setCurrentReference] = useState<IReferenceFieldValue>({ ...defaultReference });
+  const [currentReference, setCurrentReference] =
+    useState<IReferenceFieldValue>({ ...defaultReference });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
 
   // Handle input changes for the local reference form
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
 
     if (name === "reference") {
-      setCurrentReference((prev) => ({ ...prev, reference_type: Number(value) }));
+      setCurrentReference((prev) => ({
+        ...prev,
+        reference_type: Number(value),
+      }));
     } else if (name === "country") {
       setCurrentReference((prev) => ({ ...prev, country: value, state: "" }));
       loadStates(value);
     } else if (name === "date_of_birth") {
-      setCurrentReference((prev) => ({ ...prev, date_of_birth: new Date(value) }));
+      setCurrentReference((prev) => ({
+        ...prev,
+        date_of_birth: new Date(value),
+      }));
     } else if (name === "contactnumber") {
       setCurrentReference((prev) => ({ ...prev, primary_phone: value }));
     } else {
@@ -79,13 +102,15 @@ const FormSection = () => {
   // Fetch references from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(getReferenceAsync({ profile_id: selectedProfileID })).then((result: any) => {
-      if (result.payload?.data) {
-        replace(result.payload.data);
-      } else {
-        replace([]);
+    dispatch(getReferenceAsync({ profile_id: selectedProfileID })).then(
+      (result: any) => {
+        if (result.payload?.data) {
+          replace(result.payload.data);
+        } else {
+          replace([]);
+        }
       }
-    });
+    );
   }, [selectedProfileID, dispatch, replace]);
 
   // Add or update reference in the field array (POST or PUT to backend)
@@ -111,8 +136,14 @@ const FormSection = () => {
     if (editIndex !== null) {
       // Update existing reference
       try {
-        const result = await dispatch(updateReferenceAsync({ ...currentReference, id: fields[editIndex].id, profile_id: selectedProfileID })).unwrap();
-        if (result && result.status === 'success') {
+        const result = await dispatch(
+          updateReferenceAsync({
+            ...currentReference,
+            id: fields[editIndex].id,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.status === "success") {
           proceedwithAddUpdate(currentReference.id);
         }
       } catch (err: any) {
@@ -121,8 +152,13 @@ const FormSection = () => {
     } else {
       // Add new reference
       try {
-        const result = await dispatch(createReferenceAsync({ ...currentReference, profile_id: selectedProfileID })).unwrap();
-        if (result && result.status === 'success') {
+        const result = await dispatch(
+          createReferenceAsync({
+            ...currentReference,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.status === "success") {
           proceedwithAddUpdate(result.profile_reference_id);
         }
       } catch (err: any) {
@@ -133,7 +169,9 @@ const FormSection = () => {
 
   const proceedwithAddUpdate = (updateID?: any) => {
     // Update the id field of record being added/updated
-    const updatedData = updateID ? { ...currentReference, id: updateID } : { ...currentReference };
+    const updatedData = updateID
+      ? { ...currentReference, id: updateID }
+      : { ...currentReference };
     if (editIndex !== null) {
       update(editIndex, updatedData);
       setEditIndex(null);
@@ -158,7 +196,7 @@ const FormSection = () => {
     const member = fields[index];
     try {
       const result = await dispatch(deleteReferenceAsync(member.id)).unwrap();
-      if (result && result.status === 'success') {
+      if (result && result.status === "success") {
         proceedWithDelete(index);
       }
     } catch (err: any) {
@@ -223,37 +261,76 @@ const FormSection = () => {
   };
 
   return (
-    <section className="md:py-5 w-4/5">
-      <form onSubmit={e => { e.preventDefault(); onSubmit(); }} className="w-full box-border md:px-6">
+    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+      <form
+        className="w-full px-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
         {/* Loading/Error States */}
-        {(loading || referenceLoading) && <div className="mb-2 text-blue-600">Loading...</div>}
-        {(error || referenceError) && <div className="mb-2 text-red-600">{error || referenceError}</div>}
+        {(loading || referenceLoading) && (
+          <div className="mb-2 text-blue-600">Loading...</div>
+        )}
+        {(error || referenceError) && (
+          <div className="mb-2 text-red-600">{error || referenceError}</div>
+        )}
         {/* Reference List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
             <table className="min-w-full bg-white border border-gray-200 rounded-lg">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">First Name</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Last Name</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">DOB</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Contact</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Email</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Relationship</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Address</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">City</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">State</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Country</th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">Zip</th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">Actions</th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    First Name
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Last Name
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    DOB
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Contact
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Email
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Relationship
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Address
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    City
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    State
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Country
+                  </th>
+                  <th className="px-3 py-2 text-base font-bold text-gray-800">
+                    Zip
+                  </th>
+                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {fields.map((item, index) => (
-                  <tr key={item.id || item._id || index} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr
+                    key={item.id || item._id || index}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
                     <td className="px-3 py-2 text-sm">{item.first_name}</td>
                     <td className="px-3 py-2 text-sm">{item.last_name}</td>
-                    <td className="px-3 py-2 text-sm">{new Date(item.date_of_birth).toLocaleDateString()}</td>
+                    <td className="px-3 py-2 text-sm">
+                      {new Date(item.date_of_birth).toLocaleDateString()}
+                    </td>
                     <td className="px-3 py-2 text-sm">{item.primary_phone}</td>
                     <td className="px-3 py-2 text-sm">{item.email}</td>
                     <td className="px-3 py-2 text-sm">{item.reference_type}</td>
@@ -264,8 +341,20 @@ const FormSection = () => {
                     <td className="px-3 py-2 text-sm">{item.zip}</td>
                     <td className="px-3 py-2 text-center">
                       <div className="flex gap-2 justify-center">
-                        <button type="button" className="gray-btn px-2 py-1 text-xs" onClick={() => handleEdit(index)}>Edit</button>
-                        <button type="button" className="red-btn px-2 py-1 text-xs" onClick={() => handleDelete(index)}>Delete</button>
+                        <button
+                          type="button"
+                          className="gray-btn px-2 py-1 text-xs"
+                          onClick={() => handleEdit(index)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="red-btn px-2 py-1 text-xs"
+                          onClick={() => handleDelete(index)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -275,9 +364,9 @@ const FormSection = () => {
           )}
         </div>
         {/* Reference Form */}
-        <div className="flex flex-wrap justify-between">
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
+        <div className="">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">First Name</label>
               <input
                 type="text"
@@ -288,7 +377,7 @@ const FormSection = () => {
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Last Name</label>
               <input
                 type="text"
@@ -300,18 +389,22 @@ const FormSection = () => {
               />
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Date of Birth</label>
               <input
                 type="date"
                 name="date_of_birth"
-                value={currentReference.date_of_birth instanceof Date ? currentReference.date_of_birth.toISOString().split('T')[0] : ''}
+                value={
+                  currentReference.date_of_birth instanceof Date
+                    ? currentReference.date_of_birth.toISOString().split("T")[0]
+                    : ""
+                }
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Contact Number</label>
               <CustomPhoneComponent
                 type="contactnumber"
@@ -321,27 +414,30 @@ const FormSection = () => {
               />
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Email</label>
               <input
                 type="text"
                 name="email"
                 placeholder="Email"
-                value={currentReference.email || ''}
+                value={currentReference.email || ""}
                 onChange={handleInputChange}
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[49%] md:mb-4">
-              <label className="block text-gray-700 mb-2">Relationship to you</label>
-              <MetadataSelectComponent type='reference' 
+            <div className="">
+              <label className="block text-gray-700 mb-2">
+                Relationship to you
+              </label>
+              <MetadataSelectComponent
+                type="reference"
                 value={String(currentReference.reference_type)}
                 onChange={handleInputChange}
               />
             </div>
           </div>
-          <div className="flex w-full justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div className="w-full md:mb-4">
               <label className="block text-gray-700 mb-2">Address</label>
               <input
@@ -354,8 +450,8 @@ const FormSection = () => {
               />
             </div>
           </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[32%] md:mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">City</label>
               <input
                 type="text"
@@ -366,7 +462,7 @@ const FormSection = () => {
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[32%] md:mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">State</label>
               <MetadataSelectComponent
                 type="state"
@@ -375,7 +471,7 @@ const FormSection = () => {
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-            <div className="w-[32%] md:mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Country</label>
               <MetadataSelectComponent
                 type="country"
@@ -384,9 +480,7 @@ const FormSection = () => {
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-          </div>
-          <div className="flex w-full justify-between">
-            <div className="w-[49%] md:mb-4">
+            <div className="">
               <label className="block text-gray-700 mb-2">Zip</label>
               <input
                 type="text"
@@ -399,22 +493,43 @@ const FormSection = () => {
             </div>
           </div>
           <div className="w-full flex justify-end">
-            <button
+            <Button
               type="button"
               className="gray-btn mt-[20px] hover:bg-gray-400"
               onClick={handleAddOrUpdate}
             >
               {editIndex !== null ? "Update Reference" : "Add Reference"}
-            </button>
+            </Button>
           </div>
         </div>
         {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
-            <button type="button" className="yellow-btn hover:bg-orange-600" onClick={handleContinue}>Continue</button>
-            <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => { setCurrentReference({ ...defaultReference }); setEditIndex(null); }}>Cancel</button>
+            <Button
+              type="button"
+              className="gray-btn hover:bg-gray-400"
+              onClick={() => {
+                setCurrentReference({ ...defaultReference });
+                setEditIndex(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              className="gray-btn hover:bg-gray-400"
+              onClick={() => router.push("/createprofile/property")}
+            >
+              Skip
+            </Button>
           </div>
-          <button type="button" className="gray-btn hover:bg-gray-400" onClick={() => router.push("/createprofile/property")}>Skip</button>
+          <Button
+            type="button"
+            className="yellow-btn hover:bg-orange-600"
+            onClick={handleContinue}
+          >
+            Continue
+          </Button>
         </div>
       </form>
 
@@ -422,9 +537,12 @@ const FormSection = () => {
       {showConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Unsaved Reference Data</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Unsaved Reference Data
+            </h3>
             <p className="text-gray-600 mb-6">
-              You have unsaved reference data. Would you like to save it before continuing?
+              You have unsaved reference data. Would you like to save it before
+              continuing?
             </p>
             <div className="flex justify-end gap-3">
               <button

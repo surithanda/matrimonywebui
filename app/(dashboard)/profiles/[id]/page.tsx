@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -16,7 +22,7 @@ import {
   createFavoriteAsync,
   deleteFavoriteAsync,
   getFavoritesAsync,
-  getProfilePhotosAsync
+  getProfilePhotosAsync,
 } from "@/app/store/features/profileSlice";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
@@ -25,37 +31,68 @@ import femaleProfile from "@/public/images/dashboard/profile1.png";
 import maleProfile from "@/public/images/dashboard/profile3.png";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { profile } from "console";
+import coverPhoto from "@/public/images/couple1.jpg";
+import {
+  MdOutlineDeleteOutline,
+  MdOutlineModeEditOutline,
+  MdOutlinePreview,
+} from "react-icons/md";
+import { Eye, MoreHorizontal } from "lucide-react";
+import { FaHome, FaRegEdit } from "react-icons/fa";
+import { IoIosAdd, IoIosPhonePortrait } from "react-icons/io";
+import { FaPlus } from "react-icons/fa6";
+import { CgMoreVertical } from "react-icons/cg";
+import { BiSolidBadgeCheck } from "react-icons/bi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CiMail } from "react-icons/ci";
+import { AddAddressModal } from "../_components/modals/AddAddressModal";
+import { EditAddressModal } from "../_components/modals/EditAddressModal";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
-  const fromSearch = searchParams.get('fromSearch') === 'true';
-  const { findJobTitleName, findCountryName, findStateName, findPropertyTypeName, findOwnershipTypeName } = useMetaDataLoader();
-  
-  const { 
-    personalProfile, 
-    address, 
-    education, 
-    employment, 
-    family, 
-    properties, 
-    hobbies, 
+  const fromSearch = searchParams.get("fromSearch") === "true";
+  const {
+    findJobTitleName,
+    findCountryName,
+    findStateName,
+    findPropertyTypeName,
+    findOwnershipTypeName,
+  } = useMetaDataLoader();
+
+  const {
+    personalProfile,
+    address,
+    education,
+    employment,
+    family,
+    properties,
+    hobbies,
     interests,
     references,
     photos,
-    loading, 
-    error 
+    loading,
+    error,
   } = useSelector((state: RootState) => state.profile);
-  
+
   interface ImageFile {
     url: string;
     file?: File | null;
   }
 
-  const [activeTab, setActiveTab] = useState('personal');
-  const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
+  const [activeTab, setActiveTab] = useState("personal");
+  const [expandedSections, setExpandedSections] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [isFavorite, setIsFavorite] = useState(false);
   const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
   const { selectedProfileID } = useProfileContext();
@@ -65,6 +102,18 @@ const ViewProfile = () => {
   const [profileImage, setProfileImage] = useState<ImageFile | null>(null);
   const [coverImage, setCoverImage] = useState<ImageFile | null>(null);
   const [individualImages, setIndividualImages] = useState<ImageFile[]>([]);
+
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+  });
+
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
 
   // Hoisted helpers for photos (avoid hooks inside conditional renders)
   const toAbsoluteUrl = useCallback((u?: string | null) => {
@@ -83,30 +132,41 @@ const ViewProfile = () => {
     if (!Array.isArray(photoData)) return;
 
     const resolved = photoData
-      .map((p: any) => ({ ...p, _rawUrl: p?.url || p?.photo_url || p?.file_url }))
+      .map((p: any) => ({
+        ...p,
+        _rawUrl: p?.url || p?.photo_url || p?.file_url,
+      }))
       .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?._rawUrl) }))
       .filter((p: any) => !!p._src);
 
-    const prof = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.profile);
-    const cov = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.cover);
-    const others = resolved.filter((p: any) => Number(p.photo_type) === photoTypeAssociation.individual);
+    const prof = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
+    );
+    const cov = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
+    );
+    const others = resolved.filter(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
+    );
 
     setProfileImage(prof ? { url: prof._src, file: null } : null);
     setCoverImage(cov ? { url: cov._src, file: null } : null);
     setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
   }, [photos, toAbsoluteUrl, photoTypeAssociation]);
-  
+
   useEffect(() => {
     const loadFavorites = async () => {
       if (accountProfileID > 0) {
-        const response = await dispatch(getFavoritesAsync({ profileId: accountProfileID })).unwrap();
+        const response = await dispatch(
+          getFavoritesAsync({ profileId: accountProfileID })
+        ).unwrap();
         // console.log(response, profileId);
         response.data.map((item: any) => {
-          if(item.to_profile_id === profileId && item.is_active) {
+          if (item.to_profile_id === profileId && item.is_active) {
             setFavoriteProfile(item);
             setIsFavorite(true);
           }
-        })
+        });
       }
     };
     console.log(accountProfileID);
@@ -114,51 +174,93 @@ const ViewProfile = () => {
   }, [dispatch, accountProfileID, profileId]);
 
   const toggleSection = (sectionKey: string) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [sectionKey]: !prev[sectionKey]
+      [sectionKey]: !prev[sectionKey],
     }));
   };
 
   const handleToggleFavorite = async () => {
     if (isUpdatingFavorite) return;
-    if(accountProfileID > 0) {
+    if (accountProfileID > 0) {
       try {
         setIsUpdatingFavorite(true);
-        if(isFavorite){
-          await dispatch(deleteFavoriteAsync({
-            profileId: accountProfileID,
-            favoriteProfileId: favoriteProfile?.profile_favorite_id,
-          })).unwrap();
+        if (isFavorite) {
+          await dispatch(
+            deleteFavoriteAsync({
+              profileId: accountProfileID,
+              favoriteProfileId: favoriteProfile?.profile_favorite_id,
+            })
+          ).unwrap();
         } else {
-          const result = await dispatch(createFavoriteAsync({
-            profileId: accountProfileID,
-            favoriteProfileId: profileId,
-            isFavorite: !isFavorite
-          })).unwrap();
-          setFavoriteProfile({profile_favorite_id:result?.data?.id});
+          const result = await dispatch(
+            createFavoriteAsync({
+              profileId: accountProfileID,
+              favoriteProfileId: profileId,
+              isFavorite: !isFavorite,
+            })
+          ).unwrap();
+          setFavoriteProfile({ profile_favorite_id: result?.data?.id });
         }
-        
-        setIsFavorite(prev => !prev);
+
+        setIsFavorite((prev) => !prev);
         // Toggle the local state if the API call is successful
       } catch (error) {
-        console.error('Failed to update favorite status:', error);
+        console.error("Failed to update favorite status:", error);
         // You might want to show an error toast/notification here
       } finally {
         setIsUpdatingFavorite(false);
       }
     }
-  }
+  };
 
-  const ProfileSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
+  const ProfileSection = ({
+    title,
+    children,
+    buttonName,
+    onButtonClick,
+  }: {
+    title: string;
+    children: React.ReactNode;
+    buttonName?: string;
+    onButtonClick?: () => void;
+  }) => {
     return (
-      <div className="bg-[#F3F3F3] mt-10 rounded-xl overflow-hidden">
-        <p className="bg-[#2F3C1F] px-6 py-4 text-white text-xl">{title}</p>
-        <div className="p-6">{children}</div>
+      <div className="overflow-hidden">
+        <div className="flex flex-row justify-between items-center gap-6 px-6 py-4">
+          <h2
+            className="text-black text-2xl font-bold"
+            style={{ fontFamily: "BR Cobane" }}
+          >
+            {title}
+          </h2>
+
+          {/* Button (only render if buttonName is passed) */}
+          {buttonName && (
+            <button
+              onClick={onButtonClick}
+              className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              {buttonName}
+            </button>
+          )}
+        </div>
+
+        <div className="px-6">{children}</div>
       </div>
     );
   };
-  const ProfileDetail = ({ title, value, colspan = null }: { title: string; value: string; colspan?: number | null }) => {
+
+  const ProfileDetail = ({
+    title,
+    value,
+    colspan = null,
+  }: {
+    title: string;
+    value: string;
+    colspan?: number | null;
+  }) => {
     return (
       <div className={colspan ? `col-span-${colspan}` : ""}>
         <p className="text- text-slate-500">{title}</p>
@@ -168,14 +270,19 @@ const ViewProfile = () => {
   };
 
   // Accordion component for array items
-  const AccordionItem = ({ title, children, sectionKey, defaultExpanded = false }: {
+  const AccordionItem = ({
+    title,
+    children,
+    sectionKey,
+    defaultExpanded = false,
+  }: {
     title: string;
     children: React.ReactNode;
     sectionKey: string;
     defaultExpanded?: boolean;
   }) => {
     const isExpanded = expandedSections[sectionKey] ?? defaultExpanded;
-    
+
     return (
       <div className="border border-gray-200 rounded-lg mb-3">
         <button
@@ -185,35 +292,43 @@ const ViewProfile = () => {
           <span className="font-medium text-gray-800">{title}</span>
           <svg
             className={`w-5 h-5 text-gray-600 transform transition-transform ${
-              isExpanded ? 'rotate-180' : ''
+              isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
         {isExpanded && (
-          <div className="p-4 border-t border-gray-200">
-            {children}
-          </div>
+          <div className="p-4 border-t border-gray-200">{children}</div>
         )}
       </div>
     );
   };
 
   useEffect(() => {
-    console.log('Profile ID:', profileId);
-    console.log('From search:', fromSearch);
+    console.log("Profile ID:", profileId);
+    console.log("From search:", fromSearch);
     if (profileId && fromSearch) {
-      console.log('Tracking profile view for profile ID:', profileId);
+      console.log("Tracking profile view for profile ID:", profileId);
       try {
-        if(accountProfileID > 0){
-          dispatch(trackProfileViewAsync({ profileId: accountProfileID, viewedProfileId: profileId }));
+        if (accountProfileID > 0) {
+          dispatch(
+            trackProfileViewAsync({
+              profileId: accountProfileID,
+              viewedProfileId: profileId,
+            })
+          );
         }
       } catch (error) {
-        console.error('Error tracking profile view:', error);
+        console.error("Error tracking profile view:", error);
       }
     }
   }, [profileId, fromSearch, accountProfileID, dispatch]);
@@ -225,11 +340,18 @@ const ViewProfile = () => {
       dispatch(getAddressAsync({ profile_id: profileId }));
       dispatch(getEducationAsync({ profile_id: profileId }));
       dispatch(getEmploymentAsync({ profile_id: profileId }));
-      dispatch(getFamilyAsync({ profile_id: profileId, type: 'family' }));
-      dispatch(getFamilyAsync({ profile_id: profileId, type: 'references' }));
+      dispatch(getFamilyAsync({ profile_id: profileId, type: "family" }));
+      dispatch(getFamilyAsync({ profile_id: profileId, type: "references" }));
       dispatch(getPropertiesAsync({ profile_id: profileId }));
-      dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'hobby' }));
-      dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'interest' }));
+      dispatch(
+        getHobbiesInterestsAsync({ profile_id: profileId, category: "hobby" })
+      );
+      dispatch(
+        getHobbiesInterestsAsync({
+          profile_id: profileId,
+          category: "interest",
+        })
+      );
       dispatch(getProfilePhotosAsync(Number(profileId)));
     }
   }, [dispatch, profileId]);
@@ -243,7 +365,7 @@ const ViewProfile = () => {
   //   console.log('employment:', employment);
   //   console.log('family:', family);
   //   console.log('properties:', properties);
-  //   console.log('hobbies:', hobbies); 
+  //   console.log('hobbies:', hobbies);
   //   console.log('interests:', interests);
   //   console.log('references:', references);
   // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
@@ -268,32 +390,40 @@ const ViewProfile = () => {
   }
 
   const tabs = [
-    { id: 'personal', label: 'Personal', icon: '👤' },
-    { id: 'contact', label: 'Contact', icon: '📍' },
-    { id: 'education', label: 'Education', icon: '🎓' },
-    { id: 'career', label: 'Career', icon: '💼' },
-    { id: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦' },
-    { id: 'lifestyle', label: 'Lifestyle', icon: '🌟' },
-    { id: 'properties', label: 'Properties', icon: '🏠' },
-    { id: 'references', label: 'References', icon: '📋' },
-    { id: 'photos', label: 'Photos', icon: '👤'}
+    { id: "personal", label: "Personal", icon: "👤" },
+    { id: "Address", label: "Address", icon: "📍" },
+    { id: "education", label: "Education", icon: "🎓" },
+    { id: "employment", label: "Employment", icon: "💼" },
+    { id: "family", label: "Family", icon: "👨‍👩‍👧‍👦" },
+    { id: "references", label: "Friends & References", icon: "🧘" },
+    { id: "photos", label: "Photos", icon: "📸" },
+    { id: "lifestyle", label: "Lifestyle", icon: "🌟" },
+    { id: "hobbies", label: "Hobbies", icon: "🎯" },
+    { id: "properties", label: "Properties", icon: "🏘️" },
   ];
-
 
   const renderPhotos = () => {
     return (
-      <ProfileSection title="Photos">
+      <ProfileSection title="Photos" buttonName="Add Photo">
         {/* Photos (by type) */}
-        <div className="mt-8 w-full">
+        <div className="w-full">
           <div className="flex flex-wrap gap-6">
             {/* Profile (450) */}
             <div className="flex flex-col gap-2">
               <p className="text-sm font-medium">Profile</p>
               <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
                 {profileImage ? (
-                  <Image src={profileImage.url} alt="Profile photo" fill sizes="200px" className="object-cover" />
+                  <Image
+                    src={profileImage.url}
+                    alt="Profile photo"
+                    fill
+                    sizes="200px"
+                    className="object-cover"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
+                    No photo
+                  </div>
                 )}
               </div>
             </div>
@@ -303,9 +433,17 @@ const ViewProfile = () => {
               <p className="text-sm font-medium">Cover</p>
               <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
                 {coverImage ? (
-                  <Image src={coverImage.url} alt="Cover photo" fill sizes="300px" className="object-cover" />
+                  <Image
+                    src={coverImage.url}
+                    alt="Cover photo"
+                    fill
+                    sizes="300px"
+                    className="object-cover"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
+                    No photo
+                  </div>
                 )}
               </div>
             </div>
@@ -316,8 +454,17 @@ const ViewProfile = () => {
               <div className="flex flex-wrap gap-3">
                 {individualImages && individualImages.length > 0 ? (
                   individualImages.map((img, idx) => (
-                    <div key={idx} className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
-                      <Image src={img.url} alt={`Additional ${idx + 1}`} fill sizes="150px" className="object-cover" />
+                    <div
+                      key={idx}
+                      className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden"
+                    >
+                      <Image
+                        src={img.url}
+                        alt={`Additional ${idx + 1}`}
+                        fill
+                        sizes="150px"
+                        className="object-cover"
+                      />
                     </div>
                   ))
                 ) : (
@@ -331,53 +478,165 @@ const ViewProfile = () => {
     );
   };
 
-
   const renderPersonalInfo = () => {
     const profileData = personalProfile?.data || personalProfile;
-    
+
     return (
-      <ProfileSection title="Personal Information">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {profileData ? (
-            // Object.entries(profileData)
-            //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
-            //   .map(([key, value]) => (
-            //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
-            //   ))
-            <>
-            <ProfileDetail title="First Name" value={profileData?.first_name} />
-            <ProfileDetail title="Last Name" value={profileData?.last_name} />
-            <ProfileDetail title="Gender" value={profileData?.gender} />
-            <ProfileDetail title="DOB" value={profileData?.dob} />
-            <ProfileDetail title="Religion" value={profileData?.religion} />
-            <ProfileDetail title="Mother Tounge" value={profileData?.mother_tounge} />
-            <ProfileDetail title="Marital Status" value={profileData?.marital_status} />
-            <ProfileDetail title="Height" value={profileData?.height} />
-            <ProfileDetail title="Weight" value={profileData?.weight} />
-            </>
-            
-          ) : (
-            <p className="text-gray-500 col-span-2">No personal information available</p>
-          )}
+      // <ProfileSection title="Personal Information">
+      //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      //     {profileData ? (
+      //       // Object.entries(profileData)
+      //       //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+      //       //   .map(([key, value]) => (
+      //       //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
+      //       //   ))
+      //       <>
+      //         <ProfileDetail
+      //           title="First Name"
+      //           value={profileData?.first_name}
+      //         />
+      //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
+      //         <ProfileDetail title="Gender" value={profileData?.gender} />
+      //         <ProfileDetail title="DOB" value={profileData?.dob} />
+      //         <ProfileDetail title="Religion" value={profileData?.religion} />
+      //         <ProfileDetail
+      //           title="Mother Tounge"
+      //           value={profileData?.mother_tounge}
+      //         />
+      //         <ProfileDetail
+      //           title="Marital Status"
+      //           value={profileData?.marital_status}
+      //         />
+      //         <ProfileDetail title="Height" value={profileData?.height} />
+      //         <ProfileDetail title="Weight" value={profileData?.weight} />
+      //       </>
+      //     ) : (
+      //       <p className="text-gray-500 col-span-2">
+      //         No personal information available
+      //       </p>
+      //     )}
+      //   </div>
+      // </ProfileSection>
+      <div className="overflow-hidden">
+        <div className="flex flex-row justify-between items-center gap-6 px-6 py-6">
+          <h2
+            className=" text-black text-xl font-bold"
+            style={{ fontFamily: "BR Cobane" }}
+          >
+            Personal Information
+          </h2>
+          {/* Edit Button */}
+          <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
+            <FaRegEdit size={15} />
+            Edit
+          </button>
         </div>
-      </ProfileSection>
+
+        <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
+          <ProfileDetail title="First Name" value={profileData?.first_name} />
+          <ProfileDetail title="Last Name" value={profileData?.last_name} />
+          <ProfileDetail title="Email" value={personalProfile?.data?.email} />
+          <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
+          <ProfileDetail title="Gender" value={profileData?.gender} />
+          <ProfileDetail title="DOB" value={profileData?.dob} />
+          <ProfileDetail title="Religion" value={profileData?.religion} />
+          <ProfileDetail
+            title="Mother Tounge"
+            value={profileData?.mother_tounge}
+          />
+          <ProfileDetail
+            title="Marital Status"
+            value={profileData?.marital_status}
+          />
+          <ProfileDetail title="Height" value={profileData?.height} />
+          <ProfileDetail title="Weight" value={profileData?.weight} />
+        </div>
+      </div>
     );
   };
 
-  const renderContactInfo = () => {
+  const renderAddresses = () => {
     const addressList = address?.data?.addresses || (address ? [address] : []);
-    
+
     return (
-      <ProfileSection title="Contact Information">
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <ProfileDetail title="Email" value={personalProfile?.data?.email} />
-            <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
+      <ProfileSection
+        title="Address"
+        buttonName="Add Address"
+        onButtonClick={() =>
+          setOpenModal((prev) => ({
+            ...prev,
+            add: true,
+          }))
+        }
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <FaHome size={20} />
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Home Address
+                      </h3>
+                    </div>
+                    <BiSolidBadgeCheck className="w-5 h-5 text-green-500" />
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem
+                        className="flex items-center gap-2"
+                        onClick={() => {
+                          setOpenModal((prev) => ({
+                            ...prev,
+                            edit: true,
+                          }));
+                        }}
+                      >
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Kompally main road, <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
           </div>
-          
+        </div>
+        {/* <div className="space-y-4">
           {addressList.length > 0 ? (
             addressList.map((addr: any, index: number) => {
-              const title = `Address ${index + 1}${addr.type ? ` (${addr.type})` : ''}`;
+              const title = `Address ${index + 1}${
+                addr.type ? ` (${addr.type})` : ""
+              }`;
               return (
                 <AccordionItem
                   key={index}
@@ -386,13 +645,19 @@ const ViewProfile = () => {
                   defaultExpanded={index === 0}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Type" value={addr?.type || addr?.address_type} />
+                    <ProfileDetail
+                      title="Type"
+                      value={addr?.type || addr?.address_type}
+                    />
                     <ProfileDetail title="Street" value={addr?.street} />
                     <ProfileDetail title="City" value={addr?.city} />
                     <ProfileDetail title="State" value={addr?.state} />
                     <ProfileDetail title="Country" value={addr?.country} />
                     <ProfileDetail title="Pincode" value={addr?.pincode} />
-                    <ProfileDetail title="Is Current" value={addr?.is_current ? 'Yes' : 'No'} />
+                    <ProfileDetail
+                      title="Is Current"
+                      value={addr?.is_current ? "Yes" : "No"}
+                    />
                   </div>
                 </AccordionItem>
               );
@@ -400,17 +665,69 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No address information available</p>
           )}
-        </div>
+        </div> */}
       </ProfileSection>
     );
   };
 
   const renderEducation = () => {
-    const educationList = education?.data?.educations || (education ? [education] : []);
-    
+    const educationList =
+      education?.data?.educations || (education ? [education] : []);
+
     return (
-      <ProfileSection title="Education">
-        <div className="space-y-4">
+      <ProfileSection title="Education" buttonName="Add Education">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
+                    <h3
+                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Computer Science
+                    </h3>
+                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Hyderbad University, 2024 <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* <div className="space-y-4">
           {educationList.length > 0 ? (
             educationList.map((edu: any, index: number) => {
               const title = edu?.degree || `Education ${index + 1}`;
@@ -422,12 +739,27 @@ const ViewProfile = () => {
                   defaultExpanded={index === 0}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Institution" value={edu?.institution} />
-                    <ProfileDetail title="Field of Study" value={edu?.field_of_study} />
+                    <ProfileDetail
+                      title="Institution"
+                      value={edu?.institution}
+                    />
+                    <ProfileDetail
+                      title="Field of Study"
+                      value={edu?.field_of_study}
+                    />
                     <ProfileDetail title="Degree" value={edu?.degree} />
-                    <ProfileDetail title="Year of Completion" value={edu?.year_of_completion} />
-                    <ProfileDetail title="Grade/Percentage" value={edu?.grade} />
-                    <ProfileDetail title="Is Current" value={edu?.is_current ? 'Yes' : 'No'} />
+                    <ProfileDetail
+                      title="Year of Completion"
+                      value={edu?.year_of_completion}
+                    />
+                    <ProfileDetail
+                      title="Grade/Percentage"
+                      value={edu?.grade}
+                    />
+                    <ProfileDetail
+                      title="Is Current"
+                      value={edu?.is_current ? "Yes" : "No"}
+                    />
                   </div>
                 </AccordionItem>
               );
@@ -435,7 +767,7 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No education information available</p>
           )}
-        </div>
+        </div> */}
       </ProfileSection>
     );
   };
@@ -443,7 +775,7 @@ const ViewProfile = () => {
   const renderCareer = () => {
     // Handle both array and object responses from the API
     let employmentList = [];
-    
+
     if (Array.isArray(employment?.data)) {
       employmentList = employment.data;
     } else if (employment?.data?.employments) {
@@ -451,13 +783,73 @@ const ViewProfile = () => {
     } else if (employment) {
       employmentList = [employment];
     }
-    
+
     return (
-      <ProfileSection title="Career">
-        <div className="space-y-4">
+      <ProfileSection title="Employment" buttonName="Add Employment">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  {/* Left: Company & Role */}
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Spack Solution Pvt Ltd
+                      </h3>
+                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+                        Frontend Developer
+                      </p>
+                    </div>
+                    {/* Verified Badge */}
+                    <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" />
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <p className="text-zinc-600 dark:text-zinc-300">
+                2022 - Present <br />
+                Hyderbad University, 2024 <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* <div className="space-y-4">
           {employmentList.length > 0 ? (
             employmentList.map((emp: any, index: number) => {
-              const title = emp?.job_title || emp?.company || `Employment ${index + 1}`;
+              const title =
+                emp?.job_title || emp?.company || `Employment ${index + 1}`;
               return (
                 <AccordionItem
                   key={index}
@@ -469,14 +861,29 @@ const ViewProfile = () => {
                     <ProfileDetail title="Company" value={emp?.company} />
                     <ProfileDetail title="Job Title" value={emp?.job_title} />
                     <ProfileDetail title="Job Type" value={emp?.job_type} />
-                    <ProfileDetail title="Annual Income" value={emp?.annual_income} />
+                    <ProfileDetail
+                      title="Annual Income"
+                      value={emp?.annual_income}
+                    />
                     <ProfileDetail title="Industry" value={emp?.industry} />
                     <ProfileDetail title="Start Date" value={emp?.start_date} />
-                    <ProfileDetail title="End Date" value={emp?.end_date || (emp?.is_current ? 'Present' : 'Not specified')} />
-                    <ProfileDetail title="Is Current" value={emp?.is_current ? 'Yes' : 'No'} />
+                    <ProfileDetail
+                      title="End Date"
+                      value={
+                        emp?.end_date ||
+                        (emp?.is_current ? "Present" : "Not specified")
+                      }
+                    />
+                    <ProfileDetail
+                      title="Is Current"
+                      value={emp?.is_current ? "Yes" : "No"}
+                    />
                     {emp?.description && (
                       <div className="md:col-span-3">
-                        <ProfileDetail title="Description" value={emp.description} />
+                        <ProfileDetail
+                          title="Description"
+                          value={emp.description}
+                        />
                       </div>
                     )}
                   </div>
@@ -486,17 +893,83 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No employment information available</p>
           )}
-        </div>
+        </div> */}
       </ProfileSection>
     );
   };
 
   const renderFamily = () => {
-    const familyList = (family as any)?.data?.family || (family ? [family] : []);
-    
+    const familyList =
+      (family as any)?.data?.family || (family ? [family] : []);
+
     return (
-      <ProfileSection title="Family Information">
-        <div className="space-y-4">
+      <ProfileSection title="Family Information" buttonName="Add Family">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  {/* Left: Company & Role */}
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Yakub Moodu{" "}
+                        <span className="text-xs">(21-01-1996)</span>
+                      </h3>
+                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+                        Brother
+                      </p>
+                    </div>
+                    {/* Verified Badge */}
+                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <a href="#" className="flex items-center gap-1">
+                <IoIosPhonePortrait /> 9692152142
+              </a>
+              <a href="" className="flex items-center gap-1">
+                <CiMail /> badalnayak@gmail.com
+              </a>
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Hyderbad University, 2024 <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* <div className="space-y-4">
           {familyList.length > 0 ? (
             familyList.map((member: any, index: number) => {
               const title = member?.name || `Family Member ${index + 1}`;
@@ -510,10 +983,22 @@ const ViewProfile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <ProfileDetail title="Relation" value={member?.relation} />
                     <ProfileDetail title="Age" value={member?.age} />
-                    <ProfileDetail title="Occupation" value={member?.occupation} />
-                    <ProfileDetail title="Marital Status" value={member?.marital_status} />
-                    <ProfileDetail title="Contact" value={member?.contact_number} />
-                    <ProfileDetail title="Is Dependent" value={member?.is_dependent ? 'Yes' : 'No'} />
+                    <ProfileDetail
+                      title="Occupation"
+                      value={member?.occupation}
+                    />
+                    <ProfileDetail
+                      title="Marital Status"
+                      value={member?.marital_status}
+                    />
+                    <ProfileDetail
+                      title="Contact"
+                      value={member?.contact_number}
+                    />
+                    <ProfileDetail
+                      title="Is Dependent"
+                      value={member?.is_dependent ? "Yes" : "No"}
+                    />
                   </div>
                 </AccordionItem>
               );
@@ -521,50 +1006,75 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No family information available</p>
           )}
-        </div>
+        </div> */}
       </ProfileSection>
     );
   };
 
   const renderLifestyle = () => {
-    // Handle different data structures for hobbies and interests
-    const hobbiesData = Array.isArray(hobbies) ? hobbies : (hobbies as any)?.data?.hobby_interests || [];
-    const interestsData = Array.isArray(interests) ? interests : (interests as any)?.data?.hobby_interests || [];
-    
-    return (
-      <ProfileSection title="Lifestyle & Interests">
-        <div className="space-y-6">
-          {/* Hobbies */}
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Hobbies</h4>
-            <div className="flex flex-wrap gap-2">
-              {Array.isArray(hobbiesData) && hobbiesData.length > 0 ? (
-                hobbiesData.map((hobby: any, index: number) => (
-                  <span key={index} className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
-                    {typeof hobby === 'string' ? hobby : hobby.name || hobby.hobby || hobby.title}
-                  </span>
-                ))
-              ) : (
-                <p className="text-gray-500">No hobbies listed</p>
-              )}
-            </div>
-          </div>
+    // Mapping category labels to state keys
+    const categoryMapping = {
+      "What best describes your eating habits?": "eatingHabit",
+      "Do you follow any specific diet plan?": "dietHabit",
+      "How many cigarettes do you smoke per day on average?":
+        "cigarettesPerDay",
+      "How frequently do you drink?": "drinkFrequency",
+      "What type of gambling do you engage in?": "gamblingEngage",
+      "How would you describe your physical activity level?":
+        "physicalActivityLevel",
+      "Do you practice any relaxation techniques?": "relaxationMethods",
+    };
 
-          {/* Interests */}
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Interests</h4>
-            <div className="flex flex-wrap gap-2">
-              {Array.isArray(interestsData) && interestsData.length > 0 ? (
-                interestsData.map((interest: any, index: number) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {typeof interest === 'string' ? interest : interest.name || interest.interest || interest.title}
-                  </span>
-                ))
-              ) : (
-                <p className="text-gray-500">No interests listed</p>
-              )}
+    return (
+      <ProfileSection title="Lifestyle">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          {Object.keys(categoryMapping).map((category, index) => (
+            <div
+              key={index}
+              className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+            >
+              <div className="px-6 py-4">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h3
+                      className="text-base font-bold text-zinc-900 dark:text-zinc-100"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      {category}
+                    </h3>
+                  </div>
+
+                  {/* Dropdown Menu */}
+                  <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                        >
+                          <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem className="flex items-center gap-2">
+                          <MdOutlineModeEditOutline />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex items-center gap-2">
+                          <MdOutlineDeleteOutline />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+
+                {/* Content (replace with actual values later) */}
+                <p className="text-zinc-600 dark:text-zinc-300">hello</p>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </ProfileSection>
     );
@@ -572,14 +1082,78 @@ const ViewProfile = () => {
 
   const renderProperties = () => {
     console.log("properties", properties);
-    const propertiesData = Array.isArray(properties) ? properties : (properties as any)?.properties || [];
-    
+    const propertiesData = Array.isArray(properties)
+      ? properties
+      : (properties as any)?.properties || [];
+
     return (
-      <ProfileSection title="Properties">
-        <div className="space-y-4">
+      <ProfileSection title="Properties" buttonName="Add Properties">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center gap-3">
+                  {/* Left: Company & Role */}
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Apartment <span className="text-xs">(1450 sq.ft )</span>
+                      </h3>
+                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+                        Community Property
+                      </p>
+                    </div>
+                    {/* Verified Badge */}
+                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Kompally main road, <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="space-y-4">
           {propertiesData.length > 0 ? (
             propertiesData.map((property: any, index: number) => {
-              const title = property.type || findPropertyTypeName(property.property_type) || `Property ${index + 1}`;
+              const title =
+                property.type ||
+                findPropertyTypeName(property.property_type) ||
+                `Property ${index + 1}`;
               return (
                 <AccordionItem
                   key={index}
@@ -588,10 +1162,22 @@ const ViewProfile = () => {
                   defaultExpanded={index === 0}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Type" value={findPropertyTypeName(property.property_type)} />
-                    <ProfileDetail title="Ownership" value={findOwnershipTypeName(property.ownership_type)} />
-                    <ProfileDetail title="Location" value={property.property_address} />
-                    <ProfileDetail title="Value" value={property.property_value} />
+                    <ProfileDetail
+                      title="Type"
+                      value={findPropertyTypeName(property.property_type)}
+                    />
+                    <ProfileDetail
+                      title="Ownership"
+                      value={findOwnershipTypeName(property.ownership_type)}
+                    />
+                    <ProfileDetail
+                      title="Location"
+                      value={property.property_address}
+                    />
+                    <ProfileDetail
+                      title="Value"
+                      value={property.property_value}
+                    />
                   </div>
                 </AccordionItem>
               );
@@ -599,17 +1185,83 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No property information available</p>
           )}
-        </div>
+        </div> */}
       </ProfileSection>
     );
   };
 
   const renderReferences = () => {
-    const referencesList = (references as any)?.data?.family || (references ? [references] : []);
-    
+    const referencesList =
+      (references as any)?.data?.family || (references ? [references] : []);
+
     return (
-      <ProfileSection title="References">
-        <div className="space-y-4">
+      <ProfileSection title="References" buttonName="Add Reference">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  {/* Left: Company & Role */}
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Yakub Moodu{" "}
+                        <span className="text-xs">(21-01-1996)</span>
+                      </h3>
+                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+                        Brother
+                      </p>
+                    </div>
+                    {/* Verified Badge */}
+                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <a href="#" className="flex items-center gap-1">
+                <IoIosPhonePortrait /> 9692152142
+              </a>
+              <a href="" className="flex items-center gap-1">
+                <CiMail /> badalnayak@gmail.com
+              </a>
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Hyderbad University, 2024 <br />
+                Near by Max <br />
+                Hyderabad, India, 500100
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* <div className="space-y-4">
           {referencesList.length > 0 ? (
             referencesList.map((ref: any, index: number) => (
               <AccordionItem
@@ -620,9 +1272,16 @@ const ViewProfile = () => {
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <ProfileDetail title="Relation" value={ref?.relation} />
-                  <ProfileDetail title="Contact Number" value={ref?.contact_number} />
+                  <ProfileDetail
+                    title="Contact Number"
+                    value={ref?.contact_number}
+                  />
                   <ProfileDetail title="Email" value={ref?.email} />
-                  <ProfileDetail title="Address" value={ref?.address} colspan={3} />
+                  <ProfileDetail
+                    title="Address"
+                    value={ref?.address}
+                    colspan={3}
+                  />
                   <ProfileDetail title="Known Since" value={ref?.known_since} />
                   <ProfileDetail title="Occupation" value={ref?.occupation} />
                 </div>
@@ -631,6 +1290,67 @@ const ViewProfile = () => {
           ) : (
             <p className="text-gray-500">No references available</p>
           )}
+        </div> */}
+      </ProfileSection>
+    );
+  };
+
+  const renderHobbies = () => {
+    const referencesList =
+      (references as any)?.data?.family || (references ? [references] : []);
+
+    return (
+      <ProfileSection title="Hobbies" buttonName="Add Hobbie">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+            <div className="px-6 py-4">
+              {/* Author section */}
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center gap-3">
+                  {/* Left: Company & Role */}
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3
+                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Photography
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Icons (Badge + Dropdown) */}
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                      >
+                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineModeEditOutline />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex items-center gap-2">
+                        <MdOutlineDeleteOutline />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Content section */}
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Wild Photography
+              </p>
+            </div>
+          </div>
         </div>
       </ProfileSection>
     );
@@ -638,132 +1358,136 @@ const ViewProfile = () => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'personal':
+      case "personal":
         return renderPersonalInfo();
-      case 'contact':
-        return renderContactInfo();
-      case 'education':
+      case "Address":
+        return renderAddresses();
+      case "education":
         return renderEducation();
-      case 'career':
+      case "employment":
         return renderCareer();
-      case 'family':
+      case "family":
         return renderFamily();
-      case 'lifestyle':
+      case "lifestyle":
         return renderLifestyle();
-      case 'properties':
+      case "hobbies":
+        return renderHobbies();
+      case "properties":
         return renderProperties();
-      case 'references':
+      case "references":
         return renderReferences();
-      case 'photos':
+      case "photos":
         return renderPhotos();
       default:
         return renderPersonalInfo();
     }
   };
 
+  const profileData = personalProfile?.data || personalProfile;
+
   return (
-    <div className="dashboard-background min-h-screen md:px-[120px] md:pt-8">
-      {/* Profile Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="relative">
-            {profileImage ? (
-              <Image
-                src={profileImage?.url}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover"
-                width={128}
-                height={128}
-              />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
-                )}
-            
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            {(() => {
-              const profileData = personalProfile?.data || personalProfile;
-              return (
-                <>
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                    {profileData?.first_name || profileData?.name || 'Unknown'} {profileData?.last_name || ''}
-                  </h1>
-                  <p className="text-gray-600 mb-2">
-                    {profileData?.age && `${profileData.age} years`} 
-                    {profileData?.age && (profileData?.city || profileData?.country) && ' • '}
-                    {profileData?.city && `${profileData.city}`}
-                    {profileData?.city && profileData?.country && ', '}
-                    {profileData?.country && `${profileData.country}`}
-                  </p>
-                  <p className="text-gray-600 mb-4">
-                    {profileData?.occupation && `${profileData.occupation}`}
-                    {profileData?.occupation && profileData?.education && ' • '}
-                    {profileData?.education && `${profileData.education}`}
-                  </p>
-                </>
-              );
-            })()}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-              <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors">
-                Send Interest
-              </button>
-              <button 
-                onClick={handleToggleFavorite}
-                disabled={isUpdatingFavorite}
-                className={`flex items-center gap-2 border ${isFavorite ? 'bg-orange-100 border-orange-500 text-orange-700' : 'border-orange-500 text-orange-500 hover:bg-orange-50'} px-6 py-2 rounded-md transition-colors`}
-              >
-                {isUpdatingFavorite ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {isFavorite ? 'Removing...' : 'Saving...'}
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
-                    {isFavorite ? 'Favorited' : 'Add to Favorites'}
-                  </>
-                )}
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors">
-                Message
-              </button>
+    <>
+      <div className="dashboard-background min-h-screen md:px-[120px] md:pt-8 mt-16">
+        {/* Profile Header */}
+        <div>
+          <div className="w-full rounded-lg overflow-hidden shadow-md">
+            {/* Banner with gradient background */}
+            <div className="relative h-32 sm:h-40 lg:h-56 w-full">
+              {coverPhoto ? (
+                <Image
+                  src={coverPhoto}
+                  alt="Banner"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                // Gradient banner matching your example
+                <div className="w-full h-full bg-gradient-to-br from-orange-400 via-pink-400 via-blue-400 to-purple-600 relative overflow-hidden">
+                  {/* Geometric overlay shapes for more visual interest */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10"></div>
+                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-purple-500/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-gradient-to-tr from-blue-500/20 to-transparent"></div>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      
 
-        {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow-md mt-6">
-          <div className="flex flex-wrap border-b border-gray-200">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-b-2 border-orange-500 text-orange-600'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        
+            {/* Bottom Content */}
+            <div className="relative px-4 sm:px-6 py-4">
+              <div className="flex flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-4">
+                  {/* Profile Image - positioned to overlap banner */}
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0">
+                    {profileImage?.url ? (
+                      <img
+                        src={profileImage.url}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-400 flex items-center justify-center">
+                        <svg
+                          className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-gray-600"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
 
-        {/* Tab Content */}
-        <div className="mb-3">
-          {renderTabContent()}
+                  {/* User Info */}
+                  <div className="text-black">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1">
+                      {profileData?.first_name ||
+                        profileData?.name ||
+                        "Unknown"}{" "}
+                      {profileData?.last_name || ""}
+                    </h1>
+                  </div>
+                </div>
+
+                {/* View my profile */}
+                <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
+                  <Eye size={20} />
+                  Preview Profile
+                </button>
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex border-b border-gray-200 overflow-x-auto sm:overflow-">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium whitespace-nowrap transition-colors ${
+                    activeTab === tab.id
+                      ? "border-b-2 border-orange-500 text-orange-600"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                >
+                  <span className="text-lg">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab Content */}
+            <div className="mb-3">{renderTabContent()}</div>
+          </div>
         </div>
       </div>
-    </div>
+      <AddAddressModal open={openModal.add} onOpenChange={closeAddModal} />
+      <EditAddressModal
+        open={openModal.edit}
+        onOpenChange={(value: boolean) =>
+          setOpenModal((prev) => ({
+            ...prev,
+            edit: value,
+          }))
+        }
+      />
+    </>
   );
 };
 

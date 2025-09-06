@@ -260,7 +260,7 @@ const Page = () => {
   const ageOptions = Array.from({ length: 63 }, (_, i) => i + 21);
 
   return (
-    <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8">
+    <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       {/* Header */}
       <div className="flex justify-between items-center w-full">
         <h2 className="dmserif32600">Search Profiles</h2>

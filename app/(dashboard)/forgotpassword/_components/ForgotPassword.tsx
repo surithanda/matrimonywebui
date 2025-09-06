@@ -81,8 +81,8 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="account-details-box w-1/2 text-left">
-      <h3 className="BRCobane32600 md:mb-0 md:mt-16">Forgot password?</h3>
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left shadow-xl">
+      <h3 className="BRCobane32600 text-3xl md:mb-0 mt-4">Forgot password?</h3>
       <ToastContainer />
       
       { current === 0 && <form onSubmit={handleSubmit} className="w-full  md:mb-16">
@@ -94,7 +94,7 @@ const ForgotPassword = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
             placeholder="Email"
             required
           />
@@ -104,16 +104,16 @@ const ForgotPassword = () => {
         <div className="mb-6">
           <button
             type="submit"
-            className="w-full yellow-btn hover:bg-orange-600"
+            className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-lg font-semibold"
           >
             Continue
           </button>
         </div>
 
         {/* Register Link */}
-        <div className="flex gap-2">
-          <p className="BRCobane16500 opacity-50">Login to your account? </p>
-          <a href="/login" className="BRCobane16600 hover:underline">
+        <div className="flex justify-center gap-2">
+          <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">Login to your account? </p>
+          <a href="/login" className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l">
             Login Now
           </a>
         </div>
@@ -128,7 +128,7 @@ const ForgotPassword = () => {
               name="otp"
               value={formData.otp}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
               placeholder="Enter OTP"
               required
             />
@@ -141,7 +141,7 @@ const ForgotPassword = () => {
               name="new_password"
               value={formData.new_password}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
               placeholder="New Password"
               required
             />
@@ -154,7 +154,7 @@ const ForgotPassword = () => {
               name="confirm_new_password"
               value={formData.confirm_new_password}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
               placeholder="Confirm New Password"
               required
             />
@@ -169,8 +169,8 @@ const ForgotPassword = () => {
             </button>
           </div>
           <div className="flex gap-2">
-            <p className="BRCobane16500 opacity-50">Back to login page? </p>
-            <a href="/login" className="BRCobane16600 hover:underline">
+            <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">Back to login page? </p>
+            <a href="/login" className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l">
               Login Now
             </a>
           </div>

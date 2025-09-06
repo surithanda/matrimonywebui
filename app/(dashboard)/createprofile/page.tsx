@@ -2,8 +2,11 @@
 import { Loader2 } from "lucide-react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { createPersonalProfileAsync, getPersonalProfileAsync } from "@/app/store/features/profileSlice";
+import { Controller, useForm } from "react-hook-form";
+import {
+  createPersonalProfileAsync,
+  getPersonalProfileAsync,
+} from "@/app/store/features/profileSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
@@ -12,10 +15,20 @@ import { IProfilePersonal } from "@/app/models/Profile";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 // Extended form data interface
 interface FormData extends IProfilePersonal {
-  phone_mobile_country:string;
+  phone_mobile_country: string;
   summary: string;
 }
 
@@ -38,45 +51,52 @@ const Page = () => {
   const userData = useAppSelector((state) => state.auth.userData);
   const { setSelectedProfileID, selectedProfileID } = useProfileContext();
 
-
   const dummy = {
-    "profile_id": 1,
-    "account_id": 5,
-    "first_name": "John",
-    "last_name": "Air",
-    "middle_name": null,
-    "prefix": null,
-    "suffix": null,
-    "gender": "9",
-    "birth_date": "1990-06-06",
-    "phone_mobile": "01234567890",
-    "phone_mobile_country": "US",
-    "phone_home": null,
-    "phone_emergency": null,
-    "email_id": "john@gmail.com",
-    "marital_status": null,
-    "religion": null,
-    "nationality": 166,
-    "caste": null,
-    "height_inches": null,
-    "height_cms": null,
-    "weight": null,
-    "weight_units": "kg",
-    "complexion": null,
-    "linkedin": null,
-    "facebook": null,
-    "instagram": null,
-    "whatsapp_number": null,
-    "profession": null,
-    "disability": null,
-    "created_user": "genius.gen2k@gmail.com",
-    "summary": null,
-    "account_code": "20250712-155453-1"
-}
+    profile_id: 1,
+    account_id: 5,
+    first_name: "John",
+    last_name: "Air",
+    middle_name: null,
+    prefix: null,
+    suffix: null,
+    gender: "9",
+    birth_date: "1990-06-06",
+    phone_mobile: "01234567890",
+    phone_mobile_country: "US",
+    phone_home: null,
+    phone_emergency: null,
+    email_id: "john@gmail.com",
+    marital_status: null,
+    religion: null,
+    nationality: 166,
+    caste: null,
+    height_inches: null,
+    height_cms: null,
+    weight: null,
+    weight_units: "kg",
+    complexion: null,
+    linkedin: null,
+    facebook: null,
+    instagram: null,
+    whatsapp_number: null,
+    profession: null,
+    disability: null,
+    created_user: "genius.gen2k@gmail.com",
+    summary: null,
+    account_code: "20250712-155453-1",
+  };
 
   // React Hook Form setup
-  const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm<FormData>({
-    defaultValues: {}
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setValue,
+    control,
+    watch,
+  } = useForm<FormData>({
+    defaultValues: {},
   });
 
   const fetchProfileData = useCallback(async () => {
@@ -107,7 +127,6 @@ const Page = () => {
     { value: "5", label: "Dark" },
   ];
 
-
   const professionOptions = [
     { value: "1", label: "Engineer" },
     { value: "2", label: "Doctor" },
@@ -120,9 +139,6 @@ const Page = () => {
     { value: "kg", label: "Kilograms" },
     { value: "lbs", label: "Pounds" },
   ];
-
-
-
 
   // Display error with Toastify if error changes
   useEffect(() => {
@@ -139,9 +155,6 @@ const Page = () => {
       });
     }
   }, [error]);
-
-
-
 
   // Transform form data to API payload
   const transformFormData = (data: FormData) => {
@@ -180,15 +193,16 @@ const Page = () => {
     };
   };
 
-
   // React Hook Form submit handler
   const onSubmit = async (data: FormData) => {
     const mappedData = transformFormData(data);
     console.log(mappedData, selectedProfileID);
 
     try {
-      if(!selectedProfileID) {
-        const result = await dispatch(createPersonalProfileAsync(mappedData)).unwrap();
+      if (!selectedProfileID) {
+        const result = await dispatch(
+          createPersonalProfileAsync(mappedData)
+        ).unwrap();
         // console.log(result)
         if (result) {
           setSelectedProfileID(result?.data?.profile_id);
@@ -197,7 +211,7 @@ const Page = () => {
           router.push("/createprofile/primarycontact");
         }
       } else {
-        //update 
+        //update
         router.push("/createprofile/primarycontact");
       }
     } catch (err: any) {
@@ -206,12 +220,10 @@ const Page = () => {
     }
   };
 
-
   const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
     reset();
   };
-
 
   // Helper for error display
   const getFieldError = (fieldName: keyof FormData) => {
@@ -223,96 +235,100 @@ const Page = () => {
   };
 
   return (
-    <section className="md:py-5 w-4/5">
-      <form className="w-full box-border md:px-6" onSubmit={handleSubmit(onSubmit)}>
+    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+      <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
         {/* Personal Details */}
         <h3 className="text-lg font-semibold mb-3">Personal Details</h3>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* First Name */}
-          <div className="w-[32%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               First Name <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="text"
-              {...register("first_name", { required: "First name is required" })}
+              {...register("first_name", {
+                required: "First name is required",
+              })}
               placeholder="First Name"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.first_name ? "border-red-500" : ""}`}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.first_name ? "border-red-500" : ""
+              }`}
             />
             {getFieldError("first_name")}
           </div>
           {/* Middle Name */}
-          <div className="w-[32%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Middle Name</label>
-            <input
+          <div className="">
+            <Label>Middle Name</Label>
+            <Input
               type="text"
               {...register("middle_name")}
               placeholder="Middle Name"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Last Name */}
-          <div className="w-[32%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               Last Name <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="text"
               {...register("last_name", { required: "Last name is required" })}
               placeholder="Last Name"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.last_name ? "border-red-500" : ""}`}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.last_name ? "border-red-500" : ""
+              }`}
             />
             {getFieldError("last_name")}
           </div>
           {/* Prefix */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Prefix</label>
-            <input
+          <div className="">
+            <Label>Prefix</Label>
+            <Input
               type="text"
               {...register("prefix")}
               placeholder="Mr, Ms, Dr, etc."
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Suffix */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Suffix</label>
-            <input
+          <div className="">
+            <Label>Suffix</Label>
+            <Input
               type="text"
               {...register("suffix")}
               placeholder="Jr, Sr, III, etc."
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Gender & Birth Date */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               Gender <span className="text-red-500">*</span>
-            </label>
-            <MetadataSelectComponent type='gender' 
+            </Label>
+            <MetadataSelectComponent
+              type="gender"
               {...register("gender", { required: "Gender is required" })}
               value={watch("gender")}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.gender ? "border-red-500" : ""}`}
-              />
-           {/*  <select
-              {...register("gender", { required: "Gender is required" })}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.gender ? "border-red-500" : ""}`}
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select> */}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.gender ? "border-red-500" : ""
+              }`}
+            />
             {getFieldError("gender")}
           </div>
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               Birth Date <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="date"
-              {...register("birth_date", { required: "Birth date is required" })}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.birth_date ? "border-red-500" : ""}`}
+              {...register("birth_date", {
+                required: "Birth date is required",
+              })}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.birth_date ? "border-red-500" : ""
+              }`}
             />
             {getFieldError("birth_date")}
           </div>
@@ -320,51 +336,67 @@ const Page = () => {
 
         {/* Contact Details */}
         <h3 className="text-lg font-semibold mt-6 mb-3">Contact Details</h3>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Primary Phone */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <label>
               Primary Phone <span className="text-red-500">*</span>
             </label>
-            <CustomPhoneComponent 
+            <CustomPhoneComponent
               type="phone_mobile"
-              callingCodeBinding={{...register("phone_mobile_country", { required: "Primary country code is required" })}}
-              {...register("phone_mobile", { required: "Primary phone is required" })}
+              callingCodeBinding={{
+                ...register("phone_mobile_country", {
+                  required: "Primary country code is required",
+                }),
+              }}
+              {...register("phone_mobile", {
+                required: "Primary phone is required",
+              })}
               placeholder="Primary Phone"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.phone_mobile ? "border-red-500" : ""}`}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.phone_mobile ? "border-red-500" : ""
+              }`}
             />
             {getFieldError("phone_mobile")}
           </div>
           {/* Home Phone */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Home Phone</label>
-            <input
+          <div className="">
+            <Label>Home Phone</Label>
+            <Input
               type="text"
               {...register("phone_home")}
               placeholder="Home Phone"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Emergency Phone */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Emergency Phone</label>
-            <input
+          <div className="">
+            <Label>Emergency Phone</Label>
+            <Input
               type="text"
               {...register("phone_emergency")}
               placeholder="Emergency Phone"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Email */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               Email <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="email"
-              {...register("email_id", { required: "Email is required", pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email format" } })}
+              {...register("email_id", {
+                required: "Email is required",
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: "Invalid email format",
+                },
+              })}
               placeholder="Email"
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.email_id ? "border-red-500" : ""}`}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.email_id ? "border-red-500" : ""
+              }`}
             />
             {getFieldError("email_id")}
           </div>
@@ -372,18 +404,23 @@ const Page = () => {
 
         {/* Demographics */}
         <h3 className="text-lg font-semibold mt-6 mb-3">Demographics</h3>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Nationality */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
+          <div className="">
+            <Label>
               Nationality <span className="text-red-500">*</span>
-            </label>
-            <MetadataSelectComponent type='nationality' 
-            value={watch("nationality")}
-              {...register("nationality", { required: "Nationality is required" })}
-              className={`account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500 ${errors.nationality ? "border-red-500" : ""}`}
+            </Label>
+            <MetadataSelectComponent
+              type="nationality"
+              value={watch("nationality")}
+              {...register("nationality", {
+                required: "Nationality is required",
+              })}
+              className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                errors.nationality ? "border-red-500" : ""
+              }`}
             />
-              {/* <option value="">Select Nationality</option>
+            {/* <option value="">Select Nationality</option>
               {nationalityOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option.label}
@@ -393,14 +430,15 @@ const Page = () => {
             {getFieldError("nationality")}
           </div>
           {/* Religion */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Religion</label>
-            <MetadataSelectComponent type='religion' 
+          <div className="">
+            <Label>Religion</Label>
+            <MetadataSelectComponent
+              type="religion"
               {...register("religion")}
-               value={watch("religion")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              value={watch("religion")}
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
-              {/* <option value="">Select Religion</option>
+            {/* <option value="">Select Religion</option>
               {religionOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -409,14 +447,15 @@ const Page = () => {
             </select> */}
           </div>
           {/* Marital Status */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Marital Status</label>
-            <MetadataSelectComponent type='marital_status' 
+          <div className="">
+            <Label>Marital Status</Label>
+            <MetadataSelectComponent
+              type="marital_status"
               {...register("marital_status")}
-               value={watch("marital_status")} 
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              value={watch("marital_status")}
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
-              {/* <option value="">Select Marital Status</option>
+            {/* <option value="">Select Marital Status</option>
               {maritalStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -425,14 +464,15 @@ const Page = () => {
             </select> */}
           </div>
           {/* Caste */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Caste</label>
-            <MetadataSelectComponent type='caste' 
+          <div className="">
+            <Label>Caste</Label>
+            <MetadataSelectComponent
+              type="caste"
               {...register("caste")}
               value={watch("caste")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
-              {/* <option value="">Select Caste</option>
+            {/* <option value="">Select Caste</option>
               {casteOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option?.label}
@@ -444,35 +484,56 @@ const Page = () => {
 
         {/* Physical Attributes */}
         <h3 className="text-lg font-semibold mt-6 mb-3">Physical Attributes</h3>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Height */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">
-              Height (inches)
-            </label>
-            <input
+          <div className="">
+            <Label>Height (inches)</Label>
+            <Input
               type="text"
               {...register("height")}
               placeholder="Height in inches"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Weight */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Weight</label>
-            <input
-              type="text"
-              {...register("weight")}
-              placeholder="Weight"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+          <div className=" flex flex-col">
+            <Label>Weight</Label>
+            <div className="flex gap-2">
+              {/* Select for weight units */}
+              <Controller
+                name="weight_units"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="account-input-field w-32 focus:outline-none focus:border-b focus:border-orange-500">
+                      <SelectValue placeholder="Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {weightUnitsOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
+              {/* Input for weight value */}
+              <Input
+                type="text"
+                {...register("weight")}
+                placeholder="Weight"
+                className="account-input-field flex-1 focus:outline-none focus:border-b focus:border-orange-500"
+              />
+            </div>
           </div>
           {/* Weight Units */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Weight Units</label>
+          {/* <div className="">
+            <Label>Weight Units</Label>
             <select
               {...register("weight_units")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             >
               {weightUnitsOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -480,13 +541,13 @@ const Page = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
           {/* Complexion */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Complexion</label>
+          {/* <div className="">
+            <label>Complexion</label>
             <select
               {...register("complexion")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             >
               <option value="">Select Complexion</option>
               {complexionOptions.map((option) => (
@@ -495,16 +556,44 @@ const Page = () => {
                 </option>
               ))}
             </select>
+          </div> */}
+          <div className="">
+            <label>Complexion</label>
+            <Controller
+              name="complexion"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value ? String(field.value) : ""}
+                  onValueChange={(val) => field.onChange(val)}
+                >
+                  <SelectTrigger className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500">
+                    <SelectValue placeholder="Select Complexion" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {complexionOptions.map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={String(option.value)}
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           {/* Disability */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Disability</label>
-            <MetadataSelectComponent type="disability"
+          <div className="">
+            <Label>Disability</Label>
+            <MetadataSelectComponent
+              type="disability"
               {...register("disability")}
               value={watch("disability")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
-              {/* {disabilityOptions.map((option) => (
+            {/* {disabilityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -517,98 +606,109 @@ const Page = () => {
         <h3 className="text-lg font-semibold mt-6 mb-3">
           Professional & Social Details
         </h3>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Profession */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Profession</label>
-            <select
-              {...register("profession")}
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              <option value="">Select Profession</option>
-              {professionOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          <div className="">
+            <Label>Profession</Label>
+            <Controller
+              name="profession"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value ? String(field.value) : ""}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500">
+                    <SelectValue placeholder="Select Profession" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {professionOptions.map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={String(option.value)}
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           {/* WhatsApp Number */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">WhatsApp Number</label>
-            <input
+          <div className="">
+            <Label>WhatsApp Number</Label>
+            <Input
               type="text"
               {...register("whatsapp_number")}
               placeholder="WhatsApp Number"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* LinkedIn */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">LinkedIn</label>
-            <input
+          <div className="">
+            <Label>LinkedIn</Label>
+            <Input
               type="text"
               {...register("linkedin")}
               placeholder="LinkedIn URL"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Facebook */}
-          <div className="w-[49%] md:mb-4">
-            <label className="block text-gray-700 mb-2">Facebook</label>
-            <input
+          <div className="">
+            <Label>Facebook</Label>
+            <Input
               type="text"
               {...register("facebook")}
               placeholder="Facebook URL"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           {/* Instagram */}
           <div className="w-full md:mb-4">
-            <label className="block text-gray-700 mb-2">Instagram</label>
-            <input
+            <Label>Instagram</Label>
+            <Input
               type="text"
               {...register("instagram")}
               placeholder="Instagram URL"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
         </div>
 
         {/* Summary */}
         <h3 className="text-lg font-semibold mt-6 mb-3">Summary</h3>
-        <div className="flex w-full justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div className="w-full md:mb-4">
-            <label className="block text-gray-700 mb-2">
-              Brief summary about you
-            </label>
+            <Label>Brief summary about you</Label>
             <textarea
               {...register("summary")}
               placeholder="A success story, achievement, or any additional info"
-              className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
               rows={3}
             />
           </div>
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-start gap-4 mt-6">
-          <button
-            type="submit"
-            disabled={loading}
-            className="yellow-btn hover:bg-orange-600 flex items-center gap-2"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            Continue
-          </button>
-          <button
+        <div className="flex justify-end gap-4 mt-6">
+          <Button
             type="button"
             onClick={handleCancel}
             disabled={loading}
             className="gray-btn hover:bg-gray-400"
           >
             Cancel
-          </button>
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="yellow-btn hover:bg-orange-600 flex items-center gap-2"
+          >
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            Continue
+          </Button>
         </div>
       </form>
       <ToastContainer />

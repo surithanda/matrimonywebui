@@ -73,7 +73,7 @@ h6 {
   text-underline-position: from-font;
 }
 .BRCobane18500 {
-  color: #222;
+  color: #7c7b7b;
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;
@@ -84,14 +84,14 @@ h6 {
 .BRCobane18600 {
   color: rgba(25, 24, 35, 0.9);
   font-family: "BR Cobane";
-  font-size: 18px;
+  /* font-size: 18px; */
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   letter-spacing: -0.54px;
 }
 .BRCobane18700 {
-  color: #191823;
+  color: #f9ac05;
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;
@@ -139,11 +139,12 @@ h6 {
 .BRCobane32600 {
   color: rgba(25, 24, 35, 0.9);
   font-family: "BR Cobane";
-  font-size: 32px;
+  /* font-size: 32px; */
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   letter-spacing: -1.6px;
+  text-align: center;
 }
 .BRCobane56600 {
   color: rgba(25, 24, 35, 0.9);
@@ -173,7 +174,7 @@ input[type="range"] {
   accent-color: #feac00;
 }
 .dashboard-background {
-  background: linear-gradient(180deg, rgba(255, 200, 170, 0.3) 0%, #fff 100%);
+  /* background: linear-gradient(180deg, rgba(255, 200, 170, 0.3) 0%, #fff 100%); */
 }
 .age-slider-background {
   display: flex;
@@ -191,23 +192,23 @@ input[type="range"] {
   );
 }
 .dashboard-sections {
-  display: flex;
-  padding: 24px;
+  /* display: flex; */
+  /* padding: 24px; */
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
   flex: 1 0 0;
   /* align-self: stretch; */
   border-radius: 19px;
-  background: rgba(17, 17, 17, 0.05);
+  /* background: rgba(17, 17, 17, 0.05); */
 }
 .dashboard-inner-sections {
   display: flex;
-  padding: 20px;
+  /* padding: 20px;  */
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 15px;
+  /* gap: 15px; */
   align-self: stretch;
   border-radius: 16px;
   background: #ffffff66;
@@ -370,17 +371,17 @@ input[type="range"] {
   /* width: 1200px; */
   padding: 20px;
   flex-direction: column;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   gap: 24px;
 
   border-radius: 16px;
-  border: 1px solid #c2c2c2;
+  /* border: 1px solid #c2c2c2; */
   background: #fff;
   backdrop-filter: blur(40px);
 }
 .profile-details-box {
-  display: flex;
-  /* width: 1200px; */
+  /* display: flex;
+  width: 1200px;
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
@@ -388,19 +389,19 @@ input[type="range"] {
   border-radius: 16px;
   border: 1px solid #c2c2c2;
   background: #fff;
-  backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px); */
 
   overflow: hidden;
 }
 .account-input-field {
   display: flex;
-  padding: 12px 16px;
-  align-items: flex-start;
+  padding: 10px 16px;
+  /* align-items: flex-start; */
   gap: 10px;
   align-self: stretch;
 
-  border-radius: 10px;
-  border: 1px solid #bbb;
+  /* border-radius: 0 0 0 0; */
+  border-bottom: 1px solid #bbb;
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.02) 0%,
@@ -408,7 +409,7 @@ input[type="range"] {
   );
 }
 .account-details-box label {
-  color: rgba(25, 24, 35, 0.9);
+  color: rgba(25, 24, 35, 0.6);
   font-family: "BR Cobane";
   font-size: 18px;
   font-style: normal;

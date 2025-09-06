@@ -58,7 +58,7 @@ const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttribu
         >
             <option value={hasAny ? -1 : ""}>Select {hasAny ? 'Any' : toCapitalCase(type)}</option>
             {optionsList && optionsList.map((item: any) => (
-                <option key={item.id || item.country_id || item.state_id} value={custSelectValue && customValFunc ? customValFunc(item.name).value : (dontUseID ? item.name : item.id)}>
+                <option key={item.id} value={custSelectValue && customValFunc ? customValFunc(item.name).value : (dontUseID ? item.name : item.id)}>
                     {item.name}
                 </option>
             ))}

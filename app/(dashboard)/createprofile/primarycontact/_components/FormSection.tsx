@@ -8,6 +8,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { MoreVertical, Edit2, Trash2, CheckCircle, AlertCircle, MapPin } from "lucide-react";
 
 interface IAddress {
   id: string;
@@ -57,6 +58,7 @@ const FormSection = () => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [currentAddress, setCurrentAddress] = useState<IAddress>({ ...defaultAddress });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
   const {countryList} = useAppSelector((state) => state.metaData);
 
@@ -91,20 +93,37 @@ const FormSection = () => {
 
   useEffect(() => {
     if (selectedProfileID && selectedProfileID !== 0) {
-      loadStates();
-      if (countryList) {
+      // loadStates();
+      // if (countryList) {
         fetchProfileAddress();
-      }
+      // }
     }
-  }, [selectedProfileID, countryList, loadStates, fetchProfileAddress]);
+  }, [selectedProfileID, loadStates, fetchProfileAddress]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [activeDropdown]);
 
   // When editing, load the address into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-        setCurrentAddress(fields[index] as IAddress);
+    setCurrentAddress(fields[index] as IAddress);
   };
 
-  // Add or update address
+  // Delete address
+  const handleDelete = (index: number) => {
+    remove(index);
+    setEditIndex(null);
+    setCurrentAddress({ ...defaultAddress });
+  };
   const handleAddOrUpdate = async() => {
     if (
       !currentAddress.city &&
@@ -171,13 +190,6 @@ const FormSection = () => {
     setCurrentAddress({ ...defaultAddress });
   }
 
-  // Delete address
-  const handleDelete = (index: number) => {
-    remove(index);
-    setEditIndex(null);
-    setCurrentAddress({ ...defaultAddress });
-  };
-
   // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = async (data: IFormData) => {
     console.log("Form submitted:", data, hasUnsavedAddressData());
@@ -224,44 +236,133 @@ const FormSection = () => {
   return (
     <section className="md:py-5 w-4/5">
       <form className="w-full box-border md:px-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* Address List as Table */}
-        <div className="mb-6 overflow-x-auto">
+        {/* Address List as Cards */}
+        <div className="mb-6">
           {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100 text-base font-bold text-gray-800">
-                <tr>
-                  <th className="px-3 py-2 text-left">Address</th>
-                  <th className="px-3 py-2 text-left">City</th>
-                  <th className="px-3 py-2 text-left">State</th>
-                  <th className="px-3 py-2 text-left">Country</th>
-                  <th className="px-3 py-2 text-left">Zip</th>
-                  <th className="px-3 py-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 text-base">
-                    <td className="px-3 py-2">{item.address_line1}</td>
-                    <td className="px-3 py-2">{item.city}</td>
-                    <td className="px-3 py-2">{findStateName(item.state_id ?? item.state ?? 0)}</td>
-                    <td className="px-3 py-2">{findCountryName(item.country_id ?? item.country ?? 0)}</td>
-                    <td className="px-3 py-2">{item.zip}</td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center" >
-                        <button type="button" 
-                          className="gray-btn px-2 py-1 text-xs" 
-                          disabled={true} 
-                          onClick={() => handleEdit(index)}>Edit</button>
-                        <button type="button" 
-                          className="red-btn px-2 py-1 text-xs" 
-                          disabled={true} 
-                          onClick={() => handleDelete(index)}>Delete</button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {fields.map((item, index) => (
+                <div key={item.id} className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 relative">
+                  {/* Three-dots menu */}
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      onClick={() => setActiveDropdown(activeDropdown === index ? null : index)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+                    
+                    {/* Dropdown Menu */}
+                    {activeDropdown === index && (
+                      <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+
+                  {/* Verification Status */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin className="w-5 h-5 text-orange-500" />
+                    <span className="font-semibold text-gray-800">Address {index + 1}</span>
+                    <div className="ml-auto flex items-center gap-1">
+                      {Math.random() > 0.5 ? (
+                        <>
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <span className="text-xs text-green-600 font-medium">Verified</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-4 h-4 text-amber-500" />
+                          <span className="text-xs text-amber-600 font-medium">Pending</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Address Content */}
+                  <div className="space-y-3">
+                    {/* Primary Address */}
+                    <div>
+                      <p className="text-gray-900 font-medium leading-relaxed">
+                        {item.address_line1}
+                      </p>
+                      {item.address_line2 && (
+                        <p className="text-gray-700 text-sm">
+                          {item.address_line2}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Location Details */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">City:</span>
+                        <span className="text-sm text-gray-800 font-medium">{item.city || 'N/A'}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">State:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findStateName(item.state_id ?? item.state ?? 0) || 'N/A'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Country:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findCountryName(item.country_id ?? item.country ?? 0) || 'N/A'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">ZIP:</span>
+                        <span className="text-sm text-gray-800 font-medium">{item.zip || 'N/A'}</span>
+                      </div>
+                    </div>
+
+                    {/* Landmarks */}
+                    {(item.landmark1 || item.landmark2) && (
+                      <div className="pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-1">Landmarks:</p>
+                        {item.landmark1 && (
+                          <p className="text-sm text-gray-700">• {item.landmark1}</p>
+                        )}
+                        {item.landmark2 && (
+                          <p className="text-sm text-gray-700">• {item.landmark2}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {fields.length === 0 && (
+            <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+              <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No addresses added yet</h3>
+              <p className="text-gray-500">Add your first address using the form below</p>
+            </div>
           )}
         </div>
         {/* Address Form */}

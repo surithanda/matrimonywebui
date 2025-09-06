@@ -1,13 +1,11 @@
 import axios from 'axios';
-
-// const isProduction = process.env.NODE_ENV === 'production';
-const isProduction = true;
-// console.log('API Environment:', process.env.NODE_ENV);
+import { API_BASE_URL, API_KEY } from './env';
+import './env-validator'; // Auto-validate environment in development
 
 export const api = axios.create({
-  baseURL: isProduction?'https://matrimonyservicesapi-tdcu.onrender.com/api':'http://localhost:8080/api',
+  baseURL: API_BASE_URL,
   headers: {
-    'x-api-key': process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6',
+    'x-api-key': API_KEY,
   },
 });
 

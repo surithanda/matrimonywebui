@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import process from "process";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 interface ImageFile {
   url: string;
@@ -37,13 +38,9 @@ const FormSection = () => {
 
   const { findPhotoTypeFromID } = useMetaDataLoader();
   
-  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    if (!u || typeof u !== 'string') return null;
-    if (u.startsWith('http')) return u;
-    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
-    return u.startsWith('/') ? u : `/${u}`;
-  }, [apiOrigin]);
+    return envToAbsoluteUrl(u);
+  }, []);
 
   // Helper to compute total number of photos
   const totalPhotos = useMemo(() => {

@@ -13,6 +13,7 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useFetchUser } from "@/app/utils/useFetchUser";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
+import { toAbsoluteUrl } from "@/app/lib/env";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
@@ -37,9 +38,7 @@ const AccountSettings = () => {
       if (response.data?.success && response.data?.data?.photo_url) {
         const photoPath = response.data.data.photo_url;
         // The photo_url will be like /uploads/photos/account/<filename>
-        const photoUrl = photoPath.startsWith('http') 
-          ? photoPath 
-          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        const photoUrl = toAbsoluteUrl(photoPath);
         setProfilePhoto(photoUrl);
         setImageError(false);
       } else {
@@ -95,9 +94,7 @@ const AccountSettings = () => {
 
       if (response.data?.success && response.data?.data?.photo_url) {
         const photoPath = response.data.data.photo_url;
-        const photoUrl = photoPath.startsWith('http')
-          ? photoPath
-          : `${process.env.NEXT_PUBLIC_API_URL}${photoPath}`;
+        const photoUrl = toAbsoluteUrl(photoPath);
         setProfilePhoto(photoUrl);
         setImageError(false);
       } else {

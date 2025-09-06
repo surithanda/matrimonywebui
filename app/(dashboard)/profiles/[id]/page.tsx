@@ -18,6 +18,7 @@ import {
   getFavoritesAsync,
   getProfilePhotosAsync
 } from "@/app/store/features/profileSlice";
+import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import femaleProfile from "@/public/images/dashboard/profile1.png";
@@ -66,19 +67,15 @@ const ViewProfile = () => {
   const [individualImages, setIndividualImages] = useState<ImageFile[]>([]);
 
   // Hoisted helpers for photos (avoid hooks inside conditional renders)
-  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+  const toAbsoluteUrl = useCallback((u?: string | null) => {
+    return envToAbsoluteUrl(u);
+  }, []);
+  
   const photoTypeAssociation = useMemo(() => ({
     profile: 450,
     cover: 454,
     individual: 456
   }), []);
-
-  const toAbsoluteUrl = useCallback((u?: string | null) => {
-    if (!u || typeof u !== 'string') return null;
-    if (u.startsWith('http')) return u;
-    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
-    return u.startsWith('/') ? u : `/${u}`;
-  }, [apiOrigin]);
 
   // Derive display images from redux photos once, not during render
   useEffect(() => {

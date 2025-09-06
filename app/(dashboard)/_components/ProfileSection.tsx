@@ -14,6 +14,7 @@ import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
+import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 
 const ProfileSection = () => {
@@ -26,13 +27,9 @@ const ProfileSection = () => {
   const { selectedProfileID } = useProfileContext();
 
   // API origin and image URL utility
-  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    if (!u || typeof u !== 'string') return null;
-    if (u.startsWith('http')) return u;
-    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
-    return u.startsWith('/') ? u : `/${u}`;
-  }, [apiOrigin]);
+    return envToAbsoluteUrl(u);
+  }, []);
 
    // Profile Data for dynamic rendering
   const [profilesData, setProfilesData] = useState<any>([]);

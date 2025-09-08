@@ -289,12 +289,26 @@ const FormSection = () => {
       <section className="px-2 md:px-0 md:py-2 w-full">
         {/* Address List as Cards */}
         <div className="mb-6">
+          <div className="flex justify-end items-center mb-3 mt-3">
+            <Button
+              onClick={() =>
+                setOpenModal((prev) => ({
+                  ...prev,
+                  add: true,
+                }))
+              }
+              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              Add Address
+            </Button>
+          </div>
           {fields.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {fields.map((field, index) => (
                 <div
                   key={field.id}
-                  className={`bg-white border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl ${
+                  className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
                     editIndex === index
                       ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
                       : "border-gray-200 hover:border-orange-300"
@@ -439,21 +453,6 @@ const FormSection = () => {
               ))}
             </div>
           )}
-
-          <div className="flex justify-end items-center mb-3 mt-3">
-            <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
-              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
-              Add Address
-            </Button>
-          </div>
 
           {/* Empty state */}
           {fields.length === 0 && (

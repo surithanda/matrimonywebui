@@ -129,7 +129,7 @@ const FormSection = () => {
   }, [selectedProfileID, dispatch]);
 
   return (
-    <section className="md:py-5 w-3/4 ps-[50px]">
+    <section className="md:py-5 w-full">
       <div className="space-y-6">
         {Object.entries(categories).map(([category, options]) => (
           <div key={category}>

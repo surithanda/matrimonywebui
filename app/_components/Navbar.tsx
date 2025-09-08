@@ -21,7 +21,7 @@ export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const userData = useAppSelector((state) => state.auth.userData);
-    const { selectedProfileID } = useProfileContext();
+  const { selectedProfileID } = useProfileContext();
 
   const checkToken = () => !!localStorage.getItem("matrimony token");
 
@@ -73,7 +73,7 @@ export const Navbar = () => {
     "/account",
     "/changepassword",
     `/profiles/${selectedProfileID}`,
-    "/dashboard/create-profile"
+    "/dashboard/create-profile",
   ];
   const isDarkPage = darkPages.includes(pathname);
 

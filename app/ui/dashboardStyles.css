@@ -395,7 +395,7 @@ input[type="range"] {
 }
 .account-input-field {
   display: flex;
-  padding: 10px 16px;
+  padding: 13px 16px;
   /* align-items: flex-start; */
   gap: 10px;
   align-self: stretch;

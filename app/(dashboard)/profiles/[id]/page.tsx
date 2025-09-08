@@ -37,8 +37,14 @@ import {
   MdOutlineModeEditOutline,
   MdOutlinePreview,
 } from "react-icons/md";
-import { Eye, MoreHorizontal } from "lucide-react";
-import { FaHome, FaRegEdit } from "react-icons/fa";
+import { AlertCircle, Eye, MoreHorizontal } from "lucide-react";
+import {
+  FaFacebook,
+  FaHome,
+  FaInstagram,
+  FaLinkedin,
+  FaRegEdit,
+} from "react-icons/fa";
 import { IoIosAdd, IoIosPhonePortrait } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { CgMoreVertical } from "react-icons/cg";
@@ -54,6 +60,7 @@ import {
 import { CiMail } from "react-icons/ci";
 import { AddAddressModal } from "../_components/modals/AddAddressModal";
 import { EditAddressModal } from "../_components/modals/EditAddressModal";
+import { Button } from "@/components/ui/button";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -119,12 +126,15 @@ const ViewProfile = () => {
   const toAbsoluteUrl = useCallback((u?: string | null) => {
     return envToAbsoluteUrl(u);
   }, []);
-  
-  const photoTypeAssociation = useMemo(() => ({
-    profile: 450,
-    cover: 454,
-    individual: 456
-  }), []);
+
+  const photoTypeAssociation = useMemo(
+    () => ({
+      profile: 450,
+      cover: 454,
+      individual: 456,
+    }),
+    []
+  );
 
   // Derive display images from redux photos once, not during render
   useEffect(() => {
@@ -258,12 +268,14 @@ const ViewProfile = () => {
     colspan = null,
   }: {
     title: string;
-    value: string;
+    value?: string | null;
     colspan?: number | null;
   }) => {
+    if (!value) return null;
+
     return (
       <div className={colspan ? `col-span-${colspan}` : ""}>
-        <p className="text- text-slate-500">{title}</p>
+        <p className="text-slate-500">{title}</p>
         <p className="text-black font-semibold mt-1 text-xl">{value}</p>
       </div>
     );
@@ -388,19 +400,6 @@ const ViewProfile = () => {
       </div>
     );
   }
-
-  const tabs = [
-    { id: "personal", label: "Personal", icon: "👤" },
-    { id: "Address", label: "Address", icon: "📍" },
-    { id: "education", label: "Education", icon: "🎓" },
-    { id: "employment", label: "Employment", icon: "💼" },
-    { id: "family", label: "Family", icon: "👨‍👩‍👧‍👦" },
-    { id: "references", label: "Friends & References", icon: "🧘" },
-    { id: "photos", label: "Photos", icon: "📸" },
-    { id: "lifestyle", label: "Lifestyle", icon: "🌟" },
-    { id: "hobbies", label: "Hobbies", icon: "🎯" },
-    { id: "properties", label: "Properties", icon: "🏘️" },
-  ];
 
   const renderPhotos = () => {
     return (
@@ -535,7 +534,10 @@ const ViewProfile = () => {
         <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
           <ProfileDetail title="First Name" value={profileData?.first_name} />
           <ProfileDetail title="Last Name" value={profileData?.last_name} />
-          <ProfileDetail title="Email" value={personalProfile?.data?.email} />
+          <ProfileDetail
+            title="Email"
+            value={personalProfile?.data?.email_id}
+          />
           <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
           <ProfileDetail title="Gender" value={profileData?.gender} />
           <ProfileDetail title="DOB" value={profileData?.dob} />
@@ -1356,41 +1358,28 @@ const ViewProfile = () => {
     );
   };
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "personal":
-        return renderPersonalInfo();
-      case "Address":
-        return renderAddresses();
-      case "education":
-        return renderEducation();
-      case "employment":
-        return renderCareer();
-      case "family":
-        return renderFamily();
-      case "lifestyle":
-        return renderLifestyle();
-      case "hobbies":
-        return renderHobbies();
-      case "properties":
-        return renderProperties();
-      case "references":
-        return renderReferences();
-      case "photos":
-        return renderPhotos();
-      default:
-        return renderPersonalInfo();
-    }
+  const profileData = personalProfile?.data || personalProfile;
+  const addressList = address?.data?.addresses || (address ? [address] : []);
+
+  console.log("profile data", profileData);
+  console.log("address data", addressList);
+
+  const formatWeight = (weight?: number | string, unit?: string) => {
+    if (!weight) return null;
+
+    const num = Number(weight);
+    return Number.isInteger(num)
+      ? `${num}${unit ?? ""}`
+      : `${num.toFixed(2)}${unit ?? ""}`;
   };
 
-  const profileData = personalProfile?.data || personalProfile;
 
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[120px] md:pt-8 mt-16">
         {/* Profile Header */}
         <div>
-          <div className="w-full rounded-lg overflow-hidden shadow-md">
+          <div className="w-full rounded-lg overflow-hidden shadow mb-4">
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverPhoto ? (
@@ -1412,10 +1401,14 @@ const ViewProfile = () => {
 
             {/* Bottom Content */}
             <div className="relative px-4 sm:px-6 py-4">
-              <div className="flex flex-row justify-between items-center gap-4">
-                <div className="flex items-center gap-4">
-                  {/* Profile Image - positioned to overlap banner */}
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                {/* Left Section: Image + Name */}
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                  {/* Profile Image */}
+                  <div
+                    className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 
+                      border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
+                  >
                     {profileImage?.url ? (
                       <img
                         src={profileImage.url}
@@ -1429,15 +1422,19 @@ const ViewProfile = () => {
                           fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                          <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
+                       1.79-4 4 1.79 4 4 4zm0 2c-2.67 
+                       0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                          />
                         </svg>
                       </div>
                     )}
                   </div>
 
                   {/* User Info */}
-                  <div className="text-black">
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1">
+                  <div className="text-center sm:text-left">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 text-black">
                       {profileData?.first_name ||
                         profileData?.name ||
                         "Unknown"}{" "}
@@ -1446,47 +1443,362 @@ const ViewProfile = () => {
                   </div>
                 </div>
 
-                {/* View my profile */}
-                <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
-                  <Eye size={20} />
-                  Preview Profile
-                </button>
+                {/* Right Section: Actions */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                  <Button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors">
+                    Send Interest
+                  </Button>
+
+                  <Button
+                    variant={"outline"}
+                    onClick={handleToggleFavorite}
+                    disabled={isUpdatingFavorite}
+                    className={`flex items-center gap-2 border ${
+                      isFavorite
+                        ? "bg-orange-100 border-orange-500 text-orange-700"
+                        : "border-orange-500 text-orange-500 hover:bg-orange-50"
+                    } px-6 py-2 rounded-md transition-colors`}
+                  >
+                    {isUpdatingFavorite ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 
+                   0 0 5.373 0 12h4zm2 5.291A7.962 
+                   7.962 0 014 12H0c0 3.042 
+                   1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        {isFavorite ? "Removing..." : "Saving..."}
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-5 h-5"
+                          fill={isFavorite ? "currentColor" : "none"}
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M4.318 6.318a4.5 4.5 0 000 
+                   6.364L12 20.364l7.682-7.682a4.5 
+                   4.5 0 00-6.364-6.364L12 
+                   7.636l-1.318-1.318a4.5 4.5 
+                   0 00-6.364 0z"
+                          />
+                        </svg>
+                        {isFavorite ? "Favorited" : "Add to Favorites"}
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    variant={"outline"}
+                    className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Send Message
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Details */}
+          <div className="grid grid-cols-1 items-center gap-2 mb-6">
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Personal Information
+              </h2>
+              <div
+                className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 
+                grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-6"
+              >
+                <ProfileDetail
+                  title="First Name"
+                  value={profileData?.first_name}
+                />
+
+                {profileData?.middle_name && (
+                  <ProfileDetail
+                    title="Middle Name"
+                    value={profileData.middle_name}
+                  />
+                )}
+
+                <ProfileDetail
+                  title="Last Name"
+                  value={profileData?.last_name}
+                />
+
+                <ProfileDetail
+                  title="Date of Birth"
+                  value={
+                    profileData?.birth_date
+                      ? new Date(profileData.birth_date).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )
+                      : null
+                  }
+                />
+
+                <ProfileDetail title="Gender" value={profileData?.gender} />
+
+                <ProfileDetail
+                  title="Marital Status"
+                  value={profileData?.marital_status}
+                />
+
+                <ProfileDetail title="Height" value={profileData?.height_cms} />
+
+                <ProfileDetail
+                  title="Weight"
+                  value={formatWeight(
+                    profileData?.weight,
+                    profileData?.weight_units
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 mb-6">
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Contact Information
+              </h2>
+              <div className="px-4 py-4 grid grid-cols-4 gap-8">
+                <ProfileDetail
+                  title="Mobile"
+                  value={profileData?.phone_mobile}
+                />
+                <ProfileDetail title="Email" value={profileData?.email_id} />
+                <div className="flex gap-4 items-center">
+                  {profileData?.facebook && (
+                    <a
+                      href={profileData.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaFacebook className="text-blue-600 w-6 h-6 hover:opacity-80" />
+                    </a>
+                  )}
+                  {profileData?.instagram && (
+                    <a
+                      href={profileData.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaInstagram className="text-pink-500 w-6 h-6 hover:opacity-80" />
+                    </a>
+                  )}
+                  {profileData?.linkedin && (
+                    <a
+                      href={profileData.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaLinkedin className="text-blue-700 w-6 h-6 hover:opacity-80" />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex border-b border-gray-200 overflow-x-auto sm:overflow-">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium whitespace-nowrap transition-colors ${
-                    activeTab === tab.id
-                      ? "border-b-2 border-orange-500 text-orange-600"
-                      : "text-gray-600 hover:text-gray-800"
-                  }`}
-                >
-                  <span className="text-lg">{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
+            <div className="bg-white rounded shadow col-span-2">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Address Information
+              </h2>
+              <div className="px-4 py-4 grid grid-cols-4 gap-8">
+                <div className="grid grid-cols-1">
+                  {addressList.length > 0 ? (
+                    addressList.map((addr: any, index: number) => {
+                      const title = `Address ${index + 1}${
+                        addr.type ? ` (${addr.type})` : ""
+                      }`;
+                      return (
+                        <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm" key={index}>
+                          <div className="px-6 py-4">
+                            {/* Author section */}
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-2">
+                                    {/* <FaHome size={20} /> */}
+                                    <h3
+                                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                      style={{ fontFamily: "BR Cobane" }}
+                                    >
+                                      {title}
+                                    </h3>
+                                  </div>
+                                  {addr?.isverified === 1 ? (
+                                    <BiSolidBadgeCheck className="w-5 h-5 text-green-500" />
+                                  ) : (
+                                    <div className="flex items-center gap-1">
+                                      {/* <AlertCircle className="w-4 h-4 text-amber-500" /> */}
+                                      <span className="text-xs text-amber-600 font-medium">
+                                        UnVerified
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-zinc-600">
+                              {[
+                                addr?.address_line1,
+                                addr?.address_line2,
+                                addr?.landmark1,
+                                addr?.landmark2,
+                                [
+                                  addr?.city,
+                                  addr?.state,
+                             findCountryName(addr?.country_id ?? addr?.country ?? 0) || "N/A",
+                                  addr?.zipcode,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", "),
+                              ]
+                                .filter(Boolean)
+                                .map((part, i) => (
+                                  <span key={i}>
+                                    {part}
+                                    <br />
+                                  </span>
+                                ))}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p className="text-gray-500">
+                      No address information available
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
+          </div>
 
-            {/* Tab Content */}
-            <div className="mb-3">{renderTabContent()}</div>
+          {/* Partner Perferance */}
+          <div className="bg-white rounded shadow mb-3">
+            <h2
+              className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Partner Preferences
+            </h2>
+            <div className="px-4 py-4 grid grid-cols-4">
+              <ProfileDetail
+                title="Age Range"
+                value={profileData?.first_name}
+              />
+              <ProfileDetail title="Religion" value={profileData?.first_name} />
+            </div>
+          </div>
+
+          {/* Educational & Professional Details */}
+          <div className="grid grid-cols-2 items-center gap-2 mb-2">
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Educational Details
+              </h2>
+              <div className="px-4 py-4">
+                Full Name: {profileData?.first_name} {profileData?.middle_name}{" "}
+                {profileData?.last_name}
+              </div>
+            </div>
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Professional Details
+              </h2>
+              <div className="px-4 py-4">
+                Mobile: {personalProfile?.data?.phone}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 items-center gap-2 mb-2">
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Lifestyle and Hobbies
+              </h2>
+              <div className="px-4 py-4">
+                Full Name: {profileData?.first_name} {profileData?.middle_name}{" "}
+                {profileData?.last_name}
+              </div>
+            </div>
+            <div className="bg-white rounded shadow">
+              <h2
+                className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Family information
+              </h2>
+              <div className="px-4 py-4">
+                Mobile: {personalProfile?.data?.phone}
+              </div>
+            </div>
+          </div>
+
+          {/* Profile Summary */}
+          <div className="bg-white rounded shadow mb-3">
+            <h2
+              className=" text-black text-xl font-bold bg-gray-100 px-4 py-4 rounded"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Profile Summary
+            </h2>
+            <div className="px-4 py-4">
+              Full Name: {profileData?.first_name} {profileData?.middle_name}{" "}
+              {profileData?.last_name}
+            </div>
           </div>
         </div>
       </div>
-      <AddAddressModal open={openModal.add} onOpenChange={closeAddModal} />
-      <EditAddressModal
-        open={openModal.edit}
-        onOpenChange={(value: boolean) =>
-          setOpenModal((prev) => ({
-            ...prev,
-            edit: value,
-          }))
-        }
-      />
     </>
   );
 };

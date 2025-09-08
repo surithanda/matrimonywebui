@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import profile1 from "@/public/images/dashboard/profile1.png";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import {
   getPersonalProfileAsync,
@@ -16,7 +16,8 @@ import { IProfile } from "@/app/models/Profile";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 import { FaPlus } from "react-icons/fa6";
 import { FaqSection } from "@/components/blocks/faq";
-
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
@@ -28,14 +29,14 @@ const ProfileSection = () => {
   const { fetchAccountDetls } = useFetchUser();
   const { loadMetaData } = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   // API origin and image URL utility
   const toAbsoluteUrl = useCallback((u?: string | null) => {
     return envToAbsoluteUrl(u);
   }, []);
 
-   // Profile Data for dynamic rendering
+  // Profile Data for dynamic rendering
   const [profilesData, setProfilesData] = useState<any>([]);
 
   useEffect(() => {
@@ -161,7 +162,7 @@ const ProfileSection = () => {
       {/* Profiles Section */}
       <div className="dashboard-sections w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Section */}
-        <div className="lg:col-span-3 flex flex-col my-auto">
+        <div className="lg:col-span-3 flex flex-col">
           {/* Header with Button */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <div>
@@ -191,33 +192,9 @@ const ProfileSection = () => {
             />
             <StatCard
               number="25"
-              name="Total Profiles Reviewed"
+              name="Profiles Reviewed"
               bg1="#FFF0D0"
               bg2="#FFE8B7"
-            />
-            <StatCard
-              number="10"
-              name="Shortlisted"
-              bg1="#DEF3C5"
-              bg2="#CEEFA7"
-            />
-            <StatCard
-              number="04"
-              name="Viewed Your Profile(s)"
-              bg1="#DAFBF2"
-              bg2="#AFFEE8"
-            />
-            <StatCard
-              number="08"
-              name="Saved for Discussion"
-              bg1="#FFEDF0"
-              bg2="#FFE0E5"
-            />
-            <StatCard
-              number="12"
-              name="Recommendations"
-              bg1="#EBE9F8"
-              bg2="#E4DFF7"
             />
             <StatCard
               number="25"
@@ -226,8 +203,34 @@ const ProfileSection = () => {
               bg2="#FCDEDA"
             />
             <StatCard
+              number="04"
+              name="Viewed My Profile(s)"
+              bg1="#DAFBF2"
+              bg2="#AFFEE8"
+            />
+            <StatCard
+              number="08"
+              name="Total Searches"
+              bg1="#FFEDF0"
+              bg2="#FFE0E5"
+            />
+            <StatCard
+              number="10"
+              name="Shortlisted"
+              bg1="#DEF3C5"
+              bg2="#CEEFA7"
+            />
+
+            <StatCard
+              number="12"
+              name="Interested"
+              bg1="#EBE9F8"
+              bg2="#E4DFF7"
+            />
+
+            <StatCard
               number="25"
-              name="Favourites"
+              name="Connected"
               bg1="#FFECE9"
               bg2="#FCDEDA"
             />
@@ -238,29 +241,40 @@ const ProfileSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-4 sm:gap-6 lg:col-span-1">
           {profilesData?.length > 0 &&
             profilesData.map((profile: IProfile, index: number) => (
-              <Link href={`/profiles/${selectedProfileID}`} key={index}>
-                <div
-                  className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer"
-                  title={`${profile.name}, ${profile.age} years old`}
-                >
-                  {/* Image */}
-                  <Image
-                    src={profile.imageSrc}
-                    alt={profile.name}
-                    fill
-                    className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
-                    <p className="text-white font-semibold text-lg sm:text-xl">
-                      {profile.name}
-                    </p>
-                    <p className="text-gray-200 text-sm sm:text-base">
-                      {profile.age} Years old
-                    </p>
+              <React.Fragment key={selectedProfileID ?? index}>
+                <Link href="/createprofile">
+                  <div
+                    className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer"
+                    title={`${profile.name}, ${profile.age} years old`}
+                  >
+                    {/* Image */}
+                    <Image
+                      src={profile.imageSrc}
+                      alt={profile.name}
+                      fill
+                      className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
+                    />
+                    {/* Overlay */}
+                    <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
+                      <p className="text-white font-semibold text-lg sm:text-xl">
+                        {profile.name}
+                      </p>
+                      <p className="text-gray-200 text-sm sm:text-base">
+                        {profile.age} Years old
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+                <Button variant="outline">
+                  <Link
+                    href={`/profiles/${selectedProfileID}`}
+                    className="flex items-center gap-2"
+                  >
+                    <Eye size={20} />
+                    Preview My Profile
+                  </Link>
+                </Button>
+              </React.Fragment>
             ))}
         </div>
       </div>
@@ -270,7 +284,7 @@ const ProfileSection = () => {
         <h2 className="dmserif32600 mb-4 sm:mb-6 text-center text-xl sm:text-2xl lg:text-3xl">
           Frequently Asked Questions
         </h2>
-        <div className="max-w-7xl mx-auto">  
+        <div className="max-w-7xl mx-auto">
           <FaqSection items={faqData} />
         </div>
       </div>

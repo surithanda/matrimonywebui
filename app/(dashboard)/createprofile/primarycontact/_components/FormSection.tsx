@@ -12,11 +12,20 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { MoreVertical, Edit2, Trash2, CheckCircle, AlertCircle, MapPin } from "lucide-react";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  MapPin,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { FaPlus } from "react-icons/fa6";
+import { AddAddressModal } from "@/app/(dashboard)/profiles/_components/modals/AddAddressModal";
 
 interface IAddress {
   id: string;
@@ -67,8 +76,13 @@ const FormSection = () => {
   });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
-  const {loadStates, formatWithMetaData, findCountryName, findStateName} = useMetaDataLoader();
-  const {countryList} = useAppSelector((state) => state.metaData);
+  const { loadStates, formatWithMetaData, findCountryName, findStateName } =
+    useMetaDataLoader();
+  const { countryList } = useAppSelector((state) => state.metaData);
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+  });
 
   // Check if currentAddress has any meaningful data
   const hasUnsavedAddressData = () => {
@@ -103,7 +117,7 @@ const FormSection = () => {
     if (selectedProfileID && selectedProfileID !== 0) {
       // loadStates();
       // if (countryList) {
-        fetchProfileAddress();
+      fetchProfileAddress();
       // }
     }
   }, [selectedProfileID, loadStates, fetchProfileAddress]);
@@ -115,8 +129,8 @@ const FormSection = () => {
     };
 
     if (activeDropdown !== null) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [activeDropdown]);
 
@@ -138,7 +152,7 @@ const FormSection = () => {
     setEditIndex(null);
     setCurrentAddress({ ...defaultAddress });
   };
-  const handleAddOrUpdate = async() => {
+  const handleAddOrUpdate = async () => {
     if (
       !currentAddress.city &&
       !currentAddress.state &&
@@ -206,7 +220,7 @@ const FormSection = () => {
       append(updatedAddress);
     }
     setCurrentAddress({ ...defaultAddress });
-  }
+  };
 
   // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = async (data: IFormData) => {
@@ -258,43 +272,53 @@ const FormSection = () => {
       handleSubmit(onSubmit)();
     };
 
-    window.addEventListener('profile-continue', handleContinueEvent);
-    return () => window.removeEventListener('profile-continue', handleContinueEvent);
+    window.addEventListener("profile-continue", handleContinueEvent);
+    return () =>
+      window.removeEventListener("profile-continue", handleContinueEvent);
   }, [handleSubmit, onSubmit]);
 
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
+
   return (
-    <section className="px-2 md:px-0 md:py-2 w-full">
-      <form
-        className="w-full px-2"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+    <>
+      <section className="px-2 md:px-0 md:py-2 w-full">
         {/* Address List as Cards */}
         <div className="mb-6">
           {fields.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {fields.map((field, index) => (
-                <div 
-                  key={field.id} 
+                <div
+                  key={field.id}
                   className={`bg-white border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl ${
-                    editIndex === index 
-                      ? 'border-orange-500 border-2 shadow-orange-100 bg-orange-50/30' 
-                      : 'border-gray-200 hover:border-orange-300'
+                    editIndex === index
+                      ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                      : "border-gray-200 hover:border-orange-300"
                   }`}
                 >
                   {/* Three-dots menu */}
                   <div className="absolute top-4 right-4">
                     <button
                       type="button"
-                      onClick={() => setActiveDropdown(activeDropdown === index ? null : index)}
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === index ? null : index
+                        )
+                      }
                       className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
                     >
                       <MoreVertical className="w-5 h-5 text-gray-600" />
                     </button>
-                    
+
                     {/* Dropdown Menu */}
                     {activeDropdown === index && (
                       <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
-                        <button disabled
+                        <button
+                          disabled
                           type="button"
                           onClick={() => {
                             handleEdit(index);
@@ -305,7 +329,8 @@ const FormSection = () => {
                           <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
-                        <button disabled
+                        <button
+                          disabled
                           type="button"
                           onClick={() => {
                             handleDelete(index);
@@ -338,10 +363,12 @@ const FormSection = () => {
                           <span className="text-xs text-green-600 font-medium">Verified</span>
                         </>
                       ) : ( */}
-                        <>
-                          <AlertCircle className="w-4 h-4 text-amber-500" />
-                          <span className="text-xs text-amber-600 font-medium">Pending</span>
-                        </>
+                      <>
+                        <AlertCircle className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs text-amber-600 font-medium">
+                          Pending
+                        </span>
+                      </>
                       {/* )} */}
                     </div>
                   </div>
@@ -364,23 +391,30 @@ const FormSection = () => {
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">City:</span>
-                        <span className="text-sm text-gray-800 font-medium">{field.city || 'N/A'}</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.city || "N/A"}
+                        </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">State:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {findStateName(field.state_id ?? field.state ?? 0) || 'N/A'}
+                          {findStateName(field.state_id ?? field.state ?? 0) ||
+                            "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">Country:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {findCountryName(field.country_id ?? field.country ?? 0) || 'N/A'}
+                          {findCountryName(
+                            field.country_id ?? field.country ?? 0
+                          ) || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">ZIP:</span>
-                        <span className="text-sm text-gray-800 font-medium">{field.zip || 'N/A'}</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.zip || "N/A"}
+                        </span>
                       </div>
                     </div>
 
@@ -389,10 +423,14 @@ const FormSection = () => {
                       <div className="pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500 mb-1">Landmarks:</p>
                         {field.landmark1 && (
-                          <p className="text-sm text-gray-700">• {field.landmark1}</p>
+                          <p className="text-sm text-gray-700">
+                            • {field.landmark1}
+                          </p>
                         )}
                         {field.landmark2 && (
-                          <p className="text-sm text-gray-700">• {field.landmark2}</p>
+                          <p className="text-sm text-gray-700">
+                            • {field.landmark2}
+                          </p>
                         )}
                       </div>
                     )}
@@ -402,35 +440,54 @@ const FormSection = () => {
             </div>
           )}
 
+          <div className="flex justify-end items-center mb-3 mt-3">
+            <Button
+              onClick={() =>
+                setOpenModal((prev) => ({
+                  ...prev,
+                  add: true,
+                }))
+              }
+              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              Add Address
+            </Button>
+          </div>
+
           {/* Empty state */}
           {fields.length === 0 && (
-            <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-gray-300">
               <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No addresses added yet</h3>
-              <p className="text-gray-500">Add your first address using the form below</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No addresses added yet
+              </h3>
+              <p className="text-gray-500">
+                Add your first address using the form below
+              </p>
             </div>
           )}
         </div>
-
-        {/* Address Form */}
-        <div className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label>Country</Label>
-              <MetadataSelectComponent
-                type="country"
-                value={currentAddress.country}
-                onChange={(e) => {
-                  setCurrentAddress({
-                    ...currentAddress,
-                    country: Number(e.target.value),
-                  });
-                  loadStates(e.target.value);
-                }}
-                // dontUseID={true}
-                className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-              {/* <select
+        <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
+          {/* Address Form */}
+          <div className="">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label>Country</Label>
+                <MetadataSelectComponent
+                  type="country"
+                  value={currentAddress.country}
+                  onChange={(e) => {
+                    setCurrentAddress({
+                      ...currentAddress,
+                      country: Number(e.target.value),
+                    });
+                    loadStates(e.target.value);
+                  }}
+                  // dontUseID={true}
+                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+                {/* <select
                 value={currentAddress.country}
                 onChange={e => setCurrentAddress({ ...currentAddress, country: e.target.value })}
                 className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
@@ -440,152 +497,160 @@ const FormSection = () => {
                 <option value="India">India</option>
                 <option value="Other">Other</option>
               </select> */}
-            </div>
-            <div>
-              <Label>State</Label>
-              <MetadataSelectComponent
-                type="state"
-                value={currentAddress?.state}
-                onChange={(e) => {
-                  setCurrentAddress({
-                    ...currentAddress,
-                    state: Number(e.target.value),
-                  });
-                }}
-                className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-              {/* <input
+              </div>
+              <div>
+                <Label>State</Label>
+                <MetadataSelectComponent
+                  type="state"
+                  value={currentAddress?.state}
+                  onChange={(e) => {
+                    setCurrentAddress({
+                      ...currentAddress,
+                      state: Number(e.target.value),
+                    });
+                  }}
+                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+                {/* <input
                 type="text"
                 value={currentAddress.state}
                 onChange={e => setCurrentAddress({ ...currentAddress, state: e.target.value })}
                 placeholder="Enter state"
                 className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               /> */}
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label className="block text-gray-700 mb-2">City</Label>
-              <Input
-                type="text"
-                value={currentAddress.city}
-                onChange={(e) =>
-                  setCurrentAddress({ ...currentAddress, city: e.target.value })
-                }
-                placeholder="Enter city"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label className="block text-gray-700 mb-2">City</Label>
+                <Input
+                  type="text"
+                  value={currentAddress.city}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      city: e.target.value,
+                    })
+                  }
+                  placeholder="Enter city"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <Label>Zip Code</Label>
+                <Input
+                  type="text"
+                  value={currentAddress.zip}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      zip: e.target.value,
+                    })
+                  }
+                  placeholder="Enter zip code"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
             </div>
-            <div>
-              <Label>Zip Code</Label>
-              <Input
-                type="text"
-                value={currentAddress.zip}
-                onChange={(e) =>
-                  setCurrentAddress({ ...currentAddress, zip: e.target.value })
-                }
-                placeholder="Enter zip code"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label>Complete Address</Label>
+                <Input
+                  value={currentAddress.address_line1}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      address_line1: e.target.value,
+                    })
+                  }
+                  placeholder="Complete Address"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <Label className="block text-gray-700 mb-2">
+                  Address Line 2
+                </Label>
+                <input
+                  type="text"
+                  value={currentAddress.address_line2}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      address_line2: e.target.value,
+                    })
+                  }
+                  placeholder="Address Line 2"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label>Complete Address</Label>
-              <Input
-                value={currentAddress.address_line1}
-                onChange={(e) =>
-                  setCurrentAddress({
-                    ...currentAddress,
-                    address_line1: e.target.value,
-                  })
-                }
-                placeholder="Complete Address"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label className="block text-gray-700 mb-2">Landmark 1</Label>
+                <Input
+                  type="text"
+                  value={currentAddress.landmark1}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      landmark1: e.target.value,
+                    })
+                  }
+                  placeholder="Landmark 1"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <Label className="block text-gray-700 mb-2">Landmark 2</Label>
+                <Input
+                  type="text"
+                  value={currentAddress.landmark2}
+                  onChange={(e) =>
+                    setCurrentAddress({
+                      ...currentAddress,
+                      landmark2: e.target.value,
+                    })
+                  }
+                  placeholder="Landmark 2"
+                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
             </div>
-            <div>
-              <Label className="block text-gray-700 mb-2">Address Line 2</Label>
-              <input
-                type="text"
-                value={currentAddress.address_line2}
-                onChange={(e) =>
-                  setCurrentAddress({
-                    ...currentAddress,
-                    address_line2: e.target.value,
-                  })
-                }
-                placeholder="Address Line 2"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label className="block text-gray-700 mb-2">Landmark 1</Label>
-              <Input
-                type="text"
-                value={currentAddress.landmark1}
-                onChange={(e) =>
-                  setCurrentAddress({
-                    ...currentAddress,
-                    landmark1: e.target.value,
-                  })
-                }
-                placeholder="Landmark 1"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-            </div>
-            <div>
-              <Label className="block text-gray-700 mb-2">Landmark 2</Label>
-              <Input
-                type="text"
-                value={currentAddress.landmark2}
-                onChange={(e) =>
-                  setCurrentAddress({
-                    ...currentAddress,
-                    landmark2: e.target.value,
-                  })
-                }
-                placeholder="Landmark 2"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-end gap-3">
-            <Button
-              type="button"
-              className="gray-btn mt-[20px] hover:bg-gray-400"
-              onClick={handleAddOrUpdate}
-            >
-              {editIndex !== null ? "Update Address" : "Add Address"}
-            </Button>
-            
-            {/* Cancel button - only show when editing or when form has data */}
-            {(editIndex !== null || 
-              currentAddress.city || 
-              currentAddress.state || 
-              currentAddress.country || 
-              currentAddress.zip || 
-              currentAddress.address_line1 || 
-              currentAddress.address_line2 || 
-              currentAddress.landmark1 || 
-              currentAddress.landmark2
-            ) && (
+            <div className="w-full flex justify-end gap-3">
               <Button
                 type="button"
-                variant="outline"
-                className="mt-[20px] border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400"
-                onClick={handleCancelEdit}
+                className="gray-btn mt-[20px] hover:bg-gray-400"
+                onClick={handleAddOrUpdate}
               >
-                Cancel
+                {editIndex !== null ? "Update Address" : "Add Address"}
               </Button>
-            )}
+
+              {/* Cancel button - only show when editing or when form has data */}
+              {(editIndex !== null ||
+                currentAddress.city ||
+                currentAddress.state ||
+                currentAddress.country ||
+                currentAddress.zip ||
+                currentAddress.address_line1 ||
+                currentAddress.address_line2 ||
+                currentAddress.landmark1 ||
+                currentAddress.landmark2) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-[20px] border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        </form>
         {/* Buttons */}
-        <div className="flex justify-between mt-[100px]">
+        {/* <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
             <Button
               type="button"
@@ -606,44 +671,45 @@ const FormSection = () => {
           <Button type="submit" className="yellow-btn hover:bg-orange-600">
             Continue
           </Button>
-        </div>
-      </form>
+        </div> */}
 
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Save Address Changes?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              You have unsaved address information. Would you like to save this
-              address before continuing to the next step?
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleConfirmSaveAndContinue}
-                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
-              >
-                Save & Continue
-              </button>
-              <button
-                onClick={handleDiscardAndContinue}
-                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
-              >
-                Discard & Continue
-              </button>
-              <button
-                onClick={handleCancelConfirmation}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
-              >
-                Cancel
-              </button>
+        {/* Confirmation Modal */}
+        {showConfirmation && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Save Address Changes?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You have unsaved address information. Would you like to save
+                this address before continuing to the next step?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleConfirmSaveAndContinue}
+                  className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                >
+                  Save & Continue
+                </button>
+                <button
+                  onClick={handleDiscardAndContinue}
+                  className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                >
+                  Discard & Continue
+                </button>
+                <button
+                  onClick={handleCancelConfirmation}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+      <AddAddressModal open={openModal.add} onOpenChange={closeAddModal} />
+    </>
   );
 };
 

@@ -32,12 +32,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     
-      <div className="dashboard-background mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
+      <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
         <div className="flex justify-between items-center w-full mb-4">
           <h2 className="dmserif32600">Create Profile</h2>
           
           {/* Top Navigation Buttons */}
-          <div className="flex gap-3">
+          {/* <div className="flex gap-3">
             <Button
               type="button"
               onClick={handleContinue}
@@ -53,7 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               Skip
             </Button>
-          </div>
+          </div> */}
         </div>
         <div className="profile-details-box w-full text-left">
           <div className="">

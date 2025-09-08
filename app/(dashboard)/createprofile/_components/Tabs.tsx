@@ -55,7 +55,7 @@ export default function Tabs() {
                 return;
               }
               setActiveItem(item.id);
-              router.push(item.link); // 🔑 navigate to correct folder page
+              router.push(item.link); 
             }}
             className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium whitespace-nowrap transition-colors ${
               item.disabled

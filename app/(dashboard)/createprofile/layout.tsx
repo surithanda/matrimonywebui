@@ -56,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div> */}
         </div>
         <div className="profile-details-box w-full text-left">
-          <div className="">
+          <div>
             <Tabs />
             {/* <Sidebar /> */}
             {children}

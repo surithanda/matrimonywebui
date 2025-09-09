@@ -14,6 +14,8 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { FaPlus } from "react-icons/fa6";
+import { AddEducationModal } from "./education-modals/AddEducationModal";
 
 interface IEducation {
   id: string | number;
@@ -63,6 +65,10 @@ const FormSection = () => {
   const { loadStates, formatWithMetaData, findCountryName, findStateName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+  });
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -247,15 +253,32 @@ const FormSection = () => {
     router.push(nextRoute);
   };
 
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
+
   return (
-    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-      <form
-        className="w-full px-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
+    <>
+      <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+        <div className="mb-6">
+          <div className="flex justify-end items-center mb-3 mt-3">
+            <Button
+              onClick={() =>
+                setOpenModal((prev) => ({
+                  ...prev,
+                  add: true,
+                }))
+              }
+              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              Add Education
+            </Button>
+          </div>
+        </div>
         {/* Education List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
@@ -334,176 +357,155 @@ const FormSection = () => {
           )}
         </div>
 
-        {/* Education Form */}
-        <div className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="w-full">
-              <Label>Institution Name</Label>
-              <Input
-                type="text"
-                name="institution_name"
-                value={currentEducation.institution_name}
-                onChange={handleInputChange}
-                placeholder="Institution Name"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+        {/* <form
+          className="w-full px-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          <div className="">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="w-full">
+                <Label>Institution Name</Label>
+                <Input
+                  type="text"
+                  name="institution_name"
+                  value={currentEducation.institution_name}
+                  onChange={handleInputChange}
+                  placeholder="Institution Name"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+              <div className="w-full">
+                <Label>Year Completed</Label>
+                <Input
+                  type="number"
+                  name="year_completed"
+                  value={currentEducation.year_completed}
+                  onChange={handleInputChange}
+                  placeholder="Year of completion"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
             </div>
-            <div className="w-full">
-              <Label>Year Completed</Label>
-              <Input
-                type="number"
-                name="year_completed"
-                value={currentEducation.year_completed}
-                onChange={handleInputChange}
-                placeholder="Year of completion"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="w-full">
+                <Label>Address</Label>
+                <Input
+                  type="text"
+                  name="address_line1"
+                  value={currentEducation.address_line1}
+                  onChange={handleInputChange}
+                  placeholder="Institution Address"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+              <div className="w-full">
+                <Label>Field of Study</Label>
+                <MetadataSelectComponent
+                  type="field_of_study"
+                  value={currentEducation.field_of_study}
+                  onChange={handleInputChange}
+                  className="account-input-field w-full"
+                />
+              </div>
             </div>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label>Country</Label>
+                <MetadataSelectComponent
+                  type="country"
+                  value={currentEducation.country_id || ""}
+                  onChange={handleCountryChange}
+                  className="account-input-field w-full "
+                />
+              </div>
+              <div>
+                <Label>State</Label>
+                <MetadataSelectComponent
+                  type="state"
+                  value={currentEducation.state_id || ""}
+                  onChange={handleStateChange}
+                  className="account-input-field w-full "
+                />
+              </div>
 
-          {/* Address Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="w-full">
-              <Label>Address</Label>
-              <Input
-                type="text"
-                name="address_line1"
-                value={currentEducation.address_line1}
-                onChange={handleInputChange}
-                placeholder="Institution Address"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+              <div>
+                <Label>City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  value={currentEducation.city}
+                  onChange={handleInputChange}
+                  placeholder="City"
+                  className="account-input-field w-full"
+                />
+              </div>
+              <div>
+                <Label>Zipcode</Label>
+                <Input
+                  type="text"
+                  name="zip"
+                  value={currentEducation.zip}
+                  onChange={handleInputChange}
+                  placeholder="ZIP"
+                  className="account-input-field w-full"
+                />
+              </div>
             </div>
-
-            {/* field of study */}
-            <div className="w-full">
-              <Label>Field of Study</Label>
-              <MetadataSelectComponent
-                type="field_of_study"
-                value={currentEducation.field_of_study}
-                onChange={handleInputChange}
-                className="account-input-field w-full"
-              />
-            </div>
-          </div>
-
-          {/* City, State, Country, Zip */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label>Country</Label>
-              <MetadataSelectComponent
-                type="country"
-                value={currentEducation.country_id || ""}
-                onChange={handleCountryChange}
-                className="account-input-field w-full "
-              />
-            </div>
-            <div>
-              <Label>State</Label>
-              <MetadataSelectComponent
-                type="state"
-                value={currentEducation.state_id || ""}
-                onChange={handleStateChange}
-                className="account-input-field w-full "
-              />
-            </div>
-
-            <div>
-              <Label>City</Label>
-              <Input
-                type="text"
-                name="city"
-                value={currentEducation.city}
-                onChange={handleInputChange}
-                placeholder="City"
-                className="account-input-field w-full"
-              />
-            </div>
-            <div>
-              <Label>Zipcode</Label>
-              <Input
-                type="text"
-                name="zip"
-                value={currentEducation.zip}
-                onChange={handleInputChange}
-                placeholder="ZIP"
-                className="account-input-field w-full"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-end">
-            <Button
-              type="button"
-              className="gray-btn mt-[20px] hover:bg-gray-400"
-              onClick={handleAddOrUpdate}
-            >
-              {editIndex !== null ? "Update Education" : "Add Education"}
-            </Button>
-          </div>
-        </div>
-        {/* Buttons */}
-        <div className="flex justify-between mt-8">
-          <div className="flex justify-start gap-4">
-            <Button
-              type="button"
-              className="gray-btn hover:bg-gray-400"
-              onClick={() => {
-                setCurrentEducation({ ...defaultEducation });
-                setEditIndex(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={moveToNext}
-              className="gray-btn hover:bg-gray-400"
-            >
-              Skip
-            </Button>
-          </div>
-
-          <Button type="submit" className="yellow-btn hover:bg-orange-600">
-            Continue
-          </Button>
-        </div>
-      </form>
-
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Save Education Changes?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              You have unsaved education information. Would you like to save
-              this education record before continuing to the next step?
-            </p>
-            <div className="flex gap-3">
+            <div className="w-full flex justify-end">
               <Button
-                onClick={handleConfirmSaveAndContinue}
-                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                type="button"
+                className="gray-btn mt-[20px] hover:bg-gray-400"
+                onClick={handleAddOrUpdate}
               >
-                Save & Continue
-              </Button>
-              <Button
-                onClick={handleDiscardAndContinue}
-                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
-              >
-                Discard & Continue
-              </Button>
-              <Button
-                onClick={handleCancelConfirmation}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
-              >
-                Cancel
+                {editIndex !== null ? "Update Education" : "Add Education"}
               </Button>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+            <Button type="submit" className="yellow-btn hover:bg-orange-600">
+              Continue
+            </Button>
+        </form> */}
+
+        {/* Confirmation Modal */}
+        {showConfirmation && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Save Education Changes?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You have unsaved education information. Would you like to save
+                this education record before continuing to the next step?
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleConfirmSaveAndContinue}
+                  className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                >
+                  Save & Continue
+                </Button>
+                <Button
+                  onClick={handleDiscardAndContinue}
+                  className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                >
+                  Discard & Continue
+                </Button>
+                <Button
+                  onClick={handleCancelConfirmation}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+      <AddEducationModal open={openModal.add} onOpenChange={closeAddModal} />
+    </>
   );
 };
 

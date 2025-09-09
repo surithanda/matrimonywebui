@@ -14,6 +14,8 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { FaPlus } from "react-icons/fa6";
+import { AddEmploymentModal } from "./employment-modals/AddEmploymentModal";
 
 interface IEmployment {
   id: string | number;
@@ -61,6 +63,10 @@ const FormSection = () => {
   const { loadStates, findCountryName, findStateName, findJobTitleName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+    const [openModal, setOpenModal] = useState({
+      add: false,
+      edit: false,
+    });
 
   // Check if currentEmployment has any meaningful data
   const hasUnsavedEmploymentData = () => {
@@ -234,15 +240,32 @@ const FormSection = () => {
     setShowConfirmation(false);
   };
 
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
+
   return (
-    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-      <form
-        className="w-full px-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
+    <>
+      <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+        <div className="mb-6">
+          <div className="flex justify-end items-center mb-3 mt-3">
+            <Button
+              onClick={() =>
+                setOpenModal((prev) => ({
+                  ...prev,
+                  add: true,
+                }))
+              }
+              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              Add Employment
+            </Button>
+          </div>
+        </div>
         {/* Employment List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
@@ -324,199 +347,205 @@ const FormSection = () => {
             </table>
           )}
         </div>
+        
+        {/* <form
+          className="w-full px-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          <div className="">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="">
+                <Label>Company Name</Label>
+                <Input
+                  type="text"
+                  name="institution_name"
+                  value={currentEmployment.institution_name}
+                  onChange={handleInputChange}
+                  placeholder="Company Name"
+                  className="account-input-field stretch w-full"
+                />
+              </div>
+              <div className="">
+                <Label>Job Title</Label>
+                <MetadataSelectComponent
+                  type="job_title"
+                  value={currentEmployment.job_title_id}
+                  onChange={handleJobTitleChange}
+                  name="job_title_id"
+                  className="account-input-field w-full stretch"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
+              <div className="">
+                <Label>Start Year</Label>
+                <Input
+                  type="number"
+                  name="start_year"
+                  value={currentEmployment.start_year}
+                  onChange={handleInputChange}
+                  placeholder="Start Year"
+                  className="account-input-field stretch w-full"
+                />
+              </div>
+              <div className="">
+                <Label>End Year</Label>
+                <Input
+                  type="number"
+                  name="end_year"
+                  value={currentEmployment.end_year}
+                  onChange={handleInputChange}
+                  placeholder="End Year"
+                  className="account-input-field stretch w-full"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
+              <div className="">
+                <Label>Last Salary Drawn</Label>
+                <Input
+                  type="text"
+                  name="last_salary_drawn"
+                  value={currentEmployment.last_salary_drawn}
+                  onChange={handleInputChange}
+                  placeholder="Last Salary"
+                  className="account-input-field stretch w-full"
+                />
+              </div>
+              <div className="">
+                <Label>Address</Label>
+                <Input
+                  type="text"
+                  name="address_line1"
+                  value={currentEmployment.address_line1}
+                  onChange={handleInputChange}
+                  placeholder="Company Address"
+                  className="account-input-field stretch w-full"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label>Country</Label>
+                <MetadataSelectComponent
+                  type="country"
+                  name="country_id"
+                  value={currentEmployment.country_id || ""}
+                  onChange={handleInputChange}
+                  className="account-input-field w-full "
+                />
+              </div>
 
-        {/* Employment Form */}
-        <div className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="">
-              <Label>Company Name</Label>
-              <Input
-                type="text"
-                name="institution_name"
-                value={currentEmployment.institution_name}
-                onChange={handleInputChange}
-                placeholder="Company Name"
-                className="account-input-field stretch w-full"
-              />
-            </div>
-            <div className="">
-              <Label>Job Title</Label>
-              <MetadataSelectComponent
-                type="job_title"
-                value={currentEmployment.job_title_id}
-                onChange={handleJobTitleChange}
-                name="job_title_id"
-                className="account-input-field w-full stretch"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
-            <div className="">
-              <Label>Start Year</Label>
-              <Input
-                type="number"
-                name="start_year"
-                value={currentEmployment.start_year}
-                onChange={handleInputChange}
-                placeholder="Start Year"
-                className="account-input-field stretch w-full"
-              />
-            </div>
-            <div className="">
-              <Label>End Year</Label>
-              <Input
-                type="number"
-                name="end_year"
-                value={currentEmployment.end_year}
-                onChange={handleInputChange}
-                placeholder="End Year"
-                className="account-input-field stretch w-full"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
-            <div className="">
-              <Label>Last Salary Drawn</Label>
-              <Input
-                type="text"
-                name="last_salary_drawn"
-                value={currentEmployment.last_salary_drawn}
-                onChange={handleInputChange}
-                placeholder="Last Salary"
-                className="account-input-field stretch w-full"
-              />
-            </div>
-            <div className="">
-              <Label>Address</Label>
-              <Input
-                type="text"
-                name="address_line1"
-                value={currentEmployment.address_line1}
-                onChange={handleInputChange}
-                placeholder="Company Address"
-                className="account-input-field stretch w-full"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <Label>Country</Label>
-              <MetadataSelectComponent
-                type="country"
-                name="country_id"
-                value={currentEmployment.country_id || ""}
-                onChange={handleInputChange}
-                className="account-input-field w-full "
-              />
-            </div>
+              <div>
+                <Label>State</Label>
+                <MetadataSelectComponent
+                  type="state"
+                  name="state_id"
+                  value={currentEmployment.state_id || ""}
+                  onChange={handleInputChange}
+                  className="account-input-field w-full "
+                />
+              </div>
+              <div>
+                <Label>City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  value={currentEmployment.city}
+                  onChange={handleInputChange}
+                  placeholder="City"
+                  className="account-input-field w-full"
+                />
+              </div>
 
-            <div>
-              <Label>State</Label>
-              <MetadataSelectComponent
-                type="state"
-                name="state_id"
-                value={currentEmployment.state_id || ""}
-                onChange={handleInputChange}
-                className="account-input-field w-full "
-              />
+              <div>
+                <Label>Zipcode</Label>
+                <input
+                  type="text"
+                  name="zip"
+                  value={currentEmployment.zip}
+                  onChange={handleInputChange}
+                  placeholder="ZIP"
+                  className="account-input-field w-full"
+                />
+              </div>
             </div>
-            <div>
-              <Label>City</Label>
-              <Input
-                type="text"
-                name="city"
-                value={currentEmployment.city}
-                onChange={handleInputChange}
-                placeholder="City"
-                className="account-input-field w-full"
-              />
-            </div>
-
-            <div>
-              <Label>Zipcode</Label>
-              <input
-                type="text"
-                name="zip"
-                value={currentEmployment.zip}
-                onChange={handleInputChange}
-                placeholder="ZIP"
-                className="account-input-field w-full"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-end">
-            <Button
-              type="button"
-              className="gray-btn mt-[20px] hover:bg-gray-400"
-              onClick={handleAddOrUpdate}
-            >
-              {editIndex !== null ? "Update Employment" : "Add Employment"}
-            </Button>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-between mt-8">
-          <div className="flex justify-start gap-4">
-            <Button
-              type="button"
-              className="gray-btn hover:bg-gray-400"
-              onClick={() => {
-                setCurrentEmployment({ ...defaultEmployment });
-                setEditIndex(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="gray-btn hover:bg-gray-400"
-              onClick={() => router.push("/createprofile/hobbies")}
-            >
-              Skip
-            </Button>
-          </div>
-          <Button type="submit" className="yellow-btn hover:bg-orange-600">
-            Continue
-          </Button>
-        </div>
-      </form>
-
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Save Employment Changes?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              You have unsaved employment information. Would you like to save
-              this employment record before continuing to the next step?
-            </p>
-            <div className="flex gap-3">
+            <div className="w-full flex justify-end">
               <Button
-                onClick={handleConfirmSaveAndContinue}
-                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                type="button"
+                className="gray-btn mt-[20px] hover:bg-gray-400"
+                onClick={handleAddOrUpdate}
               >
-                Save & Continue
+                {editIndex !== null ? "Update Employment" : "Add Employment"}
               </Button>
+            </div>
+          </div>
+          <div className="flex justify-between mt-8">
+            <div className="flex justify-start gap-4">
               <Button
-                onClick={handleDiscardAndContinue}
-                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
-              >
-                Discard & Continue
-              </Button>
-              <Button
-                onClick={handleCancelConfirmation}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                type="button"
+                className="gray-btn hover:bg-gray-400"
+                onClick={() => {
+                  setCurrentEmployment({ ...defaultEmployment });
+                  setEditIndex(null);
+                }}
               >
                 Cancel
               </Button>
+              <Button
+                type="button"
+                className="gray-btn hover:bg-gray-400"
+                onClick={() => router.push("/createprofile/hobbies")}
+              >
+                Skip
+              </Button>
+            </div>
+            <Button type="submit" className="yellow-btn hover:bg-orange-600">
+              Continue
+            </Button>
+          </div>
+        </form> */}
+
+        {/* Confirmation Modal */}
+        {showConfirmation && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Save Employment Changes?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You have unsaved employment information. Would you like to save
+                this employment record before continuing to the next step?
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleConfirmSaveAndContinue}
+                  className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                >
+                  Save & Continue
+                </Button>
+                <Button
+                  onClick={handleDiscardAndContinue}
+                  className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                >
+                  Discard & Continue
+                </Button>
+                <Button
+                  onClick={handleCancelConfirmation}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+      <AddEmploymentModal open={openModal.add} onOpenChange={closeAddModal} />
+    </>
   );
 };
 

@@ -16,6 +16,8 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { FaPlus } from "react-icons/fa6";
+import { AddFamilyModal } from "./family-modals/AddFamilyModal";
 
 interface IFamilyMember {
   id: string;
@@ -88,6 +90,10 @@ const FormSection = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+  });
 
   // Check if currentFamilyMember has any meaningful data
   const hasUnsavedFamilyData = () => {
@@ -309,15 +315,32 @@ const FormSection = ({
     setShowConfirmation(false);
   };
 
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
+
   return (
-    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-      <form
-        className="w-full px-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
+    <>
+      <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+        <div className="mb-6">
+          <div className="flex justify-end items-center mb-3 mt-3">
+            <Button
+              onClick={() =>
+                setOpenModal((prev) => ({
+                  ...prev,
+                  add: true,
+                }))
+              }
+              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+            >
+              <FaPlus />
+              Add Family
+            </Button>
+          </div>
+        </div>
         {/* Loading/Error States */}
         {(loading || familyLoading) && (
           <div className="mb-2 text-blue-600">Loading...</div>
@@ -388,182 +411,192 @@ const FormSection = ({
             </table>
           )}
         </div>
-        {/* Family Member Form */}
-        <div className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="">
-              <Label className="block text-gray-700 mb-2">First Name</Label>
-              <Input
-                type="text"
-                name="firstname"
-                value={currentFamilyMember.firstname}
-                onChange={handleInputChange}
-                placeholder="First Name"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
+        <form
+          className="w-full px-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          {/* Family Member Form */}
+          <div className="">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="">
+                <Label className="block text-gray-700 mb-2">First Name</Label>
+                <Input
+                  type="text"
+                  name="firstname"
+                  value={currentFamilyMember.firstname}
+                  onChange={handleInputChange}
+                  placeholder="First Name"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">Last Name</Label>
+                <Input
+                  type="text"
+                  name="lastname"
+                  value={currentFamilyMember.lastname}
+                  onChange={handleInputChange}
+                  placeholder="Last Name"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
             </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Last Name</Label>
-              <Input
-                type="text"
-                name="lastname"
-                value={currentFamilyMember.lastname}
-                onChange={handleInputChange}
-                placeholder="Last Name"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="">
+                <Label className="block text-gray-700 mb-2">
+                  Date of Birth
+                </Label>
+                <Input
+                  type="date"
+                  name="dob"
+                  value={currentFamilyMember.dob}
+                  onChange={handleInputChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">
+                  Contact Number
+                </Label>
+                <CustomPhoneComponent
+                  type="contactnumber"
+                  changeHandler={handleInputChange}
+                  bindValue={currentFamilyMember.contactnumber}
+                  bindValue2={currentFamilyMember.contactnumber_country}
+                  placeholder="Contact Number"
+                  disabled={loading}
+                />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Date of Birth</Label>
-              <Input
-                type="date"
-                name="dob"
-                value={currentFamilyMember.dob}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="">
+                <Label className="block text-gray-700 mb-2">Email</Label>
+                <Input
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  value={currentFamilyMember.email}
+                  onChange={handleInputChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">
+                  Relationship to you
+                </Label>
+                <MetadataSelectComponent
+                  type={category}
+                  name="relationshiptoyou"
+                  value={currentFamilyMember.relationshiptoyou}
+                  onChange={handleInputChange}
+                  disabled={loading}
+                />
+              </div>
             </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Contact Number</Label>
-              <CustomPhoneComponent
-                type="contactnumber"
-                changeHandler={handleInputChange}
-                bindValue={currentFamilyMember.contactnumber}
-                bindValue2={currentFamilyMember.contactnumber_country}
-                placeholder="Contact Number"
-                disabled={loading}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="w-full md:mb-4">
+                <Label className="block text-gray-700 mb-2">Address</Label>
+                <Input
+                  type="text"
+                  name="address_line"
+                  value={currentFamilyMember.address_line}
+                  onChange={handleInputChange}
+                  placeholder="Address Line"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Email</Label>
-              <Input
-                type="text"
-                name="email"
-                placeholder="Email"
-                value={currentFamilyMember.email}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="">
+                <Label className="block text-gray-700 mb-2">Country</Label>
+                <MetadataSelectComponent
+                  type="country"
+                  name="country_id"
+                  value={currentFamilyMember.country_id}
+                  onChange={handleInputChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">State</Label>
+                <MetadataSelectComponent
+                  type="state"
+                  name="state_id"
+                  value={currentFamilyMember.state_id}
+                  onChange={handleInputChange}
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">Zip</Label>
+                <Input
+                  type="text"
+                  name="zip"
+                  value={currentFamilyMember.zip}
+                  onChange={handleInputChange}
+                  placeholder="Zip Code"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  value={currentFamilyMember.city}
+                  onChange={handleInputChange}
+                  placeholder="City"
+                  className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  disabled={loading}
+                />
+              </div>
             </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">
-                Relationship to you
-              </Label>
-              <MetadataSelectComponent
-                type={category}
-                name="relationshiptoyou"
-                value={currentFamilyMember.relationshiptoyou}
-                onChange={handleInputChange}
-                disabled={loading}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="w-full md:mb-4">
-              <Label className="block text-gray-700 mb-2">Address</Label>
-              <Input
-                type="text"
-                name="address_line"
-                value={currentFamilyMember.address_line}
-                onChange={handleInputChange}
-                placeholder="Address Line"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Country</Label>
-              <MetadataSelectComponent
-                type="country"
-                name="country_id"
-                value={currentFamilyMember.country_id}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
-            </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">State</Label>
-              <MetadataSelectComponent
-                type="state"
-                name="state_id"
-                value={currentFamilyMember.state_id}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
-            </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Zip</Label>
-              <Input
-                type="text"
-                name="zip"
-                value={currentFamilyMember.zip}
-                onChange={handleInputChange}
-                placeholder="Zip Code"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
-            </div>
-            <div className="">
-              <Label className="block text-gray-700 mb-2">City</Label>
-              <Input
-                type="text"
-                name="city"
-                value={currentFamilyMember.city}
-                onChange={handleInputChange}
-                placeholder="City"
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-                disabled={loading}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
-          <div className="w-full flex justify-end">
-            <Button
-              type="button"
-              className="gray-btn mt-[20px] hover:bg-gray-400"
-              onClick={handleAddOrUpdate}
-              disabled={loading}
-            >
-              {editIndex !== null ? "Update" : "Add"} {actionButton_label}
-            </Button>
-          </div>
-        </div>
-        {/* Buttons */}
-        <div className="flex justify-between mt-[100px]">
-          <div className="flex justify-start gap-4">
-          
-            <Button
-              type="button"
-              className="gray-btn hover:bg-gray-400"
-              onClick={() => {
-                setCurrentFamilyMember({ ...defaultFamilyMember });
-                setEditIndex(null);
-              }}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
+            <div className="w-full flex justify-end">
               <Button
-            type="button"
-            className="gray-btn hover:bg-gray-400"
-            onClick={() => router.push("/createprofile/references")}
-          >
-            Skip
-          </Button>
+                type="button"
+                className="gray-btn mt-[20px] hover:bg-gray-400"
+                onClick={handleAddOrUpdate}
+                disabled={loading}
+              >
+                {editIndex !== null ? "Update" : "Add"} {actionButton_label}
+              </Button>
+            </div>
           </div>
-        
+          {/* Buttons */}
+          <div className="flex justify-between mt-[100px]">
+            <div className="flex justify-start gap-4">
+              <Button
+                type="button"
+                className="gray-btn hover:bg-gray-400"
+                onClick={() => {
+                  setCurrentFamilyMember({ ...defaultFamilyMember });
+                  setEditIndex(null);
+                }}
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                className="gray-btn hover:bg-gray-400"
+                onClick={() => router.push("/createprofile/references")}
+              >
+                Skip
+              </Button>
+            </div>
+
             <Button
               type="submit"
               className="yellow-btn hover:bg-orange-600"
@@ -571,45 +604,47 @@ const FormSection = ({
             >
               Continue
             </Button>
-        </div>
-      </form>
+          </div>
+        </form>
 
-      {/* Confirmation Modal */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Save {actionButton_label} Changes?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              You have unsaved {actionButton_label.toLowerCase()} information.
-              Would you like to save this family member before continuing to the
-              next step?
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleConfirmSaveAndContinue}
-                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
-              >
-                Save & Continue
-              </button>
-              <button
-                onClick={handleDiscardAndContinue}
-                className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
-              >
-                Discard & Continue
-              </button>
-              <button
-                onClick={handleCancelConfirmation}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
-              >
-                Cancel
-              </button>
+        {/* Confirmation Modal */}
+        {showConfirmation && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Save {actionButton_label} Changes?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You have unsaved {actionButton_label.toLowerCase()} information.
+                Would you like to save this family member before continuing to
+                the next step?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleConfirmSaveAndContinue}
+                  className="flex-1 bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors"
+                >
+                  Save & Continue
+                </button>
+                <button
+                  onClick={handleDiscardAndContinue}
+                  className="flex-1 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                >
+                  Discard & Continue
+                </button>
+                <button
+                  onClick={handleCancelConfirmation}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+      <AddFamilyModal open={openModal.add} onOpenChange={closeAddModal} />
+    </>
   );
 };
 

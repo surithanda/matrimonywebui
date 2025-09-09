@@ -237,325 +237,355 @@ const Page = () => {
 
   return (
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-      <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
-        {/* Personal Details */}
-        <div className="border border-gray-100  bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Personal Details
-          </h3>
-          <div className="px-4 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              {/* First Name */}
-              <div className="">
-                <Label>
-                  First Name <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="text"
-                  {...register("first_name", {
-                    required: "First name is required",
-                  })}
-                  placeholder="First Name"
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.first_name ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("first_name")}
+      <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {/* Personal Details */}
+          <div className="border border-gray-100  bg-gray-100 rounded-lg shadow mb-4">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Personal Details
+            </h3>
+            <div className="px-4 py-4 m-1 bg-white rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+                {/* First Name */}
+                <div className="">
+                  <Label>
+                    First Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="text"
+                    {...register("first_name", {
+                      required: "First name is required",
+                    })}
+                    placeholder="First Name"
+                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                      errors.first_name ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("first_name")}
+                </div>
+                {/* Middle Name */}
+                <div className="">
+                  <Label>Middle Name</Label>
+                  <Input
+                    type="text"
+                    {...register("middle_name")}
+                    placeholder="Middle Name"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
+                {/* Last Name */}
+                <div className="">
+                  <Label>
+                    Last Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="text"
+                    {...register("last_name", {
+                      required: "Last name is required",
+                    })}
+                    placeholder="Last Name"
+                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                      errors.last_name ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("last_name")}
+                </div>
               </div>
-              {/* Middle Name */}
-              <div className="">
-                <Label>Middle Name</Label>
-                <Input
-                  type="text"
-                  {...register("middle_name")}
-                  placeholder="Middle Name"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-              {/* Last Name */}
-              <div className="">
-                <Label>
-                  Last Name <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="text"
-                  {...register("last_name", {
-                    required: "Last name is required",
-                  })}
-                  placeholder="Last Name"
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.last_name ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("last_name")}
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {/* Prefix */}
-                <div className="w-1/2">
+                <div className="w-full">
                   <Label>Prefix</Label>
                   <Input
                     type="text"
                     {...register("prefix")}
                     placeholder="Mr, Ms, Dr, etc."
-                    className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
-                {/* Suffix */}
-                <div className="w-1/2">
-                  <Label>Suffix</Label>
+
+                {/* Gender & Birth Date */}
+                <div className="">
+                  <Label>
+                    Gender <span className="text-red-500">*</span>
+                  </Label>
+                  <MetadataSelectComponent
+                    type="gender"
+                    {...register("gender", { required: "Gender is required" })}
+                    value={watch("gender")}
+                    className={`flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] ${
+                      errors.gender ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("gender")}
+                </div>
+                <div className="">
+                  <Label>
+                    Birth Date <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="date"
+                    {...register("birth_date", {
+                      required: "Birth date is required",
+                    })}
+                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                      errors.birth_date ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("birth_date")}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Details */}
+          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-4">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Contact Details
+            </h3>
+            <div className="px-4 py-4 m-1 bg-white rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                {/* Primary Phone */}
+                <div className="">
+                  <Label>
+                    Primary Phone <span className="text-red-500">*</span>
+                  </Label>
+                  <CustomPhoneComponent
+                    type="phone_mobile"
+                    callingCodeBinding={{
+                      ...register("phone_mobile_country", {
+                        required: "Primary country code is required",
+                      }),
+                    }}
+                    {...register("phone_mobile", {
+                      required: "Primary phone is required",
+                    })}
+                    placeholder="Primary Phone"
+                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                      errors.phone_mobile ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("phone_mobile")}
+                </div>
+                {/* Home Phone */}
+                <div className="">
+                  <Label>Home Phone</Label>
                   <Input
                     type="text"
-                    {...register("suffix")}
-                    placeholder="Jr, Sr, III, etc."
-                    className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    {...register("phone_home")}
+                    placeholder="Home Phone"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
-              </div>
-
-              {/* Gender & Birth Date */}
-              <div className="">
-                <Label>
-                  Gender <span className="text-red-500">*</span>
-                </Label>
-                <MetadataSelectComponent
-                  type="gender"
-                  {...register("gender", { required: "Gender is required" })}
-                  value={watch("gender")}
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.gender ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("gender")}
-              </div>
-              <div className="">
-                <Label>
-                  Birth Date <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="date"
-                  {...register("birth_date", {
-                    required: "Birth date is required",
-                  })}
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.birth_date ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("birth_date")}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Details */}
-        <div className="border border-gray-100 bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Contact Details
-          </h3>
-          <div className="px-4 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {/* Primary Phone */}
-              <div className="">
-                <Label>
-                  Primary Phone <span className="text-red-500">*</span>
-                </Label>
-                <CustomPhoneComponent
-                  type="phone_mobile"
-                  callingCodeBinding={{
-                    ...register("phone_mobile_country", {
-                      required: "Primary country code is required",
-                    }),
-                  }}
-                  {...register("phone_mobile", {
-                    required: "Primary phone is required",
-                  })}
-                  placeholder="Primary Phone"
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.phone_mobile ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("phone_mobile")}
-              </div>
-              {/* Home Phone */}
-              <div className="">
-                <Label>Home Phone</Label>
-                <Input
-                  type="text"
-                  {...register("phone_home")}
-                  placeholder="Home Phone"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-              {/* Emergency Phone */}
-              <div className="">
-                <Label>Emergency Phone</Label>
-                <Input
-                  type="text"
-                  {...register("phone_emergency")}
-                  placeholder="Emergency Phone"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-              {/* Email */}
-              <div className="">
-                <Label>
-                  Email <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="email"
-                  {...register("email_id", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: "Invalid email format",
-                    },
-                  })}
-                  placeholder="Email"
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.email_id ? "border-red-500" : ""
-                  }`}
-                />
-                {getFieldError("email_id")}
+                {/* Emergency Phone */}
+                <div className="">
+                  <Label>Emergency Phone</Label>
+                  <Input
+                    type="text"
+                    {...register("phone_emergency")}
+                    placeholder="Emergency Phone"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
+                {/* Email */}
+                <div className="">
+                  <Label>
+                    Email <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="email"
+                    {...register("email_id", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: "Invalid email format",
+                      },
+                    })}
+                    placeholder="Email"
+                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                      errors.email_id ? "border-red-500" : ""
+                    }`}
+                  />
+                  {getFieldError("email_id")}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Demographics */}
-        <div className="border border-gray-100 bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Demographics
-          </h3>
-          <div className="px-4 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {/* Nationality */}
-              <div className="">
-                <Label>
-                  Nationality <span className="text-red-500">*</span>
-                </Label>
-                <MetadataSelectComponent
-                  type="nationality"
-                  value={watch("nationality")}
-                  {...register("nationality", {
-                    required: "Nationality is required",
-                  })}
-                  className={`account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500 ${
-                    errors.nationality ? "border-red-500" : ""
-                  }`}
-                />
-                {/* <option value="">Select Nationality</option>
+          {/* Demographics */}
+          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-4">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Demographics
+            </h3>
+            <div className="px-4 py-4 m-1 bg-white rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                {/* Nationality */}
+                <div className="">
+                  <Label>
+                    Nationality <span className="text-red-500">*</span>
+                  </Label>
+                  <MetadataSelectComponent
+                    type="nationality"
+                    value={watch("nationality")}
+                    {...register("nationality", {
+                      required: "Nationality is required",
+                    })}
+                    className={` flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] ${
+                      errors.nationality ? "border-red-500" : ""
+                    }`}
+                  />
+                  {/* <option value="">Select Nationality</option>
               {nationalityOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option.label}
                 </option>
               ))}
             </select> */}
-                {getFieldError("nationality")}
-              </div>
-              {/* Religion */}
-              <div className="">
-                <Label>Religion</Label>
-                <MetadataSelectComponent
-                  type="religion"
-                  {...register("religion")}
-                  value={watch("religion")}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-                {/* <option value="">Select Religion</option>
+                  {getFieldError("nationality")}
+                </div>
+                {/* Religion */}
+                <div className="">
+                  <Label>Religion</Label>
+                  <MetadataSelectComponent
+                    type="religion"
+                    {...register("religion")}
+                    value={watch("religion")}
+                    className=" flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                  />
+                  {/* <option value="">Select Religion</option>
               {religionOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select> */}
-              </div>
-              {/* Marital Status */}
-              <div className="">
-                <Label>Marital Status</Label>
-                <MetadataSelectComponent
-                  type="marital_status"
-                  {...register("marital_status")}
-                  value={watch("marital_status")}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-                {/* <option value="">Select Marital Status</option>
+                </div>
+                {/* Marital Status */}
+                <div className="">
+                  <Label>Marital Status</Label>
+                  <MetadataSelectComponent
+                    type="marital_status"
+                    {...register("marital_status")}
+                    value={watch("marital_status")}
+                    className=" flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                  />
+                  {/* <option value="">Select Marital Status</option>
               {maritalStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select> */}
-              </div>
-              {/* Caste */}
-              <div className="">
-                <Label>Caste</Label>
-                <MetadataSelectComponent
-                  type="caste"
-                  {...register("caste")}
-                  value={watch("caste")}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-                {/* <option value="">Select Caste</option>
+                </div>
+                {/* Caste */}
+                <div className="">
+                  <Label>Caste</Label>
+                  <MetadataSelectComponent
+                    type="caste"
+                    {...register("caste")}
+                    value={watch("caste")}
+                    className=" flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                  />
+                  {/* <option value="">Select Caste</option>
               {casteOptions.map((option) => (
                 <option key={option?.value} value={option?.value}>
                   {option?.label}
                 </option>
               ))}
             </select> */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Physical Attributes */}
-        <div className="border border-gray-100 bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Physical Attributes
-          </h3>
-          <div className="px-4 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {/* Height */}
-              <div className="">
-                <Label>Height (inches)</Label>
-                <Input
-                  type="text"
-                  {...register("height")}
-                  placeholder="Height in inches"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
+          {/* Physical Attributes */}
+          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Physical Attributes
+            </h3>
+            <div className="px-4 py-5 m-1 bg-white rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                {/* Height */}
+                <div className="">
+                  <Label>Height (inches)</Label>
+                  <Input
+                    type="text"
+                    {...register("height")}
+                    placeholder="Height in inches"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
+                {/* Weight */}
+                <div className=" flex flex-col">
+                  <Label>Weight</Label>
+                  <div className="flex gap-2">
+                    {/* Select for weight units */}
+                    <Controller
+                      name="weight_units"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className=" w-32 focus:outline-none focus:border-b focus:border-orange-500">
+                            <SelectValue placeholder="Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {weightUnitsOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+
+                    {/* Input for weight value */}
+                    <Input
+                      type="text"
+                      {...register("weight")}
+                      placeholder="Weight"
+                      className=" flex-1 focus:outline-none focus:border-b focus:border-orange-500"
+                    />
+                  </div>
+                </div>
               </div>
-              {/* Weight */}
-              <div className=" flex flex-col">
-                <Label>Weight</Label>
-                <div className="flex gap-2">
-                  {/* Select for weight units */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                <div className="">
+                  <Label>Complexion</Label>
                   <Controller
-                    name="weight_units"
+                    name="complexion"
                     control={control}
                     render={({ field }) => (
                       <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={(val) => field.onChange(val)}
                       >
-                        <SelectTrigger className="account-input-field w-32 focus:outline-none focus:border-b focus:border-orange-500">
-                          <SelectValue placeholder="Unit" />
+                        <SelectTrigger className=" w-full focus:outline-none focus:border-b focus:border-orange-500">
+                          <SelectValue placeholder="Select Complexion" />
                         </SelectTrigger>
                         <SelectContent>
-                          {weightUnitsOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
+                          {complexionOptions.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={String(option.value)}
+                            >
                               {option.label}
                             </SelectItem>
                           ))}
@@ -563,198 +593,134 @@ const Page = () => {
                       </Select>
                     )}
                   />
-
-                  {/* Input for weight value */}
-                  <Input
-                    type="text"
-                    {...register("weight")}
-                    placeholder="Weight"
-                    className="account-input-field flex-1 focus:outline-none focus:border-b focus:border-orange-500"
-                  />
                 </div>
-              </div>
-              {/* Weight Units */}
-              {/* <div className="">
-            <Label>Weight Units</Label>
-            <select
-              {...register("weight_units")}
-              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-            >
-              {weightUnitsOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div> */}
-              {/* Complexion */}
-              {/* <div className="">
-            <label>Complexion</label>
-            <select
-              {...register("complexion")}
-              className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-            >
-              <option value="">Select Complexion</option>
-              {complexionOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div> */}
-              <div className="">
-                <label>Complexion</label>
-                <Controller
-                  name="complexion"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ? String(field.value) : ""}
-                      onValueChange={(val) => field.onChange(val)}
-                    >
-                      <SelectTrigger className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500">
-                        <SelectValue placeholder="Select Complexion" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {complexionOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={String(option.value)}
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-              {/* Disability */}
-              <div className="">
-                <Label>Disability</Label>
-                <MetadataSelectComponent
-                  type="disability"
-                  {...register("disability")}
-                  value={watch("disability")}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-                {/* {disabilityOptions.map((option) => (
+                {/* Disability */}
+                <div className="">
+                  <Label>Disability</Label>
+                  <MetadataSelectComponent
+                    type="disability"
+                    {...register("disability")}
+                    value={watch("disability")}
+                    className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                  />
+                  {/* {disabilityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select> */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Professional & Social Details */}
-        <div className="border border-gray-100 bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Professional & Social Details
-          </h3>
+          {/* Professional & Social Details */}
+          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Professional & Social Details
+            </h3>
 
-          <div className="px-4 py-4">
-            {/* Profession */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <div className="">
-                <Label>Profession</Label>
-                <Controller
-                  name="profession"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ? String(field.value) : ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500">
-                        <SelectValue placeholder="Select Profession" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {professionOptions.map((option) => (
-                          <SelectItem
-                            key={option.value}
-                            value={String(option.value)}
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
+            <div className="px-4 py-2 m-1 bg-white rounded-md">
+              {/* Profession */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5 mt-1">
+                <div className="">
+                  <Label>Profession</Label>
+                  <Controller
+                    name="profession"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]">
+                          <SelectValue placeholder="Select Profession" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {professionOptions.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={String(option.value)}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                {/* WhatsApp Number */}
+                <div className="">
+                  <Label>WhatsApp Number</Label>
+                  <Input
+                    type="text"
+                    {...register("whatsapp_number")}
+                    placeholder="WhatsApp Number"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
               </div>
-              {/* WhatsApp Number */}
-              <div className="">
-                <Label>WhatsApp Number</Label>
-                <Input
-                  type="text"
-                  {...register("whatsapp_number")}
-                  placeholder="WhatsApp Number"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
-              {/* LinkedIn */}
-              <div className="">
-                <Label>LinkedIn</Label>
-                <Input
-                  type="text"
-                  {...register("linkedin")}
-                  placeholder="LinkedIn URL"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+                {/* LinkedIn */}
+                <div className="">
+                  <Label>LinkedIn</Label>
+                  <Input
+                    type="text"
+                    {...register("linkedin")}
+                    placeholder="LinkedIn URL"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
+                {/* Facebook */}
+                <div className="">
+                  <Label>Facebook</Label>
+                  <Input
+                    type="text"
+                    {...register("facebook")}
+                    placeholder="Facebook URL"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
+                {/* Instagram */}
+                <div className="w-full md:mb-4">
+                  <Label>Instagram</Label>
+                  <Input
+                    type="text"
+                    {...register("instagram")}
+                    placeholder="Instagram URL"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                </div>
               </div>
-              {/* Facebook */}
-              <div className="">
-                <Label>Facebook</Label>
-                <Input
-                  type="text"
-                  {...register("facebook")}
-                  placeholder="Facebook URL"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-              {/* Instagram */}
-              <div className="w-full md:mb-4">
-                <Label>Instagram</Label>
-                <Input
-                  type="text"
-                  {...register("instagram")}
-                  placeholder="Instagram URL"
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Summary */}
-        <div className="border border-gray-100 bg-gray-50/20 rounded shadow mb-4">
-          <h3
-            className="text-lg font-semibold bg-gray-100 px-4 py-4"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Summary
-          </h3>
-          <div className="px-4 py-4">
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            <div className="w-full md:mb-4">
-              <Label>Brief summary about you</Label>
-              <textarea
-                {...register("summary")}
-                placeholder="A success story, achievement, or any additional info"
-                className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
-                rows={3}
-              />
             </div>
           </div>
+
+          {/* Summary */}
+          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+            <h3
+              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Summary
+            </h3>
+            <div className="px-4 pt-4 pb-6 m-1 bg-white rounded-md">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="w-full md:mb-4">
+                  <Label>Brief summary about you</Label>
+                  <textarea
+                    {...register("summary")}
+                    placeholder="A success story, achievement, or any additional info"
+                    className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                    rows={4}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

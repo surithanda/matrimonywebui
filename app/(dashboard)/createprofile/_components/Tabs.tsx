@@ -5,15 +5,69 @@ import React, { useEffect, useState } from "react";
 
 const menuItems = [
   { id: "personal", label: "Personal", icon: "👤", link: "/createprofile" },
-  { id: "contact", label: "Address", icon: "📍", link: "/createprofile/primarycontact", disabled: true },
-  { id: "education", label: "Education", icon: "🎓", link: "/createprofile/education", disabled: true },
-  { id: "employment", label: "Employment", icon: "💼", link: "/createprofile/employment", disabled: true },
-  { id: "family", label: "Family", icon: "👨‍👩‍👧‍👦", link: "/createprofile/family", disabled: true },
-  { id: "references", label: "Friends & References", icon: "🧘", link: "/createprofile/references", disabled: true },
-  { id: "hobbies", label: "Hobbies", icon: "🎯", link: "/createprofile/hobbies", disabled: true },
-  { id: "lifestyle", label: "Lifestyle", icon: "🌟", link: "/createprofile/lifestyle", disabled: true },
-  { id: "properties", label: "Properties", icon: "🏘️", link: "/createprofile/property", disabled: true },
-  { id: "photos", label: "Photos", icon: "📸", link: "/createprofile/photos", disabled: true },
+  {
+    id: "contact",
+    label: "Address",
+    icon: "📍",
+    link: "/createprofile/primarycontact",
+    disabled: true,
+  },
+  {
+    id: "education",
+    label: "Education",
+    icon: "🎓",
+    link: "/createprofile/education",
+    disabled: true,
+  },
+  {
+    id: "employment",
+    label: "Employment",
+    icon: "💼",
+    link: "/createprofile/employment",
+    disabled: true,
+  },
+  {
+    id: "family",
+    label: "Family",
+    icon: "👨‍👩‍👧‍👦",
+    link: "/createprofile/family",
+    disabled: true,
+  },
+  {
+    id: "references",
+    label: "Friends & References",
+    icon: "🧘",
+    link: "/createprofile/references",
+    disabled: true,
+  },
+  {
+    id: "hobbies",
+    label: "Hobbies",
+    icon: "🎯",
+    link: "/createprofile/hobbies",
+    disabled: true,
+  },
+  {
+    id: "lifestyle",
+    label: "Lifestyle",
+    icon: "🌟",
+    link: "/createprofile/lifestyle",
+    disabled: true,
+  },
+  {
+    id: "properties",
+    label: "Properties",
+    icon: "🏘️",
+    link: "/createprofile/property",
+    disabled: true,
+  },
+  {
+    id: "photos",
+    label: "Photos",
+    icon: "📸",
+    link: "/createprofile/photos",
+    disabled: true,
+  },
 ];
 
 export default function Tabs() {
@@ -45,33 +99,58 @@ export default function Tabs() {
 
   return (
     <div>
-      <div className="flex border-b border-gray-200 overflow-x-auto">
-        {menu.map((item) => (
-          <button
-            key={item.id}
-            onClick={(e) => {
-              if (item.disabled) {
-                e.preventDefault();
-                return;
-              }
-              setActiveItem(item.id);
-              router.push(item.link); 
-            }}
-            className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-medium whitespace-nowrap transition-colors ${
-              item.disabled
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:text-gray-800"
-            } ${
-              activeItem === item.id
-                ? "border-b-2 border-orange-500 text-orange-600"
-                : "text-gray-600"
-            }`}
-            disabled={item.disabled}
-          >
-            <span className="text-lg">{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+      <div className="flex border border-gray-200 overflow-x-auto p-0 rounded-lg">
+        {menu.map((item, index) => {
+          // Step is completed if it comes before the active step
+          const isCompleted =
+            menu.findIndex((m) => m.id === activeItem) > index;
+
+          return (
+            <button
+              key={item.id}
+              onClick={(e) => {
+                if (item.disabled) {
+                  e.preventDefault();
+                  return;
+                }
+                setActiveItem(item.id);
+                router.push(item.link);
+              }}
+              className={`flex items-center gap-3 px-4 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-center 
+    ${
+      item.disabled ? "cursor-not-allowed text-gray-400" : "hover:text-gray-800"
+    }
+    ${
+      activeItem === item.id
+        ? "border-b-2 border-orange-500 text-orange-600 bg-gradient-to-t from-orange-100 to-white shadow-2xl"
+        : "text-gray-600"
+    }
+  `}
+              disabled={item.disabled}
+            >
+              {/* Checkbox Circle */}
+              <span
+                className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
+                  activeItem === item.id
+                    ? "border-orange-500 bg-orange-500 text-white"
+                    : isCompleted
+                    ? "border-orange-500 text-orange-500"
+                    : "border-gray-400 text-gray-400"
+                }`}
+              >
+                {activeItem === item.id || isCompleted ? "✔" : ""}
+              </span>
+
+              <div className="flex items-center gap-2">
+                {/* Icon */}
+                <span className="text-lg">{item.icon}</span>
+
+                {/* Label */}
+                <span>{item.label}</span>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

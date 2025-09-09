@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { AddAddressModal } from "@/app/(dashboard)/profiles/_components/modals/AddAddressModal";
+import { AddAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddAddressModal";
 
 interface IAddress {
   id: string;
@@ -467,8 +467,8 @@ const FormSection = () => {
             </div>
           )}
         </div>
-        <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
           {/* Address Form */}
+        {/* <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
@@ -483,19 +483,9 @@ const FormSection = () => {
                     });
                     loadStates(e.target.value);
                   }}
-                  // dontUseID={true}
+                  dontUseID={true}
                   className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
-                {/* <select
-                value={currentAddress.country}
-                onChange={e => setCurrentAddress({ ...currentAddress, country: e.target.value })}
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              >
-                <option value="">Select Country</option>
-                <option value="USA">USA</option>
-                <option value="India">India</option>
-                <option value="Other">Other</option>
-              </select> */}
               </div>
               <div>
                 <Label>State</Label>
@@ -510,13 +500,6 @@ const FormSection = () => {
                   }}
                   className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
-                {/* <input
-                type="text"
-                value={currentAddress.state}
-                onChange={e => setCurrentAddress({ ...currentAddress, state: e.target.value })}
-                placeholder="Enter state"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              /> */}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -625,8 +608,6 @@ const FormSection = () => {
               >
                 {editIndex !== null ? "Update Address" : "Add Address"}
               </Button>
-
-              {/* Cancel button - only show when editing or when form has data */}
               {(editIndex !== null ||
                 currentAddress.city ||
                 currentAddress.state ||
@@ -647,7 +628,7 @@ const FormSection = () => {
               )}
             </div>
           </div>
-        </form>
+        </form> */}
         {/* Buttons */}
         {/* <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">

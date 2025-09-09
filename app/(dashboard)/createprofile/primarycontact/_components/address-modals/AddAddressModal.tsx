@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FaRegSave } from "react-icons/fa";
+import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 
 export function AddAddressModal({
   open,
@@ -32,10 +34,34 @@ export function AddAddressModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle style={{ fontFamily: "BR Cobane" }}>
-            Add Address
-          </DialogTitle>
+        <DialogHeader className="">
+          <div className="flex items-center justify-between gap-4">
+            {/* Title left */}
+            <DialogTitle style={{ fontFamily: "BR Cobane" }}>
+              Add Address
+            </DialogTitle>
+
+            {/* Button right */}
+            <div className="flex items-center gap-2">
+              <Button
+                className="border hover:text-orange-600 gap-2"
+                variant={"outline"}
+              >
+                <IoIosSave size={20}/>
+                Save
+              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  className="border bg-transparent p-0 hover:text-red-500"
+                  variant="outline"
+                  size={"icon"}
+                >
+                  <IoMdCloseCircle size={20} />
+                </Button>
+              </DialogClose>
+            </div>
+          </div>
         </DialogHeader>
         <form>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -78,7 +104,7 @@ export function AddAddressModal({
               <Input
                 type="text"
                 placeholder="Enter city"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
             <div>
@@ -86,15 +112,16 @@ export function AddAddressModal({
               <Input
                 type="text"
                 placeholder="Enter zip code"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
           </div>
           <div className="mt-3">
-            <Label>Complete</Label>
-            <Textarea
-              placeholder="Enter here complete address"
-              className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+            <Label>Address Line 1</Label>
+            <Input
+              type="text"
+              placeholder="Address Line 1"
+              className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           <div className="mt-3">
@@ -102,7 +129,7 @@ export function AddAddressModal({
             <Input
               type="text"
               placeholder="Address Line 2"
-              className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+              className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
@@ -111,7 +138,7 @@ export function AddAddressModal({
               <Input
                 type="text"
                 placeholder="Landmark 1"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
             <div>
@@ -119,19 +146,19 @@ export function AddAddressModal({
               <Input
                 type="text"
                 placeholder="Landmark 2"
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>
           </div>
         </form>
-        <DialogFooter className="sm:justify-end">
+        {/* <DialogFooter className="sm:justify-end">
           <DialogClose asChild>
             <Button type="button" variant="secondary">
               Close
             </Button>
           </DialogClose>
           <Button className="bg-orange-500 hover:bg-orange-400">Add Address</Button>
-        </DialogFooter>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

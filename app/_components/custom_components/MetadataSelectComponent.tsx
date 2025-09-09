@@ -50,10 +50,11 @@ const MetadataSelectComponent = (props: componentProps & React.SelectHTMLAttribu
 
     return (
         <select
+        
             name={type}
             value={bindValue}
             onChange={changeHandler}
-            className="account-input-field w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="flex gap-10 align-self-stretch px-4 py-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
             {...rest}
         >
             <option value={hasAny ? -1 : ""}>Select {hasAny ? 'Any' : toCapitalCase(type)}</option>

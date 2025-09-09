@@ -1,4 +1,5 @@
 import { useAppSelector } from "@/app/store/store";
+import { Input } from "@/components/ui/input";
 
 type componentProps = {
     type:string,
@@ -18,7 +19,7 @@ const CustomPhoneComponent = (props: componentProps & React.InputHTMLAttributes<
                 name={`${type}_country`}
                 value={bindValue2}
                 onChange={changeHandler}
-                className="account-input-field w-33 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-24 focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
                 {...callingCodeBinding}
                 >
                 <option value="">Country Code</option>
@@ -28,7 +29,7 @@ const CustomPhoneComponent = (props: componentProps & React.InputHTMLAttributes<
                     </option>
                 ))}
             </select>
-            <input
+            <Input
                 type="text"
                 name={type}
                 value={bindValue}

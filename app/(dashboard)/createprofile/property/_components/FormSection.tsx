@@ -14,6 +14,8 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfileProperty } from "@/app/models/Profile";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { Button } from "@/components/ui/button";
+import { FaPlus } from "react-icons/fa6";
+import { AddPropertyModal } from "./property-modals/AddPropertyModal";
 
 interface IPropertyFieldValue extends IProfileProperty {
   id?: string;
@@ -54,6 +56,10 @@ const FormSection = () => {
   const [localError, setLocalError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { findPropertyTypeName, findOwnershipTypeName } = useMetaDataLoader();
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+  });
 
   // Handle input changes for the local property form
   const handleInputChange = (
@@ -226,21 +232,34 @@ const FormSection = () => {
     );
   }, [selectedProfileID, dispatch, reset]);
 
+  const closeAddModal = () => {
+    setOpenModal((prev) => ({
+      ...prev,
+      add: false,
+    }));
+  };
+
   return (
+    <>
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-      <form
-        className="w-full px-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
-        {/* Loading/Error States */}
-        {loading && <div className="mb-2 text-blue-600">Loading...</div>}
-        {(localError || error) && (
-          <div className="mb-2 text-red-600">{localError || error}</div>
-        )}
-        {/* Property List as Table */}
+      <div className="mb-6">
+        <div className="flex justify-end items-center mb-3 mt-3">
+          <Button
+            onClick={() =>
+              setOpenModal((prev) => ({
+                ...prev,
+                add: true,
+              }))
+            }
+            className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
+          >
+            <FaPlus />
+            Add Property
+          </Button>
+        </div>
+      </div>
+
+              {/* Property List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
             <table className="min-w-full bg-white border border-gray-200 rounded-lg">
@@ -311,7 +330,19 @@ const FormSection = () => {
             </table>
           )}
         </div>
-        {/* Property Form */}
+
+      {/* <form
+        className="w-full px-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
+        {loading && <div className="mb-2 text-blue-600">Loading...</div>}
+        {(localError || error) && (
+          <div className="mb-2 text-red-600">{localError || error}</div>
+        )}
+
         <div className="">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div className="">
@@ -321,19 +352,6 @@ const FormSection = () => {
                 value={currentProperty.property_type ?? -1}
                 onChange={handleInputChange}
               />
-              {/* <select
-                name="property"
-                value={currentProperty.property}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="">Property Type</option>
-                <option value="Apartment/Flat">Apartment/Flat</option>
-                <option value="Independent House/Villa">Independent House/Villa</option>
-                <option value="Studio Apartment">Studio Apartment</option>
-                <option value="Bungalow">Bungalow</option>
-                <option value="Duplex">Duplex</option>
-              </select> */}
             </div>
             <div className="">
               <label className="block text-gray-700 mb-2">Ownership Type</label>
@@ -342,17 +360,6 @@ const FormSection = () => {
                 value={currentProperty.ownership_type ?? -1}
                 onChange={handleInputChange}
               />
-              {/* <select
-                name="ownership"
-                value={currentProperty.ownership}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="">Ownership Type</option>
-                <option value="Freehold">Freehold</option>
-                <option value="Leasehold">Leasehold</option>
-                <option value="Joint Ownership">Joint Ownership</option>
-              </select> */}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
@@ -381,20 +388,7 @@ const FormSection = () => {
                 placeholder="Area in sq. ft."
                 className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
-              {/* <select
-                name="area"
-                value={currentProperty.area}
-                onChange={handleInputChange}
-                className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="">Size/Area</option>
-                <option value="500 sq. ft">500 sq. ft</option>
-                <option value="1000 sq. ft">1000 sq. ft</option>
-                <option value="1500 sq. ft.">1500 sq. ft.</option>
-                <option value="2000 sq. ft.">2000 sq. ft.</option>
-              </select> */}
             </div>
-            {/* Property Status field removed as requested */}
             <div className="">
               <label className="block text-gray-700 mb-2">Description</label>
               <input
@@ -418,7 +412,6 @@ const FormSection = () => {
             </Button>
           </div>
         </div>
-        {/* Buttons */}
         <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">
             <Button
@@ -447,7 +440,7 @@ const FormSection = () => {
             Continue
           </Button>
         </div>
-      </form>
+      </form> */}
 
       {/* Confirmation Modal */}
       {showConfirmation && (
@@ -484,6 +477,8 @@ const FormSection = () => {
         </div>
       )}
     </section>
+    <AddPropertyModal open={openModal.add} onOpenChange={closeAddModal} />
+    </>
   );
 };
 

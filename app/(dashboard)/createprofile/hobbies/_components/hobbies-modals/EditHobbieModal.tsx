@@ -1,4 +1,23 @@
-"use client";
+import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import React, { useEffect, useState, useContext } from "react";
 import Autosuggest from "react-autosuggest";
 import { useRouter } from "next/navigation";
@@ -14,20 +33,18 @@ import {
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { AddHobbieModal } from "./hobbies-modals/AddHobbieModal";
 
 interface HobbyInterestData {
   hobby_interest_name: string;
 }
 
-// const hobbySuggestions = [
-//   "Reading", "Traveling", "Cooking", "Gardening", "Photography", "Painting", "Dancing", "Music", "Sports", "Writing", "Fishing", "Hiking", "Cycling", "Yoga", "Crafts"
-// ];
-// const interestSuggestions = [
-//   "Technology", "Science", "Art", "History", "Movies", "Fitness", "Fashion", "Food", "Nature", "Politics", "Business", "Finance", "Languages", "Gaming", "Volunteering"
-// ];
-
-const FormSection = () => {
+export function EditHobbieModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+}) {
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
   const dispatch = useAppDispatch();
@@ -237,172 +254,146 @@ const FormSection = () => {
     suggestion: "px-4 py-2 cursor-pointer text-gray-700 hover:bg-orange-100",
     suggestionHighlighted: "bg-orange-200 text-orange-900",
   };
-
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
-
   return (
-    <>
-      <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-        <div className="mb-6">
-          <div className="flex justify-end items-center mb-3 mt-3">
-            <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
-              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
-              Add Hobbie
-            </Button>
-          </div>
-        </div>
-        {/* Hobbies Section */}
-        <div className="mb-6">
-          <h3 className="BRCobane18600 mb-3">Hobbies</h3>
-          <div>
-            <div className="flex flex-col gap-2">
-              <Autosuggest
-                suggestions={hobbySuggestionsList}
-                onSuggestionsFetchRequested={onHobbySuggestionsFetchRequested}
-                onSuggestionsClearRequested={onHobbySuggestionsClearRequested}
-                getSuggestionValue={(suggestion: string) => suggestion}
-                renderSuggestion={(suggestion: string) => (
-                  <span>{suggestion}</span>
-                )}
-                inputProps={{
-                  ...register("hobbyInput"),
-                  placeholder: "Type to search",
-                  className: autosuggestTheme.input,
-                  value: hobbyInput,
-                  onChange: (_: any, { newValue }: { newValue: string }) =>
-                    setValue("hobbyInput", newValue),
-                  onKeyDown: handleHobbyKeyDown,
-                  disabled: loading,
-                }}
-                onSuggestionSelected={(
-                  _: any,
-                  { suggestion }: { suggestion: string }
-                ) => handleAdd("hobbies", suggestion)}
-                theme={autosuggestTheme}
-              />
-              <div className="flex gap-2 flex-wrap">
-                {hobbies &&
-                  hobbies.map((hobby, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
-                    >
-                      {hobby}
-                      <button
-                        onClick={() => removeTag("hobbies", index)}
-                        disabled={loading}
-                        className="ml-2 text-red-500 font-bold hover:text-red-700"
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm md:max-w-2xl">
+        <form>
+          <DialogHeader className="">
+            <div className="flex items-center justify-between gap-4">
+              {/* Title left */}
+              <DialogTitle style={{ fontFamily: "BR Cobane" }}>
+                Edit Hobbies & Interests
+              </DialogTitle>
+
+              {/* Button right */}
+              <div className="flex items-center gap-2">
+                <Button
+                  className="border hover:text-orange-600 gap-2"
+                  variant={"outline"}
+                >
+                  <IoIosSave size={20} />
+                  Save
+                </Button>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    className="border bg-transparent p-0 hover:text-red-500"
+                    variant="outline"
+                    size={"icon"}
+                  >
+                    <IoMdCloseCircle size={20} />
+                  </Button>
+                </DialogClose>
+              </div>
+            </div>
+          </DialogHeader>
+          {/* Hobbies Section */}
+          <div className="mb-6">
+            <h3 className="BRCobane18600 mb-3">Hobbies</h3>
+            <div>
+              <div className="flex flex-col gap-2">
+                <Autosuggest
+                  suggestions={hobbySuggestionsList}
+                  onSuggestionsFetchRequested={onHobbySuggestionsFetchRequested}
+                  onSuggestionsClearRequested={onHobbySuggestionsClearRequested}
+                  getSuggestionValue={(suggestion: string) => suggestion}
+                  renderSuggestion={(suggestion: string) => (
+                    <span>{suggestion}</span>
+                  )}
+                  inputProps={{
+                    ...register("hobbyInput"),
+                    placeholder: "Type to search",
+                    className: autosuggestTheme.input,
+                    value: hobbyInput,
+                    onChange: (_: any, { newValue }: { newValue: string }) =>
+                      setValue("hobbyInput", newValue),
+                    onKeyDown: handleHobbyKeyDown,
+                    disabled: loading,
+                  }}
+                  onSuggestionSelected={(
+                    _: any,
+                    { suggestion }: { suggestion: string }
+                  ) => handleAdd("hobbies", suggestion)}
+                  theme={autosuggestTheme}
+                />
+                <div className="flex gap-2 flex-wrap">
+                  {hobbies &&
+                    hobbies.map((hobby, index) => (
+                      <span
+                        key={index}
+                        className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
                       >
-                        &times;
-                      </button>
-                    </span>
-                  ))}
+                        {hobby}
+                        <button
+                          onClick={() => removeTag("hobbies", index)}
+                          disabled={loading}
+                          className="ml-2 text-red-500 font-bold hover:text-red-700"
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Interests Section */}
-        <div className="mb-6">
-          <h3 className="BRCobane18600 mb-3">Interests</h3>
-          <div>
-            <div className="flex flex-col gap-2">
-              <Autosuggest
-                suggestions={interestSuggestionsList}
-                onSuggestionsFetchRequested={
-                  onInterestSuggestionsFetchRequested
-                }
-                onSuggestionsClearRequested={
-                  onInterestSuggestionsClearRequested
-                }
-                getSuggestionValue={(suggestion: string) => suggestion}
-                renderSuggestion={(suggestion: string) => (
-                  <span>{suggestion}</span>
-                )}
-                inputProps={{
-                  ...register("interestInput"),
-                  placeholder: "Type to search",
-                  className: autosuggestTheme.input,
-                  value: interestInput,
-                  onChange: (_: any, { newValue }: { newValue: string }) =>
-                    setValue("interestInput", newValue),
-                  onKeyDown: handleInterestKeyDown,
-                  disabled: loading,
-                }}
-                onSuggestionSelected={(
-                  _: any,
-                  { suggestion }: { suggestion: string }
-                ) => handleAdd("interests", suggestion)}
-                theme={autosuggestTheme}
-              />
-              <div className="flex gap-2 flex-wrap">
-                {interests &&
-                  interests.map((interest, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
-                    >
-                      {interest}
-                      <button
-                        onClick={() => removeTag("interests", index)}
-                        disabled={loading}
-                        className="ml-2 text-red-500 font-bold hover:text-red-700"
+          {/* Interests Section */}
+          <div className="mb-6">
+            <h3 className="BRCobane18600 mb-3">Interests</h3>
+            <div>
+              <div className="flex flex-col gap-2">
+                <Autosuggest
+                  suggestions={interestSuggestionsList}
+                  onSuggestionsFetchRequested={
+                    onInterestSuggestionsFetchRequested
+                  }
+                  onSuggestionsClearRequested={
+                    onInterestSuggestionsClearRequested
+                  }
+                  getSuggestionValue={(suggestion: string) => suggestion}
+                  renderSuggestion={(suggestion: string) => (
+                    <span>{suggestion}</span>
+                  )}
+                  inputProps={{
+                    ...register("interestInput"),
+                    placeholder: "Type to search",
+                    className: autosuggestTheme.input,
+                    value: interestInput,
+                    onChange: (_: any, { newValue }: { newValue: string }) =>
+                      setValue("interestInput", newValue),
+                    onKeyDown: handleInterestKeyDown,
+                    disabled: loading,
+                  }}
+                  onSuggestionSelected={(
+                    _: any,
+                    { suggestion }: { suggestion: string }
+                  ) => handleAdd("interests", suggestion)}
+                  theme={autosuggestTheme}
+                />
+                <div className="flex gap-2 flex-wrap">
+                  {interests &&
+                    interests.map((interest, index) => (
+                      <span
+                        key={index}
+                        className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
                       >
-                        &times;
-                      </button>
-                    </span>
-                  ))}
+                        {interest}
+                        <button
+                          onClick={() => removeTag("interests", index)}
+                          disabled={loading}
+                          className="ml-2 text-red-500 font-bold hover:text-red-700"
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {loading && <div className="mb-2 text-blue-600">Loading...</div>}
-        {(localError || error) && (
-          <div className="mb-2 text-red-600">{localError || error}</div>
-        )}
-        <div className="flex justify-between mt-[250px]">
-          <div className="flex justify-start gap-4">
-            <button
-              className="yellow-btn hover:bg-orange-600"
-              onClick={() => router.push("/createprofile/lifestyle")}
-            >
-              Continue
-            </button>
-            <button className="gray-btn hover:bg-gray-400">Cancel</button>
-          </div>
-          <button
-            className="gray-btn hover:bg-gray-400"
-            onClick={() => router.push("/createprofile/lifestyle")}
-          >
-            Skip
-          </button>
-        </div>
-      </section>
-      <AddHobbieModal
-        open={openModal.add}
-        onOpenChange={(value) =>
-          setOpenModal((prev) => ({
-            ...prev,
-            add: value,
-          }))
-        }
-      />
-    </>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
-};
-
-export default FormSection;
+}

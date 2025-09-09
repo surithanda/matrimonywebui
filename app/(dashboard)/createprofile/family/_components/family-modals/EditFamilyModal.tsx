@@ -68,7 +68,7 @@ type familyReferenceProps = {
   actionButton_label: string;
 };
 
-export function AddFamilyModal({
+export function EditFamilyModal({
   open,
   onOpenChange,
   category = "family",
@@ -339,7 +339,7 @@ export function AddFamilyModal({
             <div className="flex items-center justify-between gap-4">
               {/* Title left */}
               <DialogTitle style={{ fontFamily: "BR Cobane" }}>
-                Add Family
+                Edit Family
               </DialogTitle>
 
               {/* Button right */}

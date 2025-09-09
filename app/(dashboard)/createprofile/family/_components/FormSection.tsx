@@ -95,6 +95,8 @@ const FormSection = ({
     edit: false,
   });
 
+  console.log("Current Family Member:", fields);
+
   // Check if currentFamilyMember has any meaningful data
   const hasUnsavedFamilyData = () => {
     return !!(
@@ -411,14 +413,13 @@ const FormSection = ({
             </table>
           )}
         </div>
-        <form
+        {/* <form
           className="w-full px-2"
           onSubmit={(e) => {
             e.preventDefault();
             onSubmit();
           }}
         >
-          {/* Family Member Form */}
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="">
@@ -574,7 +575,6 @@ const FormSection = ({
               </Button>
             </div>
           </div>
-          {/* Buttons */}
           <div className="flex justify-between mt-[100px]">
             <div className="flex justify-start gap-4">
               <Button
@@ -605,7 +605,7 @@ const FormSection = ({
               Continue
             </Button>
           </div>
-        </form>
+        </form> */}
 
         {/* Confirmation Modal */}
         {showConfirmation && (
@@ -643,7 +643,7 @@ const FormSection = ({
           </div>
         )}
       </section>
-      <AddFamilyModal open={openModal.add} onOpenChange={closeAddModal} />
+      <AddFamilyModal open={openModal.add} onOpenChange={closeAddModal} category="family" next_url="/createprofile/references" actionButton_label="Member" />
     </>
   );
 };

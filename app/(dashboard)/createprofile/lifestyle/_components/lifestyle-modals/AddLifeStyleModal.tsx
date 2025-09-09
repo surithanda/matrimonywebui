@@ -1,4 +1,11 @@
-"use client";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import {
   createLifestyleAsync,
   getLifestyleAsync,
@@ -10,8 +17,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
-import { FaPlus } from "react-icons/fa6";
-import { AddLifeStyleModal } from "./lifestyle-modals/AddLifeStyleModal";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ILifestyleSelections {
   profile_lifestyle_id: number | null;
@@ -24,7 +31,13 @@ interface ILifestyleSelections {
   relaxationMethods: string;
 }
 
-const FormSection = () => {
+export function AddLifeStyleModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (value: boolean) => void;
+}) {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
@@ -171,77 +184,67 @@ const FormSection = () => {
       }
     );
   }, [selectedProfileID, dispatch]);
-
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
-
   return (
-    <>
-      <section className="md:py-5 w-full">
-        <div className="mb-6">
-          <div className="flex justify-end items-center mb-3 mt-3">
-            <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
-              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm md:max-w-4xl my-auto h-[95vh] overflow-y-auto">
+        <DialogHeader className="">
+          <div className="flex items-center justify-between gap-4">
+            {/* Title left */}
+            <DialogTitle style={{ fontFamily: "BR Cobane" }}>
               Add LifeStyle
-            </Button>
-          </div>
-        </div>
-        <div className="space-y-6">
-          {Object.entries(categories).map(([category, options]) => (
-            <div key={category}>
-              <h3 className="BRCobane18600 mb-3">{category}</h3>
-              <div className="flex flex-wrap gap-4">
-                {options.map((option, idx) => (
-                  <button
-                    key={option}
-                    onClick={() => handleSelection(category, option)}
-                    className={`w-[185px] flex p-3 items-start gap-2 flex-[1_0_0] rounded-lg border border-gray-300 font-medium ${
-                      isOptionSelected(category, option)
-                        ? "bg-gradient-to-b from-yellow-400 to-orange-500 text-black"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+            </DialogTitle>
+
+            {/* Button right */}
+            <div className="flex items-center gap-2">
+              <Button
+                className="border hover:text-orange-600 gap-2"
+                variant={"outline"}
+              >
+                <IoIosSave size={20} />
+                Save
+              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  className="border bg-transparent p-0 hover:text-red-500"
+                  variant="outline"
+                  size={"icon"}
+                >
+                  <IoMdCloseCircle size={20} />
+                </Button>
+              </DialogClose>
             </div>
-          ))}
-        </div>
-
-        <div className="flex justify-between mt-[100px]">
-          <div className="flex justify-start gap-4">
-            <button
-              onClick={handleSubmit}
-              className="yellow-btn hover:bg-orange-600"
-            >
-              Continue
-            </button>
-            <button className="gray-btn hover:bg-gray-400">Cancel</button>
           </div>
-          <button
-            className="gray-btn hover:bg-gray-400"
-            onClick={() => router.push("/createprofile/family")}
-          >
-            Skip
-          </button>
-        </div>
-      </section>
-      <AddLifeStyleModal open={openModal.add} onOpenChange={closeAddModal} />
-    </>
-  );
-};
+        </DialogHeader>
+<div className="space-y-1">
+  {Object.entries(categories).map(([category, options]) => (
+    <div key={category}>
+      <h3 className="BRCobane18600 mb-3">{category}</h3>
+      <div className="flex flex-wrap gap-4">
+        {options.map((option) => {
+          const checked = isOptionSelected(category, option)
 
-export default FormSection;
+          return (
+            <Label
+              key={option}
+              className="hover:bg-accent/50 w-[185px] flex items-start gap-3 rounded-lg border p-3 cursor-pointer has-[[aria-checked=true]]:border-orange-500 has-[[aria-checked=true]]:bg-orange-50 dark:has-[[aria-checked=true]]:border-orange-800 dark:has-[[aria-checked=true]]:bg-orange-950"
+            >
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => handleSelection(category, option)}
+                className="data-[state=checked]:border-orange-500 data-[state=checked]:bg-gradient-to-b data-[state=checked]:from-yellow-400 data-[state=checked]:to-orange-500 data-[state=checked]:text-white dark:data-[state=checked]:border-orange-700 dark:data-[state=checked]:bg-orange-700"
+              />
+              <div className="grid gap-1.5 font-normal">
+                <p className="text-sm leading-none font-medium">{option}</p>
+              </div>
+            </Label>
+          )
+        })}
+      </div>
+    </div>
+  ))}
+</div>
+      </DialogContent>
+    </Dialog>
+  );
+}

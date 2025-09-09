@@ -53,14 +53,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CiMail } from "react-icons/ci";
-import { AddAddressModal } from "../_components/modals/AddAddressModal";
-import { EditAddressModal } from "../_components/modals/EditAddressModal";
 import { Button } from "@/components/ui/button";
+import {
+  AiOutlineHeart,
+  AiFillHeart,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -1373,7 +1374,6 @@ const ViewProfile = () => {
       : `${num.toFixed(2)}${unit ?? ""}`;
   };
 
-
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[120px] md:pt-8 mt-16">
@@ -1450,7 +1450,7 @@ const ViewProfile = () => {
                   </Button>
 
                   <Button
-                    variant={"outline"}
+                    variant="outline"
                     onClick={handleToggleFavorite}
                     disabled={isUpdatingFavorite}
                     className={`flex items-center gap-2 border ${
@@ -1461,51 +1461,16 @@ const ViewProfile = () => {
                   >
                     {isUpdatingFavorite ? (
                       <>
-                        <svg
-                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 
-                   0 0 5.373 0 12h4zm2 5.291A7.962 
-                   7.962 0 014 12H0c0 3.042 
-                   1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
+                        <AiOutlineLoading3Quarters className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500" />
                         {isFavorite ? "Removing..." : "Saving..."}
                       </>
                     ) : (
                       <>
-                        <svg
-                          className="w-5 h-5"
-                          fill={isFavorite ? "currentColor" : "none"}
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M4.318 6.318a4.5 4.5 0 000 
-                   6.364L12 20.364l7.682-7.682a4.5 
-                   4.5 0 00-6.364-6.364L12 
-                   7.636l-1.318-1.318a4.5 4.5 
-                   0 00-6.364 0z"
-                          />
-                        </svg>
+                        {isFavorite ? (
+                          <AiFillHeart className="w-5 h-5 text-orange-500" />
+                        ) : (
+                          <AiOutlineHeart className="w-5 h-5" />
+                        )}
                         {isFavorite ? "Favorited" : "Add to Favorites"}
                       </>
                     )}
@@ -1588,6 +1553,7 @@ const ViewProfile = () => {
             </div>
           </div>
 
+          {/* Contact Information */}
           <div className="grid grid-cols-1 gap-2 mb-6">
             <div className="bg-white rounded shadow">
               <h2
@@ -1649,7 +1615,10 @@ const ViewProfile = () => {
                         addr.type ? ` (${addr.type})` : ""
                       }`;
                       return (
-                        <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm" key={index}>
+                        <div
+                          className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+                          key={index}
+                        >
                           <div className="px-6 py-4">
                             {/* Author section */}
                             <div className="flex items-center justify-between mb-2">
@@ -1686,7 +1655,9 @@ const ViewProfile = () => {
                                 [
                                   addr?.city,
                                   addr?.state,
-                             findCountryName(addr?.country_id ?? addr?.country ?? 0) || "N/A",
+                                  findCountryName(
+                                    addr?.country_id ?? addr?.country ?? 0
+                                  ) || "N/A",
                                   addr?.zipcode,
                                 ]
                                   .filter(Boolean)
@@ -1758,6 +1729,7 @@ const ViewProfile = () => {
             </div>
           </div>
 
+          {/* Life Style & Hobbies */}
           <div className="grid grid-cols-2 items-center gap-2 mb-2">
             <div className="bg-white rounded shadow">
               <h2
@@ -1797,6 +1769,7 @@ const ViewProfile = () => {
               {profileData?.last_name}
             </div>
           </div>
+          
         </div>
       </div>
     </>

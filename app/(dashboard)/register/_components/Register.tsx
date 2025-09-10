@@ -11,6 +11,18 @@ import {
 } from "@/app/store/features/metaDataSlice";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { use } from "chai";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectScrollDownButton,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SelectScrollUpButton, SelectViewport } from "@radix-ui/react-select";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -148,41 +160,41 @@ const Register = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="grow">
-              <label className="block text-gray-100 mb-2 text-sm sm:text-base">
+              <Label className="block text-gray-100 mb-2 text-sm sm:text-base">
                 Email
-              </label>
-              <input
+              </Label>
+              <Input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Email"
               />
             </div>
             <div className="grow">
-              <label className="block text-gray-700 mb-2 text-sm sm:text-base">
+              <Label className="block text-gray-700 mb-2 text-sm sm:text-base">
                 Password
-              </label>
-              <input
+              </Label>
+              <Input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Password"
               />
             </div>
             <div className="grow">
-              <label className="block text-gray-700 mb-2 text-sm sm:text-base">
+              <Label className="block text-gray-700 mb-2 text-sm sm:text-base">
                 Re-enter Password
-              </label>
-              <input
+              </Label>
+              <Input
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 placeholder="Re-enter Password"
               />
             </div>
@@ -195,41 +207,37 @@ const Register = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="grow text-left flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-left text-sm sm:text-base">
+                <Label className="block BRCobane18600 mb-2.5 text-left text-sm sm:text-base">
                   First Name
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="First Name"
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Middle Name
-                </label>
-                <input
+                <Label>Middle Name</Label>
+                <Input
                   type="text"
                   name="middleName"
                   value={formData.middleName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Middle Name"
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Last Name
-                </label>
-                <input
+                <Label>Last Name</Label>
+                <Input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Last Name"
                 />
               </div>
@@ -237,49 +245,51 @@ const Register = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Birth Date
-                </label>
-                <input
+                <Label>Birth Date</Label>
+                <Input
                   type="date"
                   name="birthDate"
                   value={formData.birthDate}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Gender
-                </label>
-                <select
-                  name="gender"
+                <Label>Gender</Label>
+                <Select
                   value={formData.gender}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  onValueChange={(value) =>
+                    handleChange({
+                      target: { name: "gender", value },
+                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
+                  }
                 >
-                  <option value="">Select Gender</option>
-                  {genderList &&
-                    genderList?.map((item: any) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                </select>
+                  <SelectTrigger className="w-full text-sm sm:text-base">
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+
+                  <SelectContent className="w-full">
+                    <SelectViewport className="max-h-60 overflow-auto">
+                      {genderList?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id.toString()}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectViewport>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <div className="mt-4 w-full">
               <div className="flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Complete Address
-                </label>
-                <input
+                <Label>Complete Address</Label>
+                <Input
                   type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Complete Address"
                 />
               </div>
@@ -288,70 +298,82 @@ const Register = () => {
             {/* City, State, Country, Zip Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Country
-                </label>
-                <select
-                  name="country"
+                <Label>Country</Label>
+                <Select
                   value={formData.country}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  onValueChange={(value) =>
+                    handleChange({
+                      target: { name: "country", value }, // 👈 mimic event
+                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
+                  }
                 >
-                  <option value="">Select Country</option>
-                  {countryList &&
-                    countryList?.map((country: any) => (
-                      <option
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryList?.map((country: any) => (
+                      <SelectItem
                         key={country.country_id}
-                        value={country.country_id}
+                        value={country.country_id.toString()}
                       >
                         {country.country_name}
-                      </option>
+                      </SelectItem>
                     ))}
-                </select>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  State
-                </label>
-                <select
-                  name="state"
+                <Label>State</Label>
+                <Select
                   value={formData.state}
-                  onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  onValueChange={(value) =>
+                    handleChange({
+                      target: { name: "state", value },
+                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
+                  }
                 >
-                  <option value="">Select State</option>
-                  {stateList &&
-                    stateList?.map((state: any) => (
-                      <option key={state.state_id} value={state.state_name}>
-                        {state.state_name}
-                      </option>
-                    ))}
-                </select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select State" />
+                  </SelectTrigger>
+
+                  <SelectContent className="w-full">
+                    {/* optional up button */}
+                    <SelectScrollUpButton />
+
+                    {/* viewport: set a max-height and allow overflow scroll */}
+                    <SelectViewport className="max-h-60 overflow-auto">
+                      {stateList?.map((st: any) => (
+                        <SelectItem key={st.state_id} value={st.state_name}>
+                          {st.state_name}
+                        </SelectItem>
+                      ))}
+                    </SelectViewport>
+
+                    {/* optional down button */}
+                    <SelectScrollDownButton />
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  City
-                </label>
-                <input
+                <Label>City</Label>
+                <Input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="City"
                 />
               </div>
 
               <div className="flex flex-col items-start w-full">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Zip Code
-                </label>
-                <input
+                <Label>Zip Code</Label>
+                <Input
                   type="number"
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   placeholder="Zip Code"
                   maxLength={7}
                 />
@@ -366,48 +388,53 @@ const Register = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4 grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Primary Phone
-                </label>
+                <Label>Primary Phone</Label>
                 <div className="flex w-full gap-2">
-                  <select
-                    name="primaryPhoneCountry"
+                  <Select
                     value={formData.primaryPhoneCountry || "+91"}
-                    onChange={handleChange}
-                    className="account-input-field sm:w-32 md:w-52 focus:outline-none focus:border-b focus:border-[#f7ac03] text-xs sm:text-sm"
+                    onValueChange={(value) =>
+                      handleChange({
+                        target: { name: "primaryPhoneCountry", value },
+                      } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
+                    }
                   >
-                    <option value="">Select Country Code</option>
-                    {countryList &&
-                      countryList?.map((country: any) => (
-                        <option
-                          key={country.country_id}
-                          value={country.country_code_2}
-                        >
-                          {country.flag_emoji} {country.country_calling_code}
-                        </option>
-                      ))}
-                  </select>
-                  <input
+                    <SelectTrigger className="sm:w-32 md:w-52 text-xs sm:text-sm">
+                      <SelectValue placeholder="Select Country Code" />
+                    </SelectTrigger>
+
+                    <SelectContent className="sm:w-32 md:w-52">
+                      <SelectViewport className="max-h-60 overflow-auto">
+                        {countryList?.map((country: any) => (
+                          <SelectItem
+                            key={country.country_id}
+                            value={country.country_calling_code} // ✅ now matches "+91"
+                          >
+                            {country.flag_emoji} {country.country_calling_code}
+                          </SelectItem>
+                        ))}
+                      </SelectViewport>
+                    </SelectContent>
+                  </Select>
+
+                  <Input
                     type="text"
                     name="primaryPhone"
                     value={formData.primaryPhone}
                     onChange={handleChange}
-                    className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
+                    className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                     placeholder="Primary Phone"
                     maxLength={10}
                   />
                 </div>
               </div>
               <div className="mb-4 grow flex flex-col items-start">
-                <label className="block BRCobane18600 mb-2.5 text-sm sm:text-base">
-                  Email
-                </label>
-                <input
+                <Label>Email</Label>
+                <Input
                   type="email"
                   name="contactEmail"
                   value={formData.email}
                   onChange={handleChange}
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base cursor-not-allowed"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base cursor-not-allowed"
                   placeholder="Email"
                   readOnly
                 />
@@ -417,7 +444,7 @@ const Register = () => {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-4">
-            <button
+            <Button
               type="button"
               className="white-btn hover:bg-gray-400 w-full sm:w-auto px-6 py-3 rounded-md text-xl sm:text-base"
               onClick={() =>
@@ -440,14 +467,14 @@ const Register = () => {
               }
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               className="bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-xl w-full sm:w-auto px-6 py-3 font-semibold sm:text-base"
               disabled={loading}
             >
               {loading ? "Registering..." : "Register"}
-            </button>
+            </Button>
           </div>
         </form>
       </section>

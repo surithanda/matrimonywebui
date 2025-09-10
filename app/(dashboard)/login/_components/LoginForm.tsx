@@ -10,6 +10,8 @@ import {
 } from "@/app/store/features/authSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Add this import
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -63,13 +65,13 @@ const LoginForm = () => {
       <form onSubmit={handleSubmit} className="w-full">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Email</label>
-          <input
+          <Label className="block BRCobane18600 mb-2.5">Email</Label>
+          <Input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="account-input-field w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
+            className="w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
             placeholder="Email"
             required
           />
@@ -77,14 +79,14 @@ const LoginForm = () => {
 
         {/* Password Input */}
         <div className="mb-2 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Password</label>
+          <Label className="block BRCobane18600 mb-2.5">Password</Label>
           <div className="relative w-full">
-            <input
+            <Input
               type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="account-input-field w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
+              className="w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
               placeholder="Password"
               required
             />

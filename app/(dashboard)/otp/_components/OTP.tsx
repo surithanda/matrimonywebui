@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/app/store/store";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
+import { Input } from "@/components/ui/input";
 
 const ForgotPassword = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -132,7 +133,7 @@ const ForgotPassword = () => {
         {/* <label className="block BRCobane18600 mb-2.5 text-left">OTP</label> */}
         <div className="flex justify-between gap-4 mb-6">
           {otp.map((digit, index) => (
-            <input
+            <Input
               key={index}
               id={`otp-${index}`}
               type="text"

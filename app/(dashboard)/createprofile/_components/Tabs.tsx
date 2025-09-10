@@ -4,67 +4,58 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const menuItems = [
-  { id: "personal", label: "Personal", icon: "👤", link: "/createprofile" },
+  { id: "personal", label: "Personal", link: "/createprofile" },
   {
     id: "contact",
     label: "Address",
-    icon: "📍",
     link: "/createprofile/primarycontact",
     disabled: true,
   },
   {
     id: "education",
     label: "Education",
-    icon: "🎓",
     link: "/createprofile/education",
     disabled: true,
   },
   {
     id: "employment",
     label: "Employment",
-    icon: "💼",
     link: "/createprofile/employment",
     disabled: true,
   },
   {
     id: "family",
     label: "Family",
-    icon: "👨‍👩‍👧‍👦",
     link: "/createprofile/family",
     disabled: true,
   },
   {
     id: "references",
     label: "Friends & References",
-    icon: "🧘",
     link: "/createprofile/references",
     disabled: true,
   },
   {
     id: "hobbies",
     label: "Hobbies",
-    icon: "🎯",
     link: "/createprofile/hobbies",
     disabled: true,
   },
   {
     id: "lifestyle",
     label: "Lifestyle",
-    icon: "🌟",
     link: "/createprofile/lifestyle",
     disabled: true,
   },
   {
     id: "properties",
     label: "Properties",
-    icon: "🏘️",
     link: "/createprofile/property",
     disabled: true,
   },
   {
     id: "photos",
     label: "Photos",
-    icon: "📸",
     link: "/createprofile/photos",
     disabled: true,
   },
@@ -99,9 +90,8 @@ export default function Tabs() {
 
   return (
     <div>
-      <div className="flex border border-gray-200 overflow-x-auto p-0 rounded-lg">
+      <div className="flex border border-gray-300 rounded-lg overflow-x-auto divide-x">
         {menu.map((item, index) => {
-          // Step is completed if it comes before the active step
           const isCompleted =
             menu.findIndex((m) => m.id === activeItem) > index;
 
@@ -116,7 +106,7 @@ export default function Tabs() {
                 setActiveItem(item.id);
                 router.push(item.link);
               }}
-              className={`flex items-center gap-3 px-4 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-center 
+              className={`flex items-center gap-1 px-2 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-center 
     ${
       item.disabled ? "cursor-not-allowed text-gray-400" : "hover:text-gray-800"
     }
@@ -130,7 +120,7 @@ export default function Tabs() {
             >
               {/* Checkbox Circle */}
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
+                className={`flex h-4 w-4 items-center justify-center rounded-full border text-xs ${
                   activeItem === item.id
                     ? "border-orange-500 bg-orange-500 text-white"
                     : isCompleted
@@ -141,13 +131,7 @@ export default function Tabs() {
                 {activeItem === item.id || isCompleted ? "✔" : ""}
               </span>
 
-              <div className="flex items-center gap-2">
-                {/* Icon */}
-                <span className="text-lg">{item.icon}</span>
-
-                {/* Label */}
-                <span>{item.label}</span>
-              </div>
+              <span>{item.label}</span>
             </button>
           );
         })}

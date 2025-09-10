@@ -1,10 +1,10 @@
+import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
+import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,14 +16,12 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { IoIosSave, IoMdCloseCircle } from "react-icons/io";
+import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 
-export function EditAddressModal({
+export function AddFriendAndReferenceModal({
   open,
   onOpenChange,
 }: {
@@ -40,7 +38,7 @@ export function EditAddressModal({
               className="text-white text-xl"
               style={{ fontFamily: "BR Cobane" }}
             >
-              Edit Address
+              Edit Friends & Reference
             </DialogTitle>
 
             {/* Button right */}
@@ -65,12 +63,69 @@ export function EditAddressModal({
         </DialogHeader>
         <div className="px-4 pt-2 pb-4">
           <form>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+              <div className="">
+                <Label className="ml-1">First Name</Label>
+                <Input
+                  type="text"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div className="">
+                <Label className="ml-1">Last Name</Label>
+                <Input
+                  type="text"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div className="">
+                <Label className="ml-1">Date if Birth</Label>
+                <Input
+                  type="date"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+                            <div className="">
+                <Label className="ml-1">Email</Label>
+                <Input
+                  type="email"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+              </div>
+              <div className="w-full mb-2">
+                <Label className="ml-1">Contact Number</Label>
+                <CustomPhoneComponent
+                  type="contactnumber"
+                  //   changeHandler={handleInputChange}
+                  //   bindValue={currentFamilyMember.contactnumber}
+                  //   bindValue2={currentFamilyMember.contactnumber_country}
+                  //   disabled={loading}
+                />
+              </div>
+              <div>
+                <Label className="block text-gray-700 mb-2">
+                  Relationship to you
+                </Label>
+                <MetadataSelectComponent
+                  type="reference"
+                  // value={String(currentReference.reference_type)}
+                  // onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="mb-2">
+              <Label className="ml-1">Address</Label>
+              <Input
+                type="text"
+                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <div>
-                <Label>Country</Label>
+                <Label className="ml-1">Country</Label>
                 <Select>
                   <SelectTrigger className="w-[100%]">
-                    <SelectValue placeholder="Select a country" />
+                    <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -84,10 +139,10 @@ export function EditAddressModal({
                 </Select>
               </div>
               <div>
-                <Label>State</Label>
+                <Label className="ml-1">State</Label>
                 <Select>
                   <SelectTrigger className="w-[100%]">
-                    <SelectValue placeholder="Select a state" />
+                    <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -101,66 +156,22 @@ export function EditAddressModal({
                 </Select>
               </div>
               <div>
-                <Label>City</Label>
+                <Label className="ml-1">City</Label>
                 <Input
                   type="text"
-                  placeholder="Enter city"
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label>Zip Code</Label>
+                <Label className="ml-1">Zip Code</Label>
                 <Input
                   type="text"
-                  placeholder="Enter zip code"
-                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-            </div>
-            <div className="mt-3">
-              <Label>Address Line 1</Label>
-              <Input
-                type="text"
-                placeholder="Address Line 1"
-                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-            </div>
-            <div className="mt-3">
-              <Label>Address Line 2</Label>
-              <Input
-                type="text"
-                placeholder="Address Line 2"
-                className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-              <div>
-                <Label>Landmark 1</Label>
-                <Input
-                  type="text"
-                  placeholder="Landmark 1"
-                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label>Landmark 2</Label>
-                <Input
-                  type="text"
-                  placeholder="Landmark 2"
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
             </div>
           </form>
         </div>
-        {/* <DialogFooter className="sm:justify-end">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-          <Button className="bg-orange-500 hover:bg-orange-400">Add Address</Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

@@ -39,38 +39,40 @@ export function AddPhotosModal({
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }) {
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const handleSelect = (value: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(value) ? prev : [...prev, value]
-    );
+    setSelectedType(value);
+    setFile(null); // reset previous file if any
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">
         <form>
-          <DialogHeader>
+          <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
-              <DialogTitle style={{ fontFamily: "BR Cobane" }}>
-                Add Photos
+              <DialogTitle
+                className="text-white text-xl"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Add Photo
               </DialogTitle>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Button
-                  className="border hover:text-orange-600 gap-2"
+                  className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-orange-400 gap-2"
                   variant={"outline"}
+                  type="submit"
                 >
                   <IoIosSave size={20} />
-                  Save
                 </Button>
                 <DialogClose asChild>
                   <Button
                     type="button"
-                    className="border bg-transparent p-0 hover:text-red-500"
+                    className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-red-500"
                     variant="outline"
-                    size={"icon"}
                   >
                     <IoMdCloseCircle size={20} />
                   </Button>
@@ -79,54 +81,52 @@ export function AddPhotosModal({
             </div>
           </DialogHeader>
 
-          <div className="mt-4 space-y-4">
-            {/* Select option */}
-            <Select onValueChange={handleSelect}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select photo type(s)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {photoTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+          <div className="px-4 pt-2 pb-4">
+            <div className="mt-4 space-y-4">
+              {/* Select one photo type */}
+              <Select onValueChange={handleSelect} value={selectedType || ""}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select photo type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {photoTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
 
-            {/* Show chosen items */}
-            {selectedTypes.length > 0 && (
-              <div className="grid grid-cols-2 gap-4">
-                {selectedTypes.map((type) => (
-                  <div key={type} className="grid border rounded-lg px-3 py-1">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor={`file-${type}`} className="p-0 m-0">{type}</Label>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-500"
-                        onClick={() =>
-                          setSelectedTypes((prev) =>
-                            prev.filter((t) => t !== type)
-                          )
-                        }
-                      >
-                       <RiDeleteBin6Line size={20}/>
-                      </Button>
-                    </div>
-                    <Input
-                      id={`file-${type}`}
-                      type="file"
-                      accept="image/*"
-                      className="cursor-pointer h-10"
-                    />
+              {/* Show file input if a type is selected */}
+              {selectedType && (
+                <div className="grid border rounded-lg px-3 py-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <Label htmlFor="file-input">{selectedType}</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500"
+                      onClick={() => {
+                        setSelectedType(null);
+                        setFile(null);
+                      }}
+                    >
+                      <RiDeleteBin6Line size={20} />
+                    </Button>
                   </div>
-                ))}
-              </div>
-            )}
+                  <Input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    className="cursor-pointer h-10"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </DialogContent>

@@ -259,7 +259,6 @@ const Page = () => {
                     {...register("first_name", {
                       required: "First name is required",
                     })}
-                    placeholder="First Name"
                     className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.first_name ? "border-red-500" : ""
                     }`}
@@ -272,7 +271,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("middle_name")}
-                    placeholder="Middle Name"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -286,7 +284,6 @@ const Page = () => {
                     {...register("last_name", {
                       required: "Last name is required",
                     })}
-                    placeholder="Last Name"
                     className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.last_name ? "border-red-500" : ""
                     }`}
@@ -301,7 +298,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("prefix")}
-                    placeholder="Mr, Ms, Dr, etc."
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -365,7 +361,6 @@ const Page = () => {
                     {...register("phone_mobile", {
                       required: "Primary phone is required",
                     })}
-                    placeholder="Primary Phone"
                     className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.phone_mobile ? "border-red-500" : ""
                     }`}
@@ -378,7 +373,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("phone_home")}
-                    placeholder="Home Phone"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -388,7 +382,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("phone_emergency")}
-                    placeholder="Emergency Phone"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -406,7 +399,6 @@ const Page = () => {
                         message: "Invalid email format",
                       },
                     })}
-                    placeholder="Email"
                     className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.email_id ? "border-red-500" : ""
                     }`}
@@ -522,7 +514,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("height")}
-                    placeholder="Height in inches"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -560,7 +551,6 @@ const Page = () => {
                     <Input
                       type="text"
                       {...register("weight")}
-                      placeholder="Weight"
                       className=" flex-1 focus:outline-none focus:border-b focus:border-orange-500"
                     />
                   </div>
@@ -659,7 +649,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("whatsapp_number")}
-                    placeholder="WhatsApp Number"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -672,7 +661,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("linkedin")}
-                    placeholder="LinkedIn URL"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -682,7 +670,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("facebook")}
-                    placeholder="Facebook URL"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -692,7 +679,6 @@ const Page = () => {
                   <Input
                     type="text"
                     {...register("instagram")}
-                    placeholder="Instagram URL"
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
@@ -714,7 +700,6 @@ const Page = () => {
                   <Label>Brief summary about you</Label>
                   <textarea
                     {...register("summary")}
-                    placeholder="A success story, achievement, or any additional info"
                     className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
                     rows={4}
                   />

@@ -55,10 +55,6 @@ const FormSection = () => {
     string[]
   >([]);
   const [localError, setLocalError] = useState<string | null>(null);
-  const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
-  });
 
   // Fetch properties from backend on mount
   useEffect(() => {
@@ -238,32 +234,10 @@ const FormSection = () => {
     suggestionHighlighted: "bg-orange-200 text-orange-900",
   };
 
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
 
   return (
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">
-        <div className="mb-6">
-          <div className="flex justify-end items-center mb-3 mt-3">
-            <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
-              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
-              Add Hobbie
-            </Button>
-          </div>
-        </div>
         {/* Hobbies Section */}
         <div className="mb-6">
           <h3 className="BRCobane18600 mb-3">Hobbies</h3>
@@ -392,15 +366,6 @@ const FormSection = () => {
           </button>
         </div>
       </section>
-      <AddHobbieModal
-        open={openModal.add}
-        onOpenChange={(value) =>
-          setOpenModal((prev) => ({
-            ...prev,
-            add: value,
-          }))
-        }
-      />
     </>
   );
 };

@@ -2,21 +2,27 @@
 import React, { useEffect } from "react";
 import Sidebar from "./_components/Sidebar";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { ProfileContextProvider, useProfileContext } from "@/app/utils/useProfileContext";
+import {
+  ProfileContextProvider,
+  useProfileContext,
+} from "@/app/utils/useProfileContext";
 import Tabs from "./_components/Tabs";
 import { Button } from "@/components/ui/button";
 import { useRouter, usePathname } from "next/navigation";
 import { getNextRoute } from "@/app/utils/routeOrder";
+import Link from "next/link";
+import { Eye } from "lucide-react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const {loadMetaData} = useMetaDataLoader();
+  const { loadMetaData } = useMetaDataLoader();
   const { setSelectedProfileID } = useProfileContext();
   const router = useRouter();
   const pathname = usePathname();
+    const { selectedProfileID } = useProfileContext();
 
   const handleContinue = () => {
     // Trigger form submission by dispatching a custom event
-    const continueEvent = new CustomEvent('profile-continue');
+    const continueEvent = new CustomEvent("profile-continue");
     window.dispatchEvent(continueEvent);
   };
 
@@ -28,16 +34,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     loadMetaData();
     // setSelectedProfileID(21); // remove this once photos work
-  }, [loadMetaData])
+  }, [loadMetaData]);
 
   return (
-    
-      <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
-        <div className="flex justify-between items-center w-full mb-4">
-          <h2 className="dmserif32600">Create Profile</h2>
-          
-          {/* Top Navigation Buttons */}
-          {/* <div className="flex gap-3">
+    <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
+      <div className="flex justify-between items-center w-full mb-4">
+        <h2 className="dmserif32600">Create Profile</h2>
+        <Button variant="outline">
+          <Link
+            href={`/profiles/${selectedProfileID}`}
+            className="flex items-center gap-2"
+          >
+            <Eye size={20} />
+            Preview My Profile
+          </Link>
+        </Button>
+
+        {/* Top Navigation Buttons */}
+        {/* <div className="flex gap-3">
             <Button
               type="button"
               onClick={handleContinue}
@@ -54,15 +68,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Skip
             </Button>
           </div> */}
-        </div>
-        <div className="profile-details-box w-full text-left">
-          <div>
-            <Tabs />
-            {/* <Sidebar /> */}
-            {children}
-          </div>
+      </div>
+      <div className="profile-details-box w-full text-left">
+        <div>
+          <Tabs />
+          {/* <Sidebar /> */}
+          {children}
         </div>
       </div>
-    
+    </div>
   );
 }

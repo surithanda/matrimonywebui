@@ -2,16 +2,14 @@
 import {
   createLifestyleAsync,
   getLifestyleAsync,
-  updateLifestyleAsync,
 } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { Button } from "@/components/ui/button";
-import { FaPlus } from "react-icons/fa6";
-import { AddLifeStyleModal } from "./lifestyle-modals/AddLifeStyleModal";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ILifestyleSelections {
   profile_lifestyle_id: number | null;
@@ -38,10 +36,6 @@ const FormSection = () => {
     gamblingEngage: "",
     physicalActivityLevel: "",
     relaxationMethods: "",
-  });
-  const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
   });
 
   // Define categories and their options
@@ -172,74 +166,55 @@ const FormSection = () => {
     );
   }, [selectedProfileID, dispatch]);
 
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
-
   return (
     <>
-      <section className="md:py-5 w-full">
-        <div className="mb-6">
-          <div className="flex justify-end items-center mb-3 mt-3">
-            <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
-              className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
-              Add LifeStyle
-            </Button>
-          </div>
+ <section className="md:py-5 w-full">
+  <div className="space-y-6">
+    {Object.entries(categories).map(([category, options]) => (
+      <div key={category}>
+        <h3 className="BRCobane18600 mb-3">{category}</h3>
+        <div className="flex flex-col md:flex-row md:flex-wrap gap-4 w-full">
+          {options.map((option) => {
+            const checked = isOptionSelected(category, option);
+            return (
+              <Label
+                key={option}
+                className={`hover:bg-accent/50 w-full md:w-[185px] flex items-start gap-3 rounded-lg border p-3 cursor-pointer 
+                  ${checked ? "border-orange-500 bg-orange-50 dark:border-orange-800 dark:bg-orange-950" : "border-gray-300 bg-white dark:bg-gray-800"}
+                `}
+              >
+                <Checkbox
+                  checked={checked}
+                  onCheckedChange={() => handleSelection(category, option)}
+                  className={`data-[state=checked]:border-orange-500 data-[state=checked]:bg-gradient-to-b data-[state=checked]:from-yellow-400 data-[state=checked]:to-orange-500 data-[state=checked]:text-white dark:data-[state=checked]:border-orange-700 dark:data-[state=checked]:bg-orange-700`}
+                />
+                <div className="grid gap-1.5 font-normal">
+                  <p className="text-sm leading-none font-medium">{option}</p>
+                </div>
+              </Label>
+            );
+          })}
         </div>
-        <div className="space-y-6">
-          {Object.entries(categories).map(([category, options]) => (
-            <div key={category}>
-              <h3 className="BRCobane18600 mb-3">{category}</h3>
-              <div className="flex flex-wrap gap-4">
-                {options.map((option, idx) => (
-                  <button
-                    key={option}
-                    onClick={() => handleSelection(category, option)}
-                    className={`w-[185px] flex p-3 items-start gap-2 flex-[1_0_0] rounded-lg border border-gray-300 font-medium ${
-                      isOptionSelected(category, option)
-                        ? "bg-gradient-to-b from-yellow-400 to-orange-500 text-black"
-                        : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+      </div>
+    ))}
+  </div>
 
-        <div className="flex justify-between mt-[100px]">
-          <div className="flex justify-start gap-4">
-            <button
-              onClick={handleSubmit}
-              className="yellow-btn hover:bg-orange-600"
-            >
-              Continue
-            </button>
-            <button className="gray-btn hover:bg-gray-400">Cancel</button>
-          </div>
-          <button
-            className="gray-btn hover:bg-gray-400"
-            onClick={() => router.push("/createprofile/family")}
-          >
-            Skip
-          </button>
-        </div>
-      </section>
-      <AddLifeStyleModal open={openModal.add} onOpenChange={closeAddModal} />
+  <div className="flex flex-col md:flex-row justify-between mt-[100px] gap-4">
+    <div className="flex flex-col sm:flex-row gap-4">
+      <button onClick={handleSubmit} className="yellow-btn hover:bg-orange-600 w-full sm:w-auto">
+        Continue
+      </button>
+      <button className="gray-btn hover:bg-gray-400 w-full sm:w-auto">Cancel</button>
+    </div>
+    <button
+      className="gray-btn hover:bg-gray-400 w-full sm:w-auto"
+      onClick={() => router.push("/createprofile/family")}
+    >
+      Skip
+    </button>
+  </div>
+</section>
+
     </>
   );
 };

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 
-export function AddEmploymentModal({
+export function EditEmploymentModal({
   open,
   onOpenChange,
 }: {
@@ -30,39 +30,38 @@ export function AddEmploymentModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">
-        <DialogHeader className="">
-          <div className="flex items-center justify-between gap-4">
-            {/* Title left */}
-            <DialogTitle style={{ fontFamily: "BR Cobane" }}>
-              Edit Employment
-            </DialogTitle>
-
-            {/* Button right */}
-            <div className="flex items-center gap-2">
-              <Button
-                className="border hover:text-orange-600 gap-2"
-                variant={"outline"}
-              >
-                <IoIosSave size={20} />
-                Save
-              </Button>
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  className="border bg-transparent p-0 hover:text-red-500"
-                  variant="outline"
-                  size={"icon"}
-                >
-                  <IoMdCloseCircle size={20} />
-                </Button>
-              </DialogClose>
-            </div>
-          </div>
-        </DialogHeader>
         <form>
+          <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
+            <div className="flex items-center justify-between gap-4">
+              {/* Title left */}
+              <DialogTitle className="text-white text-xl" style={{ fontFamily: "BR Cobane" }}>
+                Edit Employment
+              </DialogTitle>
+
+              {/* Button right */}
+              <div className="flex items-center gap-3">
+                <Button
+                  className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-orange-400 gap-2"
+                  variant={"outline"}
+                >
+                  <IoIosSave size={20} />
+                </Button>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    className="border-0 p-0 bg-transparent text-white hover:bg-transparent  hover:text-red-500"
+                    variant="outline"
+                  >
+                    <IoMdCloseCircle size={20} />
+                  </Button>
+                </DialogClose>
+              </div>
+            </div>
+          </DialogHeader>
+      <div className="px-4 pt-2 pb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="">
-              <Label>Company Name</Label>
+              <Label className="ml-1">Company Name</Label>
               <Input
                 type="text"
                 placeholder="Institute Name"
@@ -70,16 +69,16 @@ export function AddEmploymentModal({
               />
             </div>
             <div>
-              <Label>Field of Study</Label>
+              <Label className="ml-1">Job Title</Label>
               <MetadataSelectComponent
-                type="field_of_study"
+                type="job_title"
                 // value={currentEducation.field_of_study}
                 // onChange={handleInputChange}
                 className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
               />
             </div>
             <div className="">
-              <Label>Start Year</Label>
+              <Label className="ml-1">Start Year</Label>
               <Input
                 type="text"
                 placeholder="Year Started"
@@ -87,7 +86,7 @@ export function AddEmploymentModal({
               />
             </div>
             <div className="">
-              <Label>End Year</Label>
+              <Label className="ml-1">End Year</Label>
               <Input
                 type="text"
                 placeholder="Year Ended"
@@ -95,7 +94,7 @@ export function AddEmploymentModal({
               />
             </div>
             <div>
-              <Label>Last Salary Drawn</Label>
+              <Label className="ml-1">Last Salary Drawn</Label>
               <Input
                 type="text"
                 placeholder="Last Salary Drawn"
@@ -103,7 +102,7 @@ export function AddEmploymentModal({
               />
             </div>
             <div>
-              <Label>Address</Label>
+              <Label className="ml-1">Address</Label>
               <Input
                 type="text"
                 placeholder="Complete Address"
@@ -114,7 +113,7 @@ export function AddEmploymentModal({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
             <div>
-              <Label>Country</Label>
+              <Label className="ml-1">Country</Label>
               <Select>
                 <SelectTrigger className="w-[100%]">
                   <SelectValue placeholder="Select a country" />
@@ -131,7 +130,7 @@ export function AddEmploymentModal({
               </Select>
             </div>
             <div>
-              <Label>State</Label>
+              <Label className="ml-1">State</Label>
               <Select>
                 <SelectTrigger className="w-[100%]">
                   <SelectValue placeholder="Select a state" />
@@ -148,7 +147,7 @@ export function AddEmploymentModal({
               </Select>
             </div>
             <div>
-              <Label>City</Label>
+              <Label className="ml-1">City</Label>
               <Input
                 type="text"
                 placeholder="Enter city"
@@ -156,7 +155,7 @@ export function AddEmploymentModal({
               />
             </div>
             <div>
-              <Label>Zip Code</Label>
+              <Label className="ml-1">Zip Code</Label>
               <Input
                 type="text"
                 placeholder="Enter zip code"
@@ -164,6 +163,7 @@ export function AddEmploymentModal({
               />
             </div>
           </div>
+      </div>
         </form>
       </DialogContent>
     </Dialog>

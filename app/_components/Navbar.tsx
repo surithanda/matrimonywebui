@@ -88,11 +88,11 @@ export const Navbar = () => {
 
   const dashboardLinks = [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/profiles", label: "Profiles" },
-    { href: "/settings", label: "Profile Settings" },
     { href: "/search", label: "Search" },
-    { href: "/recommendations", label: "Recommendations" },
     { href: "/favourites", label: "Favourites" },
+    { href: "/profiles", label: "Profiles" },
+    { href: "/recommendations", label: "Recommendations" },
+    // { href: "/settings", label: "Profile Settings" },
   ];
 
   const navLinks = isLoggedIn ? dashboardLinks : publicLinks;
@@ -107,7 +107,7 @@ export const Navbar = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="flex justify-between items-center px-5 md:px-1 lg:px-4 xl:px-20 py-4">
+      <div className="flex justify-between items-center px-5 md:px-1 lg:px-0 xl:px-10 2xl:px-20 py-4">
         {/* Logo */}
         <Link href="/">
           <Image

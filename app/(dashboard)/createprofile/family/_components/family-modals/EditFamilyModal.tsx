@@ -347,10 +347,11 @@ export function EditFamilyModal({
                 <Button
                  onClick={handleConfirmSaveAndContinue}
                   className="border hover:text-orange-600 gap-2"
-                  variant={"outline"}
-                >
-                  <IoIosSave size={20} />
-                  Save
+             variant={"outline"}
+                size={"sm"}
+              >
+                <IoIosSave size={20} />
+                Save
                 </Button>
                 <DialogClose asChild>
                   <Button

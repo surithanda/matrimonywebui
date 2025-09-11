@@ -41,9 +41,11 @@ export function EditEducationModal({
             <div className="flex items-center gap-2">
               <Button
                 className="border hover:text-orange-600 gap-2"
-                variant={"outline"}
+               variant={"outline"}
+                size={"sm"}
               >
                 <IoIosSave size={20} />
+                Save
                 Save
               </Button>
               <DialogClose asChild>

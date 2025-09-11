@@ -44,7 +44,7 @@ export function AddFriendAndReferenceModal({
             {/* Button right */}
             <div className="flex items-center gap-3">
               <Button
-                className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-orange-400 gap-2"
+                className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-2"
                 variant={"outline"}
               >
                 <IoIosSave size={20} />

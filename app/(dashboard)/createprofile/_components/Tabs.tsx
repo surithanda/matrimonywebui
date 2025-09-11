@@ -106,7 +106,7 @@ export default function Tabs() {
                 setActiveItem(item.id);
                 router.push(item.link);
               }}
-              className={`flex items-center gap-1 px-2 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-center 
+              className={`flex items-center gap-2 px-2 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-start 
     ${
       item.disabled ? "cursor-not-allowed text-gray-400" : "hover:text-gray-800"
     }

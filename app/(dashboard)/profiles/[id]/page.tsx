@@ -1289,7 +1289,7 @@ const ViewProfile = () => {
 
   return (
     <>
-      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[120px] md:pt-8 mt-16">
+      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
         {/* Profile Header */}
         <div>
           <div className="w-full rounded-lg overflow-hidden shadow-md mb-4 relative">
@@ -1399,8 +1399,8 @@ const ViewProfile = () => {
                   >
                     Personal Information
                   </h2>
-                  <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
-                    <div className="flex items-center gap-4">
+                  <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Age</p>
                       <p>
                         {profileData?.birth_date
@@ -1420,19 +1420,19 @@ const ViewProfile = () => {
                           : "N/A"}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Marital Status</p>
                       <p>{profileData?.marital_status}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Gender</p>
                       <p>{profileData?.gender || "N/A"}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Religion</p>
                       <p>{profileData?.religion || "N/A"}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Weight</p>
                       <p>
                         {formatWeight(
@@ -1441,7 +1441,7 @@ const ViewProfile = () => {
                         )}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Height</p>
                       <p>
                         {profileData?.height_cms

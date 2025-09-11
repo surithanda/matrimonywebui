@@ -238,7 +238,7 @@ const Page = () => {
   return (
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Personal Details */}
           <div className="border border-gray-100  bg-gray-100 rounded-lg shadow mb-4">
             <h3

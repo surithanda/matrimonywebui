@@ -348,10 +348,12 @@ export function AddFamilyModal({
               <div className="flex items-center gap-2">
                 <Button
                   onClick={handleConfirmSaveAndContinue}
-                  className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-orange-400 gap-2"
+                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-2"
                   variant={"outline"}
+                  size={"sm"}
                 >
                   <IoIosSave size={20} />
+                  Save
                 </Button>
                 <DialogClose asChild>
                   <Button

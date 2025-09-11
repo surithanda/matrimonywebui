@@ -42,9 +42,11 @@ export function EditEmploymentModal({
               <div className="flex items-center gap-3">
                 <Button
                   className="border-0 p-0 bg-transparent text-white hover:bg-transparent hover:text-orange-400 gap-2"
-                  variant={"outline"}
-                >
-                  <IoIosSave size={20} />
+                    variant={"outline"}
+                size={"sm"}
+              >
+                <IoIosSave size={20} />
+                Save
                 </Button>
                 <DialogClose asChild>
                   <Button

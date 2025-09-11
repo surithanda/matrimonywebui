@@ -41,7 +41,7 @@ const page = () => {
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       <div className="flex justify-between items-center w-full">
-        <h2 className="dmserif32600">Profiles</h2>
+        <h2 className="dmserif32600" style={{ fontFamily: "BR Cobane" }}>Profiles</h2>
         <button className="yellow-btn">Add Profile</button>
       </div>
       <div className="flex gap-6">

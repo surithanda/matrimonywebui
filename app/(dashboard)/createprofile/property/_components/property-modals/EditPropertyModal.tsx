@@ -51,7 +51,7 @@ const defaultProperty: IPropertyFieldValue = {
   property_address: "",
 };
 
-export function EditPropertyModal({
+export function AddPropertyModal({
   open,
   onOpenChange,
 }: {
@@ -252,84 +252,93 @@ export function EditPropertyModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">
         <form>
-          <DialogHeader className="">
+          <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
               {/* Title left */}
-              <DialogTitle style={{ fontFamily: "BR Cobane" }}>
-                Edit Property
+              <DialogTitle className="text-white text-xl" style={{ fontFamily: "BR Cobane" }}>
+                Add Property
               </DialogTitle>
 
               {/* Button right */}
-              <div className="flex items-center gap-2">
-                <Button
-                  className="border hover:text-orange-600 gap-2"
-                  variant={"outline"}
+            <div className="flex items-center gap-3">
+              <Button
+                className="border-0 px-2 bg-white text-black text-white hover:bg-transparent hover:text-orange-400 gap-2"
+         variant={"outline"}
+                  size={"sm"}
                 >
                   <IoIosSave size={20} />
                   Save
+              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  className="border-0 p-0 bg-transparent text-white hover:bg-transparent  hover:text-red-500"
+                  variant="outline"
+                >
+                  <IoMdCloseCircle size={20} />
                 </Button>
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    className="border bg-transparent p-0 hover:text-red-500"
-                    variant="outline"
-                    size={"icon"}
-                  >
-                    <IoMdCloseCircle size={20} />
-                  </Button>
-                </DialogClose>
-              </div>
+              </DialogClose>
+            </div>
             </div>
           </DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
-            <div className="">
-              <Label className="block text-gray-700 mb-2">Property Type</Label>
-              <MetadataSelectComponent
-                type="property_type"
-                value={currentProperty.property_type ?? -1}
+          <div className="px-4 pt-2 pb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
+              <div className="">
+                <Label className="block text-gray-700 mb-2">
+                  Property Type
+                </Label>
+                <MetadataSelectComponent
+                  type="property_type"
+                  value={currentProperty.property_type ?? -1}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="">
+                <Label className="block text-gray-700 mb-2">
+                  Ownership Type
+                </Label>
+                <MetadataSelectComponent
+                  type="ownership_type"
+                  value={currentProperty.ownership_type ?? -1}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="w-full mb-2">
+              <Label className="block text-gray-700 mb-2">
+                Complete Address
+              </Label>
+              <Input
+                name="property_address"
+                placeholder="Complete Address"
+                value={currentProperty.property_address}
                 onChange={handleInputChange}
+                className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+            <div className="mb-2">
+              <Label className="block text-gray-700 mb-2">Size/Area</Label>
+              <Input
+                type="text"
+                name="property_value"
+                value={currentProperty.property_value ?? ""}
+                onChange={handleInputChange}
+                placeholder="Area in sq. ft."
+                className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <div className="">
-              <Label className="block text-gray-700 mb-2">Ownership Type</Label>
-              <MetadataSelectComponent
-                type="ownership_type"
-                value={currentProperty.ownership_type ?? -1}
+              <Label className="block text-gray-700 mb-2">Description</Label>
+              <Input
+                type="text"
+                name="property_description"
+                value={currentProperty.property_description}
                 onChange={handleInputChange}
+                placeholder="Description (optional)"
+                className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
-          </div>
-          <div className="w-full mb-2">
-            <Label className="block text-gray-700 mb-2">Complete Address</Label>
-            <Input
-              name="property_address"
-              placeholder="Complete Address"
-              value={currentProperty.property_address}
-              onChange={handleInputChange}
-              className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div className="mb-2">
-            <Label className="block text-gray-700 mb-2">Size/Area</Label>
-            <Input
-              type="text"
-              name="property_value"
-              value={currentProperty.property_value ?? ""}
-              onChange={handleInputChange}
-              placeholder="Area in sq. ft."
-              className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div className="">
-            <Label className="block text-gray-700 mb-2">Description</Label>
-            <Input
-              type="text"
-              name="property_description"
-              value={currentProperty.property_description}
-              onChange={handleInputChange}
-              placeholder="Description (optional)"
-              className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
           </div>
         </form>
       </DialogContent>

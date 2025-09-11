@@ -33,6 +33,7 @@ import { FaDribbble, FaLinkedin } from "react-icons/fa6";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
+import { Label } from "@/components/ui/label";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -324,16 +325,16 @@ const Page = () => {
           </Button>
           {showFilters && (
             <>
-              <button
+              <Button
                 onClick={handleSearch}
-                className="black-btn"
                 disabled={loading}
+                variant={"outline"}
               >
                 {loading ? "Searching..." : "Search"}
-              </button>
-              <button onClick={handleClearFilters} className="white-btn">
+              </Button>
+              <Button onClick={handleClearFilters}>
                 Clear All
-              </button>
+              </Button>
             </>
           )}
         </div>
@@ -345,9 +346,9 @@ const Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Age Range */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Age Range
-              </label>
+              </Label>
               <div className="flex gap-2">
                 <select
                   value={localFilters.min_age || 21}
@@ -382,9 +383,9 @@ const Page = () => {
 
             {/* Religion */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Religion
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="religion"
@@ -403,9 +404,9 @@ const Page = () => {
 
             {/* Education */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Education
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="education_level"
@@ -423,9 +424,9 @@ const Page = () => {
 
             {/* Occupation */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Occupation
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="profession"
@@ -443,9 +444,9 @@ const Page = () => {
 
             {/* Country */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Country
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="country"
@@ -461,9 +462,9 @@ const Page = () => {
 
             {/* Gender */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Gender
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="gender"
@@ -481,9 +482,9 @@ const Page = () => {
 
             {/* Caste */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Caste
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="caste"
@@ -502,9 +503,9 @@ const Page = () => {
 
             {/* Marital Status */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Marital Status
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="marital_status"
@@ -539,7 +540,7 @@ const Page = () => {
 
       {/* Search Results */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-4 2xl:gap-10">
         {loading ? (
           <div className="text-center py-12 col-span-full">
             <div className="text-gray-500 text-lg">Loading profiles...</div>
@@ -562,12 +563,12 @@ const Page = () => {
                 className="relative bg-white rounded-md shadow-md overflow-hidden"
               >
                 {/* Top Cover Photo */}
-                <div className="h-36 w-full overflow-hidden">
-                  <img
+                <div className="h-36 w-full overflow-hidden bg-gray-400">
+                  {/* <img
                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0"
                     alt="Cover"
                     className="w-full h-full object-cover"
-                  />
+                  /> */}
                 </div>
 
                 {/* Profile Image */}
@@ -612,7 +613,7 @@ const Page = () => {
                 {/* Card Content */}
                 <div className="mt-12 px-6 pb-4 text-center">
                   <div className="flex justify-center items-center gap-2">
-                    <h2 className="font-bold text-lg">
+                    <h2 className="font-bold text-lg" style={{ fontFamily: "BR Cobane" }}>
                       {profile.first_name} {profile.last_name}
                     </h2>
                     <MdVerified className="inline text-blue-500" size={18} />

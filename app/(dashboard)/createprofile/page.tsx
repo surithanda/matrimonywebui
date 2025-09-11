@@ -725,7 +725,7 @@ const Page = () => {
             className="yellow-btn hover:bg-orange-600 flex items-center gap-2"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            Continue
+            Save
           </Button>
         </div>
       </form>

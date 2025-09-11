@@ -4,6 +4,8 @@ import { forgotPasswordAsync, resetPasswordAsync } from "@/app/store/features/au
 import { useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -88,8 +90,8 @@ const ForgotPassword = () => {
       { current === 0 && <form onSubmit={handleSubmit} className="w-full  md:mb-16">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
-          <label className="block BRCobane18600 mb-2.5">Email</label>
-          <input
+          <Label className="block BRCobane18600 mb-2.5">Email</Label>
+          <Input
             type="email"
             name="email"
             value={formData.email}

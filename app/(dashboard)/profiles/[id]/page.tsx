@@ -61,6 +61,7 @@ import {
   BsTelephonePlusFill,
 } from "react-icons/bs";
 import Card from "@/components/ui/carousel-card-1";
+import { Button } from "@/components/ui/button";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -68,6 +69,7 @@ const ViewProfile = () => {
   const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
   const fromSearch = searchParams.get("fromSearch") === "true";
+  console.log("searcknklsdf",fromSearch )
   const {
     findJobTitleName,
     findCountryName,
@@ -1287,6 +1289,7 @@ const ViewProfile = () => {
     },
   ];
 
+
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
@@ -1314,13 +1317,13 @@ const ViewProfile = () => {
 
             {/* Bottom Content */}
             <div className="relative px-4 sm:px-6 py-4">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-                {/* Left Section: Image + Name */}
-                <div className="flex flex-row sm:flex-row items-start gap-4">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                {/* Left Section: Image + User Info */}
+                <div className="flex flex-row items-start gap-4 w-full md:w-auto">
                   {/* Profile Image */}
                   <div
                     className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 
-      border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
+        border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
                   >
                     {profileImage?.url ? (
                       <img
@@ -1337,18 +1340,18 @@ const ViewProfile = () => {
                         >
                           <path
                             d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
-             1.79-4 4 1.79 4 4 4zm0 2c-2.67 
-             0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                1.79-4 4 1.79 4 4 4zm0 2c-2.67 
+                0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                           />
                         </svg>
                       </div>
                     )}
                   </div>
 
-                  {/* User Info */}
-                  <div className="sm:text-left">
+                  {/* User Info - Always to the right of the image */}
+                  <div className="flex-1 min-w-0">
                     <h1
-                      className="text-xl sm:text-2xl lg:text-4xl font-bold mb-2 text-black"
+                      className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 text-black truncate"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       {profileData?.first_name ||
@@ -1358,32 +1361,84 @@ const ViewProfile = () => {
                     </h1>
 
                     {/* Additional Info */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-gray-600 text-sm sm:text-base">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-gray-600 text-xs sm:text-sm md:text-base flex-wrap">
                       {/* Phone */}
                       {profileData?.phone_mobile && (
                         <div className="flex items-center gap-1">
-                          <MdLocalPhone />
-                          <span>{profileData.phone_mobile}</span>
+                          <MdLocalPhone className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.phone_mobile}
+                          </span>
                         </div>
                       )}
 
                       {/* Email */}
                       {profileData?.email_id && (
                         <div className="flex items-center gap-1">
-                          <MdEmail />
-                          <span>{profileData.email_id}</span>
+                          <MdEmail className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.email_id}
+                          </span>
                         </div>
                       )}
                       {/* Location */}
                       {profileData?.location && (
                         <div className="flex items-center gap-1">
-                          <FaLocationDot />
-                          <span>{profileData.location}</span>
+                          <FaLocationDot className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.location}
+                          </span>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
+
+                {/* Right Section: Buttons */}
+                {fromSearch && (
+
+                <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
+                  <Button className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                    Send Interest
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={handleToggleFavorite}
+                    disabled={isUpdatingFavorite}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 border ${
+                      isFavorite
+                        ? "bg-orange-100 border-orange-500 text-orange-700"
+                        : "border-orange-500 text-orange-500 hover:bg-orange-50"
+                    } px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md transition-colors whitespace-nowrap text-sm sm:text-base`}
+                  >
+                    {isUpdatingFavorite ? (
+                      <>
+                        <AiOutlineLoading3Quarters className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
+                        <span>{isFavorite ? "Removing..." : "Saving..."}</span>
+                      </>
+                    ) : (
+                      <>
+                        {isFavorite ? (
+                          <AiFillHeart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+                        ) : (
+                          <AiOutlineHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+                        )}
+                        <span>
+                          {isFavorite ? "Favorited" : "Add to Favorites"}
+                        </span>
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    variant={"outline"}
+                    className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
+                  >
+                    Send Message
+                  </Button>
+                </div>
+                )}
               </div>
             </div>
           </div>
@@ -1394,7 +1449,7 @@ const ViewProfile = () => {
               <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Personal Information
@@ -1453,7 +1508,7 @@ const ViewProfile = () => {
                 </div>
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Contact Information
@@ -1484,7 +1539,7 @@ const ViewProfile = () => {
 
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Social Information
@@ -1538,7 +1593,7 @@ const ViewProfile = () => {
                 </div>
                 <div>
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded-t-lg"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Address
@@ -1577,7 +1632,7 @@ const ViewProfile = () => {
 
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded-t-lg"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Educational Information
@@ -1618,7 +1673,7 @@ const ViewProfile = () => {
                 </div>
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
-                    className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Professional Information
@@ -1660,7 +1715,7 @@ const ViewProfile = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2">
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Family Information
@@ -1688,7 +1743,7 @@ const ViewProfile = () => {
                   </div>
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Friends & Reference
@@ -1718,7 +1773,7 @@ const ViewProfile = () => {
                   </div>
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Lifestyle
@@ -1748,7 +1803,7 @@ const ViewProfile = () => {
                   </div>
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Hobbies
@@ -1778,9 +1833,9 @@ const ViewProfile = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
-                                    <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
+                  <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Partner Preferences
@@ -1810,7 +1865,7 @@ const ViewProfile = () => {
                   </div>
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
                     <h2
-                      className="bg-gray-100 text-black text-xl font-bold px-4 py-4 rounded"
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Profile Summary

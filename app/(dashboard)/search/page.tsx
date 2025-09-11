@@ -275,7 +275,7 @@ const Page = () => {
   // Helper function to get profile image with fallback
   const getProfileImage = (profile: any) => {
     // Return actual image if available
-    console.log(profile);
+    console.log("ndbhfbdajf", profile);
     if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
     if (profile?.url) return toAbsoluteUrl(profile.url);
 
@@ -332,9 +332,7 @@ const Page = () => {
               >
                 {loading ? "Searching..." : "Search"}
               </Button>
-              <Button onClick={handleClearFilters}>
-                Clear All
-              </Button>
+              <Button onClick={handleClearFilters}>Clear All</Button>
             </>
           )}
         </div>
@@ -613,7 +611,10 @@ const Page = () => {
                 {/* Card Content */}
                 <div className="mt-12 px-6 pb-4 text-center">
                   <div className="flex justify-center items-center gap-2">
-                    <h2 className="font-bold text-lg" style={{ fontFamily: "BR Cobane" }}>
+                    <h2
+                      className="font-bold text-lg"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
                       {profile.first_name} {profile.last_name}
                     </h2>
                     <MdVerified className="inline text-blue-500" size={18} />
@@ -648,29 +649,31 @@ const Page = () => {
                   </div>
 
                   {/* Buttons */}
-                  <div className="flex items-center gap-4 mt-6">
+                  <div className="flex justify-between items-center gap-4 mt-6 overflow-hidden">
                     <Button
                       className="w-full text-orange-500 border border-orange-500 rounded-md hover:bg-orange-600 hover:text-white transition-colors"
                       variant="outline"
-                      size="lg"
+                      size="md"
                     >
                       Send Interest
                     </Button>
-                    <Link
-                      href={`/profiles/${
-                        profile.id ||
-                        profile.profile_id ||
-                        profile.user_id ||
-                        index
-                      }?fromSearch=true`}
+
+                    <Button
+                      asChild
+                      className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
+                      size="md"
                     >
-                      <Button
-                        className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
-                        size="lg"
+                      <Link
+                        href={`/profiles/${
+                          profile.id ||
+                          profile.profile_id ||
+                          profile.user_id ||
+                          index
+                        }?fromSearch=true`}
                       >
                         View Profile
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               </div>

@@ -251,7 +251,10 @@ export function AddPropertyModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">
-        <form>
+        <form    onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}>
           <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
               {/* Title left */}
@@ -265,9 +268,10 @@ export function AddPropertyModal({
                 className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-2"
          variant={"outline"}
                   size={"sm"}
+                                onClick={handleAddOrUpdate}
                 >
                   <IoIosSave size={20} />
-                  Save
+                 {editIndex !== null ? "Update" : "Save"}
               </Button>
               <DialogClose asChild>
                 <Button
@@ -311,7 +315,6 @@ export function AddPropertyModal({
               </Label>
               <Input
                 name="property_address"
-                placeholder="Complete Address"
                 value={currentProperty.property_address}
                 onChange={handleInputChange}
                 className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -320,11 +323,10 @@ export function AddPropertyModal({
             <div className="mb-2">
               <Label className="block text-gray-700 mb-2">Size/Area</Label>
               <Input
-                type="text"
+             type="text"
                 name="property_value"
                 value={currentProperty.property_value ?? ""}
                 onChange={handleInputChange}
-                placeholder="Area in sq. ft."
                 className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -335,7 +337,6 @@ export function AddPropertyModal({
                 name="property_description"
                 value={currentProperty.property_description}
                 onChange={handleInputChange}
-                placeholder="Description (optional)"
                 className="stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>

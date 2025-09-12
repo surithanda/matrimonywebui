@@ -62,6 +62,16 @@ import {
 } from "react-icons/bs";
 import Card from "@/components/ui/carousel-card-1";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
+import AppBreadcrumb from "../../_components/AppBreadcrumb";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -69,7 +79,7 @@ const ViewProfile = () => {
   const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
   const fromSearch = searchParams.get("fromSearch") === "true";
-  console.log("searcknklsdf",fromSearch )
+  console.log("searcknklsdf", fromSearch);
   const {
     findJobTitleName,
     findCountryName,
@@ -1289,10 +1299,16 @@ const ViewProfile = () => {
     },
   ];
 
-
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
+        {/* ✅ Breadcrumb added here */}
+        <AppBreadcrumb
+          items={[
+            { label: "Dahsboard", href: "/dashboard" },
+            { label: "Preview My Profile" },
+          ]}
+        />
         {/* Profile Header */}
         <div>
           <div className="w-full rounded-lg overflow-hidden shadow-md mb-4 relative">
@@ -1396,48 +1412,49 @@ const ViewProfile = () => {
 
                 {/* Right Section: Buttons */}
                 {fromSearch && (
+                  <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
+                    <Button className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                      Send Interest
+                    </Button>
 
-                <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
-                  <Button className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
-                    Send Interest
-                  </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleToggleFavorite}
+                      disabled={isUpdatingFavorite}
+                      className={`flex items-center justify-center gap-1 sm:gap-2 border ${
+                        isFavorite
+                          ? "bg-orange-100 border-orange-500 text-orange-700"
+                          : "border-orange-500 text-orange-500 hover:bg-orange-50"
+                      } px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md transition-colors whitespace-nowrap text-sm sm:text-base`}
+                    >
+                      {isUpdatingFavorite ? (
+                        <>
+                          <AiOutlineLoading3Quarters className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
+                          <span>
+                            {isFavorite ? "Removing..." : "Saving..."}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {isFavorite ? (
+                            <AiFillHeart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+                          ) : (
+                            <AiOutlineHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+                          )}
+                          <span>
+                            {isFavorite ? "Favorited" : "Add to Favorites"}
+                          </span>
+                        </>
+                      )}
+                    </Button>
 
-                  <Button
-                    variant="outline"
-                    onClick={handleToggleFavorite}
-                    disabled={isUpdatingFavorite}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 border ${
-                      isFavorite
-                        ? "bg-orange-100 border-orange-500 text-orange-700"
-                        : "border-orange-500 text-orange-500 hover:bg-orange-50"
-                    } px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md transition-colors whitespace-nowrap text-sm sm:text-base`}
-                  >
-                    {isUpdatingFavorite ? (
-                      <>
-                        <AiOutlineLoading3Quarters className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
-                        <span>{isFavorite ? "Removing..." : "Saving..."}</span>
-                      </>
-                    ) : (
-                      <>
-                        {isFavorite ? (
-                          <AiFillHeart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
-                        ) : (
-                          <AiOutlineHeart className="h-4 w-4 sm:h-5 sm:w-5" />
-                        )}
-                        <span>
-                          {isFavorite ? "Favorited" : "Add to Favorites"}
-                        </span>
-                      </>
-                    )}
-                  </Button>
-
-                  <Button
-                    variant={"outline"}
-                    className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
-                  >
-                    Send Message
-                  </Button>
-                </div>
+                    <Button
+                      variant={"outline"}
+                      className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
+                    >
+                      Send Message
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

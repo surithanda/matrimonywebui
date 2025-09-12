@@ -561,46 +561,10 @@ const Page = () => {
                 className="relative bg-white rounded-md shadow-md overflow-hidden"
               >
                 {/* Top Cover Photo */}
-                <div className="h-36 w-full overflow-hidden bg-gray-400">
-                  {/* <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0"
-                    alt="Cover"
-                    className="w-full h-full object-cover"
-                  /> */}
-                </div>
+                <div className="h-36 w-full overflow-hidden bg-gray-200"></div>
 
-                {/* Profile Image */}
-                <div className="absolute top-[5.7rem] left-1/2 transform -translate-x-1/2">
-                  {(() => {
-                    const profileImage = getProfileImage(profile);
-                    return profileImage ? (
-                      <Image
-                        className="w-24 h-24 rounded-full border-4 border-white object-cover"
-                        src={profileImage}
-                        alt={profile.first_name || "Profile"}
-                        width={96}
-                        height={96}
-                      />
-                    ) : (
-                      <div
-                        className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
-                          profile.first_name || "Unknown"
-                        )}`}
-                      >
-                        {getInitials(profile.first_name, profile.last_name)}
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {/* Favorite Icon */}
-
-                <div className="flex justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
-                  {/* <MdVerified className="inline text-blue-500" size={14} />
-                  <MdVerified className="inline text-red-500" size={14} />
-                  <MdVerified className="inline text-orange-500" size={14} />
-                  <MdVerified className="inline text-yellow-500" size={14} />
-                  <MdVerified className="inline text-sky-500" size={14} /> */}
+                {/* Favorite + Badges */}
+                <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
                   <button
                     onClick={() => handleToggleFavorite(profile.profile_id)}
                     className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
@@ -611,39 +575,91 @@ const Page = () => {
                       <IoIosHeartEmpty size={20} className="text-black" />
                     )}
                   </button>
-                </div>
-                <div className="absolute right-2 flex items-center gap-1 top-[9.3rem]">
-                  <MdVerified className="inline text-blue-500" size={14} />
-                  <MdVerified className="inline text-red-500" size={14} />
-                  <MdVerified className="inline text-orange-500" size={14} />
-                  <MdVerified className="inline text-yellow-500" size={14} />
-                  <MdVerified className="inline text-slate-500" size={14} />
+                  <div className="flex flex-col gap-1">
+                    <MdVerified
+                      className="inline text-blue-500 cursor-pointer"
+                      size={14}
+                      title="Verified Address"
+                    />
+                    <MdVerified
+                      className="inline text-red-500 cursor-pointer"
+                      size={14}
+                      title="Verified Education"
+                    />
+                    <MdVerified
+                      className="inline text-orange-500 cursor-pointer"
+                      size={14}
+                      title="Verified Contact"
+                    />
+                    <MdVerified
+                      className="inline text-yellow-500 cursor-pointer"
+                      size={14}
+                      title="Verified Employment"
+                    />
+                    <MdVerified
+                      className="inline text-sky-500 cursor-pointer"
+                      size={14}
+                      title="Verified Family"
+                    />
+                  </div>
                 </div>
 
                 {/* Card Content */}
-                <div className="mt-12 px-6 pb-4 text-center">
-                  <div className="flex justify-center items-center gap-2">
-                    <h2
-                      className="font-bold text-lg"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      {profile.first_name} {profile.last_name}
-                    </h2>
-                    {/* <MdVerified className="inline text-blue-500" size={18} /> */}
+                <div className="px-6 pb-4">
+                  {/* Profile Image + Name/Details Side by Side */}
+                  <div className="flex items-center gap-4">
+                    <div className="absolute left-3 top-[7rem]">
+                      {(() => {
+                        const profileImage = getProfileImage(profile);
+                        return profileImage ? (
+                          <Image
+                            className="w-24 h-24 rounded-full border-4 border-white object-cover"
+                            src={profileImage}
+                            alt={profile.first_name || "Profile"}
+                            width={96}
+                            height={96}
+                          />
+                        ) : (
+                          <div
+                            className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
+                              profile.first_name || "Unknown"
+                            )}`}
+                          >
+                            {getInitials(profile.first_name, profile.last_name)}
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Name + Occupation + Location */}
+                    <div className="flex flex-col ms-[6rem] mt-1">
+                      <h2
+                        className="font-bold text-lg"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        {profile.first_name} {profile.last_name}
+                      </h2>
+
+                      {/* Always render a line (min-h for fixed height) */}
+                      <p className="text-gray-500 text-xs min-h-[1rem]">
+                        {profile.occupation ||
+                        profile.city ||
+                        profile.country ? (
+                          <>
+                            {profile.occupation}
+                            {profile.occupation &&
+                            (profile.city || profile.country)
+                              ? " · "
+                              : ""}
+                            {profile.city || profile.country}
+                          </>
+                        ) : null}
+                      </p>
+                    </div>
                   </div>
 
-                  {(profile.occupation || profile.city || profile.country) && (
-                    <p className="text-gray-500 text-sm">
-                      {profile.occupation}
-                      {profile.occupation && (profile.city || profile.country)
-                        ? " · "
-                        : ""}
-                      {profile.city || profile.country}
-                    </p>
-                  )}
-
                   {/* Stats */}
-                  <div className="flex justify-around mt-4">
+                  <div className="flex justify-around mt-3">
                     <div>
                       <p className="font-bold text-lg">{profile?.age}</p>
                       <p className="text-gray-400 text-sm">Age</p>

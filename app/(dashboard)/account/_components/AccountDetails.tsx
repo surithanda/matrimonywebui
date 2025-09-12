@@ -212,7 +212,7 @@ const AccountSettings = () => {
             </Label>
           </div>
         </div>
-        <Button className="red-btn hover:bg-red-600">Deactivate Account</Button>
+        {/* <Button className="red-btn hover:bg-red-600">Deactivate Account</Button> */}
       </div>
 
       <form onSubmit={handleSubmit} className="w-full">
@@ -221,7 +221,7 @@ const AccountSettings = () => {
             className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
             style={{ fontFamily: "BR Cobane" }}
           >
-            Personal Information
+            Account Personal Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 pb-4 bg-white rounded-md mt-4">
             <div>
@@ -366,7 +366,7 @@ const AccountSettings = () => {
             className="bg-orange-500 hover:bg-orange-600 transition"
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save Changes"}
+            {loading ? "Saving..." : "Save"}
           </Button>
         </div>
       </form>

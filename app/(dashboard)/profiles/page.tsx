@@ -1,101 +1,234 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
+import { MdVerified } from "react-icons/md";
+import { Button } from "@/components/ui/button"; // adjust import path if needed
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
 import profile4 from "@/public/images/dashboard/profile4.png";
+import { Eye } from "lucide-react";
 
-const page = () => {
+// ✅ Utility functions (you probably already have them somewhere)
+function getInitials(firstName?: string, lastName?: string) {
+  if (!firstName && !lastName) return "?";
+  return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+}
+
+function getAvatarColor(name: string) {
+  const colors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
+
+function getProfileImage(profile: any) {
+  return profile.imageSrc || null;
+}
+
+const Page = () => {
+  const [favorites, setFavorites] = React.useState<number[]>([]);
+
+  const handleToggleFavorite = (id: number) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    );
+  };
+
   const recommendedProfiles = [
     {
-      name: "Shruti K.",
+      id: 1,
+      first_name: "Shruti",
+      last_name: "K.",
       age: 24,
-      location: "Naperville",
+      city: "Naperville",
+      occupation: "Designer",
+      religion: "Hindu",
+      gender: "Female",
       imageSrc: profile1,
     },
     {
-      name: "Rashmi",
+      id: 2,
+      first_name: "Rashmi",
+      last_name: "",
       age: 23,
-      location: "Pinnacles",
+      city: "Pinnacles",
+      occupation: "Engineer",
+      religion: "Hindu",
+      gender: "Female",
       imageSrc: profile2,
     },
     {
-      name: "Kaushik",
+      id: 3,
+      first_name: "Kaushik",
+      last_name: "",
       age: 28,
-      location: "Toledo",
+      city: "Toledo",
+      occupation: "Manager",
+      religion: "Hindu",
+      gender: "Male",
       imageSrc: profile3,
     },
     {
-      name: "Shruti K.",
+      id: 4,
+      first_name: "Shruti",
+      last_name: "K.",
       age: 24,
-      location: "Austin",
+      city: "Austin",
+      occupation: "Doctor",
+      religion: "Hindu",
+      gender: "Female",
       imageSrc: profile4,
     },
-    {
-      name: "Rashmi",
-      age: 23,
-      location: "Pinnacles",
-      imageSrc: profile2,
-    },
   ];
+
   return (
-    <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
+    <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       <div className="flex justify-between items-center w-full">
-        <h2 className="dmserif32600" style={{ fontFamily: "BR Cobane" }}>Profiles</h2>
-        <button className="yellow-btn">Add Profile</button>
+        <h2 className="dmserif32600" style={{ fontFamily: "BR Cobane" }}>
+          All Profiles
+        </h2>
       </div>
-      <div className="flex gap-6">
-        {recommendedProfiles.map((profile, index) => (
-          <div
-            key={index}
-            className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
-          >
-            <Image
-              src={profile.imageSrc}
-              alt={profile.name}
-              className="w-[282px] h-auto object-cover"
-            />
-            <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
-              <div>
-                <p className="BRCobane20600 text-white">
-                  {profile.name}, {profile.age}
-                </p>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 2.02463C5.89465 2.02463 3.375 4.29256 3.375 7.08713C3.375 11.5871 9 17.7746 9 17.7746C9 17.7746 14.625 11.5871 14.625 7.08713C14.625 4.29256 12.1054 2.02463 9 2.02463ZM9 9.89963C8.55499 9.89963 8.11998 9.76767 7.74997 9.52043C7.37996 9.2732 7.09157 8.9218 6.92127 8.51067C6.75097 8.09953 6.70642 7.64713 6.79323 7.21067C6.88005 6.77422 7.09434 6.37331 7.40901 6.05864C7.72368 5.74397 8.12459 5.52968 8.56105 5.44286C8.9975 5.35604 9.4499 5.4006 9.86104 5.5709C10.2722 5.7412 10.6236 6.02958 10.8708 6.39959C11.118 6.76961 11.25 7.20462 11.25 7.64963C11.2493 8.24616 11.0121 8.81808 10.5903 9.2399C10.1685 9.66171 9.59654 9.89898 9 9.89963Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <p className="BRCobane14500">{profile.location}</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+        {recommendedProfiles.map((profile, index) => {
+          const isFavorite = favorites.includes(profile.id);
+          return (
+            <div
+              key={profile.id || index}
+              className="relative bg-white rounded-md shadow-md overflow-hidden"
+            >
+              {/* Top Cover Photo */}
+              <div className="h-36 w-full overflow-hidden bg-gray-200"></div>
+
+              {/* Favorite + Badges */}
+              <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
+                <div className="flex flex-col gap-1">
+                  <MdVerified
+                    className="inline text-blue-500 cursor-pointer"
+                    size={14}
+                    title="Verified Address"
+                  />
+                  <MdVerified
+                    className="inline text-red-500 cursor-pointer"
+                    size={14}
+                    title="Verified Education"
+                  />
+                  <MdVerified
+                    className="inline text-orange-500 cursor-pointer"
+                    size={14}
+                    title="Verified Contact"
+                  />
+                  <MdVerified
+                    className="inline text-yellow-500 cursor-pointer"
+                    size={14}
+                    title="Verified Employment"
+                  />
+                  <MdVerified
+                    className="inline text-sky-500 cursor-pointer"
+                    size={14}
+                    title="Verified Family"
+                  />
                 </div>
               </div>
-              <button className="message-btn">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="21"
-                  viewBox="0 0 20 21"
-                  fill="none"
-                >
-                  <path
-                    d="M5.625 19.0246C5.45924 19.0246 5.30027 18.9588 5.18306 18.8416C5.06585 18.7244 5 18.5654 5 18.3996V15.8996H4.0625C3.31683 15.8988 2.60194 15.6022 2.07468 15.075C1.54741 14.5477 1.25083 13.8328 1.25 13.0871V5.58713C1.25083 4.84146 1.54741 4.12657 2.07468 3.5993C2.60194 3.07204 3.31683 2.77545 4.0625 2.77463H15.9375C16.6832 2.77545 17.3981 3.07204 17.9253 3.5993C18.4526 4.12657 18.7492 4.84146 18.75 5.58713V13.0871C18.7492 13.8328 18.4526 14.5477 17.9253 15.075C17.3981 15.6022 16.6832 15.8988 15.9375 15.8996H9.59922L6.02539 18.8797C5.91292 18.9732 5.77128 19.0245 5.625 19.0246Z"
-                    fill="white"
-                  />
-                </svg>
-              </button>
+
+              {/* Card Content */}
+              <div className="px-6 pb-4">
+                {/* Profile Image + Name/Details Side by Side */}
+                <div className="flex items-center gap-4">
+                  <div className="absolute left-3 top-[7rem]">
+                    {(() => {
+                      const profileImage = getProfileImage(profile);
+                      return profileImage ? (
+                        <Image
+                          className="w-24 h-24 rounded-full border-4 border-white object-cover"
+                          src={profileImage}
+                          alt={profile.first_name || "Profile"}
+                          width={96}
+                          height={96}
+                        />
+                      ) : (
+                        <div
+                          className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
+                            profile.first_name || "Unknown"
+                          )}`}
+                        >
+                          {getInitials(profile.first_name, profile.last_name)}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Name + Occupation + Location */}
+                  <div className="flex flex-col ms-[6rem] mt-1">
+                    <h2
+                      className="font-bold text-lg"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      {profile.first_name} {profile.last_name}
+                    </h2>
+                    <p className="text-gray-500 text-xs min-h-[1rem]">
+                      {profile.occupation}
+                      {profile.occupation && profile.city ? " · " : ""}
+                      {profile.city}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="flex justify-around mt-3">
+                  <div>
+                    <p className="font-bold text-lg">{profile.age}</p>
+                    <p className="text-gray-400 text-sm">Age</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg">
+                      {profile?.religion || "N/A"}
+                    </p>
+                    <p className="text-gray-400 text-sm">Religion</p>
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg">{profile?.gender}</p>
+                    <p className="text-gray-400 text-sm">Gender</p>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-between items-center gap-4 mt-6 overflow-hidden">
+                  {/* <Button
+                    className="w-full text-orange-500 border border-orange-500 rounded-md hover:bg-orange-600 hover:text-white transition-colors"
+                    variant="outline"
+                    size="md"
+                  >
+                    Send Interest
+                  </Button> */}
+
+                  <Button
+                    asChild
+                    className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
+                    size="md"
+                  >
+                    <Link href={`/profiles/${profile.id}?fromSearch=true`} className="flex items-center gap-2">
+                    <Eye size={18}/>
+                      View Profile
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

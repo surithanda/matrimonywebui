@@ -15,8 +15,16 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfileFamilyReference } from "@/app/models/Profile";
 import { Button } from "@/components/ui/button";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  UserCheck,
+} from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
-import { AddFriendAndReferenceModal } from "./friend-reference-modals/AddFriendAndReferenceModal";
+import { AddEditReferenceModal } from "./friend-reference-modals/AddEditReferenceModal";
 
 interface IReferenceFieldValue extends IProfileFamilyReference {
   id?: string;
@@ -71,10 +79,11 @@ const FormSection = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
   const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
+    open: false,
+    mode: 'add' as 'add' | 'edit',
   });
 
   // Handle input changes for the local reference form
@@ -267,10 +276,55 @@ const FormSection = () => {
   };
 
   const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
+    setOpenModal({
+      open: false,
+      mode: 'add',
+    });
+  };
+
+  const handleModalSave = async (referenceData: IReferenceFieldValue, mode: 'add' | 'edit') => {
+    if (!selectedProfileID) {
+      setError("Profile ID not found.");
+      return;
+    }
+
+    try {
+      if (mode === 'edit' && editIndex !== null) {
+        // Update existing reference
+        const result = await dispatch(
+          updateReferenceAsync({
+            ...referenceData,
+            id: fields[editIndex].id,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.status === "success") {
+          update(editIndex, { ...referenceData, id: fields[editIndex].id });
+          setEditIndex(null);
+        }
+      } else {
+        // Add new reference
+        const result = await dispatch(
+          createReferenceAsync({
+            ...referenceData,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.status === "success") {
+          append({ ...referenceData, id: result.profile_reference_id });
+        }
+      }
+      setOpenModal({ open: false, mode: 'add' });
+    } catch (err: any) {
+      setError(err.message || "Error saving reference");
+    }
+  };
+
+  const handleModalCancel = () => {
+    setOpenModal({ open: false, mode: 'add' });
+    if (editIndex !== null) {
+      setEditIndex(null);
+    }
   };
 
   return (
@@ -280,10 +334,10 @@ const FormSection = () => {
         <div className="flex justify-end items-center mb-3 mt-3">
           <Button
             onClick={() =>
-              setOpenModal((prev) => ({
-                ...prev,
-                add: true,
-              }))
+              setOpenModal({
+                open: true,
+                mode: 'add',
+              })
             }
             className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
           >
@@ -367,7 +421,10 @@ const FormSection = () => {
                         <button
                           type="button"
                           className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => {
+                            setEditIndex(index);
+                            setOpenModal({ open: true, mode: 'edit' });
+                          }}
                         >
                           Edit
                         </button>
@@ -596,7 +653,14 @@ const FormSection = () => {
         </div>
       )}
     </section>
-    <AddFriendAndReferenceModal open={openModal.add} onOpenChange={closeAddModal} />
+    <AddEditReferenceModal 
+      open={openModal.open} 
+      onOpenChange={(open) => setOpenModal({ open, mode: 'add' })}
+      mode={openModal.mode}
+      onSave={handleModalSave}
+      onCancel={handleModalCancel}
+      referenceData={openModal.mode === 'edit' && editIndex !== null ? fields[editIndex] : undefined}
+    />
     </>
   );
 };

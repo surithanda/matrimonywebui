@@ -43,5 +43,9 @@ export const validateEnvironmentConfig = () => {
 
 // Auto-run validation in development
 if (isDevelopment && typeof window !== 'undefined') {
-  validateEnvironmentConfig();
+  const validate = validateEnvironmentConfig();
+  if(!validate) {
+    console.log('❌ Invalid environment configuration. Please check the errors above.');
+    throw new Error('Invalid environment configuration. Check console for details.');
+  }
 }

@@ -239,7 +239,7 @@ const FormSection = () => {
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">
         {/* Hobbies Section */}
-        <div className="mb-6">
+        <div className="mb-6 p-5">
           <h3 className="BRCobane18600 mb-3">Hobbies</h3>
           <div>
             <div className="flex flex-col gap-2">
@@ -290,7 +290,7 @@ const FormSection = () => {
         </div>
 
         {/* Interests Section */}
-        <div className="mb-6">
+        <div className="mb-6 p-5">
           <h3 className="BRCobane18600 mb-3">Interests</h3>
           <div>
             <div className="flex flex-col gap-2">

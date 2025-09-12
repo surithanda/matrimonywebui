@@ -15,6 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa6";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  Briefcase,
+} from "lucide-react";
+import { AddEditEmploymentModal } from "./employment-modals/AddEditEmploymentModal";
 import { AddEmploymentModal } from "./employment-modals/AddEmploymentModal";
 
 interface IEmployment {
@@ -60,13 +69,14 @@ const FormSection = () => {
     ...defaultEmployment,
   });
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { loadStates, findCountryName, findStateName, findJobTitleName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
-    const [openModal, setOpenModal] = useState({
-      add: false,
-      edit: false,
-    });
+  const [openModal, setOpenModal] = useState({
+    open: false,
+    mode: 'add' as 'add' | 'edit',
+  });
 
   // Check if currentEmployment has any meaningful data
   const hasUnsavedEmploymentData = () => {
@@ -188,10 +198,27 @@ const FormSection = () => {
     setCurrentEmployment({ ...defaultEmployment });
   };
 
-  // Load employment into form for editing
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [activeDropdown]);
+
+  // When editing, load the employment into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentEmployment(fields[index] as IEmployment);
+    const employmentToEdit = fields[index] as IEmployment;
+    setCurrentEmployment(employmentToEdit);
+    setOpenModal({
+      open: true,
+      mode: 'edit',
+    });
   };
 
   // Remove employment and clear form if editing
@@ -200,6 +227,52 @@ const FormSection = () => {
     if (editIndex === index) {
       setEditIndex(null);
       setCurrentEmployment({ ...defaultEmployment });
+    }
+  };
+
+  // Cancel edit operation
+  const handleCancelEdit = () => {
+    setEditIndex(null);
+    setCurrentEmployment({ ...defaultEmployment });
+    setOpenModal({ open: false, mode: 'add' });
+  };
+
+  // Handle modal save
+  const handleModalSave = async (employmentData: IEmployment, mode: 'add' | 'edit') => {
+    setCurrentEmployment(employmentData);
+    
+    // Use existing handleAddOrUpdate logic
+    const sectionData = {
+      profile_id: selectedProfileID,
+      ...employmentData,
+    };
+
+    if (mode === 'edit' && editIndex !== null) {
+      // Update existing employment
+      // Uncomment when update API is ready
+      // try {
+      //   const result = await dispatch(updateEmploymentAsync(sectionData)).unwrap();
+      //   if (result && result.status === 'success') {
+      //     proceedwithAddUpdate(result?.profile_employment_id);
+      //   }
+      // } catch (err: any) {
+      //   console.error("Error updating employment:", err);
+      //   throw err;
+      // }
+      
+      // For now, update locally
+      proceedwithAddUpdate(employmentData.id);
+    } else {
+      // Add new employment
+      try {
+        const result = await dispatch(createEmploymentAsync(sectionData)).unwrap();
+        if (result && result.status === "success") {
+          proceedwithAddUpdate(result?.profile_employment_id);
+        }
+      } catch (err: any) {
+        console.error("Error adding employment:", err);
+        throw err;
+      }
     }
   };
 
@@ -240,13 +313,6 @@ const FormSection = () => {
     setShowConfirmation(false);
   };
 
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
-
   return (
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">
@@ -254,10 +320,10 @@ const FormSection = () => {
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
               onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
+                setOpenModal({
+                  open: true,
+                  mode: 'add',
+                })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
             >
@@ -265,86 +331,158 @@ const FormSection = () => {
               Add Employment
             </Button>
           </div>
-        </div>
-        {/* Employment List as Table */}
-        <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Company
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Job Title
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Start
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    End
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Salary
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Address
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    City
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Zip
-                  </th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="px-3 py-2 text-sm">
-                      {item.institution_name}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {findJobTitleName(Number(item?.job_title_id || 0))}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.start_year}</td>
-                    <td className="px-3 py-2 text-sm">{item.end_year}</td>
-                    <td className="px-3 py-2 text-sm">
-                      {item.last_salary_drawn}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.address_line1}</td>
-                    <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">{item.zip}</td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
+                    editIndex === index
+                      ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                      : "border-gray-200 hover:border-orange-300"
+                  }`}
+                >
+                  {/* Three-dots menu */}
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === index ? null : index
+                        )
+                      }
+                      className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === index && (
+                      <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
                           type="button"
-                          disabled
-                          className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                         >
+                          <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
                         <button
                           type="button"
-                          disabled
-                          className="red-btn px-2 py-1 text-xs"
-                          onClick={() => handleDelete(index)}
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
                         >
+                          <Trash2 className="w-4 h-4" />
                           Delete
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+
+                  {/* Employment Status */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <Briefcase className="w-5 h-5 text-orange-500" />
+                    <span className="font-semibold text-gray-800">
+                      Employment {index + 1}
+                      {editIndex === index && (
+                        <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
+                          Editing...
+                        </span>
+                      )}
+                    </span>
+                    <div className="ml-auto flex items-center gap-1 mr-9">
+                      <AlertCircle className="w-4 h-4 text-amber-500" />
+                      <span className="text-xs text-amber-600 font-medium">
+                        Pending
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Employment Content */}
+                  <div className="space-y-3">
+                    {/* Company Name */}
+                    <div>
+                      <p className="text-gray-900 font-medium leading-relaxed">
+                        {field.institution_name || "N/A"}
+                      </p>
+                      <p className="text-gray-700 text-sm">
+                        {findJobTitleName(Number(field?.job_title_id || 0)) || "N/A"}
+                      </p>
+                    </div>
+
+                    {/* Employment Details */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Duration:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.start_year || "N/A"} - {field.end_year || "Present"}
+                        </span>
+                      </div>
+                      {field.last_salary_drawn && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Last Salary:</span>
+                          <span className="text-sm text-gray-800 font-medium">
+                            {field.last_salary_drawn}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">City:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.city || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">State:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findStateName(field.state_id || 0) || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Country:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findCountryName(field.country_id || 0) || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Address */}
+                    {field.address_line1 && (
+                      <div className="pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-1">Address:</p>
+                        <p className="text-sm text-gray-700">
+                          {field.address_line1}
+                        </p>
+                        {field.zip && (
+                          <p className="text-sm text-gray-700">
+                            ZIP: {field.zip}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {fields.length === 0 && (
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-gray-300">
+              <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No employment records added yet
+              </h3>
+              <p className="text-gray-500">
+                Add your first employment record using the button above
+              </p>
+            </div>
           )}
         </div>
         
@@ -544,7 +682,21 @@ const FormSection = () => {
           </div>
         )}
       </section>
-      <AddEmploymentModal open={openModal.add} onOpenChange={closeAddModal} />
+      <AddEditEmploymentModal 
+        open={openModal.open} 
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset editing state when modal is closed
+            setEditIndex(null);
+            setCurrentEmployment({ ...defaultEmployment });
+          }
+          setOpenModal(prev => ({ ...prev, open }));
+        }}
+        mode={openModal.mode}
+        employmentData={openModal.mode === 'edit' ? currentEmployment : undefined}
+        onSave={handleModalSave}
+        onCancel={handleCancelEdit}
+      />
     </>
   );
 };

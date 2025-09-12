@@ -14,8 +14,16 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfileProperty } from "@/app/models/Profile";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { Button } from "@/components/ui/button";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  Home,
+} from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
-import { AddPropertyModal } from "./property-modals/AddPropertyModal";
+import { AddEditPropertyModal } from "./property-modals/AddEditPropertyModal";
 
 interface IPropertyFieldValue extends IProfileProperty {
   id?: string;
@@ -55,10 +63,11 @@ const FormSection = () => {
   });
   const [localError, setLocalError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { findPropertyTypeName, findOwnershipTypeName } = useMetaDataLoader();
   const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
+    open: false,
+    mode: 'add' as 'add' | 'edit',
   });
 
   // Handle input changes for the local property form
@@ -233,10 +242,55 @@ const FormSection = () => {
   }, [selectedProfileID, dispatch, reset]);
 
   const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
+    setOpenModal({
+      open: false,
+      mode: 'add',
+    });
+  };
+
+  const handleModalSave = async (propertyData: IPropertyFieldValue, mode: 'add' | 'edit') => {
+    if (!selectedProfileID) {
+      setLocalError("Profile ID not found.");
+      return;
+    }
+
+    try {
+      if (mode === 'edit' && editIndex !== null) {
+        // Update existing property
+        const result = await dispatch(
+          updatePropertyAsync({
+            ...propertyData,
+            id: fields[editIndex].id,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.status === "success") {
+          update(editIndex, { ...propertyData, id: fields[editIndex].id });
+          setEditIndex(null);
+        }
+      } else {
+        // Add new property
+        const result = await dispatch(
+          createPropertyAsync({
+            ...propertyData,
+            profile_id: selectedProfileID,
+          })
+        ).unwrap();
+        if (result && result.data.status === "success") {
+          append({ ...propertyData, id: result.data.profile_property_id });
+        }
+      }
+      setOpenModal({ open: false, mode: 'add' });
+    } catch (err: any) {
+      setLocalError(err.message || "Error saving property");
+    }
+  };
+
+  const handleModalCancel = () => {
+    setOpenModal({ open: false, mode: 'add' });
+    if (editIndex !== null) {
+      setEditIndex(null);
+    }
   };
 
   return (
@@ -246,10 +300,10 @@ const FormSection = () => {
         <div className="flex justify-end items-center mb-3 mt-3">
           <Button
             onClick={() =>
-              setOpenModal((prev) => ({
-                ...prev,
-                add: true,
-              }))
+              setOpenModal({
+                open: true,
+                mode: 'add',
+              })
             }
             className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
           >
@@ -309,8 +363,10 @@ const FormSection = () => {
                         <button
                           type="button"
                           className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
-                          disabled
+                          onClick={() => {
+                            setEditIndex(index);
+                            setOpenModal({ open: true, mode: 'edit' });
+                          }}
                         >
                           Edit
                         </button>
@@ -318,7 +374,6 @@ const FormSection = () => {
                           type="button"
                           className="red-btn px-2 py-1 text-xs"
                           onClick={() => handleDelete(index)}
-                          disabled
                         >
                           Delete
                         </button>
@@ -477,7 +532,14 @@ const FormSection = () => {
         </div>
       )}
     </section>
-    <AddPropertyModal open={openModal.add} onOpenChange={closeAddModal} />
+    <AddEditPropertyModal 
+      open={openModal.open} 
+      onOpenChange={(open) => setOpenModal({ open, mode: 'add' })}
+      mode={openModal.mode}
+      onSave={handleModalSave}
+      onCancel={handleModalCancel}
+      propertyData={openModal.mode === 'edit' && editIndex !== null ? fields[editIndex] : undefined}
+    />
     </>
   );
 };

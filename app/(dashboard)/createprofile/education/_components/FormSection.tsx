@@ -14,8 +14,16 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  GraduationCap,
+} from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
-import { AddEducationModal } from "./education-modals/AddEducationModal";
+import { AddEditEducationModal } from "./education-modals/AddEditEducationModal";
 
 interface IEducation {
   id: string | number;
@@ -65,9 +73,10 @@ const FormSection = () => {
   const { loadStates, formatWithMetaData, findCountryName, findStateName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
+    open: false,
+    mode: 'add' as 'add' | 'edit',
   });
 
   // Check if currentEducation has any meaningful data
@@ -102,10 +111,21 @@ const FormSection = () => {
 
   useEffect(() => {
     if (selectedProfileID && selectedProfileID !== 0) {
-      loadStates();
       fetchProfileData();
     }
-  }, [selectedProfileID, fetchProfileData, loadStates]);
+  }, [selectedProfileID, fetchProfileData]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [activeDropdown]);
 
   // Handle input changes for the local education form
   const handleInputChange = (
@@ -196,19 +216,29 @@ const FormSection = () => {
     setCurrentEducation({ ...defaultEducation });
   };
 
-  // Load education into form for editing
+  // When editing, load the education into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentEducation({ ...fields[index] });
+    const educationToEdit = fields[index] as IEducation;
+    setCurrentEducation(educationToEdit);
+    setOpenModal({
+      open: true,
+      mode: 'edit',
+    });
   };
 
-  // Remove education and clear form if editing
+  // Delete education
   const handleDelete = (index: number) => {
     remove(index);
-    if (editIndex === index) {
-      setEditIndex(null);
-      setCurrentEducation({ ...defaultEducation });
-    }
+    setEditIndex(null);
+    setCurrentEducation({ ...defaultEducation });
+  };
+
+  // Cancel edit operation
+  const handleCancelEdit = () => {
+    setEditIndex(null);
+    setCurrentEducation({ ...defaultEducation });
+    setOpenModal({ open: false, mode: 'add' });
   };
 
   // On submit, check for unsaved data and show confirmation if needed
@@ -254,23 +284,60 @@ const FormSection = () => {
   };
 
   const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
+    setOpenModal({ open: false, mode: 'add' });
+  };
+
+  // Handle modal save
+  const handleModalSave = async (educationData: IEducation, mode: 'add' | 'edit') => {
+    setCurrentEducation(educationData);
+    
+    // Use existing handleAddOrUpdate logic
+    const educationPayload = {
+      profile_id: selectedProfileID,
+      ...educationData,
+    };
+
+    if (mode === 'edit' && editIndex !== null) {
+      // Update existing education
+      // Uncomment when update API is ready
+      // try {
+      //   const result = await dispatch(updateEducationAsync(educationPayload)).unwrap();
+      //   if (result && result.status === 'success') {
+      //     proceedwithAddUpdate(result?.profile_education_id);
+      //   }
+      // } catch (err: any) {
+      //   console.error("Error updating education:", err);
+      //   throw err;
+      // }
+      
+      // For now, update locally
+      proceedwithAddUpdate(educationData.id);
+    } else {
+      // Add new education
+      try {
+        const result = await dispatch(createEducationAsync(educationPayload)).unwrap();
+        if (result && result.status === "success") {
+          proceedwithAddUpdate(result?.profile_education_id);
+        }
+      } catch (err: any) {
+        console.error("Error adding education:", err);
+        throw err;
+      }
+    }
   };
 
   return (
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+        {/* Education List as Cards */}
         <div className="mb-6">
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
               onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
+                setOpenModal({
+                  open: true,
+                  mode: 'add',
+                })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
             >
@@ -278,82 +345,147 @@ const FormSection = () => {
               Add Education
             </Button>
           </div>
-        </div>
-        {/* Education List as Table */}
-        <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Institution
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Year
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Address
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    City
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    State
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Country
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Zip
-                  </th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="px-3 py-2 text-sm">
-                      {item.institution_name}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.year_completed}</td>
-                    <td className="px-3 py-2 text-sm">{item.address_line1}</td>
-                    <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">
-                      {findStateName(Number(item?.state_id || 0))}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {findCountryName(Number(item?.country_id || 0))}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.zip}</td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
+                    editIndex === index
+                      ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                      : "border-gray-200 hover:border-orange-300"
+                  }`}
+                >
+                  {/* Three-dots menu */}
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === index ? null : index
+                        )
+                      }
+                      className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === index && (
+                      <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
                           type="button"
-                          disabled
-                          className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                         >
+                          <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
                         <button
                           type="button"
-                          disabled
-                          className="red-btn px-2 py-1 text-xs"
-                          onClick={() => handleDelete(index)}
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
                         >
+                          <Trash2 className="w-4 h-4" />
                           Delete
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+
+                  {/* Verification Status */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <GraduationCap className="w-5 h-5 text-orange-500" />
+                    <span className="font-semibold text-gray-800">
+                      Education {index + 1}
+                      {editIndex === index && (
+                        <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
+                          Editing...
+                        </span>
+                      )}
+                    </span>
+                    <div className="ml-auto flex items-center gap-1 mr-9">
+                      <>
+                        <AlertCircle className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs text-amber-600 font-medium">
+                          Pending
+                        </span>
+                      </>
+                    </div>
+                  </div>
+
+                  {/* Education Content */}
+                  <div className="space-y-3">
+                    {/* Institution Name */}
+                    <div>
+                      <p className="text-gray-900 font-medium leading-relaxed">
+                        {field.institution_name}
+                      </p>
+                      {field.address_line1 && (
+                        <p className="text-gray-700 text-sm">
+                          {field.address_line1}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Education Details */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Year:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.year_completed || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">City:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.city || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">State:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findStateName(Number(field?.state_id || 0)) ||
+                            "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Country:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findCountryName(Number(field?.country_id || 0)) ||
+                            "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">ZIP:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.zip || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {fields.length === 0 && (
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-gray-300">
+              <GraduationCap className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No education records added yet
+              </h3>
+              <p className="text-gray-500">
+                Add your first education record using the button above
+              </p>
+            </div>
           )}
         </div>
 
@@ -504,7 +636,21 @@ const FormSection = () => {
           </div>
         )}
       </section>
-      <AddEducationModal open={openModal.add} onOpenChange={closeAddModal} />
+      <AddEditEducationModal 
+        open={openModal.open} 
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset editing state when modal is closed
+            setEditIndex(null);
+            setCurrentEducation({ ...defaultEducation });
+          }
+          setOpenModal(prev => ({ ...prev, open }));
+        }}
+        mode={openModal.mode}
+        educationData={openModal.mode === 'edit' ? currentEducation : undefined}
+        onSave={handleModalSave}
+        onCancel={handleCancelEdit}
+      />
     </>
   );
 };

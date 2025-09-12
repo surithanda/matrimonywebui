@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { AddAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddAddressModal";
+import { AddEditAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddEditAddressModal";
 
 interface IAddress {
   id: string;
@@ -80,8 +80,8 @@ const FormSection = () => {
     useMetaDataLoader();
   const { countryList } = useAppSelector((state) => state.metaData);
   const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
+    open: false,
+    mode: 'add' as 'add' | 'edit',
   });
 
   // Check if currentAddress has any meaningful data
@@ -137,7 +137,18 @@ const FormSection = () => {
   // When editing, load the address into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentAddress(fields[index] as IAddress);
+    const addressToEdit = fields[index] as IAddress;
+    // Ensure proper field mapping
+    const mappedAddress = {
+      ...addressToEdit,
+      country: addressToEdit.country_id || addressToEdit.country || 0,
+      state: addressToEdit.state_id || addressToEdit.state || 0,
+    };
+    setCurrentAddress(mappedAddress);
+    setOpenModal({
+      open: true,
+      mode: 'edit',
+    });
   };
 
   // Delete address
@@ -151,6 +162,7 @@ const FormSection = () => {
   const handleCancelEdit = () => {
     setEditIndex(null);
     setCurrentAddress({ ...defaultAddress });
+    setOpenModal({ open: false, mode: 'add' });
   };
   const handleAddOrUpdate = async () => {
     if (
@@ -181,6 +193,8 @@ const FormSection = () => {
     // return;
 
     if (editIndex !== null) {
+      console.log("I need to update data")
+      return;
       //update
       // try {
       //   const result = await dispatch(updateAddressAsync(addressData)).unwrap();
@@ -220,6 +234,7 @@ const FormSection = () => {
       append(updatedAddress);
     }
     setCurrentAddress({ ...defaultAddress });
+    setOpenModal({ open: false, mode: 'add' });
   };
 
   // On submit, check for unsaved data and show confirmation if needed
@@ -278,10 +293,47 @@ const FormSection = () => {
   }, [handleSubmit, onSubmit]);
 
   const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
+    setOpenModal({ open: false, mode: 'add' });
+  };
+
+  // Handle modal save
+  const handleModalSave = async (addressData: IAddress, mode: 'add' | 'edit') => {
+    setCurrentAddress(addressData);
+    
+    // Use existing handleAddOrUpdate logic
+    const addressPayload = {
+      profile_id: selectedProfileID,
+      address_type: 1,
+      ...addressData,
+    };
+
+    if (mode === 'edit' && editIndex !== null) {
+      // Update existing address
+      // Uncomment when update API is ready
+      // try {
+      //   const result = await dispatch(updateAddressAsync(addressPayload)).unwrap();
+      //   if (result && result.status === 'success') {
+      //     proceedwithAddUpdate(result?.profile_address_id);
+      //   }
+      // } catch (err: any) {
+      //   console.error("Error updating address:", err);
+      //   throw err;
+      // }
+      
+      // For now, update locally
+      proceedwithAddUpdate(addressData.id);
+    } else {
+      // Add new address
+      try {
+        const result = await dispatch(createAddressAsync(addressPayload)).unwrap();
+        if (result && result.status === "success") {
+          proceedwithAddUpdate(result?.profile_address_id);
+        }
+      } catch (err: any) {
+        console.error("Error adding address:", err);
+        throw err;
+      }
+    }
   };
 
   return (
@@ -292,10 +344,10 @@ const FormSection = () => {
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
               onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
+                setOpenModal({
+                  open: true,
+                  mode: 'add',
+                })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
             >
@@ -332,7 +384,6 @@ const FormSection = () => {
                     {activeDropdown === index && (
                       <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
-                          disabled
                           type="button"
                           onClick={() => {
                             handleEdit(index);
@@ -344,7 +395,6 @@ const FormSection = () => {
                           Edit
                         </button>
                         <button
-                          disabled
                           type="button"
                           onClick={() => {
                             handleDelete(index);
@@ -688,7 +738,21 @@ const FormSection = () => {
           </div>
         )}
       </section>
-      <AddAddressModal open={openModal.add} onOpenChange={closeAddModal} />
+      <AddEditAddressModal 
+        open={openModal.open} 
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset editing state when modal is closed
+            setEditIndex(null);
+            setCurrentAddress({ ...defaultAddress });
+          }
+          setOpenModal(prev => ({ ...prev, open }));
+        }}
+        mode={openModal.mode}
+        addressData={openModal.mode === 'edit' ? currentAddress : undefined}
+        onSave={handleModalSave}
+        onCancel={handleCancelEdit}
+      />
     </>
   );
 };

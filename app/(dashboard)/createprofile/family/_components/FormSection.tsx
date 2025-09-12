@@ -16,8 +16,16 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle,
+  AlertCircle,
+  Users,
+} from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
-import { AddFamilyModal } from "./family-modals/AddFamilyModal";
+import { AddEditFamilyModal } from "./family-modals/AddEditFamilyModal";
 
 interface IFamilyMember {
   id: string;
@@ -89,10 +97,11 @@ const FormSection = ({
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
   const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
+    open: false,
+    mode: 'add' as 'add' | 'edit',
   });
 
   console.log("Current Family Member:", fields);
@@ -168,6 +177,18 @@ const FormSection = ({
     });
   }, [selectedProfileID, dispatch, category, reset]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [activeDropdown]);
+
   // Add or update family member in the field array (POST or PUT to backend)
   const handleAddOrUpdate = async () => {
     console.log(currentFamilyMember);
@@ -242,10 +263,22 @@ const FormSection = ({
     setCurrentFamilyMember({ ...defaultFamilyMember });
   };
 
-  // Load family member into form for editing
+  // When editing, load the family member into local state
   const handleEdit = (index: number) => {
     setEditIndex(index);
-    setCurrentFamilyMember({ ...fields[index] });
+    const familyToEdit = fields[index] as IFamilyMember;
+    setCurrentFamilyMember(familyToEdit);
+    setOpenModal({
+      open: true,
+      mode: 'edit',
+    });
+  };
+
+  // Cancel edit operation
+  const handleCancelEdit = () => {
+    setEditIndex(null);
+    setCurrentFamilyMember({ ...defaultFamilyMember });
+    setOpenModal({ open: false, mode: 'add' });
   };
 
   // Remove family member from backend and local state
@@ -318,10 +351,47 @@ const FormSection = ({
   };
 
   const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
+    setOpenModal({ open: false, mode: 'add' });
+  };
+
+  // Handle modal save
+  const handleModalSave = async (familyData: IFamilyMember, mode: 'add' | 'edit') => {
+    setCurrentFamilyMember(familyData);
+    
+    // Use existing handleAddOrUpdate logic
+    const familyPayload = {
+      profile_id: selectedProfileID,
+      type: category,
+      ...familyData,
+    };
+
+    if (mode === 'edit' && editIndex !== null) {
+      // Update existing family member
+      // Uncomment when update API is ready
+      // try {
+      //   const result = await dispatch(updateFamilyAsync(familyPayload)).unwrap();
+      //   if (result && result.data.status === 'success') {
+      //     proceedwithAddUpdate(result.data.profile_family_reference_id);
+      //   }
+      // } catch (err: any) {
+      //   console.error("Error updating family member:", err);
+      //   throw err;
+      // }
+      
+      // For now, update locally
+      proceedwithAddUpdate(familyData.id);
+    } else {
+      // Add new family member
+      try {
+        const result = await dispatch(createFamilyAsync(familyPayload)).unwrap();
+        if (result && result.data.status === "success") {
+          proceedwithAddUpdate(result.data.profile_family_reference_id);
+        }
+      } catch (err: any) {
+        console.error("Error adding family member:", err);
+        throw err;
+      }
+    }
   };
 
   return (
@@ -331,15 +401,15 @@ const FormSection = ({
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
               onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
+                setOpenModal({
+                  open: true,
+                  mode: 'add',
+                })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
             >
               <FaPlus />
-              Add Family
+              Add {actionButton_label}
             </Button>
           </div>
         </div>
@@ -643,7 +713,22 @@ const FormSection = ({
           </div>
         )}
       </section>
-      <AddFamilyModal open={openModal.add} onOpenChange={closeAddModal} category="family" next_url="/createprofile/references" actionButton_label="Member" />
+      <AddEditFamilyModal 
+        open={openModal.open} 
+        onOpenChange={(open) => {
+          if (!open) {
+            // Reset editing state when modal is closed
+            setEditIndex(null);
+            setCurrentFamilyMember({ ...defaultFamilyMember });
+          }
+          setOpenModal(prev => ({ ...prev, open }));
+        }}
+        mode={openModal.mode}
+        familyData={openModal.mode === 'edit' ? currentFamilyMember : undefined}
+        onSave={handleModalSave}
+        onCancel={handleCancelEdit}
+        category={category}
+      />
     </>
   );
 };

@@ -55,7 +55,7 @@ export const Navbar = () => {
     "/forgotpassword",
     "/otp",
     "/dashboard",
-    "/profiles",
+    "/profiles", // This will match /profiles and any subpaths
     "/settings",
     "/search",
     "/recommendations",
@@ -72,10 +72,11 @@ export const Navbar = () => {
     "/createprofile/photos",
     "/account",
     "/changepassword",
-    `/profiles/${selectedProfileID}`,
     "/dashboard/create-profile",
   ];
-  const isDarkPage = darkPages.includes(pathname);
+
+  // Check if current path starts with any of the dark pages
+  const isDarkPage = darkPages.some(page => pathname.startsWith(page));
 
   const publicLinks = [
     { href: "/", label: "Home" },
@@ -107,6 +108,7 @@ export const Navbar = () => {
           : "bg-transparent"
       }`}
     >
+      {/* ... rest of your component remains the same ... */}
       <div className="flex justify-between items-center px-5 md:px-1 lg:px-0 xl:px-10 2xl:px-20 py-4">
         {/* Logo */}
         <Link href="/">

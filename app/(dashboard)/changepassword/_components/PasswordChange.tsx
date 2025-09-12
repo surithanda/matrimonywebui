@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import { changePasswordAsync } from "@/app/store/features/authSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const PasswordChange = () => {
   const [passwords, setPasswords] = useState({
@@ -73,30 +76,30 @@ const PasswordChange = () => {
       <form onSubmit={handleSubmit} className="w-full">
         {/* Current Password */}
         <div className="mb-6 flex flex-col">
-          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+          <Label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
             Current Password
-          </label>
-          <input
+          </Label>
+          <Input
             type="password"
             name="current_password"
             value={passwords.current_password}
             onChange={handleChange}
-            className="account-input-field w-full text-sm sm:text-base"
+            className=" w-full text-sm sm:text-base"
             required
           />
         </div>
 
         {/* New Password */}
         <div className="mb-6 flex flex-col">
-          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+          <Label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
             New Password
-          </label>
-          <input
+          </Label>
+          <Input
             type="password"
             name="new_password"
             value={passwords.new_password}
             onChange={handleChange}
-            className="account-input-field w-full text-sm sm:text-base"
+            className=" w-full text-sm sm:text-base"
             required
           />
           {errors.new_password && (
@@ -108,15 +111,15 @@ const PasswordChange = () => {
 
         {/* Confirm Password */}
         <div className="mb-6 flex flex-col">
-          <label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
+          <Label className="block BRCobane18600 mb-2.5 text-base sm:text-lg">
             Confirm New Password
-          </label>
-          <input
+          </Label>
+          <Input
             type="password"
             name="confirm_new_password"
             value={passwords.confirm_new_password}
             onChange={handleChange}
-            className="account-input-field w-full text-sm sm:text-base"
+            className=" w-full text-sm sm:text-base"
             required
           />
           {errors.confirm_new_password && (
@@ -127,12 +130,12 @@ const PasswordChange = () => {
         </div>
 
         {/* Submit Button */}
-        <button
+        <Button
           type="submit"
-          className="yellow-btn hover:bg-orange-600 w-full sm:w-auto px-6 py-3 text-sm sm:text-base"
+          className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-xl font-semibold"
         >
           Change Password
-        </button>
+        </Button>
       </form>
     </div>
   );

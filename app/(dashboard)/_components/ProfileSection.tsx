@@ -265,15 +265,14 @@ const ProfileSection = () => {
                     </div>
                   </div>
                 </Link>
-                <Button variant="outline">
-                  <Link
-                    href={`/profiles/${selectedProfileID}`}
-                    className="flex items-center gap-2"
-                  >
+                <Link
+                  href={`/profiles/${selectedProfileID}`}
+                >
+                  <Button variant="outline" className="flex items-center gap-2 w-full">
                     <Eye size={20} />
                     Preview My Profile
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </React.Fragment>
             ))}
         </div>

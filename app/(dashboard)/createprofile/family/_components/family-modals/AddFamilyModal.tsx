@@ -353,7 +353,7 @@ export function AddFamilyModal({
                   size={"sm"}
                 >
                   <IoIosSave size={20} />
-                  Save
+                  {editIndex !== null ? "Update" : "Save"}
                 </Button>
                 <DialogClose asChild>
                   <Button
@@ -370,9 +370,7 @@ export function AddFamilyModal({
           <div className="px-4 pt-4 pb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <div>
-                <Label className="ml-1">
-                  Relationship to you
-                </Label>
+                <Label className="ml-1">Relationship to you</Label>
                 <MetadataSelectComponent
                   type={category}
                   name="relationshiptoyou"
@@ -405,9 +403,7 @@ export function AddFamilyModal({
                 />
               </div>
               <div className="">
-                <Label className="ml-1">
-                  Date of Birth
-                </Label>
+                <Label className="ml-1">Date of Birth</Label>
                 <Input
                   type="date"
                   name="dob"
@@ -418,9 +414,7 @@ export function AddFamilyModal({
                 />
               </div>
               <div>
-                <Label className="ml-1">
-                  Contact Number
-                </Label>
+                <Label className="ml-1">Contact Number</Label>
                 <CustomPhoneComponent
                   type="contactnumber"
                   changeHandler={handleInputChange}

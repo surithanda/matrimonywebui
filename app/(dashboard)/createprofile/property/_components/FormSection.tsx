@@ -386,7 +386,7 @@ const FormSection = () => {
           )}
         </div>
 
-      {/* <form
+      <form
         className="w-full px-2"
         onSubmit={(e) => {
           e.preventDefault();
@@ -495,7 +495,7 @@ const FormSection = () => {
             Continue
           </Button>
         </div>
-      </form> */}
+      </form>
 
       {/* Confirmation Modal */}
       {showConfirmation && (

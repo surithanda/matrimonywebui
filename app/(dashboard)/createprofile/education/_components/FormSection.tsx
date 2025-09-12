@@ -78,6 +78,7 @@ const FormSection = () => {
     open: false,
     mode: 'add' as 'add' | 'edit',
   });
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -100,6 +101,8 @@ const FormSection = () => {
     };
     try {
       const result = await dispatch(getEducationAsync(data)).unwrap();
+
+      console.log("fetch data", result);
 
       if (result?.success && result.data) {
         reset({ educations: result.data?.educations });
@@ -189,7 +192,7 @@ const FormSection = () => {
         const result = await dispatch(
           createEducationAsync(sectionData)
         ).unwrap();
-        console.log(result);
+        console.log("result", result);
         if (result && result.status === "success") {
           // toast.success("Address added successfully!");
           proceedwithAddUpdate(result?.profile_education_id);
@@ -374,7 +377,15 @@ const FormSection = () => {
                     {activeDropdown === index && (
                       <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
+                          disabled
                           type="button"
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
                           onClick={() => {
                             handleEdit(index);
                             setActiveDropdown(null);
@@ -385,7 +396,15 @@ const FormSection = () => {
                           Edit
                         </button>
                         <button
+                          disabled
                           type="button"
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
                           onClick={() => {
                             handleDelete(index);
                             setActiveDropdown(null);
@@ -489,7 +508,7 @@ const FormSection = () => {
           )}
         </div>
 
-        {/* <form
+        <form
           className="w-full px-2"
           onSubmit={(e) => {
             e.preventDefault();
@@ -596,10 +615,10 @@ const FormSection = () => {
               </Button>
             </div>
           </div>
-            <Button type="submit" className="yellow-btn hover:bg-orange-600">
-              Continue
-            </Button>
-        </form> */}
+          <Button type="submit" className="yellow-btn hover:bg-orange-600">
+            Continue
+          </Button>
+        </form>
 
         {/* Confirmation Modal */}
         {showConfirmation && (

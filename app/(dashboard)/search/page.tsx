@@ -33,6 +33,7 @@ import { FaDribbble, FaLinkedin } from "react-icons/fa6";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
+import { Label } from "@/components/ui/label";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -274,7 +275,7 @@ const Page = () => {
   // Helper function to get profile image with fallback
   const getProfileImage = (profile: any) => {
     // Return actual image if available
-    console.log(profile);
+    console.log("ndbhfbdajf", profile);
     if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
     if (profile?.url) return toAbsoluteUrl(profile.url);
 
@@ -324,16 +325,14 @@ const Page = () => {
           </Button>
           {showFilters && (
             <>
-              <button
+              <Button
                 onClick={handleSearch}
-                className="black-btn"
                 disabled={loading}
+                variant={"outline"}
               >
                 {loading ? "Searching..." : "Search"}
-              </button>
-              <button onClick={handleClearFilters} className="white-btn">
-                Clear All
-              </button>
+              </Button>
+              <Button onClick={handleClearFilters}>Clear All</Button>
             </>
           )}
         </div>
@@ -345,9 +344,9 @@ const Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Age Range */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Age Range
-              </label>
+              </Label>
               <div className="flex gap-2">
                 <select
                   value={localFilters.min_age || 21}
@@ -382,9 +381,9 @@ const Page = () => {
 
             {/* Religion */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Religion
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="religion"
@@ -403,9 +402,9 @@ const Page = () => {
 
             {/* Education */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Education
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="education_level"
@@ -423,9 +422,9 @@ const Page = () => {
 
             {/* Occupation */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Occupation
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="profession"
@@ -443,9 +442,9 @@ const Page = () => {
 
             {/* Country */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Country
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="country"
@@ -461,9 +460,9 @@ const Page = () => {
 
             {/* Gender */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Gender
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="gender"
@@ -481,9 +480,9 @@ const Page = () => {
 
             {/* Caste */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Caste
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="caste"
@@ -502,9 +501,9 @@ const Page = () => {
 
             {/* Marital Status */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <Label className="block text-sm font-medium text-gray-700">
                 Marital Status
-              </label>
+              </Label>
               <MetadataSelectComponent
                 hasAny={true}
                 type="marital_status"
@@ -539,7 +538,7 @@ const Page = () => {
 
       {/* Search Results */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-4 2xl:gap-10">
         {loading ? (
           <div className="text-center py-12 col-span-full">
             <div className="text-gray-500 text-lg">Loading profiles...</div>
@@ -562,41 +561,10 @@ const Page = () => {
                 className="relative bg-white rounded-md shadow-md overflow-hidden"
               >
                 {/* Top Cover Photo */}
-                <div className="h-36 w-full overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0"
-                    alt="Cover"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <div className="h-36 w-full overflow-hidden bg-gray-200"></div>
 
-                {/* Profile Image */}
-                <div className="absolute top-[5.7rem] left-1/2 transform -translate-x-1/2">
-                  {(() => {
-                    const profileImage = getProfileImage(profile);
-                    return profileImage ? (
-                      <Image
-                        className="w-24 h-24 rounded-full border-4 border-white object-cover"
-                        src={profileImage}
-                        alt={profile.first_name || "Profile"}
-                        width={96}
-                        height={96}
-                      />
-                    ) : (
-                      <div
-                        className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
-                          profile.first_name || "Unknown"
-                        )}`}
-                      >
-                        {getInitials(profile.first_name, profile.last_name)}
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {/* Favorite Icon */}
-
-                <div className="flex justify-center gap-4 my-2 text-white absolute top-0 -right-2 transform -translate-x-1/2">
+                {/* Favorite + Badges */}
+                <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
                   <button
                     onClick={() => handleToggleFavorite(profile.profile_id)}
                     className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
@@ -607,29 +575,91 @@ const Page = () => {
                       <IoIosHeartEmpty size={20} className="text-black" />
                     )}
                   </button>
+                  <div className="flex flex-col gap-1">
+                    <MdVerified
+                      className="inline text-blue-500 cursor-pointer"
+                      size={14}
+                      title="Verified Address"
+                    />
+                    <MdVerified
+                      className="inline text-red-500 cursor-pointer"
+                      size={14}
+                      title="Verified Education"
+                    />
+                    <MdVerified
+                      className="inline text-orange-500 cursor-pointer"
+                      size={14}
+                      title="Verified Contact"
+                    />
+                    <MdVerified
+                      className="inline text-yellow-500 cursor-pointer"
+                      size={14}
+                      title="Verified Employment"
+                    />
+                    <MdVerified
+                      className="inline text-sky-500 cursor-pointer"
+                      size={14}
+                      title="Verified Family"
+                    />
+                  </div>
                 </div>
 
                 {/* Card Content */}
-                <div className="mt-12 px-6 pb-4 text-center">
-                  <div className="flex justify-center items-center gap-2">
-                    <h2 className="font-bold text-lg">
-                      {profile.first_name} {profile.last_name}
-                    </h2>
-                    <MdVerified className="inline text-blue-500" size={18} />
+                <div className="px-6 pb-4">
+                  {/* Profile Image + Name/Details Side by Side */}
+                  <div className="flex items-center gap-4">
+                    <div className="absolute left-3 top-[7rem]">
+                      {(() => {
+                        const profileImage = getProfileImage(profile);
+                        return profileImage ? (
+                          <Image
+                            className="w-24 h-24 rounded-full border-4 border-white object-cover"
+                            src={profileImage}
+                            alt={profile.first_name || "Profile"}
+                            width={96}
+                            height={96}
+                          />
+                        ) : (
+                          <div
+                            className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
+                              profile.first_name || "Unknown"
+                            )}`}
+                          >
+                            {getInitials(profile.first_name, profile.last_name)}
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Name + Occupation + Location */}
+                    <div className="flex flex-col ms-[6rem] mt-1">
+                      <h2
+                        className="font-bold text-lg"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        {profile.first_name} {profile.last_name}
+                      </h2>
+
+                      {/* Always render a line (min-h for fixed height) */}
+                      <p className="text-gray-500 text-xs min-h-[1rem]">
+                        {profile.occupation ||
+                        profile.city ||
+                        profile.country ? (
+                          <>
+                            {profile.occupation}
+                            {profile.occupation &&
+                            (profile.city || profile.country)
+                              ? " · "
+                              : ""}
+                            {profile.city || profile.country}
+                          </>
+                        ) : null}
+                      </p>
+                    </div>
                   </div>
 
-                  {(profile.occupation || profile.city || profile.country) && (
-                    <p className="text-gray-500 text-sm">
-                      {profile.occupation}
-                      {profile.occupation && (profile.city || profile.country)
-                        ? " · "
-                        : ""}
-                      {profile.city || profile.country}
-                    </p>
-                  )}
-
                   {/* Stats */}
-                  <div className="flex justify-around mt-4">
+                  <div className="flex justify-around mt-3">
                     <div>
                       <p className="font-bold text-lg">{profile?.age}</p>
                       <p className="text-gray-400 text-sm">Age</p>
@@ -647,29 +677,31 @@ const Page = () => {
                   </div>
 
                   {/* Buttons */}
-                  <div className="flex items-center gap-4 mt-6">
+                  <div className="flex justify-between items-center gap-4 mt-6 overflow-hidden">
                     <Button
                       className="w-full text-orange-500 border border-orange-500 rounded-md hover:bg-orange-600 hover:text-white transition-colors"
                       variant="outline"
-                      size="lg"
+                      size="md"
                     >
                       Send Interest
                     </Button>
-                    <Link
-                      href={`/profiles/${
-                        profile.id ||
-                        profile.profile_id ||
-                        profile.user_id ||
-                        index
-                      }?fromSearch=true`}
+
+                    <Button
+                      asChild
+                      className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
+                      size="md"
                     >
-                      <Button
-                        className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
-                        size="lg"
+                      <Link
+                        href={`/profiles/${
+                          profile.id ||
+                          profile.profile_id ||
+                          profile.user_id ||
+                          index
+                        }?fromSearch=true`}
                       >
                         View Profile
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               </div>

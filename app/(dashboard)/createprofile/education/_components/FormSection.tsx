@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FaPlus } from "react-icons/fa6";
 import { AddEducationModal } from "./education-modals/AddEducationModal";
+import { AlertCircle, Edit2, MapPin, MoreVertical, Trash2 } from "lucide-react";
+import { findValueType } from "framer-motion";
 
 interface IEducation {
   id: string | number;
@@ -69,6 +71,7 @@ const FormSection = () => {
     add: false,
     edit: false,
   });
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -91,6 +94,8 @@ const FormSection = () => {
     };
     try {
       const result = await dispatch(getEducationAsync(data)).unwrap();
+
+      console.log("fetch data", result);
 
       if (result?.success && result.data) {
         reset({ educations: result.data?.educations });
@@ -169,7 +174,7 @@ const FormSection = () => {
         const result = await dispatch(
           createEducationAsync(sectionData)
         ).unwrap();
-        console.log(result);
+        console.log("result", result);
         if (result && result.status === "success") {
           // toast.success("Address added successfully!");
           proceedwithAddUpdate(result?.profile_education_id);
@@ -260,6 +265,19 @@ const FormSection = () => {
     }));
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [activeDropdown]);
+  
+
   return (
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">
@@ -282,82 +300,135 @@ const FormSection = () => {
         {/* Education List as Table */}
         <div className="mb-6 overflow-x-auto">
           {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Institution
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Year
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Address
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    City
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    State
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Country
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Zip
-                  </th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="px-3 py-2 text-sm">
-                      {item.institution_name}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.year_completed}</td>
-                    <td className="px-3 py-2 text-sm">{item.address_line1}</td>
-                    <td className="px-3 py-2 text-sm">{item.city}</td>
-                    <td className="px-3 py-2 text-sm">
-                      {findStateName(Number(item?.state_id || 0))}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {findCountryName(Number(item?.country_id || 0))}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.zip}</td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
+                    editIndex === index
+                      ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                      : "border-gray-200 hover:border-orange-300"
+                  }`}
+                >
+                  {/* Three-dots menu */}
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === index ? null : index
+                        )
+                      }
+                      className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === index && (
+                      <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
-                          type="button"
                           disabled
-                          className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
+                          type="button"
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                         >
+                          <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
                         <button
-                          type="button"
                           disabled
-                          className="red-btn px-2 py-1 text-xs"
-                          onClick={() => handleDelete(index)}
+                          type="button"
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
                         >
+                          <Trash2 className="w-4 h-4" />
                           Delete
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+
+                  {/* Verification Status */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-800">
+                      {field.institution_name} ({field.year_completed})
+                      {editIndex === index && (
+                        <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
+                          Editing...
+                        </span>
+                      )}
+                    </span>
+                    <div className="ml-auto flex items-center gap-1 mr-9">
+                      <AlertCircle className="w-4 h-4 text-amber-500" />
+                      <span className="text-xs text-amber-600 font-medium">
+                        Pending
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Address Content */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-orange-500" />
+                      <p className="text-gray-900 font-medium leading-relaxed">
+                        {field.address_line1}
+                      </p>
+                    </div>
+
+                    {/* Location Details */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          Filed of Study:
+                        </span>
+                        <span className="text-sm text-gray-800 font-medium">
+                  
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">City:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.city || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">State:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findStateName(
+                            field.state_id ?? field.state_id ?? 0
+                          ) || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Country:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findCountryName(
+                            field.country_id ?? field.country_id ?? 0
+                          ) || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">ZIP:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.zip || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* <form
+        <form
           className="w-full px-2"
           onSubmit={(e) => {
             e.preventDefault();
@@ -464,10 +535,10 @@ const FormSection = () => {
               </Button>
             </div>
           </div>
-            <Button type="submit" className="yellow-btn hover:bg-orange-600">
-              Continue
-            </Button>
-        </form> */}
+          <Button type="submit" className="yellow-btn hover:bg-orange-600">
+            Continue
+          </Button>
+        </form>
 
         {/* Confirmation Modal */}
         {showConfirmation && (

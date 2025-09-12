@@ -595,7 +595,12 @@ const Page = () => {
 
                 {/* Favorite Icon */}
 
-                <div className="flex justify-center gap-4 my-2 text-white absolute top-0 -right-2 transform -translate-x-1/2">
+                <div className="flex justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
+                  {/* <MdVerified className="inline text-blue-500" size={14} />
+                  <MdVerified className="inline text-red-500" size={14} />
+                  <MdVerified className="inline text-orange-500" size={14} />
+                  <MdVerified className="inline text-yellow-500" size={14} />
+                  <MdVerified className="inline text-sky-500" size={14} /> */}
                   <button
                     onClick={() => handleToggleFavorite(profile.profile_id)}
                     className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
@@ -607,6 +612,13 @@ const Page = () => {
                     )}
                   </button>
                 </div>
+                <div className="absolute right-2 flex items-center gap-1 top-[9.3rem]">
+                  <MdVerified className="inline text-blue-500" size={14} />
+                  <MdVerified className="inline text-red-500" size={14} />
+                  <MdVerified className="inline text-orange-500" size={14} />
+                  <MdVerified className="inline text-yellow-500" size={14} />
+                  <MdVerified className="inline text-slate-500" size={14} />
+                </div>
 
                 {/* Card Content */}
                 <div className="mt-12 px-6 pb-4 text-center">
@@ -617,7 +629,7 @@ const Page = () => {
                     >
                       {profile.first_name} {profile.last_name}
                     </h2>
-                    <MdVerified className="inline text-blue-500" size={18} />
+                    {/* <MdVerified className="inline text-blue-500" size={18} /> */}
                   </div>
 
                   {(profile.occupation || profile.city || profile.country) && (

@@ -484,7 +484,7 @@ const FormSection = () => {
                     loadStates(e.target.value);
                   }}
                   dontUseID={true}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                 className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
                 />
               </div>
               <div>
@@ -498,7 +498,7 @@ const FormSection = () => {
                       state: Number(e.target.value),
                     });
                   }}
-                  className="account-input-field w-full focus:outline-none focus:border-b focus:border-orange-500"
+                 className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
                 />
               </div>
             </div>
@@ -514,8 +514,7 @@ const FormSection = () => {
                       city: e.target.value,
                     })
                   }
-                  placeholder="Enter city"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
               <div>
@@ -529,8 +528,7 @@ const FormSection = () => {
                       zip: e.target.value,
                     })
                   }
-                  placeholder="Enter zip code"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
             </div>
@@ -545,15 +543,14 @@ const FormSection = () => {
                       address_line1: e.target.value,
                     })
                   }
-                  placeholder="Complete Address"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
               <div>
                 <Label className="block text-gray-700 mb-2">
                   Address Line 2
                 </Label>
-                <input
+                <Input
                   type="text"
                   value={currentAddress.address_line2}
                   onChange={(e) =>
@@ -562,8 +559,7 @@ const FormSection = () => {
                       address_line2: e.target.value,
                     })
                   }
-                  placeholder="Address Line 2"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
             </div>
@@ -580,8 +576,7 @@ const FormSection = () => {
                       landmark1: e.target.value,
                     })
                   }
-                  placeholder="Landmark 1"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
               <div>
@@ -595,8 +590,7 @@ const FormSection = () => {
                       landmark2: e.target.value,
                     })
                   }
-                  placeholder="Landmark 2"
-                  className="account-input-field stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
                 />
               </div>
             </div>
@@ -628,7 +622,7 @@ const FormSection = () => {
               )}
             </div>
           </div>
-        </form> */}
+        </form>
         {/* Buttons */}
         {/* <div className="flex justify-between mt-[100px]">
           <div className="flex justify-start gap-4">

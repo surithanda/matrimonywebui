@@ -78,7 +78,6 @@ const FormSection = () => {
     open: false,
     mode: 'add' as 'add' | 'edit',
   });
-  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -386,25 +385,11 @@ const FormSection = () => {
                           className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                         >
                           <Edit2 className="w-4 h-4" />
-                          onClick={() => {
-                            handleEdit(index);
-                            setActiveDropdown(null);
-                          }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
-                        >
-                          <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
                         <button
                           disabled
                           type="button"
-                          onClick={() => {
-                            handleDelete(index);
-                            setActiveDropdown(null);
-                          }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
                           onClick={() => {
                             handleDelete(index);
                             setActiveDropdown(null);
@@ -507,7 +492,7 @@ const FormSection = () => {
             </div>
           )}
         </div>
-
+{/* 
         <form
           className="w-full px-2"
           onSubmit={(e) => {
@@ -618,7 +603,7 @@ const FormSection = () => {
           <Button type="submit" className="yellow-btn hover:bg-orange-600">
             Continue
           </Button>
-        </form>
+        </form> */}
 
         {/* Confirmation Modal */}
         {showConfirmation && (

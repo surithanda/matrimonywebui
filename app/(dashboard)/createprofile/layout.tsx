@@ -64,7 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Right-side buttons */}
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Link href={`/search`} className="flex items-center gap-2">
+            <Link href={`/settings`} className="flex items-center gap-2">
               <FaMagnifyingGlass size={17} />
               Search Preference
             </Link>

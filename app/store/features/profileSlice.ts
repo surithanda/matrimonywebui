@@ -379,6 +379,30 @@ export const createAddressAsync = createAsyncThunk(
   }
 );
 
+export const updateAddressAsync = createAsyncThunk(
+  'profile/updateAddress',
+  async (addressData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/address/${addressData.profile_address_id}`, addressData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteAddressAsync = createAsyncThunk(
+  'profile/deleteAddress',
+  async (payload: { addressId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/address/${payload.addressId}?profile_id=${payload.profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const getEducationAsync = createAsyncThunk(
   'profile/getEducation',
   async (data: any, { rejectWithValue }) => {
@@ -732,6 +756,30 @@ const profileSlice = createSlice({
         state.address = action.payload;
       })
       .addCase(createAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(updateAddressAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.address = action.payload;
+      })
+      .addCase(updateAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteAddressAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Address deleted successfully
+      })
+      .addCase(deleteAddressAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       })

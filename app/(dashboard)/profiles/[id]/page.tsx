@@ -529,7 +529,7 @@ const ViewProfile = () => {
                 addr.type ? ` (${addr.type})` : ""
               }`;
               return (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <ProfileDetail
                     title="Type"
                     value={addr?.type || addr?.address_type}

@@ -229,6 +229,18 @@ const FormSection = () => {
     setShowConfirmation(false);
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      setActiveDropdown(null);
+    };
+
+    if (activeDropdown !== null) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [activeDropdown]);
+
   // Fetch properties from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
@@ -295,7 +307,7 @@ const FormSection = () => {
 
   return (
     <>
-    <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+    <section className="px-2 md:px-0 md:py-2 w-full">
       <div className="mb-6">
         <div className="flex justify-end items-center mb-3 mt-3">
           <Button
@@ -313,78 +325,150 @@ const FormSection = () => {
         </div>
       </div>
 
-              {/* Property List as Table */}
-        <div className="mb-6 overflow-x-auto">
-          {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-3 py-2 text-left text-base font-bold text-gray-800">
-                    Type
-                  </th>
-                  <th className="px-3 py-2 text-left text-base font-bold text-gray-800">
-                    Ownership
-                  </th>
-                  <th className="px-3 py-2 text-left text-base font-bold text-gray-800">
-                    Area
-                  </th>
-                  <th className="px-3 py-2 text-left text-base font-bold text-gray-800">
-                    Description
-                  </th>
-                  <th className="px-3 py-2 text-left text-base font-bold text-gray-800">
-                    Address
-                  </th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
+      {/* Property List as Cards */}
+      <div className="mb-6">
+        {fields.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {fields.map((field, index) => (
+              <div
+                key={field.id || field._id || index}
+                className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
+                  editIndex === index
+                    ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                    : "border-gray-200 hover:border-orange-300"
+                }`}
+              >
+                {/* Three-dots menu */}
+                <div className="absolute top-4 right-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveDropdown(
+                        activeDropdown === index ? null : index
+                      )
+                    }
+                    className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
                   >
-                    <td className="px-3 py-2 text-sm">
-                      {findPropertyTypeName(item.property_type ?? -1)}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {findOwnershipTypeName(item.ownership_type ?? -1)}
-                    </td>
-                    <td className="px-3 py-2 text-sm">{item.property_value}</td>
-                    <td className="px-3 py-2 text-sm">
-                      {item.property_description}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {item.property_address}
-                    </td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center">
-                        <button
-                          type="button"
-                          className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => {
-                            setEditIndex(index);
-                            setOpenModal({ open: true, mode: 'edit' });
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="red-btn px-2 py-1 text-xs"
-                          onClick={() => handleDelete(index)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                    <MoreVertical className="w-5 h-5 text-gray-600" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {activeDropdown === index && (
+                    <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditIndex(index);
+                          setOpenModal({ open: true, mode: 'edit' });
+                          setActiveDropdown(null);
+                        }}
+                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleDelete(index);
+                          setActiveDropdown(null);
+                        }}
+                        className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Verification Status */}
+                <div className="flex items-center gap-2 mb-3">
+                  <Home className="w-5 h-5 text-orange-500" />
+                  <span className="font-semibold text-gray-800">
+                    Property {index + 1}
+                    {editIndex === index && (
+                      <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
+                        Editing...
+                      </span>
+                    )}
+                  </span>
+                  <div className="ml-auto flex items-center gap-1 mr-9">
+                    <>
+                      <AlertCircle className="w-4 h-4 text-amber-500" />
+                      <span className="text-xs text-amber-600 font-medium">
+                        Pending
+                      </span>
+                    </>
+                  </div>
+                </div>
+
+                {/* Property Content */}
+                <div className="space-y-3">
+                  {/* Property Type and Ownership */}
+                  <div>
+                    <p className="text-gray-900 font-medium leading-relaxed">
+                      {findPropertyTypeName(field.property_type ?? -1) || 'Unknown Type'}
+                    </p>
+                    <p className="text-gray-700 text-sm">
+                      {findOwnershipTypeName(field.ownership_type ?? -1) || 'Unknown Ownership'}
+                    </p>
+                  </div>
+
+                  {/* Property Details */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">Area:</span>
+                      <span className="text-sm text-gray-800 font-medium">
+                        {field.property_value ? `${field.property_value} sq. ft.` : "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">Ownership:</span>
+                      <span className="text-sm text-gray-800 font-medium">
+                        {findOwnershipTypeName(field.ownership_type ?? -1) || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  {field.property_description && (
+                    <div className="pt-2 border-t border-gray-100">
+                      <p className="text-xs text-gray-500 mb-1">Description:</p>
+                      <p className="text-sm text-gray-700">
+                        {field.property_description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Address */}
+                  {field.property_address && (
+                    <div className="pt-2 border-t border-gray-100">
+                      <p className="text-xs text-gray-500 mb-1">Address:</p>
+                      <p className="text-sm text-gray-700">
+                        {field.property_address}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {fields.length === 0 && (
+          <div className="text-center py-12 rounded-xl border-2 border-dashed border-gray-300">
+            <Home className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No properties added yet
+            </h3>
+            <p className="text-gray-500">
+              Add your first property using the form below
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* <form
         className="w-full px-2"

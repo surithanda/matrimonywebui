@@ -11,7 +11,7 @@ import { IoIosClose, IoIosSave, IoMdCloseCircle } from "react-icons/io";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 interface IAddress {
-  id: string;
+  profile_address_id?: string | number;
   city: string;
   state: number;
   country: number;
@@ -35,7 +35,7 @@ interface AddEditAddressModalProps {
 }
 
 const defaultAddress: IAddress = {
-  id: "",
+  profile_address_id: undefined,
   city: "",
   state: 0,
   country: 0,

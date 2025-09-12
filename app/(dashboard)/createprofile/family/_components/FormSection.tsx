@@ -396,7 +396,7 @@ const FormSection = ({
 
   return (
     <>
-      <section className="px-4 py-5 md:px-0 md:py-2 w-full">
+      <section className="px-2 md:px-0 md:py-2 w-full">
         <div className="mb-6">
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
@@ -420,67 +420,170 @@ const FormSection = ({
         {(error || familyError) && (
           <div className="mb-2 text-red-600">{error || familyError}</div>
         )}
-        {/* Family List as Table */}
-        <div className="mb-6 overflow-x-auto">
+        {/* Family List as Cards */}
+        <div className="mb-6">
           {fields.length > 0 && (
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    First Name
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Last Name
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Relationship
-                  </th>
-                  <th className="px-3 py-2 text-base font-bold text-gray-800">
-                    Address
-                  </th>
-                  <th className="px-3 py-2 text-center text-base font-bold text-gray-800">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {fields.map((item, index) => (
-                  <tr
-                    key={item._id || item.id || index}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="px-3 py-2 text-sm">{item.firstname}</td>
-                    <td className="px-3 py-2 text-sm">{item.lastname}</td>
-                    <td className="px-3 py-2 text-sm">
-                      {item.relationshiptoyou}
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      {item.address_line}, {item.city}
-                    </td>
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex gap-2 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {fields.map((field, index) => (
+                <div
+                  key={field._id || field.id || index}
+                  className={`bg-white mx-w-md border rounded-xl shadow-md p-6 relative transition-all duration-300 transform hover:scale-[1] hover:shadow-xl ${
+                    editIndex === index
+                      ? "border-orange-500 border-2 shadow-orange-100 bg-orange-50/30"
+                      : "border-gray-200 hover:border-orange-300"
+                  }`}
+                >
+                  {/* Three-dots menu */}
+                  <div className="absolute top-4 right-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === index ? null : index
+                        )
+                      }
+                      className="p-2 hover:bg-gray-100 hover:scale-110 rounded-full transition-all duration-200 hover:shadow-md"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === index && (
+                      <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
-                          disabled
                           type="button"
-                          className="gray-btn px-2 py-1 text-xs"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => {
+                            handleEdit(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                         >
+                          <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
                         <button
-                          disabled
                           type="button"
-                          className="red-btn px-2 py-1 text-xs"
-                          onClick={() => handleDelete(index)}
+                          onClick={() => {
+                            handleDelete(index);
+                            setActiveDropdown(null);
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 transition-colors"
                         >
+                          <Trash2 className="w-4 h-4" />
                           Delete
                         </button>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                  </div>
+
+                  {/* Verification Status */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="w-5 h-5 text-orange-500" />
+                    <span className="font-semibold text-gray-800">
+                      {category === "family" ? "Member" : "Reference"} {index + 1}
+                      {editIndex === index && (
+                        <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
+                          Editing...
+                        </span>
+                      )}
+                    </span>
+                    <div className="ml-auto flex items-center gap-1 mr-9">
+                      <>
+                        <AlertCircle className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs text-amber-600 font-medium">
+                          Pending
+                        </span>
+                      </>
+                    </div>
+                  </div>
+
+                  {/* Family Member Content */}
+                  <div>
+                    <p className="text-gray-900 font-medium leading-relaxed">
+                      {/* {findPropertyTypeName(field.relationshiptoyou ?? -1) || 'Unknown'} */}
+                      {field.relationshiptoyou}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Name */}
+                    <div>
+                      <p className="text-gray-900 font-medium leading-relaxed">
+                        {field.firstname} {field.lastname}
+                      </p>
+                      {field.dob && (
+                        <p className="text-gray-700 text-sm">
+                          DOB: {field.dob}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Contact Details */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Email:</span>
+                        <span className="text-sm text-gray-800 font-medium truncate">
+                          {field.email || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Phone:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.contactnumber || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">City:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.city || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">State:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findStateName(field.state_id) || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Country:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {findCountryName(field.country_id) || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">ZIP:</span>
+                        <span className="text-sm text-gray-800 font-medium">
+                          {field.zip || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Address */}
+                    {field.address_line && (
+                      <div className="pt-2 border-t border-gray-100">
+                        <p className="text-xs text-gray-500 mb-1">Address:</p>
+                        <p className="text-sm text-gray-700">
+                          {field.address_line}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {fields.length === 0 && (
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-gray-300">
+              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No {actionButton_label.toLowerCase()}s added yet
+              </h3>
+              <p className="text-gray-500">
+                Add your first {actionButton_label.toLowerCase()} using the form below
+              </p>
+            </div>
           )}
         </div>
         {/* <form

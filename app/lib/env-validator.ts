@@ -13,8 +13,7 @@ export const validateEnvironmentConfig = () => {
     API_BASE_URL,
     API_ORIGIN,
     API_KEY: API_KEY ? 'Set' : 'Missing',
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'Missing',
-    NEXT_PUBLIC_PROD_URL: process.env.NEXT_PUBLIC_PROD_URL || 'Missing',
+    API_URL: process.env.API_URL || process.env.NEXT_PUBLIC_API_URL ? 'Set' : 'Missing',
     NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY ? 'Set' : 'Missing',
   };
 
@@ -22,15 +21,15 @@ export const validateEnvironmentConfig = () => {
   
   // Validation checks
   const errors = [];
-  if (!process.env.NEXT_PUBLIC_API_URL) {
-    errors.push('NEXT_PUBLIC_API_URL is not set');
+  if (!process.env.API_URL && !process.env.NEXT_PUBLIC_API_URL) {
+    errors.push('API_URL is not set');
   }
-  if (!process.env.NEXT_PUBLIC_API_KEY) {
-    errors.push('NEXT_PUBLIC_API_KEY is not set');
+  if (!API_KEY) {
+    errors.push('API_KEY is not set');
   }
-  if (isProduction && !process.env.NEXT_PUBLIC_PROD_URL) {
-    errors.push('NEXT_PUBLIC_PROD_URL is required for production');
-  }
+//   if (isProduction && !process.env.PROD_URL) {
+//     errors.push('PROD_URL is required for production');
+//   }
 
   if (errors.length > 0) {
     console.error('Environment Configuration Errors:', errors);

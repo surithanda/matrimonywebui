@@ -91,7 +91,7 @@ interface ChoiceboxItemProps {
   children?: React.ReactNode;
 }
 
-ChoiceboxGroup.Item = ({
+const ChoiceboxGroupItem = ({
   title,
   description,
   value,
@@ -204,3 +204,5 @@ ChoiceboxGroup.Item = ({
     </div>
   );
 };
+
+ChoiceboxGroup.Item = ChoiceboxGroupItem;

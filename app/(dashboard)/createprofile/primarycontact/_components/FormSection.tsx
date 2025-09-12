@@ -1,6 +1,8 @@
 "use client";
 import {
   createAddressAsync,
+  updateAddressAsync,
+  deleteAddressAsync,
   createPersonalProfileAsync,
   getAddressAsync,
 } from "@/app/store/features/profileSlice";
@@ -28,7 +30,7 @@ import { FaPlus } from "react-icons/fa6";
 import { AddEditAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddEditAddressModal";
 
 interface IAddress {
-  id: string;
+  profile_address_id?: string | number;
   city: string;
   state: number;
   country: number;
@@ -47,7 +49,7 @@ interface IFormData {
 }
 
 const defaultAddress = {
-  id: "",
+  profile_address_id: undefined,
   city: "",
   state: 0,
   country: 0,
@@ -152,10 +154,34 @@ const FormSection = () => {
   };
 
   // Delete address
-  const handleDelete = (index: number) => {
-    remove(index);
-    setEditIndex(null);
-    setCurrentAddress({ ...defaultAddress });
+  const handleDelete = async (index: number) => {
+    const addressToDelete = fields[index] as IAddress;
+    if (!addressToDelete.profile_address_id) {
+      // If no ID, just remove locally
+      remove(index);
+      setEditIndex(null);
+      setCurrentAddress({ ...defaultAddress });
+      return;
+    }
+
+    try {
+      const result = await dispatch(deleteAddressAsync({
+        addressId: String(addressToDelete.profile_address_id),
+        profileId: selectedProfileID
+      })).unwrap();
+      
+      if (result && result.status === 'success') {
+        remove(index);
+        setEditIndex(null);
+        setCurrentAddress({ ...defaultAddress });
+      }
+    } catch (err: any) {
+      console.error("Error deleting address:", err);
+      // Still remove locally if API fails for now
+      remove(index);
+      setEditIndex(null);
+      setCurrentAddress({ ...defaultAddress });
+    }
   };
 
   // Cancel edit operation
@@ -193,19 +219,17 @@ const FormSection = () => {
     // return;
 
     if (editIndex !== null) {
-      console.log("I need to update data")
-      return;
       //update
-      // try {
-      //   const result = await dispatch(updateAddressAsync(addressData)).unwrap();
-      //   if (result && result.status === 'success') {
-      //     // toast.success("Address updated successfully!");
-      //     proceedwithAddUpdate();
-      //   }
-      // } catch (err: any) {
-      //   // toast.error(err.message || "Failed to update address.");
-      //   console.error("Error submitting form:", err);
-      // }
+      try {
+        const result = await dispatch(updateAddressAsync(addressData)).unwrap();
+        if (result && result.status === 'success') {
+          // toast.success("Address updated successfully!");
+          proceedwithAddUpdate(currentAddress.profile_address_id);
+        }
+      } catch (err: any) {
+        // toast.error(err.message || "Failed to update address.");
+        console.error("Error updating address:", err);
+      }
     } else {
       //add
       try {
@@ -225,8 +249,9 @@ const FormSection = () => {
   const proceedwithAddUpdate = (updateID?: string | number) => {
     // Update the id field of the address being added/updated
     const updatedAddress = updateID
-      ? { ...currentAddress, id: String(updateID) }
+      ? { ...currentAddress, id: updateID }
       : { ...currentAddress };
+    console.log(updatedAddress, currentAddress, editIndex);
     if (editIndex !== null) {
       update(editIndex, updatedAddress);
       setEditIndex(null);
@@ -307,21 +332,22 @@ const FormSection = () => {
       ...addressData,
     };
 
+    console.log(addressPayload);
+    // return;
+
     if (mode === 'edit' && editIndex !== null) {
       // Update existing address
-      // Uncomment when update API is ready
-      // try {
-      //   const result = await dispatch(updateAddressAsync(addressPayload)).unwrap();
-      //   if (result && result.status === 'success') {
-      //     proceedwithAddUpdate(result?.profile_address_id);
-      //   }
-      // } catch (err: any) {
-      //   console.error("Error updating address:", err);
-      //   throw err;
-      // }
-      
-      // For now, update locally
-      proceedwithAddUpdate(addressData.id);
+      try {
+        const result = await dispatch(updateAddressAsync(addressPayload)).unwrap();
+        console.log(result);
+        if (result && result.status === 'success') {
+          // proceedwithAddUpdate(addressData.profile_address_id);
+          fetchProfileAddress(); // Refresh the address list
+        }
+      } catch (err: any) {
+        console.error("Error updating address:", err);
+        throw err;
+      }
     } else {
       // Add new address
       try {

@@ -8,14 +8,11 @@ export const isProduction = process.env.NODE_ENV === 'production';
 export const isDevelopment = process.env.NODE_ENV === 'development';
 
 // API Configuration
-export const API_KEY = process.env.NEXT_PUBLIC_API_KEY || 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+export const API_KEY = process.env.NEXT_PUBLIC_API_KEY || process.env.API_KEY;
 
 // API Base URLs
 const getApiBaseUrl = (): string => {
-  if (isProduction && process.env.NEXT_PUBLIC_PROD_URL) {
-    return process.env.NEXT_PUBLIC_PROD_URL;
-  }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+  return process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:8080/api';
 };
 
 export const API_BASE_URL = getApiBaseUrl();
@@ -48,6 +45,6 @@ if (isDevelopment) {
     NODE_ENV: process.env.NODE_ENV,
     API_BASE_URL,
     API_ORIGIN,
-    API_KEY: API_KEY.substring(0, 8) + '...', // Only show first 8 chars for security
+    // API_KEY is only available server-side, don't log it in client
   });
 }

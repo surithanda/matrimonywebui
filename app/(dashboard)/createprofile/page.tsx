@@ -107,6 +107,8 @@ const Page = () => {
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
 
+      console.log("dsmfvds", result)
+
       if (result) {
         reset(result?.data);
       }

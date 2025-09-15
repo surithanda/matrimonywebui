@@ -91,7 +91,7 @@ interface ChoiceboxItemProps {
   children?: React.ReactNode;
 }
 
-ChoiceboxGroup.Item = ({
+ChoiceboxGroup.Item = function ChoiceboxItem({
   title,
   description,
   value,
@@ -100,7 +100,7 @@ ChoiceboxGroup.Item = ({
   onChange,
   disabled,
   children,
-}: ChoiceboxItemProps) => {
+}: ChoiceboxItemProps) {
   const isSelected = !!(typeof valueSelected === "string"
     ? value === valueSelected
     : valueSelected?.includes(value));

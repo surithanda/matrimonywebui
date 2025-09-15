@@ -393,21 +393,21 @@ input[type="range"] {
   overflow: hidden;
 }
 .account-input-field {
-  display: flex;
-  padding: 13px 16px;
+  /* display: flex;
+  padding: 13px 16px; */
   /* align-items: flex-start; */
-  gap: 10px;
-  align-self: stretch;
+  /* gap: 10px;
+  align-self: stretch; */
 
   /* border-radius: 0 0 0 0; */
-  border-bottom: 1px solid #bbb;
+  /* border-bottom: 1px solid #bbb;
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.02) 0%,
     rgba(0, 0, 0, 0.01) 100%
-  );
+  ); */
 }
-.account-details-box label {
+/* .account-details-box label {
   color: rgba(25, 24, 35, 0.6);
   font-family: "BR Cobane";
   font-size: 18px;
@@ -415,8 +415,8 @@ input[type="range"] {
   font-weight: 600;
   line-height: normal;
   letter-spacing: -0.9px;
-}
-label {
+} */
+/* label {
   color: rgba(25, 24, 35, 0.9);
   font-family: "BR Cobane";
   font-size: 18px;
@@ -425,7 +425,7 @@ label {
   line-height: normal;
   letter-spacing: -0.9px;
   margin-bottom: 10px;
-}
+} */
 .linear-pic {
   /* background: url(../img/account-bg.png); */
   padding: 50px 0px 100px;

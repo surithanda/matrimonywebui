@@ -238,14 +238,21 @@ const FormSection = () => {
   };
 
   // On submit, check for unsaved data and show confirmation if needed
-  const onSubmit = async (data: IFormData) => {
+const onSubmit = useCallback(
+  async (data: IFormData) => {
     console.log("Form submitted:", data, hasUnsavedAddressData());
     if (hasUnsavedAddressData()) {
       setShowConfirmation(true);
     } else {
       moveToNext();
     }
-  };
+  },
+  [hasUnsavedAddressData] // ✅ dependencies
+);
+
+useEffect(() => {
+  console.log("Effect triggered because onSubmit changed");
+}, [onSubmit]);
 
   // Handle confirmation - save address and proceed
   const handleConfirmSaveAndContinue = async () => {

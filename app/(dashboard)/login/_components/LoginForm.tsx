@@ -65,21 +65,20 @@ const LoginForm = () => {
       <form onSubmit={handleSubmit} className="w-full">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
-          <Label className="block BRCobane18600 mb-2.5">Email</Label>
+          <Label className="mb-2">Email</Label>
           <Input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             className="w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
-            placeholder="Email"
             required
           />
         </div>
 
         {/* Password Input */}
         <div className="mb-2 flex flex-col items-start">
-          <Label className="block BRCobane18600 mb-2.5">Password</Label>
+          <Label className="mb-2">Password</Label>
           <div className="relative w-full">
             <Input
               type={showPassword ? "text" : "password"}
@@ -87,7 +86,6 @@ const LoginForm = () => {
               value={formData.password}
               onChange={handleChange}
               className="w-full focus:outline-none focus:border-b focus:border-[#f7ac03]"
-              placeholder="Password"
               required
             />
             <button

@@ -53,16 +53,13 @@ const Sidebar = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-    // Monitor route changes
-    useEffect(() => {
-      // console.log('Route changed to:', pathname);
-      // console.log('Search params:', searchParams.toString());
-      
-      menu?.map((item) => {
-        // console.log(item.name, item.link, pathname.includes(item.link))
-        if(pathname.includes(item?.link)) setActiveItem(item?.name)
-      })
-    }, [pathname, searchParams]);
+useEffect(() => {
+  menu?.map((item) => {
+    if (pathname.includes(item?.link)) {
+      setActiveItem(item?.name);
+    }
+  });
+}, [pathname, searchParams, menu]);
   
   
   useEffect(() => {

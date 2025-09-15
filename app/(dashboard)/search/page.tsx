@@ -201,7 +201,7 @@ const Page = () => {
     return () => {
       // Any cleanup if needed
     };
-  }, [dispatch, preferencesLoaded]); // Removed localFilters and preferencesLoaded from dependencies
+  }, [dispatch, preferencesLoaded, selectedProfileID]); // Removed localFilters and preferencesLoaded from dependencies
 
   // Handle filter changes with type safety
   const handleFilterChange = (

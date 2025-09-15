@@ -141,7 +141,9 @@ export function AddPhotosModal({
     } catch (e) {
       // non-fatal
     }
-  }, [dispatch, selectedProfileID, toAbsoluteUrl]);
+  }, [dispatch, selectedProfileID, toAbsoluteUrl,  photoTypeAssociation.profile,
+  photoTypeAssociation.cover,
+  photoTypeAssociation.individual]);
 
   useEffect(() => {
     loadPhotos();

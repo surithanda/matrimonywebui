@@ -5,6 +5,7 @@ const nextConfig = {
       'localhost',
       'matrimonyservicesapi-tdcu.onrender.com',
       'charming-hoover.65-254-80-213.plesk.page', // Production domain
+      'images.pexels.com'
     ],
     remotePatterns: [
       // Local development pattern

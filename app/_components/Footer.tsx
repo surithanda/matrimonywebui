@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import MainLogo from "@/public/images/MainLogo.svg";
+import MainLogo from "@/public/images/logo3.png";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";

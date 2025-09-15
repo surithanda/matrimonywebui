@@ -22,55 +22,24 @@ import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import coverPhoto from "@/public/images/couple1.jpg";
 import {
   MdEmail,
   MdLocalPhone,
-  MdOutlineDeleteOutline,
-  MdOutlineModeEditOutline,
-  MdPhoneIphone,
 } from "react-icons/md";
-import { AlertCircle, BadgeX, Eye, MoreHorizontal } from "lucide-react";
 import {
   FaFacebook,
-  FaHome,
   FaInstagram,
   FaLinkedin,
-  FaRegEdit,
 } from "react-icons/fa";
-import { IoIosPhonePortrait } from "react-icons/io";
 import { FaLocationDot, FaPlus, FaTwitter } from "react-icons/fa6";
-import { CgMoreVertical } from "react-icons/cg";
 import { BiSolidBadgeCheck } from "react-icons/bi";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { CiMail } from "react-icons/ci";
 import {
   AiOutlineHeart,
   AiFillHeart,
   AiOutlineLoading3Quarters,
 } from "react-icons/ai";
-import { GiBodyHeight, GiRotaryPhone } from "react-icons/gi";
-import {
-  BsGenderFemale,
-  BsGenderMale,
-  BsTelephonePlusFill,
-} from "react-icons/bs";
 import Card from "@/components/ui/carousel-card-1";
 import { Button } from "@/components/ui/button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Link from "next/link";
 import AppBreadcrumb from "../../_components/AppBreadcrumb";
 
 const ViewProfile = () => {
@@ -79,13 +48,16 @@ const ViewProfile = () => {
   const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
   const fromSearch = searchParams.get("fromSearch") === "true";
-  console.log("searcknklsdf", fromSearch);
   const {
     findJobTitleName,
     findCountryName,
     findStateName,
     findPropertyTypeName,
     findOwnershipTypeName,
+    findGenderName,
+    findMaritalStatusName,
+    findReligionName,
+    findFieldOfStudy,
   } = useMetaDataLoader();
 
   const {
@@ -329,11 +301,11 @@ const ViewProfile = () => {
   //   console.log('Redux State Debug:');
   //   console.log('personalProfile:', personalProfile);
   //   console.log('address:', address);
-  //   console.log('education:', education);
-  //   console.log('employment:', employment);
-  //   console.log('family:', family);
+  // console.log("education:", education);
+  // console.log("employment:", employment);
+  // console.log("family:", family);
   //   console.log('properties:', properties);
-  //   console.log('hobbies:', hobbies);
+    // console.log('hobbies:', hobbies);
   //   console.log('interests:', interests);
   //   console.log('references:', references);
   // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
@@ -357,893 +329,868 @@ const ViewProfile = () => {
     );
   }
 
-  const renderPhotos = () => {
-    return (
-      <ProfileSection title="Photos" buttonName="Add Photo">
-        {/* Photos (by type) */}
-        <div className="w-full">
-          <div className="flex flex-wrap gap-6">
-            {/* Profile (450) */}
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Profile</p>
-              <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
-                {profileImage ? (
-                  <Image
-                    src={profileImage.url}
-                    alt="Profile photo"
-                    fill
-                    sizes="200px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
-                    No photo
-                  </div>
-                )}
-              </div>
-            </div>
+  // const renderPhotos = () => {
+  //   return (
+  //     <ProfileSection title="Photos" buttonName="Add Photo">
+  //       {/* Photos (by type) */}
+  //       <div className="w-full">
+  //         <div className="flex flex-wrap gap-6">
+  //           {/* Profile (450) */}
+  //           <div className="flex flex-col gap-2">
+  //             <p className="text-sm font-medium">Profile</p>
+  //             <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
+  //               {profileImage ? (
+  //                 <Image
+  //                   src={profileImage.url}
+  //                   alt="Profile photo"
+  //                   fill
+  //                   sizes="200px"
+  //                   className="object-cover"
+  //                 />
+  //               ) : (
+  //                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
+  //                   No photo
+  //                 </div>
+  //               )}
+  //             </div>
+  //           </div>
 
-            {/* Cover (454) */}
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Cover</p>
-              <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
-                {coverImage ? (
-                  <Image
-                    src={coverImage.url}
-                    alt="Cover photo"
-                    fill
-                    sizes="300px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
-                    No photo
-                  </div>
-                )}
-              </div>
-            </div>
+  //           {/* Cover (454) */}
+  //           <div className="flex flex-col gap-2">
+  //             <p className="text-sm font-medium">Cover</p>
+  //             <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
+  //               {coverImage ? (
+  //                 <Image
+  //                   src={coverImage.url}
+  //                   alt="Cover photo"
+  //                   fill
+  //                   sizes="300px"
+  //                   className="object-cover"
+  //                 />
+  //               ) : (
+  //                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
+  //                   No photo
+  //                 </div>
+  //               )}
+  //             </div>
+  //           </div>
 
-            {/* Additional (456) */}
-            <div className="flex-1 min-w-full">
-              <p className="text-sm font-medium mb-2">Additional</p>
-              <div className="flex flex-wrap gap-3">
-                {individualImages && individualImages.length > 0 ? (
-                  individualImages.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden"
-                    >
-                      <Image
-                        src={img.url}
-                        alt={`Additional ${idx + 1}`}
-                        fill
-                        sizes="150px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-xs text-gray-500">No photos</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </ProfileSection>
-    );
-  };
+  //           {/* Additional (456) */}
+  //           <div className="flex-1 min-w-full">
+  //             <p className="text-sm font-medium mb-2">Additional</p>
+  //             <div className="flex flex-wrap gap-3">
+  //               {individualImages && individualImages.length > 0 ? (
+  //                 individualImages.map((img, idx) => (
+  //                   <div
+  //                     key={idx}
+  //                     className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden"
+  //                   >
+  //                     <Image
+  //                       src={img.url}
+  //                       alt={`Additional ${idx + 1}`}
+  //                       fill
+  //                       sizes="150px"
+  //                       className="object-cover"
+  //                     />
+  //                   </div>
+  //                 ))
+  //               ) : (
+  //                 <div className="text-xs text-gray-500">No photos</div>
+  //               )}
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </ProfileSection>
+  //   );
+  // };
 
-  const renderPersonalInfo = () => {
-    const profileData = personalProfile?.data || personalProfile;
+  // const renderPersonalInfo = () => {
+  //   const profileData = personalProfile?.data || personalProfile;
 
-    return (
-      // <ProfileSection title="Personal Information">
-      //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      //     {profileData ? (
-      //       // Object.entries(profileData)
-      //       //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
-      //       //   .map(([key, value]) => (
-      //       //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
-      //       //   ))
-      //       <>
-      //         <ProfileDetail
-      //           title="First Name"
-      //           value={profileData?.first_name}
-      //         />
-      //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
-      //         <ProfileDetail title="Gender" value={profileData?.gender} />
-      //         <ProfileDetail title="DOB" value={profileData?.dob} />
-      //         <ProfileDetail title="Religion" value={profileData?.religion} />
-      //         <ProfileDetail
-      //           title="Mother Tounge"
-      //           value={profileData?.mother_tounge}
-      //         />
-      //         <ProfileDetail
-      //           title="Marital Status"
-      //           value={profileData?.marital_status}
-      //         />
-      //         <ProfileDetail title="Height" value={profileData?.height} />
-      //         <ProfileDetail title="Weight" value={profileData?.weight} />
-      //       </>
-      //     ) : (
-      //       <p className="text-gray-500 col-span-2">
-      //         No personal information available
-      //       </p>
-      //     )}
-      //   </div>
-      // </ProfileSection>
-      <div className="overflow-hidden">
-        <div className="flex flex-row justify-between items-center gap-6 px-6 py-6">
-          <h2
-            className=" text-black text-xl font-bold"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            Personal Information
-          </h2>
-          {/* Edit Button */}
-          <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
-            <FaRegEdit size={15} />
-            Edit
-          </button>
-        </div>
+  //   return (
+  //     // <ProfileSection title="Personal Information">
+  //     //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //     //     {profileData ? (
+  //     //       // Object.entries(profileData)
+  //     //       //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+  //     //       //   .map(([key, value]) => (
+  //     //       //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
+  //     //       //   ))
+  //     //       <>
+  //     //         <ProfileDetail
+  //     //           title="First Name"
+  //     //           value={profileData?.first_name}
+  //     //         />
+  //     //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
+  //     //         <ProfileDetail title="Gender" value={profileData?.gender} />
+  //     //         <ProfileDetail title="DOB" value={profileData?.dob} />
+  //     //         <ProfileDetail title="Religion" value={profileData?.religion} />
+  //     //         <ProfileDetail
+  //     //           title="Mother Tounge"
+  //     //           value={profileData?.mother_tounge}
+  //     //         />
+  //     //         <ProfileDetail
+  //     //           title="Marital Status"
+  //     //           value={profileData?.marital_status}
+  //     //         />
+  //     //         <ProfileDetail title="Height" value={profileData?.height} />
+  //     //         <ProfileDetail title="Weight" value={profileData?.weight} />
+  //     //       </>
+  //     //     ) : (
+  //     //       <p className="text-gray-500 col-span-2">
+  //     //         No personal information available
+  //     //       </p>
+  //     //     )}
+  //     //   </div>
+  //     // </ProfileSection>
+  //     <div className="overflow-hidden">
+  //       <div className="flex flex-row justify-between items-center gap-6 px-6 py-6">
+  //         <h2
+  //           className=" text-black text-xl font-bold"
+  //           style={{ fontFamily: "BR Cobane" }}
+  //         >
+  //           Personal Information
+  //         </h2>
+  //         {/* Edit Button */}
+  //         <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
+  //           <FaRegEdit size={15} />
+  //           Edit
+  //         </button>
+  //       </div>
 
-        <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
-          <ProfileDetail title="First Name" value={profileData?.first_name} />
-          <ProfileDetail title="Last Name" value={profileData?.last_name} />
-          <ProfileDetail
-            title="Email"
-            value={personalProfile?.data?.email_id}
-          />
-          <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
-          <ProfileDetail title="Gender" value={profileData?.gender} />
-          <ProfileDetail title="DOB" value={profileData?.dob} />
-          <ProfileDetail title="Religion" value={profileData?.religion} />
-          <ProfileDetail
-            title="Mother Tounge"
-            value={profileData?.mother_tounge}
-          />
-          <ProfileDetail
-            title="Marital Status"
-            value={profileData?.marital_status}
-          />
-          <ProfileDetail title="Height" value={profileData?.height} />
-          <ProfileDetail title="Weight" value={profileData?.weight} />
-        </div>
-      </div>
-    );
-  };
+  //       <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
+  //         <ProfileDetail title="First Name" value={profileData?.first_name} />
+  //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
+  //         <ProfileDetail
+  //           title="Email"
+  //           value={personalProfile?.data?.email_id}
+  //         />
+  //         <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
+  //         <ProfileDetail title="Gender" value={profileData?.gender} />
+  //         <ProfileDetail title="DOB" value={profileData?.dob} />
+  //         <ProfileDetail title="Religion" value={profileData?.religion} />
+  //         <ProfileDetail
+  //           title="Mother Tounge"
+  //           value={profileData?.mother_tounge}
+  //         />
+  //         <ProfileDetail
+  //           title="Marital Status"
+  //           value={profileData?.marital_status}
+  //         />
+  //         <ProfileDetail title="Height" value={profileData?.height} />
+  //         <ProfileDetail title="Weight" value={profileData?.weight} />
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
-  const renderAddresses = () => {
-    const addressList = address?.data?.addresses || (address ? [address] : []);
+  // const renderAddresses = () => {
+  //   const addressList = address?.data?.addresses || (address ? [address] : []);
 
-    return (
-      <ProfileSection
-        title="Address"
-        buttonName="Add Address"
-        onButtonClick={() => {}}
-      >
-        <div className="space-y-4">
-          {addressList.length > 0 ? (
-            addressList.map((addr: any, index: number) => {
-              const title = `Address ${index + 1}${
-                addr.type ? ` (${addr.type})` : ""
-              }`;
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <ProfileDetail
-                    title="Type"
-                    value={addr?.type || addr?.address_type}
-                  />
-                  <ProfileDetail title="Street" value={addr?.street} />
-                  <ProfileDetail title="City" value={addr?.city} />
-                  <ProfileDetail title="State" value={addr?.state} />
-                  <ProfileDetail title="Country" value={addr?.country} />
-                  <ProfileDetail title="Pincode" value={addr?.pincode} />
-                  <ProfileDetail
-                    title="Is Current"
-                    value={addr?.is_current ? "Yes" : "No"}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No address information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection
+  //       title="Address"
+  //       buttonName="Add Address"
+  //       onButtonClick={() => {}}
+  //     >
+  //       <div className="space-y-4">
+  //         {addressList.length > 0 ? (
+  //           addressList.map((addr: any, index: number) => {
+  //             const title = `Address ${index + 1}${
+  //               addr.type ? ` (${addr.type})` : ""
+  //             }`;
+  //             return (
+  //               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //                 <ProfileDetail
+  //                   title="Type"
+  //                   value={addr?.type || addr?.address_type}
+  //                   key={index}
+  //                 />
+  //                 <ProfileDetail title="Street" value={addr?.street} />
+  //                 <ProfileDetail title="City" value={addr?.city} />
+  //                 <ProfileDetail title="State" value={addr?.state} />
+  //                 <ProfileDetail title="Country" value={addr?.country} />
+  //                 <ProfileDetail title="Pincode" value={addr?.pincode} />
+  //                 <ProfileDetail
+  //                   title="Is Current"
+  //                   value={addr?.is_current ? "Yes" : "No"}
+  //                 />
+  //               </div>
+  //             );
+  //           })
+  //         ) : (
+  //           <p className="text-gray-500">No address information available</p>
+  //         )}
+  //       </div>
+  //     </ProfileSection>
+  //   );
+  // };
 
-  const renderEducation = () => {
-    const educationList =
-      education?.data?.educations || (education ? [education] : []);
+  // const renderEducation = () => {
+  //   const educationList =
+  //     education?.data?.educations || (education ? [education] : []);
 
-    return (
-      <ProfileSection title="Education" buttonName="Add Education">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-4">
-                    <h3
-                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Computer Science
-                    </h3>
-                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
-                  </div>
-                </div>
+  //   return (
+  //     <ProfileSection title="Education" buttonName="Add Education">
+  //       <div className="space-y-4">
+  //         {educationList.length > 0 ? (
+  //           educationList.map((edu: any, index: number) => {
+  //             const title = edu?.degree || `Education ${index + 1}`;
+  //             return (
+  //               <></>
+  //               // <AccordionItem
+  //               //   key={index}
+  //               //   title={title}
+  //               //   sectionKey={`education-${index}`}
+  //               //   defaultExpanded={index === 0}
+  //               // >
+  //               //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //               //     <ProfileDetail
+  //               //       title="Institution"
+  //               //       value={edu?.institution}
+  //               //     />
+  //               //     <ProfileDetail
+  //               //       title="Field of Study"
+  //               //       value={edu?.field_of_study}
+  //               //     />
+  //               //     <ProfileDetail title="Degree" value={edu?.degree} />
+  //               //     <ProfileDetail
+  //               //       title="Year of Completion"
+  //               //       value={edu?.year_of_completion}
+  //               //     />
+  //               //     <ProfileDetail
+  //               //       title="Grade/Percentage"
+  //               //       value={edu?.grade}
+  //               //     />
+  //               //     <ProfileDetail
+  //               //       title="Is Current"
+  //               //       value={edu?.is_current ? "Yes" : "No"}
+  //               //     />
+  //               //   </div>
+  //               // </AccordionItem>
+  //             );
+  //           })
+  //         ) : (
+  //           <p className="text-gray-500">No education information available</p>
+  //         )}
+  //       </div>
+  //     </ProfileSection>
+  //   );
+  // };
 
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+  // const renderCareer = () => {
+  //   // Handle both array and object responses from the API
+  //   let employmentList = [];
 
-              {/* Content section */}
-              <p className="text-zinc-600 dark:text-zinc-300">
-                Hyderbad University, 2024 <br />
-                Near by Max <br />
-                Hyderabad, India, 500100
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* <div className="space-y-4">
-          {educationList.length > 0 ? (
-            educationList.map((edu: any, index: number) => {
-              const title = edu?.degree || `Education ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`education-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail
-                      title="Institution"
-                      value={edu?.institution}
-                    />
-                    <ProfileDetail
-                      title="Field of Study"
-                      value={edu?.field_of_study}
-                    />
-                    <ProfileDetail title="Degree" value={edu?.degree} />
-                    <ProfileDetail
-                      title="Year of Completion"
-                      value={edu?.year_of_completion}
-                    />
-                    <ProfileDetail
-                      title="Grade/Percentage"
-                      value={edu?.grade}
-                    />
-                    <ProfileDetail
-                      title="Is Current"
-                      value={edu?.is_current ? "Yes" : "No"}
-                    />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No education information available</p>
-          )}
-        </div> */}
-      </ProfileSection>
-    );
-  };
+  //   if (Array.isArray(employment?.data)) {
+  //     employmentList = employment.data;
+  //   } else if (employment?.data?.employments) {
+  //     employmentList = employment.data.employments;
+  //   } else if (employment) {
+  //     employmentList = [employment];
+  //   }
 
-  const renderCareer = () => {
-    // Handle both array and object responses from the API
-    let employmentList = [];
+  //   return (
+  //     <ProfileSection title="Employment" buttonName="Add Employment">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+  //           <div className="px-6 py-4">
+  //             {/* Author section */}
+  //             <div className="flex items-center justify-between mb-2">
+  //               <div className="flex items-center gap-3">
+  //                 {/* Left: Company & Role */}
+  //                 <div className="flex items-center gap-2">
+  //                   <div>
+  //                     <h3
+  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+  //                       style={{ fontFamily: "BR Cobane" }}
+  //                     >
+  //                       Spack Solution Pvt Ltd
+  //                     </h3>
+  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+  //                       Frontend Developer
+  //                     </p>
+  //                   </div>
+  //                   {/* Verified Badge */}
+  //                   <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" />
+  //                 </div>
+  //               </div>
 
-    if (Array.isArray(employment?.data)) {
-      employmentList = employment.data;
-    } else if (employment?.data?.employments) {
-      employmentList = employment.data.employments;
-    } else if (employment) {
-      employmentList = [employment];
-    }
+  //               {/* Right Icons (Badge + Dropdown) */}
+  //               <div className="flex items-center gap-2">
+  //                 <DropdownMenu>
+  //                   <DropdownMenuTrigger asChild>
+  //                     <button
+  //                       type="button"
+  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                     >
+  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                     </button>
+  //                   </DropdownMenuTrigger>
+  //                   <DropdownMenuContent align="end" className="w-40">
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineModeEditOutline />
+  //                       Edit
+  //                     </DropdownMenuItem>
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineDeleteOutline />
+  //                       Delete
+  //                     </DropdownMenuItem>
+  //                   </DropdownMenuContent>
+  //                 </DropdownMenu>
+  //               </div>
+  //             </div>
 
-    return (
-      <ProfileSection title="Employment" buttonName="Add Employment">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  {/* Left: Company & Role */}
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h3
-                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Spack Solution Pvt Ltd
-                      </h3>
-                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                        Frontend Developer
-                      </p>
-                    </div>
-                    {/* Verified Badge */}
-                    <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" />
-                  </div>
-                </div>
+  //             {/* Content section */}
+  //             <p className="text-zinc-600 dark:text-zinc-300">
+  //               2022 - Present <br />
+  //               Hyderbad University, 2024 <br />
+  //               Near by Max <br />
+  //               Hyderabad, India, 500100
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       {/* <div className="space-y-4">
+  //         {employmentList.length > 0 ? (
+  //           employmentList.map((emp: any, index: number) => {
+  //             const title =
+  //               emp?.job_title || emp?.company || `Employment ${index + 1}`;
+  //             return (
+  //               <AccordionItem
+  //                 key={index}
+  //                 title={title}
+  //                 sectionKey={`employment-${index}`}
+  //                 defaultExpanded={index === 0}
+  //               >
+  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //                   <ProfileDetail title="Company" value={emp?.company} />
+  //                   <ProfileDetail title="Job Title" value={emp?.job_title} />
+  //                   <ProfileDetail title="Job Type" value={emp?.job_type} />
+  //                   <ProfileDetail
+  //                     title="Annual Income"
+  //                     value={emp?.annual_income}
+  //                   />
+  //                   <ProfileDetail title="Industry" value={emp?.industry} />
+  //                   <ProfileDetail title="Start Date" value={emp?.start_date} />
+  //                   <ProfileDetail
+  //                     title="End Date"
+  //                     value={
+  //                       emp?.end_date ||
+  //                       (emp?.is_current ? "Present" : "Not specified")
+  //                     }
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Is Current"
+  //                     value={emp?.is_current ? "Yes" : "No"}
+  //                   />
+  //                   {emp?.description && (
+  //                     <div className="md:col-span-3">
+  //                       <ProfileDetail
+  //                         title="Description"
+  //                         value={emp.description}
+  //                       />
+  //                     </div>
+  //                   )}
+  //                 </div>
+  //               </AccordionItem>
+  //             );
+  //           })
+  //         ) : (
+  //           <p className="text-gray-500">No employment information available</p>
+  //         )}
+  //       </div> */}
+  //     </ProfileSection>
+  //   );
+  // };
 
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+  // const renderFamily = () => {
+  //   const familyList =
+  //     (family as any)?.data?.family || (family ? [family] : []);
 
-              {/* Content section */}
-              <p className="text-zinc-600 dark:text-zinc-300">
-                2022 - Present <br />
-                Hyderbad University, 2024 <br />
-                Near by Max <br />
-                Hyderabad, India, 500100
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* <div className="space-y-4">
-          {employmentList.length > 0 ? (
-            employmentList.map((emp: any, index: number) => {
-              const title =
-                emp?.job_title || emp?.company || `Employment ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`employment-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Company" value={emp?.company} />
-                    <ProfileDetail title="Job Title" value={emp?.job_title} />
-                    <ProfileDetail title="Job Type" value={emp?.job_type} />
-                    <ProfileDetail
-                      title="Annual Income"
-                      value={emp?.annual_income}
-                    />
-                    <ProfileDetail title="Industry" value={emp?.industry} />
-                    <ProfileDetail title="Start Date" value={emp?.start_date} />
-                    <ProfileDetail
-                      title="End Date"
-                      value={
-                        emp?.end_date ||
-                        (emp?.is_current ? "Present" : "Not specified")
-                      }
-                    />
-                    <ProfileDetail
-                      title="Is Current"
-                      value={emp?.is_current ? "Yes" : "No"}
-                    />
-                    {emp?.description && (
-                      <div className="md:col-span-3">
-                        <ProfileDetail
-                          title="Description"
-                          value={emp.description}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No employment information available</p>
-          )}
-        </div> */}
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection title="Family Information" buttonName="Add Family">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+  //           <div className="px-6 py-4">
+  //             {/* Author section */}
+  //             <div className="flex items-center justify-between mb-2">
+  //               <div className="flex items-center gap-3">
+  //                 {/* Left: Company & Role */}
+  //                 <div className="flex items-center gap-2">
+  //                   <div>
+  //                     <h3
+  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+  //                       style={{ fontFamily: "BR Cobane" }}
+  //                     >
+  //                       Yakub Moodu{" "}
+  //                       <span className="text-xs">(21-01-1996)</span>
+  //                     </h3>
+  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+  //                       Brother
+  //                     </p>
+  //                   </div>
+  //                   {/* Verified Badge */}
+  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+  //                 </div>
+  //               </div>
 
-  const renderFamily = () => {
-    const familyList =
-      (family as any)?.data?.family || (family ? [family] : []);
+  //               {/* Right Icons (Badge + Dropdown) */}
+  //               <div className="flex items-center gap-2">
+  //                 <DropdownMenu>
+  //                   <DropdownMenuTrigger asChild>
+  //                     <button
+  //                       type="button"
+  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                     >
+  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                     </button>
+  //                   </DropdownMenuTrigger>
+  //                   <DropdownMenuContent align="end" className="w-40">
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineModeEditOutline />
+  //                       Edit
+  //                     </DropdownMenuItem>
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineDeleteOutline />
+  //                       Delete
+  //                     </DropdownMenuItem>
+  //                   </DropdownMenuContent>
+  //                 </DropdownMenu>
+  //               </div>
+  //             </div>
 
-    return (
-      <ProfileSection title="Family Information" buttonName="Add Family">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  {/* Left: Company & Role */}
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h3
-                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Yakub Moodu{" "}
-                        <span className="text-xs">(21-01-1996)</span>
-                      </h3>
-                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                        Brother
-                      </p>
-                    </div>
-                    {/* Verified Badge */}
-                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-                  </div>
-                </div>
+  //             {/* Content section */}
+  //             <a href="#" className="flex items-center gap-1">
+  //               <IoIosPhonePortrait /> 9692152142
+  //             </a>
+  //             <a href="" className="flex items-center gap-1">
+  //               <CiMail /> badalnayak@gmail.com
+  //             </a>
+  //             <p className="text-zinc-600 dark:text-zinc-300">
+  //               Hyderbad University, 2024 <br />
+  //               Near by Max <br />
+  //               Hyderabad, India, 500100
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       {/* <div className="space-y-4">
+  //         {familyList.length > 0 ? (
+  //           familyList.map((member: any, index: number) => {
+  //             const title = member?.name || `Family Member ${index + 1}`;
+  //             return (
+  //               <AccordionItem
+  //                 key={index}
+  //                 title={title}
+  //                 sectionKey={`family-${index}`}
+  //                 defaultExpanded={index === 0}
+  //               >
+  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //                   <ProfileDetail title="Relation" value={member?.relation} />
+  //                   <ProfileDetail title="Age" value={member?.age} />
+  //                   <ProfileDetail
+  //                     title="Occupation"
+  //                     value={member?.occupation}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Marital Status"
+  //                     value={member?.marital_status}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Contact"
+  //                     value={member?.contact_number}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Is Dependent"
+  //                     value={member?.is_dependent ? "Yes" : "No"}
+  //                   />
+  //                 </div>
+  //               </AccordionItem>
+  //             );
+  //           })
+  //         ) : (
+  //           <p className="text-gray-500">No family information available</p>
+  //         )}
+  //       </div> */}
+  //     </ProfileSection>
+  //   );
+  // };
 
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+  // const renderLifestyle = () => {
+  //   // Mapping category labels to state keys
+  //   const categoryMapping = {
+  //     "What best describes your eating habits?": "eatingHabit",
+  //     "Do you follow any specific diet plan?": "dietHabit",
+  //     "How many cigarettes do you smoke per day on average?":
+  //       "cigarettesPerDay",
+  //     "How frequently do you drink?": "drinkFrequency",
+  //     "What type of gambling do you engage in?": "gamblingEngage",
+  //     "How would you describe your physical activity level?":
+  //       "physicalActivityLevel",
+  //     "Do you practice any relaxation techniques?": "relaxationMethods",
+  //   };
 
-              {/* Content section */}
-              <a href="#" className="flex items-center gap-1">
-                <IoIosPhonePortrait /> 9692152142
-              </a>
-              <a href="" className="flex items-center gap-1">
-                <CiMail /> badalnayak@gmail.com
-              </a>
-              <p className="text-zinc-600 dark:text-zinc-300">
-                Hyderbad University, 2024 <br />
-                Near by Max <br />
-                Hyderabad, India, 500100
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* <div className="space-y-4">
-          {familyList.length > 0 ? (
-            familyList.map((member: any, index: number) => {
-              const title = member?.name || `Family Member ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`family-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Relation" value={member?.relation} />
-                    <ProfileDetail title="Age" value={member?.age} />
-                    <ProfileDetail
-                      title="Occupation"
-                      value={member?.occupation}
-                    />
-                    <ProfileDetail
-                      title="Marital Status"
-                      value={member?.marital_status}
-                    />
-                    <ProfileDetail
-                      title="Contact"
-                      value={member?.contact_number}
-                    />
-                    <ProfileDetail
-                      title="Is Dependent"
-                      value={member?.is_dependent ? "Yes" : "No"}
-                    />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No family information available</p>
-          )}
-        </div> */}
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection title="Lifestyle">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         {Object.keys(categoryMapping).map((category, index) => (
+  //           <div
+  //             key={index}
+  //             className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+  //           >
+  //             <div className="px-6 py-4">
+  //               {/* Header */}
+  //               <div className="flex items-center justify-between">
+  //                 <div className="flex items-center gap-2">
+  //                   <h3
+  //                     className="text-base font-bold text-zinc-900 dark:text-zinc-100"
+  //                     style={{ fontFamily: "BR Cobane" }}
+  //                   >
+  //                     {category}
+  //                   </h3>
+  //                 </div>
 
-  const renderLifestyle = () => {
-    // Mapping category labels to state keys
-    const categoryMapping = {
-      "What best describes your eating habits?": "eatingHabit",
-      "Do you follow any specific diet plan?": "dietHabit",
-      "How many cigarettes do you smoke per day on average?":
-        "cigarettesPerDay",
-      "How frequently do you drink?": "drinkFrequency",
-      "What type of gambling do you engage in?": "gamblingEngage",
-      "How would you describe your physical activity level?":
-        "physicalActivityLevel",
-      "Do you practice any relaxation techniques?": "relaxationMethods",
-    };
+  //                 {/* Dropdown Menu */}
+  //                 <div className="flex items-center gap-2">
+  //                   <DropdownMenu>
+  //                     <DropdownMenuTrigger asChild>
+  //                       <button
+  //                         type="button"
+  //                         className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                       >
+  //                         <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                       </button>
+  //                     </DropdownMenuTrigger>
+  //                     <DropdownMenuContent align="end" className="w-40">
+  //                       <DropdownMenuItem className="flex items-center gap-2">
+  //                         <MdOutlineModeEditOutline />
+  //                         Edit
+  //                       </DropdownMenuItem>
+  //                       <DropdownMenuItem className="flex items-center gap-2">
+  //                         <MdOutlineDeleteOutline />
+  //                         Delete
+  //                       </DropdownMenuItem>
+  //                     </DropdownMenuContent>
+  //                   </DropdownMenu>
+  //                 </div>
+  //               </div>
 
-    return (
-      <ProfileSection title="Lifestyle">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          {Object.keys(categoryMapping).map((category, index) => (
-            <div
-              key={index}
-              className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
-            >
-              <div className="px-6 py-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3
-                      className="text-base font-bold text-zinc-900 dark:text-zinc-100"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      {category}
-                    </h3>
-                  </div>
+  //               {/* Content (replace with actual values later) */}
+  //               <p className="text-zinc-600 dark:text-zinc-300">hello</p>
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </ProfileSection>
+  //   );
+  // };
 
-                  {/* Dropdown Menu */}
-                  <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                        >
-                          <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem className="flex items-center gap-2">
-                          <MdOutlineModeEditOutline />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2">
-                          <MdOutlineDeleteOutline />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
+  // const renderProperties = () => {
+  //   console.log("properties", properties);
+  //   const propertiesData = Array.isArray(properties)
+  //     ? properties
+  //     : (properties as any)?.properties || [];
 
-                {/* Content (replace with actual values later) */}
-                <p className="text-zinc-600 dark:text-zinc-300">hello</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection title="Properties" buttonName="Add Properties">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+  //           <div className="px-6 py-4">
+  //             {/* Author section */}
+  //             <div className="flex items-center justify-between ">
+  //               <div className="flex items-center gap-3">
+  //                 {/* Left: Company & Role */}
+  //                 <div className="flex items-center gap-2">
+  //                   <div>
+  //                     <h3
+  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+  //                       style={{ fontFamily: "BR Cobane" }}
+  //                     >
+  //                       Apartment <span className="text-xs">(1450 sq.ft )</span>
+  //                     </h3>
+  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+  //                       Community Property
+  //                     </p>
+  //                   </div>
+  //                   {/* Verified Badge */}
+  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+  //                 </div>
+  //               </div>
 
-  const renderProperties = () => {
-    console.log("properties", properties);
-    const propertiesData = Array.isArray(properties)
-      ? properties
-      : (properties as any)?.properties || [];
+  //               {/* Right Icons (Badge + Dropdown) */}
+  //               <div className="flex items-center gap-2">
+  //                 <DropdownMenu>
+  //                   <DropdownMenuTrigger asChild>
+  //                     <button
+  //                       type="button"
+  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                     >
+  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                     </button>
+  //                   </DropdownMenuTrigger>
+  //                   <DropdownMenuContent align="end" className="w-40">
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineModeEditOutline />
+  //                       Edit
+  //                     </DropdownMenuItem>
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineDeleteOutline />
+  //                       Delete
+  //                     </DropdownMenuItem>
+  //                   </DropdownMenuContent>
+  //                 </DropdownMenu>
+  //               </div>
+  //             </div>
 
-    return (
-      <ProfileSection title="Properties" buttonName="Add Properties">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between ">
-                <div className="flex items-center gap-3">
-                  {/* Left: Company & Role */}
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h3
-                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Apartment <span className="text-xs">(1450 sq.ft )</span>
-                      </h3>
-                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                        Community Property
-                      </p>
-                    </div>
-                    {/* Verified Badge */}
-                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-                  </div>
-                </div>
+  //             {/* Content section */}
+  //             <p className="text-zinc-600 dark:text-zinc-300">
+  //               Kompally main road, <br />
+  //               Near by Max <br />
+  //               Hyderabad, India, 500100
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
 
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+  //       {/* <div className="space-y-4">
+  //         {propertiesData.length > 0 ? (
+  //           propertiesData.map((property: any, index: number) => {
+  //             const title =
+  //               property.type ||
+  //               findPropertyTypeName(property.property_type) ||
+  //               `Property ${index + 1}`;
+  //             return (
+  //               <AccordionItem
+  //                 key={index}
+  //                 title={title}
+  //                 sectionKey={`property-${index}`}
+  //                 defaultExpanded={index === 0}
+  //               >
+  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //                   <ProfileDetail
+  //                     title="Type"
+  //                     value={findPropertyTypeName(property.property_type)}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Ownership"
+  //                     value={findOwnershipTypeName(property.ownership_type)}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Location"
+  //                     value={property.property_address}
+  //                   />
+  //                   <ProfileDetail
+  //                     title="Value"
+  //                     value={property.property_value}
+  //                   />
+  //                 </div>
+  //               </AccordionItem>
+  //             );
+  //           })
+  //         ) : (
+  //           <p className="text-gray-500">No property information available</p>
+  //         )}
+  //       </div> */}
+  //     </ProfileSection>
+  //   );
+  // };
 
-              {/* Content section */}
-              <p className="text-zinc-600 dark:text-zinc-300">
-                Kompally main road, <br />
-                Near by Max <br />
-                Hyderabad, India, 500100
-              </p>
-            </div>
-          </div>
-        </div>
+  // const renderReferences = () => {
+  //   const referencesList =
+  //     (references as any)?.data?.family || (references ? [references] : []);
 
-        {/* <div className="space-y-4">
-          {propertiesData.length > 0 ? (
-            propertiesData.map((property: any, index: number) => {
-              const title =
-                property.type ||
-                findPropertyTypeName(property.property_type) ||
-                `Property ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`property-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail
-                      title="Type"
-                      value={findPropertyTypeName(property.property_type)}
-                    />
-                    <ProfileDetail
-                      title="Ownership"
-                      value={findOwnershipTypeName(property.ownership_type)}
-                    />
-                    <ProfileDetail
-                      title="Location"
-                      value={property.property_address}
-                    />
-                    <ProfileDetail
-                      title="Value"
-                      value={property.property_value}
-                    />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No property information available</p>
-          )}
-        </div> */}
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection title="References" buttonName="Add Reference">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+  //           <div className="px-6 py-4">
+  //             {/* Author section */}
+  //             <div className="flex items-center justify-between mb-2">
+  //               <div className="flex items-center gap-3">
+  //                 {/* Left: Company & Role */}
+  //                 <div className="flex items-center gap-2">
+  //                   <div>
+  //                     <h3
+  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+  //                       style={{ fontFamily: "BR Cobane" }}
+  //                     >
+  //                       Yakub Moodu{" "}
+  //                       <span className="text-xs">(21-01-1996)</span>
+  //                     </h3>
+  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+  //                       Brother
+  //                     </p>
+  //                   </div>
+  //                   {/* Verified Badge */}
+  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
+  //                 </div>
+  //               </div>
 
-  const renderReferences = () => {
-    const referencesList =
-      (references as any)?.data?.family || (references ? [references] : []);
+  //               {/* Right Icons (Badge + Dropdown) */}
+  //               <div className="flex items-center gap-2">
+  //                 <DropdownMenu>
+  //                   <DropdownMenuTrigger asChild>
+  //                     <button
+  //                       type="button"
+  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                     >
+  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                     </button>
+  //                   </DropdownMenuTrigger>
+  //                   <DropdownMenuContent align="end" className="w-40">
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineModeEditOutline />
+  //                       Edit
+  //                     </DropdownMenuItem>
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineDeleteOutline />
+  //                       Delete
+  //                     </DropdownMenuItem>
+  //                   </DropdownMenuContent>
+  //                 </DropdownMenu>
+  //               </div>
+  //             </div>
 
-    return (
-      <ProfileSection title="References" buttonName="Add Reference">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  {/* Left: Company & Role */}
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h3
-                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Yakub Moodu{" "}
-                        <span className="text-xs">(21-01-1996)</span>
-                      </h3>
-                      <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                        Brother
-                      </p>
-                    </div>
-                    {/* Verified Badge */}
-                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-                  </div>
-                </div>
+  //             {/* Content section */}
+  //             <a href="#" className="flex items-center gap-1">
+  //               <IoIosPhonePortrait /> 9692152142
+  //             </a>
+  //             <a href="" className="flex items-center gap-1">
+  //               <CiMail /> badalnayak@gmail.com
+  //             </a>
+  //             <p className="text-zinc-600 dark:text-zinc-300">
+  //               Hyderbad University, 2024 <br />
+  //               Near by Max <br />
+  //               Hyderabad, India, 500100
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       {/* <div className="space-y-4">
+  //         {referencesList.length > 0 ? (
+  //           referencesList.map((ref: any, index: number) => (
+  //             <AccordionItem
+  //               key={index}
+  //               title={ref?.name || `Reference ${index + 1}`}
+  //               sectionKey={`reference-${index}`}
+  //               defaultExpanded={index === 0}
+  //             >
+  //               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  //                 <ProfileDetail title="Relation" value={ref?.relation} />
+  //                 <ProfileDetail
+  //                   title="Contact Number"
+  //                   value={ref?.contact_number}
+  //                 />
+  //                 <ProfileDetail title="Email" value={ref?.email} />
+  //                 <ProfileDetail
+  //                   title="Address"
+  //                   value={ref?.address}
+  //                   colspan={3}
+  //                 />
+  //                 <ProfileDetail title="Known Since" value={ref?.known_since} />
+  //                 <ProfileDetail title="Occupation" value={ref?.occupation} />
+  //               </div>
+  //             </AccordionItem>
+  //           ))
+  //         ) : (
+  //           <p className="text-gray-500">No references available</p>
+  //         )}
+  //       </div> */}
+  //     </ProfileSection>
+  //   );
+  // };
 
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+  // const renderHobbies = () => {
+  //   const referencesList =
+  //     (references as any)?.data?.family || (references ? [references] : []);
 
-              {/* Content section */}
-              <a href="#" className="flex items-center gap-1">
-                <IoIosPhonePortrait /> 9692152142
-              </a>
-              <a href="" className="flex items-center gap-1">
-                <CiMail /> badalnayak@gmail.com
-              </a>
-              <p className="text-zinc-600 dark:text-zinc-300">
-                Hyderbad University, 2024 <br />
-                Near by Max <br />
-                Hyderabad, India, 500100
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* <div className="space-y-4">
-          {referencesList.length > 0 ? (
-            referencesList.map((ref: any, index: number) => (
-              <AccordionItem
-                key={index}
-                title={ref?.name || `Reference ${index + 1}`}
-                sectionKey={`reference-${index}`}
-                defaultExpanded={index === 0}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <ProfileDetail title="Relation" value={ref?.relation} />
-                  <ProfileDetail
-                    title="Contact Number"
-                    value={ref?.contact_number}
-                  />
-                  <ProfileDetail title="Email" value={ref?.email} />
-                  <ProfileDetail
-                    title="Address"
-                    value={ref?.address}
-                    colspan={3}
-                  />
-                  <ProfileDetail title="Known Since" value={ref?.known_since} />
-                  <ProfileDetail title="Occupation" value={ref?.occupation} />
-                </div>
-              </AccordionItem>
-            ))
-          ) : (
-            <p className="text-gray-500">No references available</p>
-          )}
-        </div> */}
-      </ProfileSection>
-    );
-  };
+  //   return (
+  //     <ProfileSection title="Hobbies" buttonName="Add Hobbie">
+  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
+  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
+  //           <div className="px-6 py-4">
+  //             {/* Author section */}
+  //             <div className="flex items-center justify-between ">
+  //               <div className="flex items-center gap-3">
+  //                 {/* Left: Company & Role */}
+  //                 <div className="flex items-center gap-2">
+  //                   <div>
+  //                     <h3
+  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+  //                       style={{ fontFamily: "BR Cobane" }}
+  //                     >
+  //                       Photography
+  //                     </h3>
+  //                   </div>
+  //                 </div>
+  //               </div>
 
-  const renderHobbies = () => {
-    const referencesList =
-      (references as any)?.data?.family || (references ? [references] : []);
+  //               {/* Right Icons (Badge + Dropdown) */}
+  //               <div className="flex items-center gap-2">
+  //                 <DropdownMenu>
+  //                   <DropdownMenuTrigger asChild>
+  //                     <button
+  //                       type="button"
+  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+  //                     >
+  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
+  //                     </button>
+  //                   </DropdownMenuTrigger>
+  //                   <DropdownMenuContent align="end" className="w-40">
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineModeEditOutline />
+  //                       Edit
+  //                     </DropdownMenuItem>
+  //                     <DropdownMenuItem className="flex items-center gap-2">
+  //                       <MdOutlineDeleteOutline />
+  //                       Delete
+  //                     </DropdownMenuItem>
+  //                   </DropdownMenuContent>
+  //                 </DropdownMenu>
+  //               </div>
+  //             </div>
 
-    return (
-      <ProfileSection title="Hobbies" buttonName="Add Hobbie">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-          <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-            <div className="px-6 py-4">
-              {/* Author section */}
-              <div className="flex items-center justify-between ">
-                <div className="flex items-center gap-3">
-                  {/* Left: Company & Role */}
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h3
-                        className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Photography
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Icons (Badge + Dropdown) */}
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                      >
-                        <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40">
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineModeEditOutline />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="flex items-center gap-2">
-                        <MdOutlineDeleteOutline />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-
-              {/* Content section */}
-              <p className="text-zinc-600 dark:text-zinc-300">
-                Wild Photography
-              </p>
-            </div>
-          </div>
-        </div>
-      </ProfileSection>
-    );
-  };
+  //             {/* Content section */}
+  //             <p className="text-zinc-600 dark:text-zinc-300">
+  //               Wild Photography
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </ProfileSection>
+  //   );
+  // };
 
   const profileData = personalProfile?.data || personalProfile;
   const addressList = address?.data?.addresses || (address ? [address] : []);
+  const educationList = education?.data?.educations || (education ? [education] : []);
+  const referencesList = (references as any)?.data?.family || (references ? [references] : []);
 
-  console.log("profile data", profileData);
+      const categoryMapping = {
+        // "What best describes your eating habits?": "eatingHabit",
+        // "Do you follow any specific diet plan?": "dietHabit",
+        // "How many cigarettes do you smoke per day on average?":
+        //   "cigarettesPerDay",
+        // "How frequently do you drink?": "drinkFrequency",
+        // "What type of gambling do you engage in?": "gamblingEngage",
+        // "How would you describe your physical activity level?":
+        //   "physicalActivityLevel",
+        // "Do you practice any relaxation techniques?": "relaxationMethods",
+      };
+
+  let employmentList = [];
+
+  if (Array.isArray(employment?.data)) {
+    employmentList = employment.data;
+  } else if (employment?.data?.employments) {
+    employmentList = employment.data.employments;
+  } else if (employment) {
+    employmentList = [employment];
+  }
+
+  // const familyList = (family as any)?.data?.family || (family ? [family] : []);
 
   const formatWeight = (weight?: number | string, pound?: string) => {
     if (!weight) return null;
@@ -1314,9 +1261,9 @@ const ViewProfile = () => {
           <div className="w-full rounded-lg overflow-hidden shadow-md mb-4 relative">
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
-              {coverPhoto ? (
+              {coverImage ? (
                 <Image
-                  src={coverPhoto}
+                  src={coverImage.url}
                   alt="Banner"
                   className="w-full h-full object-cover"
                 />
@@ -1342,7 +1289,7 @@ const ViewProfile = () => {
         border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <img
+                      <Image
                         src={profileImage.url}
                         alt="Profile"
                         className="w-full h-full object-cover"
@@ -1465,12 +1412,15 @@ const ViewProfile = () => {
               {/* Personal Details */}
               <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Personal Information
-                  </h2>
+                  <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <h2
+                      className=" text-black text-xl font-bold "
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Personal Information
+                    </h2>
+                    <BiSolidBadgeCheck className="text-blue-500" size={18} />
+                  </div>
                   <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                     <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Age</p>
@@ -1494,15 +1444,29 @@ const ViewProfile = () => {
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Marital Status</p>
-                      <p>{profileData?.marital_status}</p>
+                      <p>
+                        {findMaritalStatusName(
+                          profileData?.marital_status_id ??
+                            profileData?.marital_status ??
+                            0
+                        ) || "N/A"}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Gender</p>
-                      <p>{profileData?.gender || "N/A"}</p>
+                      <p>
+                        {findGenderName(
+                          profileData?.gender_id ?? profileData?.gender ?? 0
+                        ) || "N/A"}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Religion</p>
-                      <p>{profileData?.religion || "N/A"}</p>
+                      <p>
+                        {findReligionName(
+                          profileData?.religion_id ?? profileData?.religion ?? 0
+                        ) || "N/A"}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center gap-4">
                       <p className="text-gray-400">Weight</p>
@@ -1523,6 +1487,7 @@ const ViewProfile = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
                     className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
@@ -1608,6 +1573,7 @@ const ViewProfile = () => {
                 <div className="mb-3">
                   <Card data={CARD_DATA} />
                 </div>
+
                 <div>
                   <h2
                     className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
@@ -1615,16 +1581,58 @@ const ViewProfile = () => {
                   >
                     Address
                   </h2>
-                  <div className="flex gap-4 overflow-x-auto mt-3 pb-3">
-                    {[...Array(4)].map((_, i) => (
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3 pb-3">
+                    {addressList?.length > 0 ? (
+                      addressList.map((addr: any, index: number) => {
+                        const title = `Address ${index + 1}${
+                          addr.type ? ` (${addr.type})` : ""
+                        }`;
+
+                        return (
+                          <div
+                            key={index}
+                            className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+                          >
+                            <div className="px-6 py-4">
+                              {/* Author section */}
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <h3
+                                    className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                    style={{ fontFamily: "BR Cobane" }}
+                                  >
+                                    {title}
+                                  </h3>
+                                  <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                </div>
+                              </div>
+
+                              {/* Content section */}
+                              <p className="text-zinc-600 dark:text-zinc-300">
+                                {addr.address_line1}, {addr.year || "2024"}{" "}
+                                <br />
+                                {addr.address_line2 || "Near by Max"} <br />
+                                {addr.city}, {addr.country}, {addr.zipcode}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-gray-500">
+                        No address information available
+                      </p>
+                    )}
+
+                    {/* {[...Array(4)].map((_, i) => (
                       <div
                         key={i}
-                        className="min-w-[300px] max-w-[300px] bg-white dark:bg-zinc-900 border rounded-xl shadow-sm flex-shrink-0"
+                        className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
                       >
                         <div className="px-6 py-4">
-                          {/* Author section */}
                           <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
                               <h3
                                 className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
                                 style={{ fontFamily: "BR Cobane" }}
@@ -1634,8 +1642,6 @@ const ViewProfile = () => {
                               <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
                             </div>
                           </div>
-
-                          {/* Content section */}
                           <p className="text-zinc-600 dark:text-zinc-300">
                             Hyderabad University, 2024 <br />
                             Near by Max <br />
@@ -1643,7 +1649,7 @@ const ViewProfile = () => {
                           </p>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
 
@@ -1669,25 +1675,59 @@ const ViewProfile = () => {
                             Field of Study
                           </th>
                           <th className="px-2 py-2 border-b text-base font-bold">
-                            State & Country
+                            City & Country
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="hover:bg-gray-50 transition-colors text-sm">
-                          <td className="px-2 py-3 border-b">
-                            Hyderabad University
-                          </td>
-                          <td className="px-4 py-3 border-b">2024</td>
-                          <td className="px-4 py-3 border-b">B.Tech</td>
-                          <td className="px-4 py-3 border-b">
-                            Hyderabad, India
-                          </td>
-                        </tr>
+                        {educationList.length > 0 ? (
+                          educationList.map((edu: any, index: number) => {
+                            return (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {edu?.institution_name || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.year_completed || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findFieldOfStudy(
+                                    edu?.field_of_study_id ??
+                                      edu?.field_of_study ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.city || "N/A"},{" "}
+                                  {/* {findStateName(
+                                    edu?.state_id ?? edu?.state_name ?? 0
+                                  ) || "N/A"}
+                                  ,{" "} */}
+                                  {findCountryName(
+                                    edu?.country_id ?? edu?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={4}
+                              className="px-4 py-3 text-center text-gray-500"
+                            >
+                              No education information available
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
+
                 <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
                   <h2
                     className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
@@ -1714,16 +1754,50 @@ const ViewProfile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="hover:bg-gray-50 transition-colors text-sm">
-                          <td className="px-2 py-3 border-b">
-                            Spack Soluion Pvt Ltd
-                          </td>
-                          <td className="px-4 py-3 border-b">Software Engg</td>
-                          <td className="px-4 py-3 border-b">2022 - Present</td>
-                          <td className="px-4 py-3 border-b">
-                            Hyderabad, India
-                          </td>
-                        </tr>
+                        {employmentList.length > 0 ? (
+                          employmentList.map((emp: any, index: number) => {
+                            const title =
+                              emp?.job_title ||
+                              emp?.company ||
+                              `Employment ${index + 1}`;
+                            return (
+                              <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
+                                <td className="px-2 py-3 border-b">
+                                  {emp?.institution_name}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findJobTitleName(
+                                    emp?.job_title_id ??
+                                      emp?.job_title_name ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.start_year} - {emp?.end_year}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.city || "N/A"},{" "}
+                                  {/* {findStateName(
+                                    edu?.state_id ?? edu?.state_name ?? 0
+                                  ) || "N/A"}
+                                  ,{" "} */}
+                                  {findCountryName(
+                                    emp?.country_id ?? emp?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={4}
+                              className="px-4 py-3 text-center text-gray-500"
+                            >
+                              No employment information available
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -1750,10 +1824,24 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="hover:bg-gray-50 transition-colors text-sm">
-                            <td className="px-2 py-3 border-b">Yakub Moodu</td>
-                            <td className="px-4 py-3 border-b">Brother</td>
-                          </tr>
+                          {referencesList.length > 0 ? (
+                            referencesList.map((member: any, index: number) => {
+                              return (
+                                <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
+                                  <td className="px-2 py-3 border-b">
+                                   {member?.first_name} {member?.last_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    {member?.type_name}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          ) : (
+                            <p className="text-gray-500">
+                              No family information available
+                            </p>
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -1808,12 +1896,14 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="hover:bg-gray-50 transition-colors text-sm">
+                          {Object.keys(categoryMapping).map((category, index) => (
+                          <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
                             <td className="px-2 py-3 border-b">
-                              Vamshi Animela
+                              {category}
                             </td>
                             <td className="px-4 py-3 border-b">Friend</td>
                           </tr>
+                           ))}
                         </tbody>
                       </table>
                     </div>
@@ -1849,6 +1939,7 @@ const ViewProfile = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
                   <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
                     <h2

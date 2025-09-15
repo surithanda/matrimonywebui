@@ -82,6 +82,7 @@ export const Navbar = () => {
     "/account",
     "/changepassword",
     "/dashboard/create-profile",
+    "/payments"
   ];
 
   // Check if current path starts with any of the dark pages
@@ -102,7 +103,7 @@ export const Navbar = () => {
     { href: "/favourites", label: "Favourites" },
     { href: "/profiles", label: "Profiles" },
     { href: "/recommendations", label: "Recommendations" },
-    // { href: "/settings", label: "Profile Settings" },
+    { href: "/payments", label: "Payments" },
   ];
 
   const navLinks = isLoggedIn ? dashboardLinks : publicLinks;

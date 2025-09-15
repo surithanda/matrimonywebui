@@ -22,12 +22,12 @@ const Page = () => {
           <PricingCard />
 
       {/* test button to trigger modal */}
-      <div className="mt-6">
+      {/* <div className="mt-6">
         <Button onClick={() => setOpen(true)}>Test Success Modal</Button>
-      </div>
+      </div> */}
 
       {/* payment success modal */}
-      <SuccessModal
+      {/* <SuccessModal
         open={open}
         onOpenChange={setOpen}
         plan={{
@@ -35,7 +35,7 @@ const Page = () => {
           price: "$99.99/mo",
           duration: "30 days",
         }}
-      />
+      /> */}
     </div>
   );
 };

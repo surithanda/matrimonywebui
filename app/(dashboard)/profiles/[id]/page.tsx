@@ -22,15 +22,8 @@ import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import {
-  MdEmail,
-  MdLocalPhone,
-} from "react-icons/md";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaLinkedin,
-} from "react-icons/fa";
+import { MdEmail, MdLocalPhone } from "react-icons/md";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaLocationDot, FaPlus, FaTwitter } from "react-icons/fa6";
 import { BiSolidBadgeCheck } from "react-icons/bi";
 import {
@@ -302,12 +295,12 @@ const ViewProfile = () => {
   //   console.log('personalProfile:', personalProfile);
   //   console.log('address:', address);
   // console.log("education:", education);
-  // console.log("employment:", employment);
+  console.log("employment:", employment);
   // console.log("family:", family);
   //   console.log('properties:', properties);
-    // console.log('hobbies:', hobbies);
-  //   console.log('interests:', interests);
-  //   console.log('references:', references);
+  // console.log("hobbies:", hobbies);
+  // console.log("interests:", interests);
+  // console.log("references:", references);
   // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
 
   if (loading) {
@@ -1165,20 +1158,20 @@ const ViewProfile = () => {
 
   const profileData = personalProfile?.data || personalProfile;
   const addressList = address?.data?.addresses || (address ? [address] : []);
-  const educationList = education?.data?.educations || (education ? [education] : []);
-  const referencesList = (references as any)?.data?.family || (references ? [references] : []);
+  const educationList =
+    education?.data?.educations || (education ? [education] : []);
 
-      const categoryMapping = {
-        // "What best describes your eating habits?": "eatingHabit",
-        // "Do you follow any specific diet plan?": "dietHabit",
-        // "How many cigarettes do you smoke per day on average?":
-        //   "cigarettesPerDay",
-        // "How frequently do you drink?": "drinkFrequency",
-        // "What type of gambling do you engage in?": "gamblingEngage",
-        // "How would you describe your physical activity level?":
-        //   "physicalActivityLevel",
-        // "Do you practice any relaxation techniques?": "relaxationMethods",
-      };
+  const categoryMapping = {
+    // "What best describes your eating habits?": "eatingHabit",
+    // "Do you follow any specific diet plan?": "dietHabit",
+    // "How many cigarettes do you smoke per day on average?":
+    //   "cigarettesPerDay",
+    // "How frequently do you drink?": "drinkFrequency",
+    // "What type of gambling do you engage in?": "gamblingEngage",
+    // "How would you describe your physical activity level?":
+    //   "physicalActivityLevel",
+    // "Do you practice any relaxation techniques?": "relaxationMethods",
+  };
 
   let employmentList = [];
 
@@ -1190,7 +1183,14 @@ const ViewProfile = () => {
     employmentList = [employment];
   }
 
-  // const familyList = (family as any)?.data?.family || (family ? [family] : []);
+  const familyList = Array.isArray((family as any)?.family)
+    ? (family as any).family
+    : [];
+
+  const referencesList =
+    (references as any)?.data?.family || (references ? [references] : []);
+  // const referencesList = Array.isArray((references as any)?.data?.reference) ? (references as any).reference : [];
+  // console.log("reference list", familyList)
 
   const formatWeight = (weight?: number | string, pound?: string) => {
     if (!weight) return null;
@@ -1574,58 +1574,58 @@ const ViewProfile = () => {
                   <Card data={CARD_DATA} />
                 </div>
 
-                <div>
+                <div className="border border-gray-100 rounded-lg shadow-md mb-4 h-auto">
                   <h2
                     className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                     style={{ fontFamily: "BR Cobane" }}
                   >
                     Address
                   </h2>
+                  <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3 pb-3">
+                      {addressList?.length > 0 ? (
+                        addressList.map((addr: any, index: number) => {
+                          const title = `Address ${index + 1}${
+                            addr.type ? ` (${addr.type})` : ""
+                          }`;
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3 pb-3">
-                    {addressList?.length > 0 ? (
-                      addressList.map((addr: any, index: number) => {
-                        const title = `Address ${index + 1}${
-                          addr.type ? ` (${addr.type})` : ""
-                        }`;
-
-                        return (
-                          <div
-                            key={index}
-                            className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
-                          >
-                            <div className="px-6 py-4">
-                              {/* Author section */}
-                              <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                  <h3
-                                    className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                                    style={{ fontFamily: "BR Cobane" }}
-                                  >
-                                    {title}
-                                  </h3>
-                                  <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                          return (
+                            <div
+                              key={index}
+                              className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+                            >
+                              <div className="px-6 py-4">
+                                {/* Author section */}
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <h3
+                                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                      style={{ fontFamily: "BR Cobane" }}
+                                    >
+                                      {title}
+                                    </h3>
+                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                  </div>
                                 </div>
+
+                                {/* Content section */}
+                                <p className="text-zinc-600 dark:text-zinc-300">
+                                  {addr.address_line1}, {addr.year || "2024"}{" "}
+                                  <br />
+                                  {addr.address_line2 || "Near by Max"} <br />
+                                  {addr.city}, {addr.country}, {addr.zipcode}
+                                </p>
                               </div>
-
-                              {/* Content section */}
-                              <p className="text-zinc-600 dark:text-zinc-300">
-                                {addr.address_line1}, {addr.year || "2024"}{" "}
-                                <br />
-                                {addr.address_line2 || "Near by Max"} <br />
-                                {addr.city}, {addr.country}, {addr.zipcode}
-                              </p>
                             </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <p className="text-gray-500">
-                        No address information available
-                      </p>
-                    )}
+                          );
+                        })
+                      ) : (
+                        <p className="text-gray-500">
+                          No address information available
+                        </p>
+                      )}
 
-                    {/* {[...Array(4)].map((_, i) => (
+                      {/* {[...Array(4)].map((_, i) => (
                       <div
                         key={i}
                         className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
@@ -1650,6 +1650,7 @@ const ViewProfile = () => {
                         </div>
                       </div>
                     ))} */}
+                    </div>
                   </div>
                 </div>
 
@@ -1728,155 +1729,147 @@ const ViewProfile = () => {
                   </div>
                 </div>
 
-                <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Professional Information
-                  </h2>
-                  <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                    <table className="min-w-full text-sm sm:text-base mt-2">
-                      <thead className="">
-                        <tr className="text-left">
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            Company Name
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            Job Title
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            From - To
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            State & Country
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {employmentList.length > 0 ? (
-                          employmentList.map((emp: any, index: number) => {
-                            const title =
-                              emp?.job_title ||
-                              emp?.company ||
-                              `Employment ${index + 1}`;
-                            return (
-                              <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
+                {employmentList.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
+                    <h2
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Professional Information
+                    </h2>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <table className="min-w-full text-sm sm:text-base mt-2">
+                        <thead>
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Company Name
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Job Title
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              From - To
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              State & Country
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {employmentList.map((emp: any, index: number) => (
+                            <tr
+                              key={index}
+                              className="hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              <td className="px-2 py-3 border-b">
+                                {emp?.institution_name}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {findJobTitleName(
+                                  emp?.job_title_id ?? emp?.job_title_name ?? 0
+                                ) || "N/A"}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {emp?.start_year} - {emp?.end_year}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {emp?.city || "N/A"},{" "}
+                                {findCountryName(
+                                  emp?.country_id ?? emp?.country_name ?? 0
+                                ) || "N/A"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
+                  {familyList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                      <h2
+                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Family Information
+                      </h2>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead className="">
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Full Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Relation
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {familyList.map((member: any, index: number) => (
+                              <tr
+                                key={
+                                  member.profile_family_reference_id ?? index
+                                }
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
                                 <td className="px-2 py-3 border-b">
-                                  {emp?.institution_name}
+                                  {member?.first_name} {member?.last_name}
                                 </td>
                                 <td className="px-4 py-3 border-b">
-                                  {findJobTitleName(
-                                    emp?.job_title_id ??
-                                      emp?.job_title_name ??
-                                      0
-                                  ) || "N/A"}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {emp?.start_year} - {emp?.end_year}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {emp?.city || "N/A"},{" "}
-                                  {/* {findStateName(
-                                    edu?.state_id ?? edu?.state_name ?? 0
-                                  ) || "N/A"}
-                                  ,{" "} */}
-                                  {findCountryName(
-                                    emp?.country_id ?? emp?.country_name ?? 0
-                                  ) || "N/A"}
+                                  {member?.type_name}
                                 </td>
                               </tr>
-                            );
-                          })
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="px-4 py-3 text-center text-gray-500"
-                            >
-                              No employment information available
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2">
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                    <h2
-                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Family Information
-                    </h2>
-                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                      <table className="w-full text-sm sm:text-base">
-                        <thead className="">
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Full Name
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Relation
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {referencesList.length > 0 ? (
-                            referencesList.map((member: any, index: number) => {
-                              return (
-                                <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
-                                  <td className="px-2 py-3 border-b">
-                                   {member?.first_name} {member?.last_name}
-                                  </td>
-                                  <td className="px-4 py-3 border-b">
-                                    {member?.type_name}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          ) : (
-                            <p className="text-gray-500">
-                              No family information available
-                            </p>
-                          )}
-                        </tbody>
-                      </table>
+                  {referencesList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                      <h2
+                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Friends & Reference
+                      </h2>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead className="">
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Full Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Relation
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {referencesList.map((ref: any, index: number) => (
+                              <tr
+                                key={ref.profile_reference_id ?? index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {ref?.first_name} {ref?.last_name}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {ref?.type_name}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                    <h2
-                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Friends & Reference
-                    </h2>
-                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                      <table className="w-full text-sm sm:text-base">
-                        <thead className="">
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Full Name
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Relation
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="hover:bg-gray-50 transition-colors text-sm">
-                            <td className="px-2 py-3 border-b">
-                              Vamshi Animela
-                            </td>
-                            <td className="px-4 py-3 border-b">Friend</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
+                  )}
+
+                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -1896,52 +1889,91 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.keys(categoryMapping).map((category, index) => (
-                          <tr key={index} className="hover:bg-gray-50 transition-colors text-sm">
-                            <td className="px-2 py-3 border-b">
-                              {category}
-                            </td>
-                            <td className="px-4 py-3 border-b">Friend</td>
-                          </tr>
-                           ))}
+                          {Object.keys(categoryMapping).map(
+                            (category, index) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {category}
+                                </td>
+                                <td className="px-4 py-3 border-b"></td>
+                              </tr>
+                            )
+                          )}
                         </tbody>
                       </table>
                     </div>
                   </div>
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
+
+                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
                     >
-                      Hobbies
+                      Hobbies & Intrested
                     </h2>
                     <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                       <table className="w-full text-sm sm:text-base">
                         <thead className="">
                           <tr className="text-left">
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Full Name
+                              Name
                             </th>
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Relation
+                              Description
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="hover:bg-gray-50 transition-colors text-sm">
-                            <td className="px-2 py-3 border-b">
-                              Vamshi Animela
-                            </td>
-                            <td className="px-4 py-3 border-b">Friend</td>
-                          </tr>
+                          {[
+                            ...((hobbies as any)?.hobby_interests || []),
+                            ...((interests as any)?.hobby_interests || []),
+                          ]?.length ? (
+                            [
+                              ...((hobbies as any)?.hobby_interests || []),
+                              ...((interests as any)?.hobby_interests || []),
+                            ].map((item: any, index: number) => (
+                              <tr
+                                key={item.hobby_interest_id ?? index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-4 py-2 border-b">
+                                  {item.hobby_interest_name}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                  {item.hobby_interest_description || "-"}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                  {hobbies?.hobby_interests?.some(
+                                    (h: any) =>
+                                      h.hobby_interest_id ===
+                                      item.hobby_interest_id
+                                  )
+                                    ? "Hobby"
+                                    : "Interest"}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan={3}
+                                className="px-4 py-3 text-center text-gray-500 border-b"
+                              >
+                                No hobbies or interests available
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
-                  <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
+                <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
+                  {/* <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -1953,24 +1985,30 @@ const ViewProfile = () => {
                         <thead className="">
                           <tr className="text-left">
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Full Name
+                              Age Range
                             </th>
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Relation
+                              Religion
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Location
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Professional
                             </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr className="hover:bg-gray-50 transition-colors text-sm">
-                            <td className="px-2 py-3 border-b">
-                              Vamshi Animela
-                            </td>
-                            <td className="px-4 py-3 border-b">Friend</td>
+                            <td className="px-2 py-3 border-b">28-35</td>
+                            <td className="px-4 py-3 border-b">Hindu</td>
+                            <td className="px-4 py-3 border-b">Hyderabad</td>
+                            <td className="px-4 py-3 border-b">Softwear</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"

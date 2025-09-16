@@ -181,7 +181,6 @@ loadMetaData();
 
   const findGenderName = (compareVal: number): string => {
     let match: any;
-    console.log("gender list ", genderList)
     genderList?.map((i: any) => {
       if (i.id === compareVal) match = i;
     })

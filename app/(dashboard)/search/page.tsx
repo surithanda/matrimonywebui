@@ -34,6 +34,9 @@ import { CiHeart } from "react-icons/ci";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
 import { Label } from "@/components/ui/label";
+import Lottie from "lottie-react";
+import Loading from "@/public/lottie/Loading.json";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -53,6 +56,8 @@ const Page = () => {
   const searchState = useSelector((state: RootState) => state.search);
   const metaDataState = useSelector((state: RootState) => state.metaData);
   const { selectedProfileID } = useProfileContext();
+
+  const { findReligionName } = useMetaDataLoader();
 
   // Use the custom toggle hook
   const {
@@ -101,7 +106,7 @@ const Page = () => {
         const response = await dispatch(
           getFavoritesAsync({ profileId: selectedProfileID })
         ).unwrap();
-        console.log("favorite", response.data)
+        console.log("favorite", response.data);
         setFavorites(response.data.map((item: any) => item.to_profile_id));
       }
     };
@@ -531,13 +536,15 @@ const Page = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        </div>
+        <Lottie
+          animationData={Loading}
+          loop={true}
+          autoplay
+          style={{ width: 120, height: 120 }}
+        />
       )}
 
       {/* Search Results */}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-4 2xl:gap-10">
         {loading ? (
           <div className="text-center py-12 col-span-full">
@@ -665,14 +672,27 @@ const Page = () => {
                       <p className="text-gray-400 text-sm">Age</p>
                     </div>
                     <div>
-                      <p className="font-bold text-lg">
-                        {profile?.religion || "N/A"}
-                      </p>
-                      <p className="text-gray-400 text-sm">Religion</p>
-                    </div>
-                    <div>
                       <p className="font-bold text-lg">{profile?.gender}</p>
                       <p className="text-gray-400 text-sm">Gender</p>
+                    </div>
+                    <div>
+                      <p
+                        className={`font-bold text-lg ${
+                          (
+                            findReligionName(
+                              profile?.religion_id ?? profile?.religion ?? 0
+                            ) || ""
+                          ).length > 10
+                            ? "truncate max-w-[120px]"
+                            : ""
+                        }`}
+                      >
+                        {findReligionName(
+                          profile?.religion_id ?? profile?.religion ?? 0
+                        ) || "N/A"}
+                      </p>
+
+                      <p className="text-gray-400 text-sm">Religion</p>
                     </div>
                   </div>
 

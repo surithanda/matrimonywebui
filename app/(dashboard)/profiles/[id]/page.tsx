@@ -1162,15 +1162,15 @@ const ViewProfile = () => {
     education?.data?.educations || (education ? [education] : []);
 
   const categoryMapping = {
-    // "What best describes your eating habits?": "eatingHabit",
-    // "Do you follow any specific diet plan?": "dietHabit",
-    // "How many cigarettes do you smoke per day on average?":
-    //   "cigarettesPerDay",
-    // "How frequently do you drink?": "drinkFrequency",
-    // "What type of gambling do you engage in?": "gamblingEngage",
-    // "How would you describe your physical activity level?":
-    //   "physicalActivityLevel",
-    // "Do you practice any relaxation techniques?": "relaxationMethods",
+    "What best describes your eating habits?": "eatingHabit",
+    "Do you follow any specific diet plan?": "dietHabit",
+    "How many cigarettes do you smoke per day on average?":
+      "cigarettesPerDay",
+    "How frequently do you drink?": "drinkFrequency",
+    "What type of gambling do you engage in?": "gamblingEngage",
+    "How would you describe your physical activity level?":
+      "physicalActivityLevel",
+    "Do you practice any relaxation techniques?": "relaxationMethods",
   };
 
   let employmentList = [];
@@ -1882,10 +1882,10 @@ const ViewProfile = () => {
                         <thead className="">
                           <tr className="text-left">
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Full Name
+                              Questions
                             </th>
                             <th className="px-2 py-2 border-b text-base font-bold">
-                              Relation
+                              Answer
                             </th>
                           </tr>
                         </thead>

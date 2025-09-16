@@ -135,9 +135,6 @@ const ProfileSection = () => {
     },
   ];
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
   console.log("user data:", userData);
 
   const StatCard = (props: any) => {
@@ -162,7 +159,11 @@ const ProfileSection = () => {
       {/* Profiles Section */}
       <div className="dashboard-sections w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Section */}
-        <div className="lg:col-span-3 flex flex-col">
+        <div
+          className={`flex flex-col ${
+            profilesData?.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
+          }`}
+        >
           {/* Header with Button */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <div>
@@ -265,10 +266,11 @@ const ProfileSection = () => {
                     </div>
                   </div>
                 </Link>
-                <Link
-                  href={`/profiles/${selectedProfileID}`}
-                >
-                  <Button variant="outline" className="flex items-center gap-2 w-full">
+                <Link href={`/profiles/${selectedProfileID}`}>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 w-full"
+                  >
                     <Eye size={20} />
                     Preview My Profile
                   </Button>

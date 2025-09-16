@@ -1,12 +1,5 @@
 import { useAppSelector } from "@/app/store/store";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 type componentProps = {
   type: string;
@@ -33,29 +26,21 @@ const CustomPhoneComponent = (
 
   return (
     <div className="flex w-full gap-2">
-      <Select
-        value={bindValue2 || undefined} // ✅ force undefined when empty
-        onValueChange={(value) =>
-          changeHandler({ target: { name: `${type}_country`, value } })
-        }
+      <select
+        name={`${type}_country`}
+        value={bindValue2}
+        onChange={changeHandler}
+        className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
         {...callingCodeBinding}
       >
-        <SelectTrigger className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-24 focus:outline-none focus:ring-2 focus:ring-orange-500 py-3 border rounded-lg">
-          <SelectValue placeholder="Country Code" />
-        </SelectTrigger>
-
-        <SelectContent>
-          {countryList &&
-            countryList.map((country: any) => (
-              <SelectItem
-                key={country.country_id}
-                value={country.country_code_2}
-              >
-                {country.flag_emoji} {country.country_calling_code}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+        <option value="">Country Code</option>
+        {countryList &&
+          countryList?.map((country: any) => (
+            <option key={country.country_id} value={country.country_code_2}>
+              {country.flag_emoji} {country.country_calling_code}
+            </option>
+          ))}
+      </select>
       <Input
         type="text"
         name={type}

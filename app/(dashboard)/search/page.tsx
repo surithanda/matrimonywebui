@@ -101,6 +101,7 @@ const Page = () => {
         const response = await dispatch(
           getFavoritesAsync({ profileId: selectedProfileID })
         ).unwrap();
+        console.log("favorite", response.data)
         setFavorites(response.data.map((item: any) => item.to_profile_id));
       }
     };
@@ -275,7 +276,6 @@ const Page = () => {
   // Helper function to get profile image with fallback
   const getProfileImage = (profile: any) => {
     // Return actual image if available
-    console.log("ndbhfbdajf", profile);
     if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
     if (profile?.url) return toAbsoluteUrl(profile.url);
 
@@ -547,10 +547,10 @@ const Page = () => {
           profiles.map((profile: any, index: number) => {
             // Debug: Log first profile to see available fields
             if (index === 0) {
-              console.log("Profile keys:", Object.keys(profile));
-              console.log("Profile data:", profile);
+              // console.log("Profile keys:", Object.keys(profile));
+              // console.log("Profile data:", profile);
             }
-            const isFavorite = favorites.includes(profile.profile_id);
+            const IsFavorite = favorites.includes(profile.profile_id);
             // console.log('Is favorite:', isFavorite, 'Profile ID:', profile.profile_id, 'All favorites:', favorites, selectedProfileID);
 
             return (
@@ -569,7 +569,7 @@ const Page = () => {
                     onClick={() => handleToggleFavorite(profile.profile_id)}
                     className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
                   >
-                    {isFavorite ? (
+                    {IsFavorite ? (
                       <IoIosHeart size={20} className="text-red-500" />
                     ) : (
                       <IoIosHeartEmpty size={20} className="text-black" />

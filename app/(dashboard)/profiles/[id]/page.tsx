@@ -274,7 +274,7 @@ const ViewProfile = () => {
       dispatch(getEducationAsync({ profile_id: profileId }));
       dispatch(getEmploymentAsync({ profile_id: profileId }));
       dispatch(getFamilyAsync({ profile_id: profileId, type: "family" }));
-      dispatch(getFamilyAsync({ profile_id: profileId, type: "references" }));
+      dispatch(getFamilyAsync({ profile_id: profileId, type: "reference" }));
       dispatch(getPropertiesAsync({ profile_id: profileId }));
       dispatch(
         getHobbiesInterestsAsync({ profile_id: profileId, category: "hobby" })
@@ -290,18 +290,18 @@ const ViewProfile = () => {
   }, [dispatch, profileId]);
 
   // Debug: Log the Redux state data
-  // useEffect(() => {
-  //   console.log('Redux State Debug:');
-  //   console.log('personalProfile:', personalProfile);
-  //   console.log('address:', address);
-  // console.log("education:", education);
+  useEffect(() => {
+    console.log('Redux State Debug:');
+    console.log('personalProfile:', personalProfile);
+    console.log('address:', address);
+  console.log("education:", education);
   console.log("employment:", employment);
-  // console.log("family:", family);
-  //   console.log('properties:', properties);
-  // console.log("hobbies:", hobbies);
-  // console.log("interests:", interests);
-  // console.log("references:", references);
-  // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
+  console.log("family:", family);
+    console.log('properties:', properties);
+  console.log("hobbies:", hobbies);
+  console.log("interests:", interests);
+  console.log("references:", references);
+  }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
 
   if (loading) {
     return (
@@ -1183,14 +1183,15 @@ const ViewProfile = () => {
     employmentList = [employment];
   }
 
-  const familyList = Array.isArray((family as any)?.family)
-    ? (family as any).family
-    : [];
+  // const familyList = Array.isArray((family as any)?.family)
+  //   ? (family as any).family
+  //   : [];
 
-  const referencesList =
-    (references as any)?.data?.family || (references ? [references] : []);
-  // const referencesList = Array.isArray((references as any)?.data?.reference) ? (references as any).reference : [];
-  // console.log("reference list", familyList)
+  const familyList = (family as any)?.family || [];
+
+  const referencesList = (references as any)?.family || [];
+
+  // console.log("reference data", references);
 
   const formatWeight = (weight?: number | string, pound?: string) => {
     if (!weight) return null;
@@ -1944,15 +1945,6 @@ const ViewProfile = () => {
                                 </td>
                                 <td className="px-4 py-2 border-b">
                                   {item.hobby_interest_description || "-"}
-                                </td>
-                                <td className="px-4 py-2 border-b">
-                                  {hobbies?.hobby_interests?.some(
-                                    (h: any) =>
-                                      h.hobby_interest_id ===
-                                      item.hobby_interest_id
-                                  )
-                                    ? "Hobby"
-                                    : "Interest"}
                                 </td>
                               </tr>
                             ))

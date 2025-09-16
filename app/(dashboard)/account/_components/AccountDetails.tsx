@@ -249,7 +249,7 @@ const AccountSettings = () => {
               <Input
                 type="text"
                 name="last_name"
-                value={formData.last_name}
+                value={formData.last_name ?? ""}
                 onChange={handleChange}
                 className="focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -259,7 +259,7 @@ const AccountSettings = () => {
               <Input
                 type="date"
                 name="birth_date"
-                value={formData.birth_date}
+                value={formData.birth_date ?? ""}
                 onChange={handleChange}
                 className="w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -269,7 +269,7 @@ const AccountSettings = () => {
               <Label className="block text-gray-700 mb-2">Gender</Label>
               <MetadataSelectComponent
                 type="gender"
-                bindValue={formData?.gender}
+                bindValue={formData?.gender ?? ""}
                 changeHandler={handleChange}
                 custSelectValue={true}
               />
@@ -279,7 +279,7 @@ const AccountSettings = () => {
               <Input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.email ?? ""}
                 onChange={handleChange}
                 className="w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
@@ -290,8 +290,8 @@ const AccountSettings = () => {
               <CustomPhoneComponent
                 type="primary_phone"
                 changeHandler={handleChange}
-                bindValue={formData.primary_phone}
-                bindValue2={formData.primary_phone_country}
+                bindValue={formData.primary_phone ?? ""}
+                bindValue2={formData.primary_phone_country ?? ""}
               />
             </div>
             <div>
@@ -301,8 +301,8 @@ const AccountSettings = () => {
               <CustomPhoneComponent
                 type="secondary_phone"
                 changeHandler={handleChange}
-                bindValue={formData.secondary_phone}
-                bindValue2={formData.secondary_phone_country}
+                bindValue={formData.secondary_phone ?? ""}
+                bindValue2={formData.secondary_phone_country ?? ""}
               />
             </div>
 

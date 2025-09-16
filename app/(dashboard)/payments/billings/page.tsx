@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Calendar } from "lucide-react"; // You were using Calendar, make sure it's imported
+import Link from "next/link";
+import { IoMdArrowBack } from "react-icons/io";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -37,7 +39,7 @@ export default function Page() {
             >
               Selected Plan Details
             </h2>
-            <Card className="relative flex w-80 flex-col justify-between text-left overflow-hidden shadow-xl">
+            <Card className="relative flex w-80 flex-col justify-between text-left overflow-hidden shadow-xl mb-4">
               <BorderBeam size={250} duration={6} delay={4} />
 
               <CardHeader>
@@ -78,6 +80,10 @@ export default function Page() {
                 </ul>
               </CardContent>
             </Card>
+            <div className="flex items-center gap-2 justify-center">
+              <IoMdArrowBack />
+            <Link href="/payments" className="text-base cursor-pointer" style={{ fontFamily: "BR Cobane" }}>Choose diffrent plan</Link>
+            </div>
           </div>
           <div className="col-span-2">
                 <h2

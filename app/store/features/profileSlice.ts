@@ -355,6 +355,30 @@ export const createPersonalProfileAsync = createAsyncThunk(
   }
 );
 
+export const updatePersonalProfileAsync = createAsyncThunk(
+  'profile/updatePersonal',
+  async (profileData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/personal/${profileData.profile_id}`, profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deletePersonalProfileAsync = createAsyncThunk(
+  'profile/deletePersonal',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/personal/${profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const getAddressAsync = createAsyncThunk(
   'profile/getAddress',
   async (addressData: any, { rejectWithValue }) => {
@@ -427,6 +451,30 @@ export const createEducationAsync = createAsyncThunk(
   }
 );
 
+export const updateEducationAsync = createAsyncThunk(
+  'profile/updateEducation',
+  async (educationData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/education/${educationData.education_id}`, educationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteEducationAsync = createAsyncThunk(
+  'profile/deleteEducation',
+  async (payload: { educationId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/education/${payload.educationId}?profile_id=${payload.profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const getEmploymentAsync = createAsyncThunk(
   'profile/getEmployment',
   async (data: any, { rejectWithValue }) => {
@@ -444,6 +492,30 @@ export const createEmploymentAsync = createAsyncThunk(
   async (employmentData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/employment', employmentData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const updateEmploymentAsync = createAsyncThunk(
+  'profile/updateEmployment',
+  async (employmentData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/employment/${employmentData.employment_id}`, employmentData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteEmploymentAsync = createAsyncThunk(
+  'profile/deleteEmployment',
+  async (payload: { employmentId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/employment/${payload.employmentId}?profile_id=${payload.profileId}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -479,7 +551,19 @@ export const updateLifestyleAsync = createAsyncThunk(
   'profile/updateLifestyle',
   async (lifestyleData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put('/profile/lifestyle', lifestyleData);
+      const response = await api.put(`/profile/lifestyle/${lifestyleData.lifestyle_id}`, lifestyleData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteLifestyleAsync = createAsyncThunk(
+  'profile/deleteLifestyle',
+  async (payload: { lifestyleId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/lifestyle/${payload.lifestyleId}?profile_id=${payload.profileId}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -849,8 +933,13 @@ const profileSlice = createSlice({
         state.error = null;
       })
       .addCase(getFamilyAsync.fulfilled, (state, action) => {
+        console.log('Family payload:', action);
         state.loading = false;
+        if(action.meta.arg.type === 'family') {
         state.family = action.payload?.data || [];
+        } else if(action.meta.arg.type === 'reference') {
+        state.references = action.payload?.data || [];
+        }
       })
       .addCase(getFamilyAsync.rejected, (state, action) => {
         state.loading = false;
@@ -938,6 +1027,94 @@ const profileSlice = createSlice({
         // Optionally remove from state.references
       })
       .addCase(deleteReferenceAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // EDUCATION UPDATE/DELETE
+      .addCase(updateEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update state.education
+      })
+      .addCase(updateEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.education
+      })
+      .addCase(deleteEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // EMPLOYMENT UPDATE/DELETE
+      .addCase(updateEmploymentAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEmploymentAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update state.employment
+      })
+      .addCase(updateEmploymentAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteEmploymentAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteEmploymentAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.employment
+      })
+      .addCase(deleteEmploymentAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // LIFESTYLE DELETE
+      .addCase(deleteLifestyleAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteLifestyleAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.lifestyle
+      })
+      .addCase(deleteLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // PERSONAL PROFILE UPDATE/DELETE
+      .addCase(updatePersonalProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePersonalProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.personalProfile = action.payload?.data || null;
+      })
+      .addCase(updatePersonalProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deletePersonalProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePersonalProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.personalProfile = null;
+      })
+      .addCase(deletePersonalProfileAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       })

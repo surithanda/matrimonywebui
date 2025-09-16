@@ -1263,7 +1263,7 @@ const ViewProfile = () => {
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
-                <Image
+                <Image width={100} height={100}
                   src={coverImage.url}
                   alt="Banner"
                   className="w-full h-full object-cover"
@@ -1290,7 +1290,7 @@ const ViewProfile = () => {
         border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <Image
+                      <Image width={100} height={100}
                         src={profileImage.url}
                         alt="Profile"
                         className="w-full h-full object-cover"

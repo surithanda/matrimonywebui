@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface ILifestyleSelections {
   profile_lifestyle_id: number | null;
@@ -168,53 +169,66 @@ const FormSection = () => {
 
   return (
     <>
- <section className="md:py-5 w-full">
-  <div className="space-y-6">
-    {Object.entries(categories).map(([category, options]) => (
-      <div key={category}>
-        <h3 className="BRCobane18600 mb-3">{category}</h3>
-        <div className="flex flex-col md:flex-row md:flex-wrap gap-4 w-full">
-          {options.map((option) => {
-            const checked = isOptionSelected(category, option);
-            return (
-              <Label
-                key={option}
-                className={`hover:bg-accent/50 w-full md:w-[185px] flex items-start gap-3 rounded-lg border p-3 cursor-pointer 
-                  ${checked ? "border-orange-500 bg-orange-50 dark:border-orange-800 dark:bg-orange-950" : "border-gray-300 bg-white dark:bg-gray-800"}
-                `}
-              >
-                <Checkbox
-                  checked={checked}
-                  onCheckedChange={() => handleSelection(category, option)}
-                  className={`data-[state=checked]:border-orange-500 data-[state=checked]:bg-gradient-to-b data-[state=checked]:from-yellow-400 data-[state=checked]:to-orange-500 data-[state=checked]:text-white dark:data-[state=checked]:border-orange-700 dark:data-[state=checked]:bg-orange-700`}
-                />
-                <div className="grid gap-1.5 font-normal">
-                  <p className="text-sm leading-none font-medium">{option}</p>
-                </div>
-              </Label>
-            );
-          })}
+      <section className="md:py-5 w-full">
+        <div className="space-y-6">
+          {Object.entries(categories).map(([category, options]) => (
+            <div key={category}>
+              <h3 className="BRCobane18600 mb-3">{category}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                {options.map((option) => {
+                  const checked = isOptionSelected(category, option);
+
+                  return (
+                    <Label
+                      key={option}
+                      className={`hover:bg-accent/50 w-full flex items-start gap-3 rounded-lg border p-3 cursor-pointer
+          ${
+            checked
+              ? "border-orange-500 bg-orange-50 dark:border-orange-800 dark:bg-orange-950"
+              : "border-gray-300 bg-white dark:bg-gray-800"
+          }
+        `}
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={() =>
+                          handleSelection(category, option)
+                        }
+                        className="data-[state=checked]:border-orange-500 data-[state=checked]:bg-gradient-to-b data-[state=checked]:from-yellow-400 data-[state=checked]:to-orange-500 data-[state=checked]:text-white dark:data-[state=checked]:border-orange-700 dark:data-[state=checked]:bg-orange-700"
+                      />
+                      <div className="grid gap-1.5 font-normal">
+                        <p className="text-sm leading-none font-medium">
+                          {option}
+                        </p>
+                      </div>
+                    </Label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-    ))}
-  </div>
 
-  <div className="flex flex-col md:flex-row justify-between mt-[100px] gap-4">
-    <div className="flex flex-col sm:flex-row gap-4">
-      <button onClick={handleSubmit} className="yellow-btn hover:bg-orange-600 w-full sm:w-auto">
-        Continue
-      </button>
-      <button className="gray-btn hover:bg-gray-400 w-full sm:w-auto">Cancel</button>
-    </div>
-    <button
-      className="gray-btn hover:bg-gray-400 w-full sm:w-auto"
-      onClick={() => router.push("/createprofile/family")}
-    >
-      Skip
-    </button>
-  </div>
-</section>
-
+        <div className="flex flex-col md:flex-row justify-between mt-6 gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button className="gray-btn hover:bg-gray-400 w-full sm:w-auto">
+              Cancel
+            </Button>
+          </div>
+          <Button
+            onClick={handleSubmit}
+            className="yellow-btn hover:bg-orange-600 w-full sm:w-auto"
+          >
+            Save
+          </Button>
+          {/* <button
+            className="gray-btn hover:bg-gray-400 w-full sm:w-auto"
+            onClick={() => router.push("/createprofile/family")}
+          >
+            Skip
+          </button> */}
+        </div>
+      </section>
     </>
   );
 };

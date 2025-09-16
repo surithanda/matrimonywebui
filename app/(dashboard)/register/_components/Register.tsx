@@ -160,42 +160,33 @@ const Register = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="grow">
-              <Label className="block text-gray-100 mb-2 text-sm sm:text-base">
-                Email
-              </Label>
+              <Label>Email</Label>
               <Input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                placeholder="Email"
               />
             </div>
             <div className="grow">
-              <Label className="block text-gray-700 mb-2 text-sm sm:text-base">
-                Password
-              </Label>
+              <Label>Password</Label>
               <Input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                placeholder="Password"
               />
             </div>
             <div className="grow">
-              <Label className="block text-gray-700 mb-2 text-sm sm:text-base">
-                Re-enter Password
-              </Label>
+              <Label>Re-enter Password</Label>
               <Input
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                placeholder="Re-enter Password"
               />
             </div>
           </div>
@@ -207,45 +198,40 @@ const Register = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="grow text-left flex flex-col items-start">
-                <Label className="block BRCobane18600 mb-2.5 text-left text-sm sm:text-base">
-                  First Name
-                </Label>
+                <Label className="mb-1">First Name</Label>
                 <Input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="First Name"
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <Label>Middle Name</Label>
+                <Label className="mb-1">Middle Name</Label>
                 <Input
                   type="text"
                   name="middleName"
                   value={formData.middleName}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="Middle Name"
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <Label>Last Name</Label>
+                <Label className="mb-1">Last Name</Label>
                 <Input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="Last Name"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grow flex flex-col items-start">
-                <Label>Birth Date</Label>
+                <Label className="mb-1">Birth Date</Label>
                 <Input
                   type="date"
                   name="birthDate"
@@ -255,7 +241,7 @@ const Register = () => {
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <Label>Gender</Label>
+                <Label className="mb-1">Gender</Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value) =>
@@ -264,8 +250,8 @@ const Register = () => {
                     } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
                   }
                 >
-                  <SelectTrigger className="w-full text-sm sm:text-base">
-                    <SelectValue placeholder="Select Gender" />
+                  <SelectTrigger className="w-full text-sm sm:text-base placeholder:text-gray-400">
+                    <SelectValue />
                   </SelectTrigger>
 
                   <SelectContent className="w-full">
@@ -283,14 +269,13 @@ const Register = () => {
 
             <div className="mt-4 w-full">
               <div className="flex flex-col items-start">
-                <Label>Complete Address</Label>
+                <Label className="mb-1">Complete Address</Label>
                 <Input
                   type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="Complete Address"
                 />
               </div>
             </div>
@@ -298,7 +283,7 @@ const Register = () => {
             {/* City, State, Country, Zip Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="flex flex-col items-start w-full">
-                <Label>Country</Label>
+                <Label className="mb-1">Country</Label>
                 <Select
                   value={formData.country}
                   onValueChange={(value) =>
@@ -308,7 +293,7 @@ const Register = () => {
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Country" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {countryList?.map((country: any) => (
@@ -323,7 +308,7 @@ const Register = () => {
                 </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <Label>State</Label>
+                <Label className="mb-1">State</Label>
                 <Select
                   value={formData.state}
                   onValueChange={(value) =>
@@ -333,7 +318,7 @@ const Register = () => {
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select State" />
+                    <SelectValue />
                   </SelectTrigger>
 
                   <SelectContent className="w-full">
@@ -355,26 +340,24 @@ const Register = () => {
                 </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <Label>City</Label>
+                <Label className="mb-1">City</Label>
                 <Input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="City"
                 />
               </div>
 
               <div className="flex flex-col items-start w-full">
-                <Label>Zip Code</Label>
+                <Label className="mb-1">Zip Code</Label>
                 <Input
                   type="number"
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  placeholder="Zip Code"
                   maxLength={7}
                 />
               </div>
@@ -382,13 +365,13 @@ const Register = () => {
           </div>
 
           {/* Contact Information */}
-          <div className="">
+          <div>
             <h3 className="BRCobane18700  mb-2 sm:mb-4 text-sm sm:text-base">
               CONTACT INFORMATION
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4 grow flex flex-col items-start">
-                <Label>Primary Phone</Label>
+                <Label className="mb-1">Primary Phone</Label>
                 <div className="flex w-full gap-2">
                   <Select
                     value={formData.primaryPhoneCountry || "+91"}
@@ -422,20 +405,18 @@ const Register = () => {
                     value={formData.primaryPhone}
                     onChange={handleChange}
                     className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                    placeholder="Primary Phone"
                     maxLength={10}
                   />
                 </div>
               </div>
               <div className="mb-4 grow flex flex-col items-start">
-                <Label>Email</Label>
+                <Label className="mb-1">Email</Label>
                 <Input
                   type="email"
                   name="contactEmail"
                   value={formData.email}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base cursor-not-allowed"
-                  placeholder="Email"
                   readOnly
                 />
               </div>

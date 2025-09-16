@@ -85,12 +85,12 @@ const ProfileSection = () => {
 
       setProfilesData([transformedData]);
     }
-  }, [personalProfile, profilePhotos, selectedProfileID]);
+  }, [personalProfile, profilePhotos, selectedProfileID, toAbsoluteUrl]);
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
     loadMetaData();
-  }, [userData, fetchAccountDetls]);
+  }, [userData, fetchAccountDetls, loadMetaData]);
 
   const faqData = [
     {

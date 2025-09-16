@@ -1428,7 +1428,7 @@ const ViewProfile = () => {
                   {/* Profile Image - positioned to overlap banner */}
                   <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0">
                     {profileImage?.url ? (
-                      <img
+                      <Image
                         src={profileImage.url}
                         alt="Profile"
                         className="w-full h-full object-cover"

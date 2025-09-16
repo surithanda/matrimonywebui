@@ -45,8 +45,6 @@ button:disabled {
   color: #666;
 }
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -206,10 +204,9 @@ button:disabled {
     --color-gray-500: var(--ds-gray-500);
     --color-gray-900: var(--ds-gray-900);
     --color-background-100: var(--ds-background-100);
+    --animate-border-beam: border-beam calc(var(--duration)*1s) infinite linear;
   }
 }
-
-
 
 @layer base {
   * {
@@ -217,5 +214,13 @@ button:disabled {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@theme inline {
+  @keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+    }
   }
 }

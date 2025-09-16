@@ -162,12 +162,12 @@ const ForgotPassword = () => {
         {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
         {/* Login Link */}
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">Login to your account? </p>
           <a href="/login" className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-lg">
             Login Now
           </a>
-        </div>
+        </div> */}
       </form>
     </div>
   );

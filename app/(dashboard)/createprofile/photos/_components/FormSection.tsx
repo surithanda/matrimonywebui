@@ -79,39 +79,48 @@ const FormSection = () => {
   }, [profileImage, coverImage, individualImages]);
 
   // Load existing photos for this profile
-  const loadPhotos = useCallback(async () => {
-    if (!selectedProfileID || selectedProfileID === 0) return;
-    try {
-      const response: any = await dispatch(
-        getProfilePhotosAsync(selectedProfileID)
-      ).unwrap();
-      const photos: any[] = response?.data || [];
-      const resolved = photos
-        .map((p: any) => ({
-          ...p,
-          _src: toAbsoluteUrl(p?.url),
-        }))
-        .filter((p: any) => !!p._src);
+const loadPhotos = useCallback(async () => {
+  if (!selectedProfileID || selectedProfileID === 0) return;
+  try {
+    const response: any = await dispatch(
+      getProfilePhotosAsync(selectedProfileID)
+    ).unwrap();
 
-      const prof = resolved.find(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
-      );
-      const cov = resolved.find(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
-      );
-      const others = resolved.filter(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
-      );
+    const photos: any[] = response?.data || [];
+    const resolved = photos
+      .map((p: any) => ({
+        ...p,
+        _src: toAbsoluteUrl(p?.url),
+      }))
+      .filter((p: any) => !!p._src);
 
-      setProfileImage(prof ? { url: prof._src, file: null } : null);
-      setCoverImage(cov ? { url: cov._src, file: null } : null);
-      setIndividualImages(
-        others.map((p: any) => ({ url: p._src, file: null }))
-      );
-    } catch (e) {
-      // non-fatal
-    }
-  }, [dispatch, selectedProfileID, toAbsoluteUrl]);
+    const prof = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
+    );
+    const cov = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
+    );
+    const others = resolved.filter(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
+    );
+
+    setProfileImage(prof ? { url: prof._src, file: null } : null);
+    setCoverImage(cov ? { url: cov._src, file: null } : null);
+    setIndividualImages(
+      others.map((p: any) => ({ url: p._src, file: null }))
+    );
+  } catch (e) {
+    // non-fatal
+  }
+}, [
+  dispatch,
+  selectedProfileID,
+  toAbsoluteUrl,
+  photoTypeAssociation.profile,
+  photoTypeAssociation.cover,
+  photoTypeAssociation.individual,
+]);
+
 
   useEffect(() => {
     loadPhotos();

@@ -22,7 +22,7 @@ interface AppBreadcrumbProps {
 
 const AppBreadcrumb: React.FC<AppBreadcrumbProps> = ({ items }) => {
   return (
-    <div className="mb-3">
+    <div className="mb-3 mt-2">
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => (

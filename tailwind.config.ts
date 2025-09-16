@@ -1,12 +1,12 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-    darkMode: ["class"],
-    content: [
+  darkMode: ["class"],
+  content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}", 
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
   	extend: {
@@ -73,11 +73,17 @@ const config: Config = {
   				to: {
   					height: '0'
   				}
-  			}
+  			},
+  			'border-beam': {
+  				'100%': {
+  					'offset-distance': '100%'
+  				}
+  			},
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'border-beam': 'border-beam calc(var(--duration)*1s) infinite linear',
   		}
   	},
   	container: {
@@ -88,9 +94,7 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [
-    require("tailwindcss-animate"), 
-  ],
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;

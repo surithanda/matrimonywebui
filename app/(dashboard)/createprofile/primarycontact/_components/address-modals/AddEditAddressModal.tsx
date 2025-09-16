@@ -4,10 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { IoIosClose, IoIosSave, IoMdCloseCircle } from "react-icons/io";
+import { IoIosSave, IoMdCloseCircle } from "react-icons/io";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 interface IAddress {
@@ -212,17 +211,6 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
 
               {/* Button right */}
               <div className="flex items-center gap-3">
-                {/* <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  type="button"
-                  variant="outline"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                  size={"sm"}
-                >
-                  <IoIosClose size={20} />
-                  Cancel
-                </Button> */}
 
                 <Button
                   className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
@@ -253,16 +241,15 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Label htmlFor="country">Country *</Label>
                 <MetadataSelectComponent
                   type="country"
-                  bindValue={formData.country || ""}
+                  bindValue={formData.country ?? ""}
                   changeHandler={handleCountryChange}
-                //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
                 <Label htmlFor="state">State *</Label>
                 <MetadataSelectComponent
                   type="state"
-                  bindValue={formData.state || ""}
+                  bindValue={formData.state ?? ""}
                   changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('state', Number(e.target.value))}
                 //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -276,7 +263,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="city"
                   type="text"
-                  value={formData.city}
+                  value={formData.city ?? ""}
                   onChange={(e) => handleFieldChange('city', e.target.value)}
                   placeholder="Enter city"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -287,7 +274,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="zip"
                   type="text"
-                  value={formData.zip}
+                  value={formData.zip ?? ""}
                   onChange={(e) => handleFieldChange('zip', e.target.value)}
                   placeholder="Enter ZIP code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -302,7 +289,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="address1"
                   type="text"
-                  value={formData.address_line1}
+                  value={formData.address_line1 ?? ""}
                   onChange={(e) => handleFieldChange('address_line1', e.target.value)}
                   placeholder="Enter complete address"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -313,7 +300,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="address2"
                   type="text"
-                  value={formData.address_line2}
+                  value={formData.address_line2 ?? ""}
                   onChange={(e) => handleFieldChange('address_line2', e.target.value)}
                   placeholder="Address line 2 (optional)"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -328,7 +315,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="landmark1"
                   type="text"
-                  value={formData.landmark1}
+                  value={formData.landmark1 ?? ""}
                   onChange={(e) => handleFieldChange('landmark1', e.target.value)}
                   placeholder="Enter landmark"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -339,7 +326,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 <Input
                   id="landmark2"
                   type="text"
-                  value={formData.landmark2}
+                  value={formData.landmark2 ?? ""}
                   onChange={(e) => handleFieldChange('landmark2', e.target.value)}
                   placeholder="Enter landmark"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"

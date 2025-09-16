@@ -76,7 +76,7 @@ export const Badge = ({ children, variant = "gray", size = "md", capitalize = tr
         )}
         href={href}
       >
-        <Content icon={icon} size={size}>{children}</Content>
+        <Content icon={icon} size={size}  />
       </Link>
     );
   }
@@ -88,7 +88,7 @@ export const Badge = ({ children, variant = "gray", size = "md", capitalize = tr
       variants[variant],
       sizes[size]
     )}>
-      <Content icon={icon} size={size}>{children}</Content>
+      <Content icon={icon} size={size} />
     </div>
   );
 };

@@ -4,12 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogIn, Menu, User, X } from "lucide-react";
-import Logo from "../../public/images/lightLogo.png";
+import Logo from "../../public/images/logowhite.png";
 import LoginIcon from "../../public/images/LoginIcon.svg";
 import RegisterIcon from "../../public/images/RegisterIcon.svg";
 import dp from "../../public/images/p-i.png";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useProfileContext } from "../utils/useProfileContext";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -73,10 +82,11 @@ export const Navbar = () => {
     "/account",
     "/changepassword",
     "/dashboard/create-profile",
+    "/payments"
   ];
 
   // Check if current path starts with any of the dark pages
-  const isDarkPage = darkPages.some(page => pathname.startsWith(page));
+  const isDarkPage = darkPages.some((page) => pathname.startsWith(page));
 
   const publicLinks = [
     { href: "/", label: "Home" },
@@ -93,10 +103,13 @@ export const Navbar = () => {
     { href: "/favourites", label: "Favourites" },
     { href: "/profiles", label: "Profiles" },
     { href: "/recommendations", label: "Recommendations" },
-    // { href: "/settings", label: "Profile Settings" },
+    { href: "/payments", label: "Payments" },
   ];
 
   const navLinks = isLoggedIn ? dashboardLinks : publicLinks;
+  const initials = `${userData?.first_name?.charAt(0) ?? ""}${
+    userData?.last_name?.charAt(0) ?? ""
+  }`;
 
   return (
     <nav
@@ -163,48 +176,35 @@ export const Navbar = () => {
               </Link>
             </>
           ) : (
-            <div className="relative">
-              <button
-                onClick={() => setIsShowDropdown(!isShowDropdown)}
-                className="focus:outline-none"
-              >
-                <div className="h-10 w-10 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold">
-                  {`${userData?.first_name?.charAt(0) ?? ""}${
-                    userData?.last_name?.charAt(0) ?? ""
-                  }`}
-                </div>
-              </button>
-              {isShowDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-md z-50">
-                  <ul className="space-y-2 p-2">
-                    <li>
-                      <Link
-                        href="/account"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-                      >
-                        Account
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href="/changepassword"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-                      >
-                        Change Password
-                      </Link>
-                    </li>
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-                      >
-                        Logout
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="h-10 w-10 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold focus:outline-none">
+                  {initials}
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="w-full bg-white rounded-lg shadow-md z-50">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/account" className="w-full">
+                    Account
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/changepassword" className="w-full">
+                    Change Password
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+            <DropdownMenuItem
+  onClick={handleLogout}
+  className="data-[highlighted]:bg-red-500 data-[highlighted]:text-white cursor-pointer"
+>
+  Logout
+</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
 

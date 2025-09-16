@@ -252,38 +252,10 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
                 onChange={(e) => handleFieldChange('property_description', e.target.value)}
                 placeholder="Enter property description (optional)"
                 rows={4}
-                className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 border border-gray-100"
               />
             </div>
           </div>
-
-          {/* Footer Buttons */}
-          {/* <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-              className="px-6"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSave}
-              disabled={!isFormValid() || isLoading}
-              className="px-6 bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  {mode === 'edit' ? 'Updating...' : 'Adding...'}
-                </>
-              ) : (
-                mode === 'edit' ? 'Update Property' : 'Add Property'
-              )}
-            </Button>
-          </div> */}
         </DialogContent>
       </Dialog>
 

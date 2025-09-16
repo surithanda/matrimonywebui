@@ -75,7 +75,7 @@ export default function Tabs() {
     menu.forEach((item) => {
       if (pathname.startsWith(item.link)) setActiveItem(item.id);
     });
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, menu]);
 
   // Unlock tabs when profile is selected
   useEffect(() => {

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 
 // Define the type for card data
@@ -155,10 +156,12 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
               >
                 <div className="relative overflow-hidden rounded-lg shadow-md group h-full">
                   <div className="w-full h-52">
-                    <img
+                    <Image
                       src={card.imgUrl}
                       alt=""
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      width={100}
+                      height={100}
                     />
                   </div>
                 </div>

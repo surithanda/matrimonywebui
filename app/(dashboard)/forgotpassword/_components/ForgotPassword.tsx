@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -83,33 +84,32 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/3 xl:w-1/4 text-left shadow-xl">
+    <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/5 2xl:w-1/4 text-left shadow-xl">
       <h3 className="BRCobane32600 text-3xl md:mb-0 mt-4">Forgot password?</h3>
       <ToastContainer />
       
       { current === 0 && <form onSubmit={handleSubmit} className="w-full  md:mb-16">
         {/* Email Input */}
         <div className="mb-6 flex flex-col items-start">
-          <Label className="block BRCobane18600 mb-2.5">Email</Label>
+          <Label className="mb-2">Email</Label>
           <Input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
-            placeholder="Email"
             required
           />
         </div>
 
         {/* Submit Button */}
         <div className="mb-6">
-          <button
+          <Button
             type="submit"
             className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-lg font-semibold"
           >
             Continue
-          </button>
+          </Button>
         </div>
 
         {/* Register Link */}
@@ -124,21 +124,20 @@ const ForgotPassword = () => {
       { current === 1 && 
         <form onSubmit={handleSubmitReset} className="w-full md:mb-16">
           <div className="mb-6 flex flex-col items-start">
-            <label className="block BRCobane18600 mb-2.5">OTP</label>
-            <input
+            <Label className="block BRCobane18600 mb-2.5">OTP</Label>
+            <Input
               type="text"
               name="otp"
               value={formData.otp}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
-              placeholder="Enter OTP"
               required
             />
           </div>
 
           <div className="mb-6 flex flex-col items-start">
-            <label className="block BRCobane18600 mb-2.5">New Password</label>
-            <input
+            <Label className="block BRCobane18600 mb-2.5">New Password</Label>
+            <Input
               type="password"
               name="new_password"
               value={formData.new_password}
@@ -150,8 +149,8 @@ const ForgotPassword = () => {
           </div>
 
           <div className="mb-6 flex flex-col items-start">
-            <label className="block BRCobane18600 mb-2.5">Confirm New Password</label>
-            <input
+            <Label className="block BRCobane18600 mb-2.5">Confirm New Password</Label>
+            <Input
               type="password"
               name="confirm_new_password"
               value={formData.confirm_new_password}
@@ -163,12 +162,12 @@ const ForgotPassword = () => {
           </div>
 
           <div className="mb-6">
-            <button
+            <Button
               type="submit"
               className="w-full yellow-btn hover:bg-orange-600"
             >
               Reset Password
-            </button>
+            </Button>
           </div>
           <div className="flex gap-2">
             <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">Back to login page? </p>

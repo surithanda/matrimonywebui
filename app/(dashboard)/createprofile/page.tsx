@@ -107,6 +107,8 @@ const Page = () => {
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
 
+      console.log("dsmfvds", result)
+
       if (result) {
         reset(result?.data);
       }
@@ -715,14 +717,15 @@ const Page = () => {
             type="button"
             onClick={handleCancel}
             disabled={loading}
-            className="gray-btn hover:bg-gray-400"
+            variant={"outline"}
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={loading}
-            className="yellow-btn hover:bg-orange-600 flex items-center gap-2"
+            variant={"default"}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             Save

@@ -60,7 +60,7 @@ const AccountSettings = () => {
 
   useEffect(() => {
     fetchProfilePhoto();
-    loadMetaData(); //not required but issues with redux state, thus added
+    // loadMetaData(); //not required but issues with redux state, thus added
   }, [fetchProfilePhoto, loadMetaData]);
 
   useEffect(() => {

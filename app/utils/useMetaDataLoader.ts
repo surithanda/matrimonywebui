@@ -59,9 +59,9 @@ export const useMetaDataLoader = () => {
     }
   }, [dispatch, loadMetaDataCategory]);
 
-  useEffect(() => {
-loadMetaData();
-  }, []);
+//   useEffect(() => {
+// loadMetaData();
+//   }, []);
 
   const loadMetaData = useCallback(async () => {
     try {

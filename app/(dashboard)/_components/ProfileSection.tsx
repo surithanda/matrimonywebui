@@ -76,8 +76,15 @@ const ProfileSection = () => {
       };
 
       const getProfileImage = () => {
-        if (completeProfile.profile_photo_url) {
-          return toAbsoluteUrl(completeProfile.profile_photo_url);
+        // if (profilePhotos && profilePhotos.length > 0) {
+        //   const profilePhoto =
+        //     profilePhotos.find((photo) => photo.photo_type === 450) ||
+        //     profilePhotos[0];
+        //   return toAbsoluteUrl(profilePhoto.photo_url);
+        // }
+        if (completeProfile) {
+          console.log("Profile Image URL:", completeProfile?.profile_photo_url, toAbsoluteUrl(completeProfile?.profile_photo_url));
+          return toAbsoluteUrl(completeProfile?.profile_photo_url);
         }
         return profile1;
       };
@@ -96,8 +103,8 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
-    loadMetaData();
-  }, [userData, fetchAccountDetls, loadMetaData]);
+    // loadMetaData();
+  }, [userData, fetchAccountDetls]);
 
   const faqData = [
     {

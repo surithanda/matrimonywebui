@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/app/store/store";
+import { AppDispatch, useAppSelector } from "@/app/store/store";
 import { getFavoritesAsync } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,9 @@ const FavouritesPage = () => {
 
   const [favourites, setFavourites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true); // ✅ loader state
+  const completeProfile = useAppSelector(
+    (state) => state.profile.completeProfile
+  );
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -65,7 +68,11 @@ const FavouritesPage = () => {
       {/* ✅ Loader */}
       {loading ? (
         <div className="flex flex-col items-center justify-center h-[60vh] w-full">
-          <Lottie animationData={loaderAnimation} loop={true} className="w-40 h-40" />
+          <Lottie
+            animationData={loaderAnimation}
+            loop={true}
+            className="w-40 h-40"
+          />
           <p className="text-gray-500 text-lg">Loading favourites...</p>
         </div>
       ) : favourites.length === 0 ? (

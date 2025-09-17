@@ -26,15 +26,21 @@ const ProfileSection = () => {
   // const personalProfile = useAppSelector(
   //   (state) => state.profile.personalProfile
   // );
-  // const profilePhotos = useAppSelector((state) => state.profile.photos);
-  const completeProfile = useAppSelector((state) => state.profile.completeProfile);
+  const profilePhotos = useAppSelector((state) => state.profile.photos);
+  const completeProfile = useAppSelector(
+    (state) => state.profile.completeProfile
+  );
   const { fetchAccountDetls } = useFetchUser();
   const { loadMetaData } = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  console.log("complete profile data", completeProfile);
+
   // API origin and image URL utility
   const toAbsoluteUrl = useCallback((u?: string | null) => {
+    console.log(u)
+    console.log(API_ORIGIN)
     return envToAbsoluteUrl(u);
   }, []);
 
@@ -70,12 +76,9 @@ const ProfileSection = () => {
       };
 
       const getProfileImage = () => {
-        // if (profilePhotos && profilePhotos.length > 0) {
-        //   const profilePhoto =
-        //     profilePhotos.find((photo) => photo.photo_type === 450) ||
-        //     profilePhotos[0];
-        //   return toAbsoluteUrl(profilePhoto.url);
-        // }
+        if (completeProfile.profile_photo_url) {
+          return toAbsoluteUrl(completeProfile.profile_photo_url);
+        }
         return profile1;
       };
 

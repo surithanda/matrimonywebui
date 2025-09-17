@@ -79,6 +79,7 @@ export const Navbar = () => {
     "/createprofile/references",
     "/createprofile/property",
     "/createprofile/photos",
+    "/updateprofile", // Added for update profile route
     "/account",
     "/changepassword",
     "/dashboard/create-profile",

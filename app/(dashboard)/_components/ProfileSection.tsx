@@ -97,8 +97,8 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
-    loadMetaData();
-  }, [userData, fetchAccountDetls, loadMetaData]);
+    // loadMetaData();
+  }, [userData, fetchAccountDetls]);
 
   const faqData = [
     {

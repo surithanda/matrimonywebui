@@ -73,6 +73,7 @@ const ViewProfile = () => {
     file?: File | null;
   }
 
+  const { loadMetaData } = useMetaDataLoader();
   const [activeTab, setActiveTab] = useState("personal");
   const [expandedSections, setExpandedSections] = useState<{
     [key: string]: boolean;
@@ -210,6 +211,7 @@ const ViewProfile = () => {
   }, [profileId, fromSearch, accountProfileID, dispatch]);
 
   useEffect(() => {
+    loadMetaData();
     if (profileId) {
       // Load all profile sections
       dispatch(getPersonalProfileAsync({ profile_id: profileId }));

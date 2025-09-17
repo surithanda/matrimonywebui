@@ -329,6 +329,8 @@ interface ProfileState {
   references: any[];
   favorites: any[];
   photos?: any[];
+  completeProfile: any; // Complete profile data from eb_profile_get_complete_data
+  allProfiles: any[]; // All profiles from eb_profile_search_get_all
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -571,6 +573,34 @@ export const deleteLifestyleAsync = createAsyncThunk(
   }
 );
 
+// Get complete profile data using stored procedure eb_profile_get_complete_data
+export const getCompleteProfileAsync = createAsyncThunk(
+  'profile/getCompleteProfile',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const profileData = { profile_id: profileId };
+      const response = await api.post('/profile/completeProfile', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+// Get all profiles using stored procedure eb_profile_search_get_all
+export const getAllProfillesAsync = createAsyncThunk(
+  'profile/getAllProfiles',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const profileData = { profile_id: profileId };
+      const response = await api.post('/profile/allProfiles', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 const initialState: ProfileState = {
   loading: false,
   error: null,
@@ -587,6 +617,8 @@ const initialState: ProfileState = {
   references: [],
   favorites: [],
   photos: [],
+  completeProfile: null,
+  allProfiles: [],
 };
 
 const profileSlice = createSlice({
@@ -1129,6 +1161,32 @@ const profileSlice = createSlice({
         // state.photos could be updated here if needed
       })
       .addCase(createPhotoAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // GET COMPLETE PROFILE
+      .addCase(getCompleteProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCompleteProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.completeProfile = action.payload?.data || null;
+      })
+      .addCase(getCompleteProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // GET ALL PROFILES
+      .addCase(getAllProfillesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllProfillesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allProfiles = action.payload?.data || [];
+      })
+      .addCase(getAllProfillesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

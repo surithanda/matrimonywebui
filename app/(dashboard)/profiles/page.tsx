@@ -92,13 +92,13 @@ const Page = () => {
 
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
-      <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full px-3 mt-4 lg:px-0 lg:mt-4">
         <h2 className="dmserif32600" style={{ fontFamily: "BR Cobane" }}>
           All Profiles
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 lg:px-0 mt-3 lg:mt-0">
         {recommendedProfiles.map((profile, index) => {
           const isFavorite = favorites.includes(profile.id);
           return (

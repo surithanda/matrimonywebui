@@ -317,7 +317,7 @@ const Page = () => {
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       {/* Header */}
-      <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full px-3 mt-4 lg:px-0 lg:mt-4 ">
         <h2 className="dmserif32600">Search Profiles</h2>
         <div className="flex gap-2">
           <Button

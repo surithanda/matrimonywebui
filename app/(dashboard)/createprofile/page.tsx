@@ -521,7 +521,7 @@ const Page = () => {
                 </div>
                 {/* Weight */}
                 <div className=" flex flex-col">
-                  <Label>Weight</Label>
+                  <Label className="mb-2.5">Weight</Label>
                   <div className="flex gap-2">
                     {/* Select for weight units */}
                     <Controller

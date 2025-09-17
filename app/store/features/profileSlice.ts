@@ -965,7 +965,7 @@ const profileSlice = createSlice({
         state.error = null;
       })
       .addCase(getFamilyAsync.fulfilled, (state, action) => {
-        console.log('Family payload:', action);
+        // console.log('Family payload:', action);
         state.loading = false;
         if(action.meta.arg.type === 'family') {
         state.family = action.payload?.data || [];

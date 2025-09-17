@@ -129,6 +129,7 @@ export const Navbar = () => {
             src={Logo}
             alt="Logo"
             className="w-[160px] md:w-[200px] lg:w-[221px]"
+             priority 
           />
         </Link>
 
@@ -271,7 +272,7 @@ export const Navbar = () => {
       >
         <div className="flex justify-between items-center px-4 py-6 border-b bg-[#0d0d0d]">
           <Link href="/" onClick={() => setMenuOpen(false)}>
-            <Image src={Logo} alt="Logo" className="w-[180px]" />
+            <Image src={Logo} alt="Logo" className="w-[180px]"  priority/>
           </Link>
           <button
             onClick={() => setMenuOpen(false)}

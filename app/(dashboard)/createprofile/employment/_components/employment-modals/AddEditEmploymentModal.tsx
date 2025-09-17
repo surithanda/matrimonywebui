@@ -1,6 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,7 +24,7 @@ interface IEmployment {
   country_id: number;
   zip: string;
   start_year: string;
-  end_year: string;
+  end_year: string | null;
   job_title_id: number;
   last_salary_drawn: string;
 }
@@ -27,9 +32,9 @@ interface IEmployment {
 interface AddEditEmploymentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode: 'add' | 'edit';
+  mode: "add" | "edit";
   employmentData?: IEmployment;
-  onSave: (employment: IEmployment, mode: 'add' | 'edit') => void;
+  onSave: (employment: IEmployment, mode: "add" | "edit") => void;
   onCancel: () => void;
 }
 
@@ -42,7 +47,7 @@ const defaultEmployment: IEmployment = {
   country_id: 0,
   zip: "",
   start_year: "",
-  end_year: "",
+  end_year: null,
   job_title_id: 0,
   last_salary_drawn: "",
 };
@@ -64,9 +69,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
   // Initialize form data when modal opens
   useEffect(() => {
     if (open) {
-      if (mode === 'edit' && employmentData) {
+      if (mode === "edit" && employmentData) {
         setFormData(employmentData);
-        
+
         // Load states for the selected country in edit mode
         if (employmentData.country_id && employmentData.country_id !== 0) {
           loadStates(String(employmentData.country_id));
@@ -96,10 +101,13 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
   };
 
   // Handle form field changes
-  const handleFieldChange = (field: keyof IEmployment, value: string | number) => {
-    setFormData(prev => ({
+  const handleFieldChange = (
+    field: keyof IEmployment,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setIsFormDirty(true);
   };
@@ -107,8 +115,8 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
   // Handle country change and load states
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const countryValue = Number(e.target.value);
-    handleFieldChange('country_id', countryValue);
-    handleFieldChange('state_id', 0); // Reset state when country changes
+    handleFieldChange("country_id", countryValue);
+    handleFieldChange("state_id", 0); // Reset state when country changes
     loadStates(e.target.value);
   };
 
@@ -117,7 +125,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
     return !!(
       formData.institution_name.trim() &&
       formData.job_title_id &&
-      formData.start_year && 
+      formData.start_year &&
       formData.city.trim() &&
       formData.country_id &&
       formData.state_id
@@ -137,7 +145,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
       setIsFormDirty(false);
       onOpenChange(false);
     } catch (error) {
-      console.error('Error saving employment:', error);
+      console.error("Error saving employment:", error);
     } finally {
       setIsLoading(false);
     }
@@ -189,7 +197,10 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
 
   return (
     <>
-      <Dialog open={open && !showExitConfirmation} onOpenChange={handleCloseAttempt}>
+      <Dialog
+        open={open && !showExitConfirmation}
+        onOpenChange={handleCloseAttempt}
+      >
         <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto bg-white">
           <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
@@ -198,7 +209,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 className="text-white text-xl"
                 style={{ fontFamily: "BR Cobane" }}
               >
-                {mode === 'edit' ? 'Edit Employment' : 'Add Employment'}
+                {mode === "edit" ? "Edit Employment" : "Add Employment"}
               </DialogTitle>
 
               {/* Button right */}
@@ -234,7 +245,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="institution_name"
                   type="text"
                   value={formData.institution_name}
-                  onChange={(e) => handleFieldChange('institution_name', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("institution_name", e.target.value)
+                  }
                   placeholder="Enter company name"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -244,7 +257,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 <MetadataSelectComponent
                   type="job_title"
                   bindValue={formData.job_title_id || ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('job_title_id', Number(e.target.value))}
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("job_title_id", Number(e.target.value))
+                  }
                   // className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -258,7 +273,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="start_year"
                   type="number"
                   value={formData.start_year}
-                  onChange={(e) => handleFieldChange('start_year', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("start_year", e.target.value)
+                  }
                   placeholder="Enter start year"
                   min="1900"
                   max="2030"
@@ -270,8 +287,10 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 <Input
                   id="end_year"
                   type="number"
-                  value={formData.end_year}
-                  onChange={(e) => handleFieldChange('end_year', e.target.value)}
+                  value={formData.end_year ?? ""}
+                  onChange={(e) =>
+                    handleFieldChange("end_year", e.target.value)
+                  }
                   placeholder="Enter end year (leave blank if current)"
                   min="1900"
                   max="2030"
@@ -288,7 +307,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="last_salary_drawn"
                   type="text"
                   value={formData.last_salary_drawn}
-                  onChange={(e) => handleFieldChange('last_salary_drawn', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("last_salary_drawn", e.target.value)
+                  }
                   placeholder="Enter last salary drawn"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -311,7 +332,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state_id || ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('state_id', Number(e.target.value))}
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("state_id", Number(e.target.value))
+                  }
                   // className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -325,7 +348,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="city"
                   type="text"
                   value={formData.city}
-                  onChange={(e) => handleFieldChange('city', e.target.value)}
+                  onChange={(e) => handleFieldChange("city", e.target.value)}
                   placeholder="Enter city"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -336,7 +359,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="zip"
                   type="text"
                   value={formData.zip}
-                  onChange={(e) => handleFieldChange('zip', e.target.value)}
+                  onChange={(e) => handleFieldChange("zip", e.target.value)}
                   placeholder="Enter ZIP code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -351,7 +374,9 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   id="address_line1"
                   type="text"
                   value={formData.address_line1}
-                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("address_line1", e.target.value)
+                  }
                   placeholder="Enter company address"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -390,19 +415,23 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
       </Dialog>
 
       {/* Exit Confirmation Dialog */}
-      <Dialog open={showExitConfirmation} onOpenChange={setShowExitConfirmation}>
+      <Dialog
+        open={showExitConfirmation}
+        onOpenChange={setShowExitConfirmation}
+      >
         <DialogContent className="max-w-md p-6 bg-white">
           <DialogHeader className="pb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
               Save Employment Changes?
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <p className="text-gray-600">
-              You have unsaved employment information. Would you like to save this employment before closing?
+              You have unsaved employment information. Would you like to save
+              this employment before closing?
             </p>
-            
+
             <div className="flex gap-3">
               <Button
                 onClick={handleSaveAndExit}

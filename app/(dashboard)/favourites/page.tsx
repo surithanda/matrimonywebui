@@ -1,23 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import profile1 from "@/public/images/dashboard/profile1.png";
 import profile2 from "@/public/images/dashboard/profile2.png";
 import profile3 from "@/public/images/dashboard/profile3.png";
 import profile4 from "@/public/images/dashboard/profile4.png";
 import ProfileCard from "../_components/ProfileCard";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store/store";
+import { useProfileContext } from "@/app/utils/useProfileContext";
+import { getFavoritesAsync } from "@/app/store/features/profileSlice";
 
 const FavouritesPage = () => {
-  const [favourites, setFavourites] = useState([
-    { id: 1, name: "Shruti K.", age: 24, location: "Naperville", imageSrc: profile1, religion: "Hindu", gender: "Female" },
-    { id: 2, name: "Rashmi", age: 23, location: "Pinnacles", imageSrc: profile2, religion: "Hindu", gender: "Female" },
-    { id: 3, name: "Kaushik", age: 28, location: "Toledo", imageSrc: profile3, religion: "Hindu", gender: "Male" },
-    { id: 4, name: "Shruti K.", age: 24, location: "Austin", imageSrc: profile4, religion: "Hindu", gender: "Female" },
-  ]);
+  const [favourites, setFavourites] = useState([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { selectedProfileID } = useProfileContext();
 
-  const handleToggleFavorite = (id: string | number) => {
-    setFavourites(prev => prev.filter(profile => profile.id !== Number(id)));
-  };
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (selectedProfileID > 0) {
+        const response = await dispatch(
+          getFavoritesAsync({ profileId: selectedProfileID })
+        ).unwrap();
+        console.log("favorite", response.data);
+        setFavourites(response.data.map((item: any) => item.to_profile_id));
+      }
+    };
+    console.log(selectedProfileID);
+    loadFavorites();
+  }, [dispatch, selectedProfileID]);
+
+  // const handleToggleFavorite = (id: string | number) => {
+  //   setFavourites((prev) =>
+  //     prev.filter((profile) => profile.id !== Number(id))
+  //   );
+  // };
+
+  
 
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
@@ -26,14 +45,14 @@ const FavouritesPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-        {favourites.map((profile, index) => (
+        {/* {favourites.map((profile, index) => (
           <ProfileCard
             key={profile.id}
             profile={profile}
             isFavorite={true}
             onToggleFavorite={handleToggleFavorite}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

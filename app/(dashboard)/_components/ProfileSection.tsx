@@ -14,7 +14,7 @@ import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
-import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { API_ORIGIN, toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 import { FaPlus } from "react-icons/fa6";
 import { FaqSection } from "@/components/blocks/faq";
 import { Button } from "@/components/ui/button";
@@ -139,11 +139,6 @@ const ProfileSection = () => {
     },
   ];
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-  console.log("user data:", userData);
-
   const StatCard = (props: any) => {
     return (
       <div
@@ -166,7 +161,11 @@ const ProfileSection = () => {
       {/* Profiles Section */}
       <div className="dashboard-sections w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Section */}
-        <div className="lg:col-span-3 flex flex-col">
+        <div
+          className={`flex flex-col ${
+            profilesData?.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
+          }`}
+        >
           {/* Header with Button */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <div>
@@ -256,6 +255,7 @@ const ProfileSection = () => {
                       src={profile.imageSrc}
                       alt={profile.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
                     />
                     {/* Overlay */}
@@ -269,10 +269,11 @@ const ProfileSection = () => {
                     </div>
                   </div>
                 </Link>
-                <Link
-                  href={`/profiles/${selectedProfileID}`}
-                >
-                  <Button variant="outline" className="flex items-center gap-2 w-full">
+                <Link href={`/profiles/${selectedProfileID}`}>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 w-full"
+                  >
                     <Eye size={20} />
                     Preview My Profile
                   </Button>

@@ -154,7 +154,6 @@ const ViewProfile = () => {
         });
       }
     };
-    console.log(accountProfileID);
     loadFavorites();
   }, [dispatch, accountProfileID, profileId]);
 
@@ -190,63 +189,6 @@ const ViewProfile = () => {
         setIsUpdatingFavorite(false);
       }
     }
-  };
-
-  const ProfileSection = ({
-    title,
-    children,
-    buttonName,
-    onButtonClick,
-  }: {
-    title: string;
-    children: React.ReactNode;
-    buttonName?: string;
-    onButtonClick?: () => void;
-  }) => {
-    return (
-      <div className="overflow-hidden">
-        <div className="flex flex-row justify-between items-center gap-6 px-6 py-4">
-          <h2
-            className="text-black text-2xl font-bold"
-            style={{ fontFamily: "BR Cobane" }}
-          >
-            {title}
-          </h2>
-
-          {/* Button (only render if buttonName is passed) */}
-          {buttonName && (
-            <button
-              onClick={onButtonClick}
-              className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
-            >
-              <FaPlus />
-              {buttonName}
-            </button>
-          )}
-        </div>
-
-        <div className="px-6">{children}</div>
-      </div>
-    );
-  };
-
-  const ProfileDetail = ({
-    title,
-    value,
-    colspan = null,
-  }: {
-    title: string;
-    value?: string | null;
-    colspan?: number | null;
-  }) => {
-    if (!value) return null;
-
-    return (
-      <div className={colspan ? `col-span-${colspan}` : ""}>
-        <p className="text-slate-500">{title}</p>
-        <p className="text-black font-semibold mt-1 text-xl">{value}</p>
-      </div>
-    );
   };
 
   useEffect(() => {
@@ -291,28 +233,28 @@ const ViewProfile = () => {
   }, [dispatch, profileId]);
 
   // Debug: Log the Redux state data
-  useEffect(() => {
-    console.log("Redux State Debug:");
-    console.log("personalProfile:", personalProfile);
-    console.log("address:", address);
-    console.log("education:", education);
-    console.log("employment:", employment);
-    console.log("family:", family);
-    console.log("properties:", properties);
-    console.log("hobbies:", hobbies);
-    console.log("interests:", interests);
-    console.log("references:", references);
-  }, [
-    personalProfile,
-    address,
-    education,
-    employment,
-    family,
-    properties,
-    hobbies,
-    interests,
-    references,
-  ]);
+  // useEffect(() => {
+  //   console.log("Redux State Debug:");
+  //   console.log("personalProfile:", personalProfile);
+  //   console.log("address:", address);
+  //   console.log("education:", education);
+  //   console.log("employment:", employment);
+  //   console.log("family:", family);
+  //   console.log("properties:", properties);
+  //   console.log("hobbies:", hobbies);
+  //   console.log("interests:", interests);
+  //   console.log("references:", references);
+  // }, [
+  //   personalProfile,
+  //   address,
+  //   education,
+  //   employment,
+  //   family,
+  //   properties,
+  //   hobbies,
+  //   interests,
+  //   references,
+  // ]);
 
   if (loading) {
     return (
@@ -333,840 +275,6 @@ const ViewProfile = () => {
     );
   }
 
-  // const renderPhotos = () => {
-  //   return (
-  //     <ProfileSection title="Photos" buttonName="Add Photo">
-  //       {/* Photos (by type) */}
-  //       <div className="w-full">
-  //         <div className="flex flex-wrap gap-6">
-  //           {/* Profile (450) */}
-  //           <div className="flex flex-col gap-2">
-  //             <p className="text-sm font-medium">Profile</p>
-  //             <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
-  //               {profileImage ? (
-  //                 <Image
-  //                   src={profileImage.url}
-  //                   alt="Profile photo"
-  //                   fill
-  //                   sizes="200px"
-  //                   className="object-cover"
-  //                 />
-  //               ) : (
-  //                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
-  //                   No photo
-  //                 </div>
-  //               )}
-  //             </div>
-  //           </div>
-
-  //           {/* Cover (454) */}
-  //           <div className="flex flex-col gap-2">
-  //             <p className="text-sm font-medium">Cover</p>
-  //             <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
-  //               {coverImage ? (
-  //                 <Image
-  //                   src={coverImage.url}
-  //                   alt="Cover photo"
-  //                   fill
-  //                   sizes="300px"
-  //                   className="object-cover"
-  //                 />
-  //               ) : (
-  //                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">
-  //                   No photo
-  //                 </div>
-  //               )}
-  //             </div>
-  //           </div>
-
-  //           {/* Additional (456) */}
-  //           <div className="flex-1 min-w-full">
-  //             <p className="text-sm font-medium mb-2">Additional</p>
-  //             <div className="flex flex-wrap gap-3">
-  //               {individualImages && individualImages.length > 0 ? (
-  //                 individualImages.map((img, idx) => (
-  //                   <div
-  //                     key={idx}
-  //                     className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden"
-  //                   >
-  //                     <Image
-  //                       src={img.url}
-  //                       alt={`Additional ${idx + 1}`}
-  //                       fill
-  //                       sizes="150px"
-  //                       className="object-cover"
-  //                     />
-  //                   </div>
-  //                 ))
-  //               ) : (
-  //                 <div className="text-xs text-gray-500">No photos</div>
-  //               )}
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderPersonalInfo = () => {
-  //   const profileData = personalProfile?.data || personalProfile;
-
-  //   return (
-  //     // <ProfileSection title="Personal Information">
-  //     //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //     //     {profileData ? (
-  //     //       // Object.entries(profileData)
-  //     //       //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
-  //     //       //   .map(([key, value]) => (
-  //     //       //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
-  //     //       //   ))
-  //     //       <>
-  //     //         <ProfileDetail
-  //     //           title="First Name"
-  //     //           value={profileData?.first_name}
-  //     //         />
-  //     //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
-  //     //         <ProfileDetail title="Gender" value={profileData?.gender} />
-  //     //         <ProfileDetail title="DOB" value={profileData?.dob} />
-  //     //         <ProfileDetail title="Religion" value={profileData?.religion} />
-  //     //         <ProfileDetail
-  //     //           title="Mother Tounge"
-  //     //           value={profileData?.mother_tounge}
-  //     //         />
-  //     //         <ProfileDetail
-  //     //           title="Marital Status"
-  //     //           value={profileData?.marital_status}
-  //     //         />
-  //     //         <ProfileDetail title="Height" value={profileData?.height} />
-  //     //         <ProfileDetail title="Weight" value={profileData?.weight} />
-  //     //       </>
-  //     //     ) : (
-  //     //       <p className="text-gray-500 col-span-2">
-  //     //         No personal information available
-  //     //       </p>
-  //     //     )}
-  //     //   </div>
-  //     // </ProfileSection>
-  //     <div className="overflow-hidden">
-  //       <div className="flex flex-row justify-between items-center gap-6 px-6 py-6">
-  //         <h2
-  //           className=" text-black text-xl font-bold"
-  //           style={{ fontFamily: "BR Cobane" }}
-  //         >
-  //           Personal Information
-  //         </h2>
-  //         {/* Edit Button */}
-  //         <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0">
-  //           <FaRegEdit size={15} />
-  //           Edit
-  //         </button>
-  //       </div>
-
-  //       <div className="px-6 pb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-8">
-  //         <ProfileDetail title="First Name" value={profileData?.first_name} />
-  //         <ProfileDetail title="Last Name" value={profileData?.last_name} />
-  //         <ProfileDetail
-  //           title="Email"
-  //           value={personalProfile?.data?.email_id}
-  //         />
-  //         <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
-  //         <ProfileDetail title="Gender" value={profileData?.gender} />
-  //         <ProfileDetail title="DOB" value={profileData?.dob} />
-  //         <ProfileDetail title="Religion" value={profileData?.religion} />
-  //         <ProfileDetail
-  //           title="Mother Tounge"
-  //           value={profileData?.mother_tounge}
-  //         />
-  //         <ProfileDetail
-  //           title="Marital Status"
-  //           value={profileData?.marital_status}
-  //         />
-  //         <ProfileDetail title="Height" value={profileData?.height} />
-  //         <ProfileDetail title="Weight" value={profileData?.weight} />
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  // const renderAddresses = () => {
-  //   const addressList = address?.data?.addresses || (address ? [address] : []);
-
-  //   return (
-  //     <ProfileSection
-  //       title="Address"
-  //       buttonName="Add Address"
-  //       onButtonClick={() => {}}
-  //     >
-  //       <div className="space-y-4">
-  //         {addressList.length > 0 ? (
-  //           addressList.map((addr: any, index: number) => {
-  //             const title = `Address ${index + 1}${
-  //               addr.type ? ` (${addr.type})` : ""
-  //             }`;
-  //             return (
-  //               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //                 <ProfileDetail
-  //                   title="Type"
-  //                   value={addr?.type || addr?.address_type}
-  //                   key={index}
-  //                 />
-  //                 <ProfileDetail title="Street" value={addr?.street} />
-  //                 <ProfileDetail title="City" value={addr?.city} />
-  //                 <ProfileDetail title="State" value={addr?.state} />
-  //                 <ProfileDetail title="Country" value={addr?.country} />
-  //                 <ProfileDetail title="Pincode" value={addr?.pincode} />
-  //                 <ProfileDetail
-  //                   title="Is Current"
-  //                   value={addr?.is_current ? "Yes" : "No"}
-  //                 />
-  //               </div>
-  //             );
-  //           })
-  //         ) : (
-  //           <p className="text-gray-500">No address information available</p>
-  //         )}
-  //       </div>
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderEducation = () => {
-  //   const educationList =
-  //     education?.data?.educations || (education ? [education] : []);
-
-  //   return (
-  //     <ProfileSection title="Education" buttonName="Add Education">
-  //       <div className="space-y-4">
-  //         {educationList.length > 0 ? (
-  //           educationList.map((edu: any, index: number) => {
-  //             const title = edu?.degree || `Education ${index + 1}`;
-  //             return (
-  //               <></>
-  //               // <AccordionItem
-  //               //   key={index}
-  //               //   title={title}
-  //               //   sectionKey={`education-${index}`}
-  //               //   defaultExpanded={index === 0}
-  //               // >
-  //               //   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //               //     <ProfileDetail
-  //               //       title="Institution"
-  //               //       value={edu?.institution}
-  //               //     />
-  //               //     <ProfileDetail
-  //               //       title="Field of Study"
-  //               //       value={edu?.field_of_study}
-  //               //     />
-  //               //     <ProfileDetail title="Degree" value={edu?.degree} />
-  //               //     <ProfileDetail
-  //               //       title="Year of Completion"
-  //               //       value={edu?.year_of_completion}
-  //               //     />
-  //               //     <ProfileDetail
-  //               //       title="Grade/Percentage"
-  //               //       value={edu?.grade}
-  //               //     />
-  //               //     <ProfileDetail
-  //               //       title="Is Current"
-  //               //       value={edu?.is_current ? "Yes" : "No"}
-  //               //     />
-  //               //   </div>
-  //               // </AccordionItem>
-  //             );
-  //           })
-  //         ) : (
-  //           <p className="text-gray-500">No education information available</p>
-  //         )}
-  //       </div>
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderCareer = () => {
-  //   // Handle both array and object responses from the API
-  //   let employmentList = [];
-
-  //   if (Array.isArray(employment?.data)) {
-  //     employmentList = employment.data;
-  //   } else if (employment?.data?.employments) {
-  //     employmentList = employment.data.employments;
-  //   } else if (employment) {
-  //     employmentList = [employment];
-  //   }
-
-  //   return (
-  //     <ProfileSection title="Employment" buttonName="Add Employment">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-  //           <div className="px-6 py-4">
-  //             {/* Author section */}
-  //             <div className="flex items-center justify-between mb-2">
-  //               <div className="flex items-center gap-3">
-  //                 {/* Left: Company & Role */}
-  //                 <div className="flex items-center gap-2">
-  //                   <div>
-  //                     <h3
-  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-  //                       style={{ fontFamily: "BR Cobane" }}
-  //                     >
-  //                       Spack Solution Pvt Ltd
-  //                     </h3>
-  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-  //                       Frontend Developer
-  //                     </p>
-  //                   </div>
-  //                   {/* Verified Badge */}
-  //                   <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" />
-  //                 </div>
-  //               </div>
-
-  //               {/* Right Icons (Badge + Dropdown) */}
-  //               <div className="flex items-center gap-2">
-  //                 <DropdownMenu>
-  //                   <DropdownMenuTrigger asChild>
-  //                     <button
-  //                       type="button"
-  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                     >
-  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                     </button>
-  //                   </DropdownMenuTrigger>
-  //                   <DropdownMenuContent align="end" className="w-40">
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineModeEditOutline />
-  //                       Edit
-  //                     </DropdownMenuItem>
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineDeleteOutline />
-  //                       Delete
-  //                     </DropdownMenuItem>
-  //                   </DropdownMenuContent>
-  //                 </DropdownMenu>
-  //               </div>
-  //             </div>
-
-  //             {/* Content section */}
-  //             <p className="text-zinc-600 dark:text-zinc-300">
-  //               2022 - Present <br />
-  //               Hyderbad University, 2024 <br />
-  //               Near by Max <br />
-  //               Hyderabad, India, 500100
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       {/* <div className="space-y-4">
-  //         {employmentList.length > 0 ? (
-  //           employmentList.map((emp: any, index: number) => {
-  //             const title =
-  //               emp?.job_title || emp?.company || `Employment ${index + 1}`;
-  //             return (
-  //               <AccordionItem
-  //                 key={index}
-  //                 title={title}
-  //                 sectionKey={`employment-${index}`}
-  //                 defaultExpanded={index === 0}
-  //               >
-  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //                   <ProfileDetail title="Company" value={emp?.company} />
-  //                   <ProfileDetail title="Job Title" value={emp?.job_title} />
-  //                   <ProfileDetail title="Job Type" value={emp?.job_type} />
-  //                   <ProfileDetail
-  //                     title="Annual Income"
-  //                     value={emp?.annual_income}
-  //                   />
-  //                   <ProfileDetail title="Industry" value={emp?.industry} />
-  //                   <ProfileDetail title="Start Date" value={emp?.start_date} />
-  //                   <ProfileDetail
-  //                     title="End Date"
-  //                     value={
-  //                       emp?.end_date ||
-  //                       (emp?.is_current ? "Present" : "Not specified")
-  //                     }
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Is Current"
-  //                     value={emp?.is_current ? "Yes" : "No"}
-  //                   />
-  //                   {emp?.description && (
-  //                     <div className="md:col-span-3">
-  //                       <ProfileDetail
-  //                         title="Description"
-  //                         value={emp.description}
-  //                       />
-  //                     </div>
-  //                   )}
-  //                 </div>
-  //               </AccordionItem>
-  //             );
-  //           })
-  //         ) : (
-  //           <p className="text-gray-500">No employment information available</p>
-  //         )}
-  //       </div> */}
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderFamily = () => {
-  //   const familyList =
-  //     (family as any)?.data?.family || (family ? [family] : []);
-
-  //   return (
-  //     <ProfileSection title="Family Information" buttonName="Add Family">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-  //           <div className="px-6 py-4">
-  //             {/* Author section */}
-  //             <div className="flex items-center justify-between mb-2">
-  //               <div className="flex items-center gap-3">
-  //                 {/* Left: Company & Role */}
-  //                 <div className="flex items-center gap-2">
-  //                   <div>
-  //                     <h3
-  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-  //                       style={{ fontFamily: "BR Cobane" }}
-  //                     >
-  //                       Yakub Moodu{" "}
-  //                       <span className="text-xs">(21-01-1996)</span>
-  //                     </h3>
-  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-  //                       Brother
-  //                     </p>
-  //                   </div>
-  //                   {/* Verified Badge */}
-  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-  //                 </div>
-  //               </div>
-
-  //               {/* Right Icons (Badge + Dropdown) */}
-  //               <div className="flex items-center gap-2">
-  //                 <DropdownMenu>
-  //                   <DropdownMenuTrigger asChild>
-  //                     <button
-  //                       type="button"
-  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                     >
-  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                     </button>
-  //                   </DropdownMenuTrigger>
-  //                   <DropdownMenuContent align="end" className="w-40">
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineModeEditOutline />
-  //                       Edit
-  //                     </DropdownMenuItem>
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineDeleteOutline />
-  //                       Delete
-  //                     </DropdownMenuItem>
-  //                   </DropdownMenuContent>
-  //                 </DropdownMenu>
-  //               </div>
-  //             </div>
-
-  //             {/* Content section */}
-  //             <a href="#" className="flex items-center gap-1">
-  //               <IoIosPhonePortrait /> 9692152142
-  //             </a>
-  //             <a href="" className="flex items-center gap-1">
-  //               <CiMail /> badalnayak@gmail.com
-  //             </a>
-  //             <p className="text-zinc-600 dark:text-zinc-300">
-  //               Hyderbad University, 2024 <br />
-  //               Near by Max <br />
-  //               Hyderabad, India, 500100
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       {/* <div className="space-y-4">
-  //         {familyList.length > 0 ? (
-  //           familyList.map((member: any, index: number) => {
-  //             const title = member?.name || `Family Member ${index + 1}`;
-  //             return (
-  //               <AccordionItem
-  //                 key={index}
-  //                 title={title}
-  //                 sectionKey={`family-${index}`}
-  //                 defaultExpanded={index === 0}
-  //               >
-  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //                   <ProfileDetail title="Relation" value={member?.relation} />
-  //                   <ProfileDetail title="Age" value={member?.age} />
-  //                   <ProfileDetail
-  //                     title="Occupation"
-  //                     value={member?.occupation}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Marital Status"
-  //                     value={member?.marital_status}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Contact"
-  //                     value={member?.contact_number}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Is Dependent"
-  //                     value={member?.is_dependent ? "Yes" : "No"}
-  //                   />
-  //                 </div>
-  //               </AccordionItem>
-  //             );
-  //           })
-  //         ) : (
-  //           <p className="text-gray-500">No family information available</p>
-  //         )}
-  //       </div> */}
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderLifestyle = () => {
-  //   // Mapping category labels to state keys
-  //   const categoryMapping = {
-  //     "What best describes your eating habits?": "eatingHabit",
-  //     "Do you follow any specific diet plan?": "dietHabit",
-  //     "How many cigarettes do you smoke per day on average?":
-  //       "cigarettesPerDay",
-  //     "How frequently do you drink?": "drinkFrequency",
-  //     "What type of gambling do you engage in?": "gamblingEngage",
-  //     "How would you describe your physical activity level?":
-  //       "physicalActivityLevel",
-  //     "Do you practice any relaxation techniques?": "relaxationMethods",
-  //   };
-
-  //   return (
-  //     <ProfileSection title="Lifestyle">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         {Object.keys(categoryMapping).map((category, index) => (
-  //           <div
-  //             key={index}
-  //             className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
-  //           >
-  //             <div className="px-6 py-4">
-  //               {/* Header */}
-  //               <div className="flex items-center justify-between">
-  //                 <div className="flex items-center gap-2">
-  //                   <h3
-  //                     className="text-base font-bold text-zinc-900 dark:text-zinc-100"
-  //                     style={{ fontFamily: "BR Cobane" }}
-  //                   >
-  //                     {category}
-  //                   </h3>
-  //                 </div>
-
-  //                 {/* Dropdown Menu */}
-  //                 <div className="flex items-center gap-2">
-  //                   <DropdownMenu>
-  //                     <DropdownMenuTrigger asChild>
-  //                       <button
-  //                         type="button"
-  //                         className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                       >
-  //                         <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                       </button>
-  //                     </DropdownMenuTrigger>
-  //                     <DropdownMenuContent align="end" className="w-40">
-  //                       <DropdownMenuItem className="flex items-center gap-2">
-  //                         <MdOutlineModeEditOutline />
-  //                         Edit
-  //                       </DropdownMenuItem>
-  //                       <DropdownMenuItem className="flex items-center gap-2">
-  //                         <MdOutlineDeleteOutline />
-  //                         Delete
-  //                       </DropdownMenuItem>
-  //                     </DropdownMenuContent>
-  //                   </DropdownMenu>
-  //                 </div>
-  //               </div>
-
-  //               {/* Content (replace with actual values later) */}
-  //               <p className="text-zinc-600 dark:text-zinc-300">hello</p>
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderProperties = () => {
-  //   console.log("properties", properties);
-  //   const propertiesData = Array.isArray(properties)
-  //     ? properties
-  //     : (properties as any)?.properties || [];
-
-  //   return (
-  //     <ProfileSection title="Properties" buttonName="Add Properties">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         <div className="w-full mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-  //           <div className="px-6 py-4">
-  //             {/* Author section */}
-  //             <div className="flex items-center justify-between ">
-  //               <div className="flex items-center gap-3">
-  //                 {/* Left: Company & Role */}
-  //                 <div className="flex items-center gap-2">
-  //                   <div>
-  //                     <h3
-  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-  //                       style={{ fontFamily: "BR Cobane" }}
-  //                     >
-  //                       Apartment <span className="text-xs">(1450 sq.ft )</span>
-  //                     </h3>
-  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-  //                       Community Property
-  //                     </p>
-  //                   </div>
-  //                   {/* Verified Badge */}
-  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-  //                 </div>
-  //               </div>
-
-  //               {/* Right Icons (Badge + Dropdown) */}
-  //               <div className="flex items-center gap-2">
-  //                 <DropdownMenu>
-  //                   <DropdownMenuTrigger asChild>
-  //                     <button
-  //                       type="button"
-  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                     >
-  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                     </button>
-  //                   </DropdownMenuTrigger>
-  //                   <DropdownMenuContent align="end" className="w-40">
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineModeEditOutline />
-  //                       Edit
-  //                     </DropdownMenuItem>
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineDeleteOutline />
-  //                       Delete
-  //                     </DropdownMenuItem>
-  //                   </DropdownMenuContent>
-  //                 </DropdownMenu>
-  //               </div>
-  //             </div>
-
-  //             {/* Content section */}
-  //             <p className="text-zinc-600 dark:text-zinc-300">
-  //               Kompally main road, <br />
-  //               Near by Max <br />
-  //               Hyderabad, India, 500100
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-
-  //       {/* <div className="space-y-4">
-  //         {propertiesData.length > 0 ? (
-  //           propertiesData.map((property: any, index: number) => {
-  //             const title =
-  //               property.type ||
-  //               findPropertyTypeName(property.property_type) ||
-  //               `Property ${index + 1}`;
-  //             return (
-  //               <AccordionItem
-  //                 key={index}
-  //                 title={title}
-  //                 sectionKey={`property-${index}`}
-  //                 defaultExpanded={index === 0}
-  //               >
-  //                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //                   <ProfileDetail
-  //                     title="Type"
-  //                     value={findPropertyTypeName(property.property_type)}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Ownership"
-  //                     value={findOwnershipTypeName(property.ownership_type)}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Location"
-  //                     value={property.property_address}
-  //                   />
-  //                   <ProfileDetail
-  //                     title="Value"
-  //                     value={property.property_value}
-  //                   />
-  //                 </div>
-  //               </AccordionItem>
-  //             );
-  //           })
-  //         ) : (
-  //           <p className="text-gray-500">No property information available</p>
-  //         )}
-  //       </div> */}
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderReferences = () => {
-  //   const referencesList =
-  //     (references as any)?.data?.family || (references ? [references] : []);
-
-  //   return (
-  //     <ProfileSection title="References" buttonName="Add Reference">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-  //           <div className="px-6 py-4">
-  //             {/* Author section */}
-  //             <div className="flex items-center justify-between mb-2">
-  //               <div className="flex items-center gap-3">
-  //                 {/* Left: Company & Role */}
-  //                 <div className="flex items-center gap-2">
-  //                   <div>
-  //                     <h3
-  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-  //                       style={{ fontFamily: "BR Cobane" }}
-  //                     >
-  //                       Yakub Moodu{" "}
-  //                       <span className="text-xs">(21-01-1996)</span>
-  //                     </h3>
-  //                     <p className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-  //                       Brother
-  //                     </p>
-  //                   </div>
-  //                   {/* Verified Badge */}
-  //                   {/* <BiSolidBadgeCheck className="w-5 h-5 text-orange-500" /> */}
-  //                 </div>
-  //               </div>
-
-  //               {/* Right Icons (Badge + Dropdown) */}
-  //               <div className="flex items-center gap-2">
-  //                 <DropdownMenu>
-  //                   <DropdownMenuTrigger asChild>
-  //                     <button
-  //                       type="button"
-  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                     >
-  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                     </button>
-  //                   </DropdownMenuTrigger>
-  //                   <DropdownMenuContent align="end" className="w-40">
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineModeEditOutline />
-  //                       Edit
-  //                     </DropdownMenuItem>
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineDeleteOutline />
-  //                       Delete
-  //                     </DropdownMenuItem>
-  //                   </DropdownMenuContent>
-  //                 </DropdownMenu>
-  //               </div>
-  //             </div>
-
-  //             {/* Content section */}
-  //             <a href="#" className="flex items-center gap-1">
-  //               <IoIosPhonePortrait /> 9692152142
-  //             </a>
-  //             <a href="" className="flex items-center gap-1">
-  //               <CiMail /> badalnayak@gmail.com
-  //             </a>
-  //             <p className="text-zinc-600 dark:text-zinc-300">
-  //               Hyderbad University, 2024 <br />
-  //               Near by Max <br />
-  //               Hyderabad, India, 500100
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       {/* <div className="space-y-4">
-  //         {referencesList.length > 0 ? (
-  //           referencesList.map((ref: any, index: number) => (
-  //             <AccordionItem
-  //               key={index}
-  //               title={ref?.name || `Reference ${index + 1}`}
-  //               sectionKey={`reference-${index}`}
-  //               defaultExpanded={index === 0}
-  //             >
-  //               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  //                 <ProfileDetail title="Relation" value={ref?.relation} />
-  //                 <ProfileDetail
-  //                   title="Contact Number"
-  //                   value={ref?.contact_number}
-  //                 />
-  //                 <ProfileDetail title="Email" value={ref?.email} />
-  //                 <ProfileDetail
-  //                   title="Address"
-  //                   value={ref?.address}
-  //                   colspan={3}
-  //                 />
-  //                 <ProfileDetail title="Known Since" value={ref?.known_since} />
-  //                 <ProfileDetail title="Occupation" value={ref?.occupation} />
-  //               </div>
-  //             </AccordionItem>
-  //           ))
-  //         ) : (
-  //           <p className="text-gray-500">No references available</p>
-  //         )}
-  //       </div> */}
-  //     </ProfileSection>
-  //   );
-  // };
-
-  // const renderHobbies = () => {
-  //   const referencesList =
-  //     (references as any)?.data?.family || (references ? [references] : []);
-
-  //   return (
-  //     <ProfileSection title="Hobbies" buttonName="Add Hobbie">
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 pb-5">
-  //         <div className="w-full max-w-xs mx-auto bg-white dark:bg-zinc-900 border rounded-xl shadow-sm">
-  //           <div className="px-6 py-4">
-  //             {/* Author section */}
-  //             <div className="flex items-center justify-between ">
-  //               <div className="flex items-center gap-3">
-  //                 {/* Left: Company & Role */}
-  //                 <div className="flex items-center gap-2">
-  //                   <div>
-  //                     <h3
-  //                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-  //                       style={{ fontFamily: "BR Cobane" }}
-  //                     >
-  //                       Photography
-  //                     </h3>
-  //                   </div>
-  //                 </div>
-  //               </div>
-
-  //               {/* Right Icons (Badge + Dropdown) */}
-  //               <div className="flex items-center gap-2">
-  //                 <DropdownMenu>
-  //                   <DropdownMenuTrigger asChild>
-  //                     <button
-  //                       type="button"
-  //                       className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-  //                     >
-  //                       <CgMoreVertical className="w-5 h-5 text-zinc-400" />
-  //                     </button>
-  //                   </DropdownMenuTrigger>
-  //                   <DropdownMenuContent align="end" className="w-40">
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineModeEditOutline />
-  //                       Edit
-  //                     </DropdownMenuItem>
-  //                     <DropdownMenuItem className="flex items-center gap-2">
-  //                       <MdOutlineDeleteOutline />
-  //                       Delete
-  //                     </DropdownMenuItem>
-  //                   </DropdownMenuContent>
-  //                 </DropdownMenu>
-  //               </div>
-  //             </div>
-
-  //             {/* Content section */}
-  //             <p className="text-zinc-600 dark:text-zinc-300">
-  //               Wild Photography
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </ProfileSection>
-  //   );
-  // };
-
   const profileData = personalProfile?.data || personalProfile;
   const addressList = address?.data?.addresses || (address ? [address] : []);
   const educationList =
@@ -1184,7 +292,6 @@ const ViewProfile = () => {
   };
 
   let employmentList = [];
-
   if (Array.isArray(employment?.data)) {
     employmentList = employment.data;
   } else if (employment?.data?.employments) {
@@ -1262,7 +369,7 @@ const ViewProfile = () => {
         />
         {/* Profile Header */}
         <div>
-          <div className="w-full rounded-lg overflow-hidden shadow-md mb-4 relative">
+          <div className="w-full rounded-lg overflow-hidden shadow-md  relative mb-4">
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
@@ -1292,7 +399,7 @@ const ViewProfile = () => {
                   {/* Profile Image */}
                   <div
                     className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 
-        border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
+        border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
                   >
                     {profileImage?.url ? (
                       <Image
@@ -1301,7 +408,7 @@ const ViewProfile = () => {
                         src={profileImage.url}
                         alt="Profile"
                         className="w-full h-full object-cover"
-                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">
@@ -1420,7 +527,7 @@ const ViewProfile = () => {
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-8 px-2 md:px-0">
               {/* Personal Details */}
               <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
-                <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
+                <div className="border border-gray-100 rounded-lg shadow-md mb-2">
                   <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                     <h2
                       className=" text-black text-xl font-bold "
@@ -1428,7 +535,7 @@ const ViewProfile = () => {
                     >
                       Personal Information
                     </h2>
-                    <BiSolidBadgeCheck className="text-blue-500" size={18} />
+                    <BiSolidBadgeCheck className="text-green-500" size={18} />
                   </div>
                   <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                     <div className="flex justify-between items-center gap-4">
@@ -1497,103 +604,121 @@ const ViewProfile = () => {
                   </div>
                 </div>
 
-                <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Contact Information
-                  </h2>
-                  <div className="px-4 pb-4 bg-white rounded-md gap-4 mt-4 space-y-4">
-                    <div className="flex justify-between items-center gap-8">
-                      <p className="text-gray-400">Emergency Contact</p>
-                      <p className="font-medium">
-                        {profileData?.phone_emergency
-                          ? profileData.phone_emergency
-                          : "N/A"}
-                      </p>
+                {(profileData?.phone_emergency ||
+                  profileData?.phone_home ||
+                  profileData?.whatsapp_number) && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-2">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold "
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Contact Information
+                      </h2>
+                      <BiSolidBadgeCheck
+                        className="text-orange-500"
+                        size={18}
+                      />
                     </div>
-                    <div className="flex justify-between items-center gap-8">
-                      <p className="text-gray-400">Home Phone</p>
-                      <p className="font-medium">
-                        {profileData?.phone_home || "N/A"}
-                      </p>
-                    </div>
-                    <div className="flex justify-between items-center gap-8">
-                      <p className="text-gray-400">WhatsApp</p>
-                      <p className="font-medium">
-                        {profileData?.whatsapp_number || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Social Information
-                  </h2>
-
-                  <div className="px-4 py-8 bg-white rounded-md gap-4 space-y-4">
-                    {/* Social Media Links */}
-                    <div className="flex items-center gap-8">
-                      <a
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 text-4xl"
-                      >
-                        <FaFacebook />
-                      </a>
-                      <a
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-pink-500 hover:text-pink-700 text-4xl"
-                      >
-                        <FaInstagram />
-                      </a>
-
-                      <a
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-700 hover:text-blue-900 text-4xl"
-                      >
-                        <FaLinkedin />
-                      </a>
-
-                      <a
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sky-500 hover:text-sky-700 text-4xl"
-                      >
-                        <FaTwitter />
-                      </a>
+                    <div className="px-4 pb-4 bg-white rounded-md gap-4 mt-4 space-y-4">
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">Emergency Contact</p>
+                        <p className="font-medium">
+                          {profileData?.phone_emergency
+                            ? profileData.phone_emergency
+                            : "N/A"}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">Home Phone</p>
+                        <p className="font-medium">
+                          {profileData?.phone_home || "N/A"}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">WhatsApp</p>
+                        <p className="font-medium">
+                          {profileData?.whatsapp_number || "N/A"}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {(profileData?.facebook ||
+                  profileData?.instagram ||
+                  profileData?.linkedin) && (
+                  <div className="border border-gray-100 rounded-lg shadow-md ">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className=" text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Social Information
+                      </h2>
+                      <BiSolidBadgeCheck className="text-sky-500" size={18} />
+                    </div>
+
+                    <div className="px-4 py-8 bg-white rounded-md gap-4 space-y-4">
+                      {/* Social Media Links */}
+                      <div className="flex items-center gap-8">
+                        {profileData?.facebook && (
+                          <a
+                            href={profileData.facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 text-4xl"
+                          >
+                            <FaFacebook />
+                          </a>
+                        )}
+
+                        {profileData?.instagram && (
+                          <a
+                            href={profileData.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-pink-500 hover:text-pink-700 text-4xl"
+                          >
+                            <FaInstagram />
+                          </a>
+                        )}
+
+                        {profileData?.linkedin && (
+                          <a
+                            href={profileData.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-700 hover:text-blue-900 text-4xl"
+                          >
+                            <FaLinkedin />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 mb-3 lg:col-span-3">
+              <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2  lg:col-span-3">
                 <div className="mb-3">
                   <Card data={CARD_DATA} />
                 </div>
 
-                <div className="border border-gray-100 rounded-lg shadow-md mb-4 h-auto">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Address
-                  </h2>
-                  <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3 pb-3">
-                      {addressList?.length > 0 ? (
-                        addressList.map((addr: any, index: number) => {
+                {addressList?.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Address
+                      </h2>
+                      <BiSolidBadgeCheck className="text-slate-500" size={18} />
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3 pb-3">
+                        {addressList.map((addr: any, index: number) => {
                           const title = `Address ${index + 1}${
                             addr.type ? ` (${addr.type})` : ""
                           }`;
@@ -1604,7 +729,7 @@ const ViewProfile = () => {
                               className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
                             >
                               <div className="px-6 py-4">
-                                {/* Author section */}
+                                {/* Title */}
                                 <div className="flex items-center justify-between mb-2">
                                   <div className="flex items-center gap-2">
                                     <h3
@@ -1613,85 +738,62 @@ const ViewProfile = () => {
                                     >
                                       {title}
                                     </h3>
-                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" /> */}
                                   </div>
                                 </div>
 
-                                {/* Content section */}
+                                {/* Content */}
                                 <p className="text-zinc-600 dark:text-zinc-300">
-                                  {addr.address_line1}, {addr.year || "2024"}{" "}
+                                  {addr.address_line1}, {addr.year || "2024"}
                                   <br />
-                                  {addr.address_line2 || "Near by Max"} <br />
-                                  {addr.city}, {addr.country}, {addr.zipcode}
+                                  {addr.address_line2 || "Near by Max"}
+                                  <br />
+                                  {addr?.city},{" "}
+                                  {findCountryName(
+                                    addr?.country_id ?? addr?.country_name
+                                  )}
+                                  , {addr?.zip}
                                 </p>
                               </div>
                             </div>
                           );
-                        })
-                      ) : (
-                        <p className="text-gray-500">
-                          No address information available
-                        </p>
-                      )}
-
-                      {/* {[...Array(4)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
-                      >
-                        <div className="px-6 py-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <h3
-                                className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                                style={{ fontFamily: "BR Cobane" }}
-                              >
-                                Address {i + 1}
-                              </h3>
-                              <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
-                            </div>
-                          </div>
-                          <p className="text-zinc-600 dark:text-zinc-300">
-                            Hyderabad University, 2024 <br />
-                            Near by Max <br />
-                            Hyderabad, India, 500100
-                          </p>
-                        </div>
+                        })}
                       </div>
-                    ))} */}
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                  <h2
-                    className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                    style={{ fontFamily: "BR Cobane" }}
-                  >
-                    Educational Information
-                  </h2>
-
-                  <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                    <table className="min-w-full text-sm sm:text-base mt-2">
-                      <thead className="">
-                        <tr className="text-left">
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            Institute Name
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            Year Completed
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            Field of Study
-                          </th>
-                          <th className="px-2 py-2 border-b text-base font-bold">
-                            City & Country
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {educationList.length > 0 ? (
-                          educationList.map((edu: any, index: number) => {
+                {educationList.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-1">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold "
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Educational Information
+                      </h2>
+                      <BiSolidBadgeCheck className="text-red-500" size={18} />
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <table className="min-w-full text-sm sm:text-base mt-2">
+                        <thead className="">
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Institute Name
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Year Completed
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Field of Study
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              City & Country
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {educationList.map((edu: any, index: number) => {
                             return (
                               <tr
                                 key={index}
@@ -1722,30 +824,27 @@ const ViewProfile = () => {
                                 </td>
                               </tr>
                             );
-                          })
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="px-4 py-3 text-center text-gray-500"
-                            >
-                              No education information available
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {employmentList.length > 0 && (
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
-                    <h2
-                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Professional Information
-                    </h2>
+                  <div className="border border-gray-100 rounded-lg shadow-md  mb-2">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Professional Information
+                      </h2>
+                      <BiSolidBadgeCheck
+                        className="text-purple-500"
+                        size={18}
+                      />
+                    </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
                         <thead>
@@ -1795,9 +894,15 @@ const ViewProfile = () => {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
+                <div
+                  className={`grid grid-cols-1 ${
+                    familyList.length > 0 && referencesList.length > 0
+                      ? "lg:grid-cols-2"
+                      : "lg:grid-cols-1"
+                  } items-center gap-2 h-full`}
+                >
                   {familyList.length > 0 && (
-                    <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
                       <h2
                         className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                         style={{ fontFamily: "BR Cobane" }}
@@ -1839,7 +944,7 @@ const ViewProfile = () => {
                   )}
 
                   {referencesList.length > 0 && (
-                    <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
                       <h2
                         className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                         style={{ fontFamily: "BR Cobane" }}
@@ -1877,8 +982,10 @@ const ViewProfile = () => {
                       </div>
                     </div>
                   )}
+                </div>
 
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -1916,64 +1023,69 @@ const ViewProfile = () => {
                     </div>
                   </div>
 
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
-                    <h2
-                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Hobbies & Intrested
-                    </h2>
-                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                      <table className="w-full text-sm sm:text-base">
-                        <thead className="">
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Name
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Description
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[
-                            ...((hobbies as any)?.hobby_interests || []),
-                            ...((interests as any)?.hobby_interests || []),
-                          ]?.length ? (
-                            [
+                  {[
+                    ...((hobbies as any)?.hobby_interests || []),
+                    ...((interests as any)?.hobby_interests || []),
+                  ].length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                      <h2
+                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Hobbies & Interests
+                      </h2>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead>
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Description
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
                               ...((hobbies as any)?.hobby_interests || []),
                               ...((interests as any)?.hobby_interests || []),
-                            ].map((item: any, index: number) => (
-                              <tr
-                                key={item.hobby_interest_id ?? index}
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-4 py-2 border-b">
-                                  {item.hobby_interest_name}
-                                </td>
-                                <td className="px-4 py-2 border-b">
-                                  {item.hobby_interest_description || "-"}
+                            ]?.length ? (
+                              [
+                                ...((hobbies as any)?.hobby_interests || []),
+                                ...((interests as any)?.hobby_interests || []),
+                              ].map((item: any, index: number) => (
+                                <tr
+                                  key={item.hobby_interest_id ?? index}
+                                  className="hover:bg-gray-50 transition-colors text-sm"
+                                >
+                                  <td className="px-4 py-2 border-b">
+                                    {item.hobby_interest_name}
+                                  </td>
+                                  <td className="px-4 py-2 border-b">
+                                    {item.hobby_interest_description || "-"}
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td
+                                  colSpan={3}
+                                  className="px-4 py-3 text-center text-gray-500 border-b"
+                                >
+                                  No hobbies or interests available
                                 </td>
                               </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td
-                                colSpan={3}
-                                className="px-4 py-3 text-center text-gray-500 border-b"
-                              >
-                                No hobbies or interests available
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
-                  {/* <div className="border border-gray-100 rounded-lg shadow-lg h-full mb-4">
+                  {/* <div className="border border-gray-100 rounded-lg shadow-md h-full ">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -2009,7 +1121,7 @@ const ViewProfile = () => {
                       </table>
                     </div>
                   </div> */}
-                  <div className="border border-gray-100 rounded-lg shadow-lg mb-4 h-full">
+                  <div className="border border-gray-100 rounded-lg shadow-md  h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}

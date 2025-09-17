@@ -103,8 +103,18 @@ const ViewProfile = () => {
 
   // Derive display images from redux photos once, not during render
   useEffect(() => {
-    const photoData = (photos as any)?.data || photos;
-    if (!Array.isArray(photoData)) return;
+    let photoData: any[] = [];
+
+    // Handle different possible structures safely
+    if (Array.isArray((photos as any)?.data)) {
+      photoData = (photos as any).data;
+    } else if (Array.isArray((photos as any)?.photos)) {
+      photoData = (photos as any).photos;
+    } else if (Array.isArray(photos)) {
+      photoData = photos;
+    }
+
+    if (photoData.length === 0) return;
 
     const resolved = photoData
       .map((p: any) => ({
@@ -147,13 +157,6 @@ const ViewProfile = () => {
     console.log(accountProfileID);
     loadFavorites();
   }, [dispatch, accountProfileID, profileId]);
-
-  const toggleSection = (sectionKey: string) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [sectionKey]: !prev[sectionKey],
-    }));
-  };
 
   const handleToggleFavorite = async () => {
     if (isUpdatingFavorite) return;
@@ -247,8 +250,6 @@ const ViewProfile = () => {
   };
 
   useEffect(() => {
-    console.log("Profile ID:", profileId);
-    console.log("From search:", fromSearch);
     if (profileId && fromSearch) {
       console.log("Tracking profile view for profile ID:", profileId);
       try {
@@ -291,17 +292,27 @@ const ViewProfile = () => {
 
   // Debug: Log the Redux state data
   useEffect(() => {
-    console.log('Redux State Debug:');
-    console.log('personalProfile:', personalProfile);
-    console.log('address:', address);
-  console.log("education:", education);
-  console.log("employment:", employment);
-  console.log("family:", family);
-    console.log('properties:', properties);
-  console.log("hobbies:", hobbies);
-  console.log("interests:", interests);
-  console.log("references:", references);
-  }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
+    console.log("Redux State Debug:");
+    console.log("personalProfile:", personalProfile);
+    console.log("address:", address);
+    console.log("education:", education);
+    console.log("employment:", employment);
+    console.log("family:", family);
+    console.log("properties:", properties);
+    console.log("hobbies:", hobbies);
+    console.log("interests:", interests);
+    console.log("references:", references);
+  }, [
+    personalProfile,
+    address,
+    education,
+    employment,
+    family,
+    properties,
+    hobbies,
+    interests,
+    references,
+  ]);
 
   if (loading) {
     return (
@@ -1164,8 +1175,7 @@ const ViewProfile = () => {
   const categoryMapping = {
     "What best describes your eating habits?": "eatingHabit",
     "Do you follow any specific diet plan?": "dietHabit",
-    "How many cigarettes do you smoke per day on average?":
-      "cigarettesPerDay",
+    "How many cigarettes do you smoke per day on average?": "cigarettesPerDay",
     "How frequently do you drink?": "drinkFrequency",
     "What type of gambling do you engage in?": "gamblingEngage",
     "How would you describe your physical activity level?":
@@ -1183,15 +1193,8 @@ const ViewProfile = () => {
     employmentList = [employment];
   }
 
-  // const familyList = Array.isArray((family as any)?.family)
-  //   ? (family as any).family
-  //   : [];
-
   const familyList = (family as any)?.family || [];
-
   const referencesList = (references as any)?.family || [];
-
-  // console.log("reference data", references);
 
   const formatWeight = (weight?: number | string, pound?: string) => {
     if (!weight) return null;
@@ -1263,7 +1266,9 @@ const ViewProfile = () => {
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
-                <Image width={100} height={100}
+                <Image
+                  width={100}
+                  height={100}
                   src={coverImage.url}
                   alt="Banner"
                   className="w-full h-full object-cover"
@@ -1290,10 +1295,13 @@ const ViewProfile = () => {
         border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-lg flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <Image width={100} height={100}
+                      <Image
+                        width={100}
+                        height={100}
                         src={profileImage.url}
                         alt="Profile"
                         className="w-full h-full object-cover"
+                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">

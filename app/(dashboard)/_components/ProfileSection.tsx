@@ -13,7 +13,7 @@ import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
-import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { API_ORIGIN, toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 import { FaPlus } from "react-icons/fa6";
 import { FaqSection } from "@/components/blocks/faq";
 import { Button } from "@/components/ui/button";
@@ -66,10 +66,16 @@ const ProfileSection = () => {
       };
 
       const getProfileImage = () => {
-        if (profilePhotos && profilePhotos.length > 0) {
+        if (
+          profilePhotos &&
+          typeof profilePhotos === "object" &&
+          "photos" in profilePhotos &&
+          Array.isArray(profilePhotos.photos) &&
+          profilePhotos.photos.length > 0
+        ) {
+          const photos = profilePhotos.photos;
           const profilePhoto =
-            profilePhotos.find((photo) => photo.photo_type === 450) ||
-            profilePhotos[0];
+            photos.find((photo: any) => photo.photo_type === 450) || photos[0];
           return toAbsoluteUrl(profilePhoto.url);
         }
         return profile1;
@@ -134,8 +140,6 @@ const ProfileSection = () => {
         "Click the 'Report' button on any profile and select the reason. Our team reviews reports within 24 hours. Include screenshots for faster action.",
     },
   ];
-
-  console.log("user data:", userData);
 
   const StatCard = (props: any) => {
     return (
@@ -253,6 +257,7 @@ const ProfileSection = () => {
                       src={profile.imageSrc}
                       alt={profile.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
                     />
                     {/* Overlay */}

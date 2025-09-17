@@ -131,7 +131,7 @@ const FormSection = () => {
       }
       if (result) {
         toast.success("Lifestyle information saved successfully!");
-        router.push("/createprofile/family");
+        router.push("/createprofile/property");
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to save lifestyle information");

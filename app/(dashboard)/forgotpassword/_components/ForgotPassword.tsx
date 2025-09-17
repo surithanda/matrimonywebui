@@ -143,7 +143,6 @@ const ForgotPassword = () => {
               value={formData.new_password}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
-              placeholder="New Password"
               required
             />
           </div>
@@ -156,7 +155,6 @@ const ForgotPassword = () => {
               value={formData.confirm_new_password}
               onChange={handleChange}
               className="w-full p-3 border rounded-lg focus:outline-none focus:border-b focus:border-[#f7ac03]"
-              placeholder="Confirm New Password"
               required
             />
           </div>

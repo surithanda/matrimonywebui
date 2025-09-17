@@ -74,8 +74,12 @@ const ProfileSection = () => {
         //   const profilePhoto =
         //     profilePhotos.find((photo) => photo.photo_type === 450) ||
         //     profilePhotos[0];
-        //   return toAbsoluteUrl(profilePhoto.url);
+        //   return toAbsoluteUrl(profilePhoto.photo_url);
         // }
+        if (completeProfile) {
+          console.log("Profile Image URL:", completeProfile?.profile_photo_url, toAbsoluteUrl(completeProfile?.profile_photo_url));
+          return toAbsoluteUrl(completeProfile?.profile_photo_url);
+        }
         return profile1;
       };
 

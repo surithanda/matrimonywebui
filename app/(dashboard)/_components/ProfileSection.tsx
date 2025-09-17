@@ -6,6 +6,7 @@ import profile1 from "@/public/images/dashboard/profile1.png";
 import React, { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import {
+  getCompleteProfileAsync,
   getPersonalProfileAsync,
   getProfilePhotosAsync,
 } from "@/app/store/features/profileSlice";
@@ -22,10 +23,11 @@ import { Eye } from "lucide-react";
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
-  const personalProfile = useAppSelector(
-    (state) => state.profile.personalProfile
-  );
-  const profilePhotos = useAppSelector((state) => state.profile.photos);
+  // const personalProfile = useAppSelector(
+  //   (state) => state.profile.personalProfile
+  // );
+  // const profilePhotos = useAppSelector((state) => state.profile.photos);
+  const completeProfile = useAppSelector((state) => state.profile.completeProfile);
   const { fetchAccountDetls } = useFetchUser();
   const { loadMetaData } = useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
@@ -41,15 +43,17 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (selectedProfileID && selectedProfileID > 0) {
-      (dispatch as any)(
-        getPersonalProfileAsync({ profile_id: selectedProfileID })
-      );
-      (dispatch as any)(getProfilePhotosAsync(selectedProfileID));
+      // (dispatch as any)(
+      //   getPersonalProfileAsync({ profile_id: selectedProfileID })
+      // );
+      // (dispatch as any)(getProfilePhotosAsync(selectedProfileID));
+      //get complete profile details here
+      (dispatch as any)(getCompleteProfileAsync(selectedProfileID));
     }
   }, [selectedProfileID, dispatch]);
 
   useEffect(() => {
-    if (personalProfile && selectedProfileID) {
+    if (completeProfile && selectedProfileID) {
       const calculateAge = (birthDate: string) => {
         if (!birthDate) return null;
         const today = new Date();
@@ -66,22 +70,16 @@ const ProfileSection = () => {
       };
 
       const getProfileImage = () => {
-        if (
-          profilePhotos &&
-          typeof profilePhotos === "object" &&
-          "photos" in profilePhotos &&
-          Array.isArray(profilePhotos.photos) &&
-          profilePhotos.photos.length > 0
-        ) {
-          const photos = profilePhotos.photos;
-          const profilePhoto =
-            photos.find((photo: any) => photo.photo_type === 450) || photos[0];
-          return toAbsoluteUrl(profilePhoto.url);
-        }
+        // if (profilePhotos && profilePhotos.length > 0) {
+        //   const profilePhoto =
+        //     profilePhotos.find((photo) => photo.photo_type === 450) ||
+        //     profilePhotos[0];
+        //   return toAbsoluteUrl(profilePhoto.url);
+        // }
         return profile1;
       };
 
-      const profile = personalProfile?.data || personalProfile;
+      const profile = completeProfile?.data || completeProfile;
       const transformedData = {
         name: `${profile.first_name || ""} ${profile.last_name || ""}`.trim(),
         age: calculateAge(profile.birth_date),
@@ -91,7 +89,7 @@ const ProfileSection = () => {
 
       setProfilesData([transformedData]);
     }
-  }, [personalProfile, profilePhotos, selectedProfileID, toAbsoluteUrl]);
+  }, [completeProfile, selectedProfileID, toAbsoluteUrl]);
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();

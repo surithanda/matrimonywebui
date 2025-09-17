@@ -35,7 +35,7 @@ interface IEmployment {
   country_id: number;
   zip: string;
   start_year: string;
-  end_year: string;
+  end_year: string | null;
   job_title_id: number;
   last_salary_drawn: string;
 }
@@ -49,7 +49,7 @@ const defaultEmployment: IEmployment = {
   country_id: 0,
   zip: "",
   start_year: "",
-  end_year: "",
+  end_year: null,
   job_title_id: 0,
   last_salary_drawn: "",
 };

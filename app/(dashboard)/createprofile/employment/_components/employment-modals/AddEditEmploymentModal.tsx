@@ -34,7 +34,7 @@ interface AddEditEmploymentModalProps {
   onOpenChange: (open: boolean) => void;
   mode: "add" | "edit";
   employmentData?: IEmployment;
-  onSave: (employment: IEmployment, mode: "add" | "edit") => void;
+  onSave: (employment: IEmployment, mode: "add" | "edit") => Promise<void>;
   onCancel: () => void;
 }
 

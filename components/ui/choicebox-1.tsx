@@ -204,5 +204,3 @@ ChoiceboxGroup.Item = function ChoiceboxItem({
     </div>
   );
 };
-
-ChoiceboxGroup.Item = ChoiceboxGroupItem;

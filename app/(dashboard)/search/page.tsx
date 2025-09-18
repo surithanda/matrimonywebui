@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,32 +11,20 @@ import {
   SearchFilters,
   getUserPreferences,
 } from "@/app/store/features/searchSlice";
-import {
-  getMetaDataAsync,
-  getCountriesAsync,
-} from "@/app/store/features/metaDataSlice";
-import femaleProfile from "@/public/images/dashboard/profile1.png";
-import maleProfile from "@/public/images/dashboard/profile3.png";
-import defaultAvatar from "@/public/images/dashboard/profile1.png"; // Using as generic avatar
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import {
-  createFavoriteAsync,
-  deleteFavoriteAsync,
-  getFavoritesAsync,
-} from "@/app/store/features/profileSlice";
-import { getProfilesByAccountIdAsync } from "@/app/store/features/profileSlice";
+import { getFavoritesAsync } from "@/app/store/features/profileSlice";
 import { useURLFormatter } from "@/app/utils/utility";
-import { MdFilterList, MdVerified } from "react-icons/md";
+import { MdFamilyRestroom, MdFilterList, MdVerified } from "react-icons/md";
 import { Button } from "@/components/ui/button";
-import { FaDribbble, FaLinkedin } from "react-icons/fa6";
-import { CiHeart } from "react-icons/ci";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
+import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
 import { Label } from "@/components/ui/label";
 import Lottie from "lottie-react";
 import Loading from "@/public/lottie/Loading.json";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import { IoBook, IoLocation, IoLocationOutline } from "react-icons/io5";
+import { CiPhone } from "react-icons/ci";
+import { HiOutlineBriefcase } from "react-icons/hi";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -75,7 +63,6 @@ const Page = () => {
     error = null,
   } = searchState || {};
 
-  // console.log(profiles);
 
   const { loading: metadataLoading = false } = metaDataState || {};
 
@@ -313,6 +300,8 @@ const Page = () => {
 
   // Generate age options
   const ageOptions = Array.from({ length: 63 }, (_, i) => i + 21);
+
+  console.log("search profiles", profiles)
 
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
@@ -571,7 +560,7 @@ const Page = () => {
                 <div className="h-36 w-full overflow-hidden bg-gray-200"></div>
 
                 {/* Favorite + Badges */}
-                <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
+                <div className="flex flex-col justify-center items-center gap-1.5 my-2 text-white absolute top-0 right-2">
                   <button
                     onClick={() => handleToggleFavorite(profile.profile_id)}
                     className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
@@ -583,31 +572,46 @@ const Page = () => {
                     )}
                   </button>
                   <div className="flex flex-col gap-1">
-                    <MdVerified
-                      className="inline text-blue-500 cursor-pointer"
-                      size={14}
-                      title="Verified Address"
-                    />
-                    <MdVerified
-                      className="inline text-red-500 cursor-pointer"
-                      size={14}
-                      title="Verified Education"
-                    />
-                    <MdVerified
-                      className="inline text-orange-500 cursor-pointer"
-                      size={14}
-                      title="Verified Contact"
-                    />
-                    <MdVerified
-                      className="inline text-yellow-500 cursor-pointer"
-                      size={14}
-                      title="Verified Employment"
-                    />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <IoLocationOutline color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Address"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <IoMdBook color="black" size={12} />
+                      <MdVerified
+                        className="inline text-red-500 cursor-pointer"
+                        size={12}
+                        title="Verified Education"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <CiPhone color="black" size={12} />
+                      <MdVerified
+                        className="inline text-orange-500 cursor-pointer"
+                        size={12}
+                        title="Verified Contact"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <HiOutlineBriefcase color="black" size={12} />
+                      <MdVerified
+                        className="inline text-yellow-500 cursor-pointer"
+                        size={12}
+                        title="Verified Employment"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                    <MdFamilyRestroom color="black" size={12}/>
                     <MdVerified
                       className="inline text-sky-500 cursor-pointer"
-                      size={14}
+                      size={12}
                       title="Verified Family"
                     />
+                    </div>
                   </div>
                 </div>
 

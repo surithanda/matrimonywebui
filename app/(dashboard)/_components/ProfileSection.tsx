@@ -165,7 +165,7 @@ const ProfileSection = () => {
 
   const stats = [
     {
-      number: completeProfile?.my_profiles ?? 0,
+      number: completeProfile?.my_profiles ?? 1,
       name: "My Profiles",
       bg1: "#E4F1FF",
       bg2: "#D6E9FF",

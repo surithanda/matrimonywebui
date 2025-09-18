@@ -173,7 +173,7 @@ const Page = () => {
                       <div>
                         <p className="font-bold text-lg">
                           {findReligionName(
-                            profile?.religion_id ?? profile?.religion ?? 0
+                            profile?.religion ?? profile?.religion ?? 0
                           ) || "N/A"}
                         </p>
                         <p className="text-gray-400 text-sm">Religion</p>

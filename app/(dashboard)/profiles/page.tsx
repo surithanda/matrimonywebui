@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MdVerified } from "react-icons/md";
+import { MdFamilyRestroom, MdVerified } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { AppDispatch, useAppSelector } from "@/app/store/store";
@@ -12,6 +12,11 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import Lottie from "lottie-react";
 import Loading from "@/public/lottie/Loading.json";
+import { IoLocationOutline } from "react-icons/io5";
+import { IoMdBook } from "react-icons/io";
+import { CiPhone } from "react-icons/ci";
+import { HiOutlineBriefcase } from "react-icons/hi";
+import { toAbsoluteUrl } from "@/app/lib/env";
 
 // ✅ Utility functions
 function getInitials(firstName?: string, lastName?: string) {
@@ -32,16 +37,19 @@ function getAvatarColor(name: string) {
   return colors[index];
 }
 
-function getProfileImage(profile: any) {
-  return profile.url || null;
-}
-
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedProfileID } = useProfileContext();
   const allProfiles = useAppSelector((state) => state.profile.allProfiles);
   const { findReligionName } = useMetaDataLoader();
   const [loading, setLoading] = useState(false);
+
+  const getProfileImage = (profile: any) => {
+    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
+    if (profile?.url) return toAbsoluteUrl(profile.url);
+
+    return null;
+  };
 
   useEffect(() => {
     if (selectedProfileID) {
@@ -52,7 +60,7 @@ const Page = () => {
         .finally(() => setLoading(false));
     }
   }, [selectedProfileID, dispatch]);
-  
+
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       <div className="flex justify-between items-center w-full px-3 mt-4 lg:px-0 lg:mt-4">
@@ -86,31 +94,46 @@ const Page = () => {
                   {/* Verified Badges */}
                   <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
                     <div className="flex flex-col gap-1">
-                      <MdVerified
-                        className="inline text-blue-500 cursor-pointer"
-                        size={14}
-                        title="Verified Address"
-                      />
-                      <MdVerified
-                        className="inline text-red-500 cursor-pointer"
-                        size={14}
-                        title="Verified Education"
-                      />
-                      <MdVerified
-                        className="inline text-orange-500 cursor-pointer"
-                        size={14}
-                        title="Verified Contact"
-                      />
-                      <MdVerified
-                        className="inline text-yellow-500 cursor-pointer"
-                        size={14}
-                        title="Verified Employment"
-                      />
-                      <MdVerified
-                        className="inline text-sky-500 cursor-pointer"
-                        size={14}
-                        title="Verified Family"
-                      />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                        <IoLocationOutline color="black" size={12} />
+                        <MdVerified
+                          className="inline text-blue-500 cursor-pointer"
+                          size={12}
+                          title="Verified Address"
+                        />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                        <IoMdBook color="black" size={12} />
+                        <MdVerified
+                          className="inline text-blue-500 cursor-pointer"
+                          size={12}
+                          title="Verified Education"
+                        />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                        <CiPhone color="black" size={12} />
+                        <MdVerified
+                          className="inline text-blue-500 cursor-pointer"
+                          size={12}
+                          title="Verified Contact"
+                        />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                        <HiOutlineBriefcase color="black" size={12} />
+                        <MdVerified
+                          className="inline text-blue-500 cursor-pointer"
+                          size={12}
+                          title="Verified Employment"
+                        />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                        <MdFamilyRestroom color="black" size={12} />
+                        <MdVerified
+                          className="inline text-blue-500 cursor-pointer"
+                          size={12}
+                          title="Verified Family"
+                        />
+                      </div>
                     </div>
                   </div>
 

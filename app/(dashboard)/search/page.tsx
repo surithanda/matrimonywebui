@@ -583,7 +583,7 @@ const Page = () => {
                     <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
                       <IoMdBook color="black" size={12} />
                       <MdVerified
-                        className="inline text-red-500 cursor-pointer"
+                        className="inline text-blue-500 cursor-pointer"
                         size={12}
                         title="Verified Education"
                       />
@@ -591,7 +591,7 @@ const Page = () => {
                     <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
                       <CiPhone color="black" size={12} />
                       <MdVerified
-                        className="inline text-orange-500 cursor-pointer"
+                        className="inline text-blue-500 cursor-pointer"
                         size={12}
                         title="Verified Contact"
                       />
@@ -599,7 +599,7 @@ const Page = () => {
                     <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
                       <HiOutlineBriefcase color="black" size={12} />
                       <MdVerified
-                        className="inline text-yellow-500 cursor-pointer"
+                        className="inline text-blue-500 cursor-pointer"
                         size={12}
                         title="Verified Employment"
                       />
@@ -607,7 +607,7 @@ const Page = () => {
                     <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
                     <MdFamilyRestroom color="black" size={12}/>
                     <MdVerified
-                      className="inline text-sky-500 cursor-pointer"
+                      className="inline text-blue-500 cursor-pointer"
                       size={12}
                       title="Verified Family"
                     />

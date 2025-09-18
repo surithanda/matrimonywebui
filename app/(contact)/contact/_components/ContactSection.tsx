@@ -114,8 +114,8 @@ const ContactSection = () => {
             className="w-16 h-16 object-cover"
           />
           <span className="BRCobane18400 text-[#222]">Write to us about your Journey</span>
-          <Link href="mailto:Swapna@mysticmindds.com" className="BRCobane24600">
-            Swapna@mysticmindds.com
+          <Link href="mailto:info@matimony.org" className="BRCobane24600">
+            info@matimony.org
           </Link>
         </div>
       </div>

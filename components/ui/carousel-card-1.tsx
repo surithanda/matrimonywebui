@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 
 // Define the type for card data
 interface CardData {
-  id: number;
   imgUrl: string;
 }
 

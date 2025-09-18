@@ -89,14 +89,27 @@ const ViewProfile = () => {
     return envToAbsoluteUrl(u);
   }, []);
 
-  const photoTypeAssociation = useMemo(
-    () => ({
-      profile: 450,
-      cover: 454,
-      individual: 456,
-    }),
-    []
-  );
+  // 1. Source of truth for type codes
+  const PHOTO_TYPES = {
+    profile: 450,
+    cover: 454,
+    individual: 456,
+  } as const;
+
+  // 2. Label → type mapping (UI usage)
+  const photoTypeLabels: Record<string, number> = {
+    "Clear Headshot": PHOTO_TYPES.profile,
+    "Cover Photo": PHOTO_TYPES.cover,
+    "Full-body shot": PHOTO_TYPES.individual,
+    "Casual or Lifestyle Shot": PHOTO_TYPES.individual,
+    "Family Photo": PHOTO_TYPES.individual,
+    "Candid or Fun Moment": PHOTO_TYPES.individual,
+    "Hobby or Activity Photo": PHOTO_TYPES.individual,
+    Other: PHOTO_TYPES.individual,
+  };
+
+  // 3. Role-based association (internal usage)
+  const photoTypeAssociation = useMemo(() => PHOTO_TYPES, []);
 
   // Derive display images from redux photos once, not during render
   useEffect(() => {
@@ -121,6 +134,7 @@ const ViewProfile = () => {
       .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?._rawUrl) }))
       .filter((p: any) => !!p._src);
 
+    // Use role-based association
     const prof = resolved.find(
       (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
     );
@@ -134,6 +148,12 @@ const ViewProfile = () => {
     setProfileImage(prof ? { url: prof._src, file: null } : null);
     setCoverImage(cov ? { url: cov._src, file: null } : null);
     setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
+
+    // 🔍 Debug logs
+    console.log("📷 Resolved photos:", resolved);
+    console.log("👤 Profile Image:", prof);
+    console.log("🖼️ Cover Image:", cov);
+    console.log("📸 Individual Images:", others);
   }, [photos, toAbsoluteUrl, photoTypeAssociation]);
 
   useEffect(() => {
@@ -310,39 +330,9 @@ const ViewProfile = () => {
       : `${num.toFixed(2)}${pound ?? ""}`;
   };
 
-  const CARD_DATA = [
-    {
-      id: 1,
-      imgUrl:
-        "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      id: 2,
-      imgUrl:
-        "https://images.pexels.com/photos/33045/lion-wild-africa-african.jpg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      id: 3,
-      imgUrl:
-        "https://images.pexels.com/photos/349758/hummingbird-bird-birds-349758.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      id: 4,
-      imgUrl:
-        "https://images.pexels.com/photos/2220336/pexels-photo-2220336.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      id: 5,
-      imgUrl:
-        "https://images.pexels.com/photos/52500/horse-herd-fog-nature-52500.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      id: 6,
-      imgUrl:
-        "https://images.pexels.com/photos/372166/pexels-photo-372166.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
+  const allImages = [
+    ...individualImages.map((img: any) => ({ imgUrl: img.url })),
   ];
-
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
@@ -514,14 +504,14 @@ const ViewProfile = () => {
               {/* Personal Details */}
               <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
                 <div className="border border-gray-100 rounded-lg shadow-md mb-2">
-                  <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                  <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                     <h2
                       className=" text-black text-xl font-bold "
                       style={{ fontFamily: "BR Cobane" }}
                     >
                       Personal Information
                     </h2>
-                    <BiSolidBadgeCheck className="text-green-500" size={18} />
+                    <BiSolidBadgeCheck className="text-gray-500" size={22} />
                   </div>
                   <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                     <div className="flex justify-between items-center gap-4">
@@ -594,17 +584,14 @@ const ViewProfile = () => {
                   profileData?.phone_home ||
                   profileData?.whatsapp_number) && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-2">
-                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className="text-black text-xl font-bold "
                         style={{ fontFamily: "BR Cobane" }}
                       >
                         Contact Information
                       </h2>
-                      <BiSolidBadgeCheck
-                        className="text-orange-500"
-                        size={18}
-                      />
+                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-md gap-4 mt-4 space-y-4">
                       <div className="flex justify-between items-center gap-8">
@@ -687,20 +674,20 @@ const ViewProfile = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2  lg:col-span-3">
-                {/* <div className="mb-3">
-                  <Card data={CARD_DATA} />
-                </div> */}
+                <div className="mb-3">
+                  <Card data={allImages} />
+                </div>
 
                 {addressList?.length > 0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
-                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className="text-black text-xl font-bold"
                         style={{ fontFamily: "BR Cobane" }}
                       >
                         Address
                       </h2>
-                      <BiSolidBadgeCheck className="text-slate-500" size={18} />
+                      {/* <BiSolidBadgeCheck className="text-slate-500" size={24} /> */}
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3 pb-3">
@@ -751,14 +738,14 @@ const ViewProfile = () => {
 
                 {educationList.length > 0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1">
-                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className="text-black text-xl font-bold "
                         style={{ fontFamily: "BR Cobane" }}
                       >
                         Educational Information
                       </h2>
-                      <BiSolidBadgeCheck className="text-red-500" size={18} />
+                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
@@ -819,17 +806,14 @@ const ViewProfile = () => {
 
                 {employmentList.length > 0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md  mb-2">
-                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className="text-black text-xl font-bold"
                         style={{ fontFamily: "BR Cobane" }}
                       >
                         Professional Information
                       </h2>
-                      <BiSolidBadgeCheck
-                        className="text-purple-500"
-                        size={18}
-                      />
+                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
@@ -889,12 +873,18 @@ const ViewProfile = () => {
                 >
                   {familyList.length > 0 && (
                     <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <h2
-                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Family Information
-                      </h2>
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Family Information
+                        </h2>
+                        <BiSolidBadgeCheck
+                          className="text-gray-500"
+                          size={22}
+                        />
+                      </div>
                       <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                         <table className="w-full text-sm sm:text-base">
                           <thead className="">
@@ -931,12 +921,18 @@ const ViewProfile = () => {
 
                   {referencesList.length > 0 && (
                     <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <h2
-                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Friends & Reference
-                      </h2>
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Friends & Reference
+                        </h2>
+                        <BiSolidBadgeCheck
+                          className="text-gray-500"
+                          size={22}
+                        />
+                      </div>
                       <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                         <table className="w-full text-sm sm:text-base">
                           <thead className="">

@@ -173,15 +173,15 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
               </DialogTitle>
 
               <div className="flex items-center gap-3">
-                <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-2"
-                  variant={"outline"}
-                  size={"sm"}
-                  disabled={isLoading}
-                >
-                  <IoIosSave size={20} />
-                  {isLoading ? "Saving..." : "Save"}
-                </Button>
+            <Button
+  className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+  variant="default"
+  size="sm"
+  disabled={isLoading}
+>
+  <IoIosSave size={20} />
+  {isLoading ? "Saving..." : "Save"}
+</Button>
                 <DialogClose asChild>
                   <Button
                     type="button"
@@ -198,7 +198,7 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
           <div className="px-4 pb-4">
             {/* Select Type */}
             <div>
-              <Label>Photo Type</Label>
+              <Label>Photo Type <span className="text-red-500">*</span></Label>
               <Select
                 value={selectedType ?? ""}
                 onValueChange={(val) => {
@@ -231,9 +231,9 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
             </div>
 
             {/* File Upload */}
-            <div>
+            <div className="mt-2">
               <Label>
-                Upload File{selectedType === "Other" ? "s" : ""}
+                Upload File{selectedType === "Other" ? "s" : ""} <span className="text-red-500">*</span>
               </Label>
               <Input
                 type="file"
@@ -266,7 +266,7 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
             )}
 
             {/* Description */}
-            <div>
+            <div className="mt-2">
               <Label>Description</Label>
               <Input
                 type="text"

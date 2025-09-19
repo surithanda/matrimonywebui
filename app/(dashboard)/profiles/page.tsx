@@ -17,6 +17,7 @@ import { IoMdBook } from "react-icons/io";
 import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { toAbsoluteUrl } from "@/app/lib/env";
+import NoData from "@/public/images/nodata.png";
 
 // ✅ Utility functions
 function getInitials(firstName?: string, lastName?: string) {
@@ -231,8 +232,18 @@ const Page = () => {
             })}
           </div>
         ) : (
-          // Empty state
-          <p className="text-center text-gray-500 py-10">No profiles found</p>
+           <div className="col-span-full text-center py-10 flex flex-col items-center">
+          <Image
+            src={NoData}
+            alt="No favourites"
+            width={220}
+            height={220}
+            className="mb-4 opacity-80"
+          />
+          <p className="text-gray-500 text-lg font-medium">
+            No favourites available.
+          </p>
+        </div>
         )}
       </div>
     </div>

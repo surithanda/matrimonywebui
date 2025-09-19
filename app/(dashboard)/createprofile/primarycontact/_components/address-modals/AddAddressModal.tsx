@@ -297,7 +297,7 @@ export function AddAddressModal({
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
                   variant={"outline"}
                   size={"sm"}
                   onClick={handleAddOrUpdate}

@@ -30,17 +30,22 @@ const CustomPhoneComponent = (
         name={`${type}_country`}
         value={bindValue2}
         onChange={changeHandler}
-        className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
+        className="text-sm bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
         {...callingCodeBinding}
       >
         <option value="">Country Code</option>
         {countryList &&
           countryList?.map((country: any) => (
-            <option key={country.country_id} value={country.country_code_2}>
+            <option
+              key={country.country_id}
+              value={country.country_code_2}
+              className="text-sm"
+            >
               {country.flag_emoji} {country.country_calling_code}
             </option>
           ))}
       </select>
+
       <Input
         type="text"
         name={type}

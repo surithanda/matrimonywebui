@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
+import { FaRegEdit } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import Loader from "./Loader";
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
@@ -32,9 +35,13 @@ const ProfileSection = () => {
   const completeProfile = useAppSelector(
     (state) => state.profile.completeProfile
   );
+
+  const {loading} = useAppSelector(
+    (state) => state.profile
+  );
   const { fetchAccountDetls } = useFetchUser();
   const { selectedProfileID } = useProfileContext();
-  const [loading, setLoading] = useState(false);
+
 
   // API origin and image URL utility
   const toAbsoluteUrl = useCallback((u?: string | null) => {
@@ -46,14 +53,9 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (selectedProfileID && selectedProfileID > 0) {
-      setLoading(true);
       (dispatch as any)(getCompleteProfileAsync(selectedProfileID))
         .unwrap()
-        .finally(() => {
-          setLoading(false);
-        });
     } else {
-      setLoading(false);
     }
   }, [selectedProfileID, dispatch]);
 
@@ -76,11 +78,6 @@ const ProfileSection = () => {
 
       const getProfileImage = () => {
         if (completeProfile) {
-          console.log(
-            "Profile Image URL:",
-            completeProfile?.profile_photo_url,
-            toAbsoluteUrl(completeProfile?.profile_photo_url)
-          );
           return toAbsoluteUrl(completeProfile?.profile_photo_url);
         }
         return profile1;
@@ -97,6 +94,9 @@ const ProfileSection = () => {
       setProfilesData([transformedData]);
     }
   }, [completeProfile, selectedProfileID, toAbsoluteUrl]);
+
+  console.log("complete profile data", completeProfile)
+
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
@@ -165,7 +165,7 @@ const ProfileSection = () => {
 
   const stats = [
     {
-      number: completeProfile?.my_profiles ?? 1,
+      number: completeProfile?.profile_id ? 1 : 0,
       name: "My Profiles",
       bg1: "#E4F1FF",
       bg2: "#D6E9FF",
@@ -213,6 +213,12 @@ const ProfileSection = () => {
       bg2: "#FCDEDA",
     },
   ];
+
+  if(loading){
+    return(
+      <Loader />
+    )
+  }
 
   return (
     <section className="flex flex-col w-full mt-20 gap-6 md:gap-8">
@@ -276,16 +282,28 @@ const ProfileSection = () => {
                   <React.Fragment key={selectedProfileID ?? index}>
                     <Link href="/createprofile">
                       <div
-                        className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer"
-                        title={`${profile.name}, ${profile.age} years old`}
+                        className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer group"
+                        title="Edit Profile Details"
                       >
                         <Image
-                          src={profile.imageSrc}
+                          src={profile.imageSrc || profile1}
                           alt={profile.name}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                           className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
                         />
+
+                        {/* Hover Edit Button (Top Right) */}
+                        <Link href="/createprofile">
+                          <Button
+                            variant={"default"}
+                            size={"sm"}
+                            className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
+                          >
+                            <CiEdit size={22} />
+                          </Button>
+                        </Link>
+
                         <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
                           <p className="text-white font-semibold text-lg sm:text-xl">
                             {profile.name}

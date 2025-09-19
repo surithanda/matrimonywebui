@@ -4,7 +4,7 @@ import {
   createEducationAsync,
   getEducationAsync,
 } from "@/app/store/features/profileSlice";
-import { AppDispatch, useAppDispatch } from "@/app/store/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditEducationModal } from "./education-modals/AddEditEducationModal";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IEducation {
   id: string | number;
@@ -78,6 +79,7 @@ const FormSection = () => {
     open: false,
     mode: 'add' as 'add' | 'edit',
   });
+  const {loading} = useAppSelector((state)=>state.profile);
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -327,6 +329,12 @@ const FormSection = () => {
       }
     }
   };
+
+    if (loading) {
+      return (
+        <Loader />
+      );
+    }
 
   return (
     <>

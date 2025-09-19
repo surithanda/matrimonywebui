@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddEditAddressModal";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IAddress {
   profile_address_id?: string | number;
@@ -81,6 +82,7 @@ const FormSection = () => {
   const { loadStates, formatWithMetaData, findCountryName, findStateName } =
     useMetaDataLoader();
   const { countryList } = useAppSelector((state) => state.metaData);
+  const {loading} = useAppSelector((state)=> state.profile)
   const [openModal, setOpenModal] = useState({
     open: false,
     mode: 'add' as 'add' | 'edit',
@@ -368,6 +370,12 @@ useEffect(() => {
       }
     }
   };
+
+  if (loading) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>

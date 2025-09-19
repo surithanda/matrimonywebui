@@ -215,8 +215,8 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  variant={"outline"}
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+               variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -240,7 +240,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
             {/* Company Name and Job Title */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="institution_name">Company Name *</Label>
+                <Label htmlFor="institution_name">Company Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="institution_name"
                   type="text"
@@ -248,12 +248,11 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   onChange={(e) =>
                     handleFieldChange("institution_name", e.target.value)
                   }
-                  placeholder="Enter company name"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="job_title">Job Title *</Label>
+                <Label htmlFor="job_title">Job Title <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="job_title"
                   bindValue={formData.job_title_id || ""}
@@ -268,7 +267,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
             {/* Start Year and End Year */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="start_year">Start Year *</Label>
+                <Label htmlFor="start_year">Start Year <span className="text-red-500">*</span></Label>
                 <Input
                   id="start_year"
                   type="number"
@@ -276,7 +275,6 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   onChange={(e) =>
                     handleFieldChange("start_year", e.target.value)
                   }
-                  placeholder="Enter start year"
                   min="1900"
                   max="2030"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -291,7 +289,6 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   onChange={(e) =>
                     handleFieldChange("end_year", e.target.value)
                   }
-                  placeholder="Enter end year (leave blank if current)"
                   min="1900"
                   max="2030"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -310,7 +307,6 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   onChange={(e) =>
                     handleFieldChange("last_salary_drawn", e.target.value)
                   }
-                  placeholder="Enter last salary drawn"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -319,7 +315,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
             {/* Country and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="country">Country *</Label>
+                <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="country"
                   bindValue={formData.country_id || ""}
@@ -328,7 +324,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="state">State *</Label>
+                <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state_id || ""}
@@ -343,13 +339,12 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
             {/* City and ZIP */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="city">City *</Label>
+                <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                 <Input
                   id="city"
                   type="text"
                   value={formData.city}
                   onChange={(e) => handleFieldChange("city", e.target.value)}
-                  placeholder="Enter city"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -360,7 +355,6 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   type="text"
                   value={formData.zip}
                   onChange={(e) => handleFieldChange("zip", e.target.value)}
-                  placeholder="Enter ZIP code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -377,7 +371,6 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                   onChange={(e) =>
                     handleFieldChange("address_line1", e.target.value)
                   }
-                  placeholder="Enter company address"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>

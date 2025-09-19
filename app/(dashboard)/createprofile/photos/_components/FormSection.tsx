@@ -1,94 +1,40 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import {
-  createPhotoAsync,
-  getProfilePhotosAsync,
-} from "@/app/store/features/profileSlice";
-import { AppDispatch, useAppSelector } from "@/app/store/store";
 import { useDispatch } from "react-redux";
-import process from "process";
+import { AppDispatch, useAppSelector } from "@/app/store/store";
+import { getProfilePhotosAsync } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import AddPhotosModal from "./photos-modals/AddPhotosModal";
-import { Table } from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-interface ImageFile {
-  url: string;
-  file?: File | null;
-}
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 const FormSection = () => {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [profileImage, setProfileImage] = useState<ImageFile | null>(null);
-  const [coverImage, setCoverImage] = useState<ImageFile | null>(null);
-  const [individualImages, setIndividualImages] = useState<ImageFile[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { selectedProfileID } = useProfileContext();
-  const [openModal, setOpenModal] = useState({
-    add: false,
-    edit: false,
-  });
-
   const [photos, setPhotos] = useState<any[]>([]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-
+  const [openModal, setOpenModal] = useState({ add: false, edit: false });
+  const { loading } = useAppSelector((state) => state.profile);
   const photoTypeAssociation = {
-    profile: 450, // Frontend standard for profile
-    cover: 454, // Frontend standard for cover
-    individual: 456, // Frontend standard for additional
+    profile: 450,
+    cover: 454,
+    individual: 456,
   };
-
-  const { findPhotoTypeFromID } = useMetaDataLoader();
 
   const toAbsoluteUrl = useCallback((u?: string | null) => {
     return envToAbsoluteUrl(u);
   }, []);
 
-  // Helper to compute total number of photos
-  const totalPhotos = useMemo(() => {
-    return (
-      (profileImage ? 1 : 0) + (coverImage ? 1 : 0) + individualImages.length
-    );
-  }, [profileImage, coverImage, individualImages]);
-
-  // Clean up object URLs when component unmounts or images change
-  useEffect(() => {
-    return () => {
-      if (profileImage && profileImage.url.startsWith("blob:"))
-        URL.revokeObjectURL(profileImage.url);
-      if (coverImage && coverImage.url.startsWith("blob:"))
-        URL.revokeObjectURL(coverImage.url);
-      individualImages.forEach((img) => {
-        if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
-      });
-    };
-  }, [profileImage, coverImage, individualImages]);
-
-  // Load existing photos for this profile
+  // Load photos
   const loadPhotos = useCallback(async () => {
     if (!selectedProfileID || selectedProfileID === 0) return;
     try {
@@ -96,58 +42,37 @@ const FormSection = () => {
         getProfilePhotosAsync(selectedProfileID)
       ).unwrap();
 
-      console.log("photo response", response.data);
-
-      const photos: any[] = response?.data?.photos || [];
-      const resolved = photos
-        .map((p: any) => ({
-          ...p,
-          _src: toAbsoluteUrl(p?.url),
-        }))
+      const resolved = (response?.data?.photos || [])
+        .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?.url) }))
         .filter((p: any) => !!p._src);
 
-      setPhotos(resolved); // ✅ store in state
-      console.log("resolved", resolved);
-
-      const prof = resolved.find(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
-      );
-      const cov = resolved.find(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
-      );
-      const others = resolved.filter(
-        (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
-      );
-
-      setProfileImage(prof ? { url: prof._src, file: null } : null);
-      setCoverImage(cov ? { url: cov._src, file: null } : null);
-
-      setIndividualImages(
-        others.map((p: any) => ({ url: p._src, file: null }))
-      );
+      setPhotos(resolved);
     } catch (e) {
-      // non-fatal
       console.log("error", e);
+    } finally {
     }
-  }, [
-    dispatch,
-    selectedProfileID,
-    toAbsoluteUrl,
-    photoTypeAssociation.profile,
-    photoTypeAssociation.cover,
-    photoTypeAssociation.individual,
-  ]);
+  }, [dispatch, selectedProfileID, toAbsoluteUrl]);
 
   useEffect(() => {
     loadPhotos();
   }, [loadPhotos]);
 
-  const closeAddModal = () => {
-    setOpenModal((prev) => ({
-      ...prev,
-      add: false,
-    }));
-  };
+  // Find specific types
+  const profilePhoto = photos.find(
+    (p) => Number(p.photo_type) === photoTypeAssociation.profile
+  );
+  const coverPhoto = photos.find(
+    (p) => Number(p.photo_type) === photoTypeAssociation.cover
+  );
+  const otherPhotos = photos.filter(
+    (p) => Number(p.photo_type) === photoTypeAssociation.individual
+  );
+
+  const closeAddModal = () => setOpenModal((prev) => ({ ...prev, add: false }));
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -155,12 +80,7 @@ const FormSection = () => {
         <div className="mb-6">
           <div className="flex justify-end items-center mb-3 mt-3">
             <Button
-              onClick={() =>
-                setOpenModal((prev) => ({
-                  ...prev,
-                  add: true,
-                }))
-              }
+              onClick={() => setOpenModal((prev) => ({ ...prev, add: true }))}
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
             >
               <FaPlus />
@@ -169,70 +89,127 @@ const FormSection = () => {
           </div>
         </div>
 
-        <table className="min-w-full border rounded-md text-sm sm:text-base mt-2">
-          <thead className="">
-            <tr className="text-left">
-              <th className="px-6 py-2 border-b text-base font-bold">
-                Photo Type
-              </th>
-              <th className="px-6 py-2 border-b text-base font-bold">
-                Description
-              </th>
-              <th className="px-6 py-2 border-b text-base font-bold">Images</th>
-              <th className="px-6 py-2 border-b text-base font-bold">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {photos.length > 0 ? (
-              photos.map((photo: any, index: number) => (
-                <tr
-                  key={photo.profile_photo_id || index}
-                  className="hover:bg-gray-50 transition-colors text-sm"
-                >
-                  <td className="px-6 py-3 border-b">
-                    {photo.photo_type?.name || photo.caption || "-"}
-                  </td>
-                  <td className="px-6 py-3 border-b">
-                    {photo.description || "-"}
-                  </td>
-                  <td className="px-6 py-3 border-b">
-                    <div
-                      className="w-16 h-16 relative cursor-pointer"
-                      onClick={() => setPreviewImage(photo._src)}
-                    >
-                      <Image
-                        src={photo._src}
-                        alt={photo.caption || "Photo"}
-                        fill
-                        className="object-cover rounded-md"
-                      />
-                    </div>
-                  </td>
-                  <td className="px-6 py-3 border-b">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() =>
-                        console.log("Delete", photo.profile_photo_id)
-                      }
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
+        {/* Profile & Cover */}
+        <div className="grid grid-cols-4 gap-2 h-full">
+          {/* Profile */}
+          <div className="col-span-1 bg-gray-100 rounded px-3 py-2 h-full">
+            <h2
+              className="text-base font-bold"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Profile Picture
+            </h2>
+            <div className="bg-white p-2 rounded relative group">
+              {profilePhoto ? (
+                <>
+                  <Image
+                    src={profilePhoto._src}
+                    alt="Profile"
+                    width={400}
+                    height={200}
+                    className="w-full h-48 object-cover rounded"
+                    onClick={() => setPreviewImage(profilePhoto._src)}
+                  />
+                  <button
+                    onClick={() =>
+                      console.log(
+                        "Delete Profile",
+                        profilePhoto.profile_photo_id
+                      )
+                    }
+                    className="absolute top-4 right-4 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <p className="text-gray-500 text-sm">No profile picture</p>
+              )}
+              <p className="text-base py-1" style={{ fontFamily: "BR Cobane" }}>
+                {profilePhoto?.description ||
+                  "Upload your profile picture here."}
+              </p>
+            </div>
+          </div>
+
+          {/* Cover */}
+          <div className="col-span-3 bg-gray-100 rounded px-3 py-2 h-full">
+            <h2
+              className="text-base font-bold"
+              style={{ fontFamily: "BR Cobane" }}
+            >
+              Cover Picture
+            </h2>
+            <div className="bg-white p-2 rounded relative group">
+              {coverPhoto ? (
+                <>
+                  <Image
+                    src={coverPhoto._src}
+                    alt="Cover"
+                    width={800}
+                    height={250}
+                    className="w-full h-56 object-cover rounded"
+                    onClick={() => setPreviewImage(coverPhoto._src)}
+                  />
+                  <button
+                    onClick={() =>
+                      console.log("Delete Cover", coverPhoto.profile_photo_id)
+                    }
+                    className="absolute top-4 right-4 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <p className="text-gray-500 text-sm">No cover picture</p>
+              )}
+              <p className="text-base py-1" style={{ fontFamily: "BR Cobane" }}>
+                {coverPhoto?.description || "Upload your cover picture here."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Other's Images */}
+        <div className="bg-gray-100 rounded px-3 py-2 h-full mt-4">
+          <h2
+            className="text-base font-bold"
+            style={{ fontFamily: "BR Cobane" }}
+          >
+            Other's Images
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 bg-white gap-3 mt-2 p-2 rounded">
+            {otherPhotos.length > 0 ? (
+              otherPhotos.map((photo: any) => (
+                <div key={photo.profile_photo_id} className="relative group">
+                  <Image
+                    src={photo._src}
+                    alt={photo.caption || "Photo"}
+                    width={300}
+                    height={200}
+                    className="w-full h-48 object-cover rounded"
+                    onClick={() => setPreviewImage(photo._src)}
+                  />
+                  <div className="mt-2 text-sm text-gray-700 px-1">
+                    <p className="text-xs mt-2">{photo.description || "-"}</p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      console.log("Delete", photo.profile_photo_id)
+                    }
+                    className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    Delete
+                  </button>
+                </div>
               ))
             ) : (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-4 border-b text-center text-gray-500"
-                >
-                  No photos uploaded
-                </td>
-              </tr>
+              <p className="text-gray-500 text-center col-span-full">
+                No other images uploaded
+              </p>
             )}
-          </tbody>
-        </table>
+          </div>
+        </div>
 
         {/* {error && (
           <div
@@ -410,11 +387,15 @@ const FormSection = () => {
           </div>
         </form> */}
       </section>
+
+      {/* Add Photos Modal */}
       <AddPhotosModal
         profileId={selectedProfileID}
         open={openModal.add}
         onOpenChange={closeAddModal}
       />
+
+      {/* Preview Modal */}
       <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>

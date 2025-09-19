@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { FaqSection } from "@/components/blocks/faq";
+import Loader from "../../_components/Loader";
 
 // Extended form data interface
 interface FormData extends IProfilePersonal {
@@ -237,14 +238,20 @@ const ProfileGeneral = () => {
     ) : null;
   };
 
+    if (loading) {
+      return (
+        <Loader />
+      );
+    }
+
   return (
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Personal Details */}
-          <div className="border border-gray-100  bg-gray-100 rounded-lg shadow mb-4">
+          <div className="border border-gray-100  bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Personal Details
@@ -339,9 +346,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Contact Details */}
-          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-4">
+          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Contact Details
@@ -412,9 +419,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Demographics */}
-          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-4">
+          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Demographics
@@ -501,9 +508,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Physical Attributes */}
-          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Physical Attributes
@@ -607,9 +614,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Professional & Social Details */}
-          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Professional & Social Details
@@ -689,9 +696,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Summary */}
-          <div className="border border-gray-100 bg-gray-100 rounded shadow mb-8">
+          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-100 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-3"
               style={{ fontFamily: "BR Cobane" }}
             >
               Summary

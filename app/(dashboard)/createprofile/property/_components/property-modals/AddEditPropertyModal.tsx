@@ -170,8 +170,8 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  variant={"outline"}
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+               variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -195,7 +195,7 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
             {/* Property Type and Ownership Type */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="property_type">Property Type *</Label>
+                <Label htmlFor="property_type">Property Type <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="property_type"
                   bindValue={formData.property_type?.toString() || ""}
@@ -204,7 +204,7 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="ownership_type">Ownership Type *</Label>
+                <Label htmlFor="ownership_type">Ownership Type <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="ownership_type"
                   bindValue={formData.ownership_type?.toString() || ""}
@@ -217,31 +217,28 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
             {/* Property Value */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="property_value">Property Value *</Label>
+                <Label htmlFor="property_value">Property Value <span className="text-red-500">*</span></Label>
                 <Input
                   id="property_value"
                   type="number"
                   value={formData.property_value || ""}
                   onChange={(e) => handleFieldChange('property_value', Number(e.target.value))}
-                  placeholder="Enter property value"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-              <div></div>
-            </div>
-
             {/* Property Address */}
             <div>
-              <Label htmlFor="property_address">Property Address *</Label>
+              <Label htmlFor="property_address">Property Address <span className="text-red-500">*</span></Label>
               <Input
                 id="property_address"
                 type="text"
                 value={formData.property_address}
                 onChange={(e) => handleFieldChange('property_address', e.target.value)}
-                placeholder="Enter property address"
                 className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               />
             </div>
+            </div>
+
 
             {/* Property Description */}
             <div>
@@ -250,9 +247,8 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
                 id="property_description"
                 value={formData.property_description}
                 onChange={(e) => handleFieldChange('property_description', e.target.value)}
-                placeholder="Enter property description (optional)"
                 rows={4}
-                className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 border border-gray-100"
+                className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 border border-gray-100 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
               />
             </div>
           </div>

@@ -10,6 +10,7 @@ import RegisterIcon from "/public/images/RegisterIcon.svg";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/store/store";
 import { LogIn, Menu, User } from "lucide-react";
+import { isAuthenticated, clearAllAuthData } from "@/app/utils/authToken";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,11 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  // Navigation link tracking function
+  const trackNavLinkClick = () => {
+    console.log("Nav link clicked");
+  };
 
   // Function to check if the current route is active
   const isActive = (path: string) => {
@@ -65,16 +71,11 @@ const Navbar = () => {
   }, []);
 
   const checkToken = () => {
-    const token = localStorage.getItem("matrimony token");
-    if (token) {
-      return true;
-    } else {
-      return false;
-    }
+    return isAuthenticated(); // Use the new utility function
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    clearAllAuthData(); // Use the new utility function
     dispatch({ type: "RESET_APP" });
     router.push("/");
   };
@@ -106,7 +107,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation Menu */}
-        <div className="hidden md:flex gap-4 lg:gap-6 xl:gap-8 BRCobane16500Light text-white">
+        <div className="hidden md:flex gap-4 lg:gap-6 xl:gap-8 BRCobane16500Light text-white" >
           {isAccountOpen && (
             <ul className="flex flex-row justify-center gap-6 xl:gap-9 grow items-center h-[61px] px-4 xl:px-9">
               <li
@@ -121,6 +122,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/dashboard"
+                  onClick={trackNavLinkClick}
                 >
                   Dashboard
                 </Link>
@@ -135,6 +137,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/profiles"
+                  onClick={trackNavLinkClick}
                 >
                   Profiles
                 </Link>
@@ -147,6 +150,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/settings"
+                  onClick={trackNavLinkClick}
                 >
                   Profile Settings
                 </Link>
@@ -159,6 +163,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/search"
+                  onClick={trackNavLinkClick}
                 >
                   Search
                 </Link>
@@ -171,6 +176,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/recommendations"
+                  onClick={trackNavLinkClick}
                 >
                   Recommendations
                 </Link>
@@ -183,6 +189,7 @@ const Navbar = () => {
                 <Link
                   className="nav-link h-full flex items-center BRCobane18600 text-lg"
                   href="/favourites"
+                  onClick={trackNavLinkClick}
                 >
                   Favourites
                 </Link>
@@ -387,7 +394,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Dashboard
                   </Link>
@@ -398,7 +408,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Profiles
                   </Link>
@@ -409,7 +422,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Profile Settings
                   </Link>
@@ -420,7 +436,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Search
                   </Link>
@@ -431,7 +450,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Recommendations
                   </Link>
@@ -442,7 +464,10 @@ const Navbar = () => {
                         ? "text-yellow-500 font-semibold"
                         : "text-gray-600 hover:text-yellow-500 hover:bg-gray-50"
                     }`}
-                    onClick={closeMobileMenu}
+                    onClick={() => {
+                      trackNavLinkClick();
+                      closeMobileMenu();
+                    }}
                   >
                     Favourites
                   </Link>

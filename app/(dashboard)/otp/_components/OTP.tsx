@@ -1,4 +1,5 @@
 "use client";
+import { setAuthToken } from "@/app/utils/authToken";
 import { useState, useEffect } from "react";
 import { api } from '../../../lib/axios';
 import { useDispatch } from "react-redux";
@@ -79,7 +80,7 @@ const ForgotPassword = () => {
       console.log("OTP Verified:", response.data);
 
       if (response.data.token) {
-        localStorage.setItem('matrimony token', response.data.token);
+        setAuthToken(response.data.token); // Use the new utility function
       }
 
       dispatch(setUser(response.data));

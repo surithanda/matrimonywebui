@@ -10,6 +10,7 @@ import RegisterIcon from "../../public/images/RegisterIcon.svg";
 import dp from "../../public/images/p-i.png";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useProfileContext } from "../utils/useProfileContext";
+import { isAuthenticated, clearAllAuthData, syncTokenToCookies } from "../utils/authToken";
 
 import {
   DropdownMenu,
@@ -30,12 +31,12 @@ export const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const userData = useAppSelector((state) => state.auth.userData);
-  const { selectedProfileID } = useProfileContext();
+  const { selectedProfileID, setSelectedProfileID } = useProfileContext();
 
-  const checkToken = () => !!localStorage.getItem("matrimony token");
+  const checkToken = () => isAuthenticated();
 
   const handleLogout = () => {
-    localStorage.clear();
+    clearAllAuthData(); // Use the new utility function
     dispatch({ type: "RESET_APP" });
     router.push("/");
     setIsLoggedIn(false);
@@ -43,7 +44,20 @@ export const Navbar = () => {
 
   useEffect(() => {
     setIsLoggedIn(checkToken());
-  }, [pathname]);
+    
+    // Sync existing localStorage token to cookies for existing users
+    syncTokenToCookies();
+    
+    // Also check and restore profile ID from localStorage on page load
+    if (checkToken()) {
+      const storedProfileID = localStorage.getItem("selectedProfile");
+      if (storedProfileID) {
+        console.log("Restoring profile ID from localStorage on page load:", storedProfileID);
+        setSelectedProfileID(parseInt(storedProfileID, 10));
+        localStorage.removeItem("selectedProfile");
+      }
+    }
+  }, [pathname, setSelectedProfileID]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -112,6 +126,19 @@ export const Navbar = () => {
     userData?.last_name?.charAt(0) ?? ""
   }`;
 
+  // Navigation tracking function
+  const trackNavLinkClick = () => {
+    console.log("Nav link clicked");
+    
+    // Check if localStorage has selectedProfile value and set it in context
+    const storedProfileID = localStorage.getItem("selectedProfile");
+    if (storedProfileID) {
+      console.log("Restoring profile ID from localStorage on nav click:", storedProfileID);
+      setSelectedProfileID(parseInt(storedProfileID, 10));
+      localStorage.removeItem("selectedProfile");
+    }
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-colors  duration-300 ${
@@ -147,6 +174,7 @@ export const Navbar = () => {
               >
                 <Link
                   href={link.href}
+                  onClick={isLoggedIn ? trackNavLinkClick : undefined}
                   className={`transition ${
                     isActive ? "text-yellow-500" : "hover:text-yellow-500"
                   }`}
@@ -292,7 +320,10 @@ export const Navbar = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      if (isLoggedIn) trackNavLinkClick();
+                      setMenuOpen(false);
+                    }}
                     className={`block py-2 border-b border-gray-100 transition-colors ${
                       isActive
                         ? "text-yellow-500 font-semibold"

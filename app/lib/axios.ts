@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL, API_KEY } from './env';
+import { getAuthToken } from '../utils/authToken';
 import './env-validator'; // Auto-validate environment in development
 
 export const api = axios.create({
@@ -21,7 +22,7 @@ api.interceptors.request.use((config) => {
 
   // Add auth token if available
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('matrimony token');
+    const token = getAuthToken(); // Use the new utility function
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

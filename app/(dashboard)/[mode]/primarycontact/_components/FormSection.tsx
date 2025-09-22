@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
-import { AddEditAddressModal } from "@/app/(dashboard)/createprofile/primarycontact/_components/address-modals/AddEditAddressModal";
+import { AddEditAddressModal } from "./address-modals/AddEditAddressModal";
 
 interface IAddress {
   profile_address_id?: string | number;

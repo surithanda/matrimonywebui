@@ -1,67 +1,79 @@
 "use client";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useSearchParams, useRouter, useParams, notFound } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { isValidProfileMode, type ProfileMode } from "../types/profileMode";
 
-const menuItems = [
-  { id: "personal", label: "Personal", link: "/createprofile" },
+export default function Tabs() {
+  const params = useParams();
+  const mode = (params.mode as string);
+  
+  // Validate mode parameter
+  if (!isValidProfileMode(mode)) {
+    notFound();
+  }
+  
+  // Now we can safely use mode as ProfileMode
+  const validMode: ProfileMode = mode;
+
+  const menuItems = [
+  { id: "personal", label: "Personal", link: `/${validMode}` },
   {
     id: "contact",
     label: "Address",
-    link: "/createprofile/primarycontact",
+    link: `/${validMode}/primarycontact`,
     disabled: true,
   },
   {
     id: "education",
     label: "Education",
-    link: "/createprofile/education",
+    link: `/${validMode}/education`,
     disabled: true,
   },
   {
     id: "employment",
     label: "Employment",
-    link: "/createprofile/employment",
+    link: `/${validMode}/employment`,
     disabled: true,
   },
   {
     id: "family",
     label: "Family",
-    link: "/createprofile/family",
+    link: `/${validMode}/family`,
     disabled: true,
   },
   {
     id: "references",
     label: "Friends & References",
-    link: "/createprofile/references",
+    link: `/${validMode}/references`,
     disabled: true,
   },
   {
     id: "hobbies",
     label: "Hobbies",
-    link: "/createprofile/hobbies",
+    link: `/${validMode}/hobbies`,
     disabled: true,
   },
   {
     id: "lifestyle",
     label: "Lifestyle",
-    link: "/createprofile/lifestyle",
+    link: `/${validMode}/lifestyle`,
     disabled: true,
   },
   {
     id: "properties",
     label: "Properties",
-    link: "/createprofile/property",
+    link: `/${validMode}/property`,
     disabled: true,
   },
   {
     id: "photos",
     label: "Photos",
-    link: "/createprofile/photos",
+    link: `/${validMode}/photos`,
     disabled: true,
   },
 ];
 
-export default function Tabs() {
   const [activeItem, setActiveItem] = useState("personal");
   const { selectedProfileID } = useProfileContext();
   const [menu, setMenu] = useState(menuItems);
@@ -77,16 +89,28 @@ export default function Tabs() {
     });
   }, [pathname, searchParams, menu]);
 
-  // Unlock tabs when profile is selected
+  // Unlock tabs based on mode and profile selection
   useEffect(() => {
-    if (selectedProfileID) {
+    // Enable tabs if:
+    // 1. Update mode with selected profile (selectedProfileID > 0)
+    // 2. Create mode (regardless of selectedProfileID value)
+    const shouldEnableTabs = validMode === 'updateprofile' || selectedProfileID > 0;
+    
+    if (shouldEnableTabs) {
       const refreshedMenuItems = menuItems.map((item, index) => ({
         ...item,
-        disabled: selectedProfileID > 0 ? false : index !== 0,
+        disabled: index !== 0 ? false : false, // Enable all tabs when conditions are met
+      }));
+      setMenu(refreshedMenuItems);
+    } else {
+      // Disable all tabs except the first one when no profile is selected in update mode
+      const refreshedMenuItems = menuItems.map((item, index) => ({
+        ...item,
+        disabled: index !== 0,
       }));
       setMenu(refreshedMenuItems);
     }
-  }, [selectedProfileID]);
+  }, [selectedProfileID, validMode]);
 
   return (
     <div>

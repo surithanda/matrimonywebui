@@ -249,7 +249,7 @@ const ProfileSection = () => {
           {profilesData?.length > 0 &&
             profilesData.map((profile: IProfile, index: number) => (
               <React.Fragment key={selectedProfileID ?? index}>
-                <Link href="/createprofile">
+                <Link href="/updateprofile">
                   <div
                     className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer"
                     title={`${profile.name}, ${profile.age} years old`}

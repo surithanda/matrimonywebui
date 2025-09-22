@@ -212,11 +212,11 @@ const ProfileGeneral = () => {
           setSelectedProfileID(result?.data?.profile_id);
           toast.success("Profile created successfully!");
           reset();
-          router.push("/createprofile/primarycontact");
+          router.push("/updateprofile/primarycontact");
         }
       } else {
         //update
-        router.push("/createprofile/primarycontact");
+        router.push("/updateprofile/primarycontact");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to create profile");

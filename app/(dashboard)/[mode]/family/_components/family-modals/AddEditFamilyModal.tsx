@@ -1,6 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -31,9 +36,9 @@ interface IFamilyMember {
 interface AddEditFamilyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode: 'add' | 'edit';
+  mode: "add" | "edit";
   familyData?: IFamilyMember;
-  onSave: (family: IFamilyMember, mode: 'add' | 'edit') => void;
+  onSave: (family: IFamilyMember, mode: "add" | "edit") => void;
   onCancel: () => void;
   category?: string;
 }
@@ -72,9 +77,9 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
   // Initialize form data when modal opens
   useEffect(() => {
     if (open) {
-      if (mode === 'edit' && familyData) {
+      if (mode === "edit" && familyData) {
         setFormData(familyData);
-        
+
         // Load states for the selected country in edit mode
         if (familyData.country_id && familyData.country_id !== 0) {
           loadStates(String(familyData.country_id));
@@ -105,20 +110,25 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
   };
 
   // Handle form field changes
-  const handleFieldChange = (field: keyof IFamilyMember, value: string | number) => {
-    setFormData(prev => ({
+  const handleFieldChange = (
+    field: keyof IFamilyMember,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setIsFormDirty(true);
   };
 
   // Handle phone number changes
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     setIsFormDirty(true);
   };
@@ -126,8 +136,8 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
   // Handle country change and load states
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const countryValue = Number(e.target.value);
-    handleFieldChange('country_id', countryValue);
-    handleFieldChange('state_id', 0); // Reset state when country changes
+    handleFieldChange("country_id", countryValue);
+    handleFieldChange("state_id", 0); // Reset state when country changes
     loadStates(e.target.value);
   };
 
@@ -153,7 +163,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
       setIsFormDirty(false);
       onOpenChange(false);
     } catch (error) {
-      console.error('Error saving family member:', error);
+      console.error("Error saving family member:", error);
     } finally {
       setIsLoading(false);
     }
@@ -205,7 +215,10 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
 
   return (
     <>
-      <Dialog open={open && !showExitConfirmation} onOpenChange={handleCloseAttempt}>
+      <Dialog
+        open={open && !showExitConfirmation}
+        onOpenChange={handleCloseAttempt}
+      >
         <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto bg-white">
           <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
@@ -214,14 +227,21 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 className="text-white text-xl"
                 style={{ fontFamily: "BR Cobane" }}
               >
-                {mode === 'edit' ? `Edit ${category.charAt(0).toUpperCase() + category.slice(1)}` : `Add ${category.charAt(0).toUpperCase() + category.slice(1)}`} {category.toLowerCase() === 'family' ? 'Member' : ''}
+                {mode === "edit"
+                  ? `Edit ${
+                      category.charAt(0).toUpperCase() + category.slice(1)
+                    }`
+                  : `Add ${
+                      category.charAt(0).toUpperCase() + category.slice(1)
+                    }`}{" "}
+                {category.toLowerCase() === "family" ? "Member" : ""}
               </DialogTitle>
 
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  variant={"outline"}
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+               variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -260,24 +280,30 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
             {/* First Name and Last Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstname">First Name *</Label>
+                <Label htmlFor="firstname">
+                  First Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="firstname"
                   type="text"
                   value={formData.firstname}
-                  onChange={(e) => handleFieldChange('firstname', e.target.value)}
-                  placeholder="Enter first name"
+                  onChange={(e) =>
+                    handleFieldChange("firstname", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="lastname">Last Name *</Label>
+                <Label htmlFor="lastname">
+                  Last Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="lastname"
                   type="text"
                   value={formData.lastname}
-                  onChange={(e) => handleFieldChange('lastname', e.target.value)}
-                  placeholder="Enter last name"
+                  onChange={(e) =>
+                    handleFieldChange("lastname", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -291,7 +317,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                   id="dob"
                   type="date"
                   value={formData.dob}
-                  onChange={(e) => handleFieldChange('dob', e.target.value)}
+                  onChange={(e) => handleFieldChange("dob", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -303,7 +329,6 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                     changeHandler={handlePhoneChange}
                     bindValue={formData.contactnumber}
                     bindValue2={formData.contactnumber_country}
-                    placeholder="Contact Number"
                     disabled={false}
                   />
                 </div>
@@ -318,21 +343,23 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => handleFieldChange('email', e.target.value)}
-                  placeholder="Enter email"
+                  onChange={(e) => handleFieldChange("email", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="relationshiptoyou">Relationship to You *</Label>
+                <Label htmlFor="relationshiptoyou">
+                  Relationship to You <span className="text-red-500">*</span>
+                </Label>
                 <MetadataSelectComponent
                   type={category}
                   name="relationshiptoyou"
                   bindValue={formData.relationshiptoyou || ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('relationshiptoyou', e.target.value)}
-                //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                //   className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
-                
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("relationshiptoyou", e.target.value)
+                  }
+                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  //   className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
                 />
               </div>
             </div>
@@ -340,21 +367,27 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
             {/* Country and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">
+                  Country <span className="text-red-500">*</span>
+                </Label>
                 <MetadataSelectComponent
                   type="country"
                   bindValue={formData.country_id || ""}
                   changeHandler={handleCountryChange}
-                //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">
+                  State <span className="text-red-500">*</span>
+                </Label>
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state_id || ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('state_id', Number(e.target.value))}
-                //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("state_id", Number(e.target.value))
+                  }
+                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
@@ -362,43 +395,45 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
             {/* Address and City */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="address_line">Address</Label>
-                <Input
-                  id="address_line"
-                  type="text"
-                  value={formData.address_line}
-                  onChange={(e) => handleFieldChange('address_line', e.target.value)}
-                  placeholder="Enter address"
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">
+                  City <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="city"
                   type="text"
                   value={formData.city}
-                  onChange={(e) => handleFieldChange('city', e.target.value)}
-                  placeholder="Enter city"
+                  onChange={(e) => handleFieldChange("city", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-            </div>
-
-            {/* ZIP Code */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="zip">ZIP Code</Label>
                 <Input
                   id="zip"
                   type="text"
                   value={formData.zip}
-                  onChange={(e) => handleFieldChange('zip', e.target.value)}
-                  placeholder="Enter ZIP code"
+                  onChange={(e) => handleFieldChange("zip", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-              <div></div>
+            </div>
+
+            {/* ZIP Code */}
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+              <div>
+                <Label htmlFor="address_line">
+                  Address <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="address_line"
+                  type="text"
+                  value={formData.address_line}
+                  onChange={(e) =>
+                    handleFieldChange("address_line", e.target.value)
+                  }
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
             </div>
           </div>
 
@@ -433,19 +468,23 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
       </Dialog>
 
       {/* Exit Confirmation Dialog */}
-      <Dialog open={showExitConfirmation} onOpenChange={setShowExitConfirmation}>
+      <Dialog
+        open={showExitConfirmation}
+        onOpenChange={setShowExitConfirmation}
+      >
         <DialogContent className="max-w-md p-6 bg-white">
           <DialogHeader className="pb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
               Save Family Member Changes?
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <p className="text-gray-600">
-              You have unsaved family member information. Would you like to save this family member before closing?
+              You have unsaved family member information. Would you like to save
+              this family member before closing?
             </p>
-            
+
             <div className="flex gap-3">
               <Button
                 onClick={handleSaveAndExit}

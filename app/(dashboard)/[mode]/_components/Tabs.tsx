@@ -114,7 +114,8 @@ export default function Tabs() {
 
   return (
     <div>
-      <div className="flex border border-gray-300 rounded-lg overflow-x-auto divide-x">
+      {/* Tabs container */}
+      <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1 gap-0.5">
         {menu.map((item, index) => {
           const isCompleted =
             menu.findIndex((m) => m.id === activeItem) > index;
@@ -130,27 +131,32 @@ export default function Tabs() {
                 setActiveItem(item.id);
                 router.push(item.link);
               }}
-              className={`flex items-center gap-2 px-2 py-3 font-medium whitespace-nowrap transition-colors flex-1 justify-start 
-    ${
-      item.disabled ? "cursor-not-allowed text-gray-400" : "hover:text-gray-800"
-    }
-    ${
-      activeItem === item.id
-        ? "border-b-2 border-orange-500 text-orange-600 bg-gradient-to-t from-orange-100 to-white shadow-2xl"
-        : "text-gray-600"
-    }
-  `}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200
+            ${
+              item.disabled
+                ? "cursor-not-allowed text-gray-400 bg-gray-100"
+                : "hover:bg-orange-50 hover:text-orange-600"
+            }
+            ${
+              activeItem === item.id
+                ? "bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-md"
+                : "text-gray-600"
+            }
+            ${index !== menu.length - 1 ? "border-r-2 border-gray-200" : ""}
+          `}
               disabled={item.disabled}
             >
-              {/* Checkbox Circle */}
+              {/* Circle / Check Icon */}
               <span
-                className={`flex h-4 w-4 items-center justify-center rounded-full border text-xs ${
-                  activeItem === item.id
-                    ? "border-orange-500 bg-orange-500 text-white"
-                    : isCompleted
-                    ? "border-orange-500 text-orange-500"
-                    : "border-gray-400 text-gray-400"
-                }`}
+                className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs font-bold
+              ${
+                activeItem === item.id
+                  ? "border-white bg-white text-orange-500"
+                  : isCompleted
+                  ? "border-orange-500 text-orange-500"
+                  : "border-gray-400 text-gray-400"
+              }
+            `}
               >
                 {activeItem === item.id || isCompleted ? "✔" : ""}
               </span>

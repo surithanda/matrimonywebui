@@ -73,10 +73,10 @@ const Footer = () => {
             </a>{" "}
             |{" "}
             <a
-              href="mailto:Swapna@mysticmindds.com"
+              href="mailto:info@matimony.org"
               className="font-semibold hover:text-yellow-500 transition-colors"
             >
-              Swapna@mysticmindds.com
+              info@matimony.org
             </a>
           </p>
         </div>

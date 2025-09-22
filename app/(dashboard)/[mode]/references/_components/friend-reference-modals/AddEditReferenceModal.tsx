@@ -223,24 +223,22 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
             {/* First Name and Last Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="first_name">First Name *</Label>
+                <Label htmlFor="first_name">First Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="first_name"
                   type="text"
                   value={formData.first_name}
                   onChange={(e) => handleFieldChange('first_name', e.target.value)}
-                  placeholder="Enter first name"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="last_name">Last Name *</Label>
+                <Label htmlFor="last_name">Last Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="last_name"
                   type="text"
                   value={formData.last_name}
                   onChange={(e) => handleFieldChange('last_name', e.target.value)}
-                  placeholder="Enter last name"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -249,7 +247,7 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
             {/* Reference Type and Gender */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="reference_type">Reference Type *</Label>
+                <Label htmlFor="reference_type">Reference Type <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="reference"
                   name="reference"
@@ -289,7 +287,6 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
                     changeHandler={handlePhoneChange}
                     bindValue={formData.primary_phone}
                     bindValue2=""
-                    placeholder="Phone Number"
                     disabled={false}
                   />
                 </div>
@@ -321,7 +318,7 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
             {/* Country and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="country"
                   bindValue={formData.country || ""}
@@ -330,7 +327,7 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state || ""}
@@ -342,19 +339,9 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
 
             {/* Address and City */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
               <div>
-                <Label htmlFor="address_line1">Address</Label>
-                <Input
-                  id="address_line1"
-                  type="text"
-                  value={formData.address_line1}
-                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
-                  placeholder="Enter address"
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                 <Input
                   id="city"
                   type="text"
@@ -364,11 +351,7 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-            </div>
-
-            {/* ZIP Code and Can Communicate */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+                            <div>
                 <Label htmlFor="zip">ZIP Code</Label>
                 <Input
                   id="zip"
@@ -379,6 +362,22 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
+            </div>
+
+            {/* ZIP Code and Can Communicate */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                <Label htmlFor="address_line1">Address</Label>
+                <Input
+                  id="address_line1"
+                  type="text"
+                  value={formData.address_line1}
+                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
+                  placeholder="Enter address"
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"

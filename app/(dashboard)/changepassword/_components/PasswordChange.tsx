@@ -65,7 +65,7 @@ const PasswordChange = () => {
     try {
       await dispatch(changePasswordAsync(passwords) as any).unwrap();
       toast.success("Password changed successfully!");
-      router.push("/login");
+      router.push("/dashboard");
     } catch (error: any) {
       toast.error(error || "Failed to change password");
     }

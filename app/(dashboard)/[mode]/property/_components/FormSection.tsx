@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditPropertyModal } from "./property-modals/AddEditPropertyModal";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IPropertyFieldValue extends IProfileProperty {
   id?: string;
@@ -304,6 +305,12 @@ const FormSection = () => {
       setEditIndex(null);
     }
   };
+
+    if (loading) {
+      return (
+        <Loader />
+      );
+    }
 
   return (
     <>

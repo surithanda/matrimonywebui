@@ -3,7 +3,7 @@ import {
   createLifestyleAsync,
   getLifestyleAsync,
 } from "@/app/store/features/profileSlice";
-import { AppDispatch, useAppDispatch } from "@/app/store/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface ILifestyleSelections {
   profile_lifestyle_id: number | null;
@@ -27,6 +28,7 @@ const FormSection = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const router = useRouter();
   const { selectedProfileID } = useProfileContext();
+  const {loading} = useAppSelector((state)=>state.profile)
 
   const [selections, setSelections] = useState<ILifestyleSelections>({
     profile_lifestyle_id: null,
@@ -166,6 +168,12 @@ const FormSection = () => {
       }
     );
   }, [selectedProfileID, dispatch]);
+
+    if (loading) {
+      return (
+        <Loader />
+      );
+    }
 
   return (
     <>

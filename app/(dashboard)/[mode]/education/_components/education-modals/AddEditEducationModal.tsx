@@ -199,8 +199,8 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  variant={"outline"}
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+                  variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -224,24 +224,22 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
             {/* Institution Name and Year Completed */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="institution_name">Institution Name *</Label>
+                <Label htmlFor="institution_name">Institution Name <span className="text-red-500">*</span></Label>
                 <Input
                   id="institution_name"
                   type="text"
                   value={formData.institution_name}
                   onChange={(e) => handleFieldChange('institution_name', e.target.value)}
-                  placeholder="Enter institution name"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="year_completed">Year Completed *</Label>
+                <Label htmlFor="year_completed">Year Completed <span className="text-red-500">*</span></Label>
                 <Input
                   id="year_completed"
                   type="number"
                   value={formData.year_completed}
                   onChange={(e) => handleFieldChange('year_completed', e.target.value)}
-                  placeholder="Enter year of completion"
                   min="1900"
                   max="2030"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -252,7 +250,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
             {/* Education Level and Field of Study */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="education_level">Education Level *</Label>
+                <Label htmlFor="education_level">Education Level <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="education_level"
                   bindValue={formData.education_level || ""}
@@ -261,7 +259,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="field_of_study">Field of Study *</Label>
+                <Label htmlFor="field_of_study">Field of Study <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="field_of_study"
                   bindValue={formData.field_of_study || ""}
@@ -274,7 +272,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
             {/* Country and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="country"
                   bindValue={formData.country_id || ""}
@@ -283,7 +281,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state_id || ""}
@@ -295,44 +293,42 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
 
             {/* Address and City */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
               <div>
-                <Label htmlFor="address_line1">Institution Address</Label>
-                <Input
-                  id="address_line1"
-                  type="text"
-                  value={formData.address_line1}
-                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
-                  placeholder="Enter institution address"
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                 <Input
                   id="city"
                   type="text"
                   value={formData.city}
                   onChange={(e) => handleFieldChange('city', e.target.value)}
-                  placeholder="Enter city"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-            </div>
-
-            {/* ZIP Code */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+                        <div>
                 <Label htmlFor="zip">ZIP Code</Label>
                 <Input
                   id="zip"
                   type="text"
                   value={formData.zip}
                   onChange={(e) => handleFieldChange('zip', e.target.value)}
-                  placeholder="Enter ZIP code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
-              <div></div>
+            </div>
+
+            {/* ZIP Code */}
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+    
+                            <div>
+                <Label htmlFor="address_line1">Institution Address</Label>
+                <Input
+                  id="address_line1"
+                  type="text"
+                  value={formData.address_line1}
+                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
             </div>
           </div>
 

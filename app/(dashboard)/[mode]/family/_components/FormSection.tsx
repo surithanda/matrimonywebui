@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditFamilyModal } from "./family-modals/AddEditFamilyModal";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IFamilyMember {
   id: string;
@@ -99,6 +100,8 @@ const FormSection = ({
   const [error, setError] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
+  const {loading: loader} = useAppSelector((state)=>state.profile)
+
   const [openModal, setOpenModal] = useState({
     open: false,
     mode: 'add' as 'add' | 'edit',
@@ -393,6 +396,12 @@ const FormSection = ({
       }
     }
   };
+
+    if (loader) {
+      return (
+        <Loader />
+      );
+    }
 
   return (
     <>

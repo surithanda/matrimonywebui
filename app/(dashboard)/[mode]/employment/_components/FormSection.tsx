@@ -4,7 +4,7 @@ import {
   createEmploymentAsync,
   getEmploymentAsync,
 } from "@/app/store/features/profileSlice";
-import { AppDispatch, useAppDispatch } from "@/app/store/store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { AddEditEmploymentModal } from "./employment-modals/AddEditEmploymentModal";
 import { AddEmploymentModal } from "./employment-modals/AddEmploymentModal";
+import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IEmployment {
   id: string | number;
@@ -73,6 +74,7 @@ const FormSection = () => {
   const { loadStates, findCountryName, findStateName, findJobTitleName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
+  const {loading} = useAppSelector((state)=> state.profile)
   const [openModal, setOpenModal] = useState({
     open: false,
     mode: 'add' as 'add' | 'edit',
@@ -312,6 +314,12 @@ const FormSection = () => {
   const handleCancelConfirmation = () => {
     setShowConfirmation(false);
   };
+
+    if (loading) {
+      return (
+        <Loader />
+      );
+    }
 
   return (
     <>

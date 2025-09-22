@@ -213,8 +213,8 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
               <div className="flex items-center gap-3">
 
                 <Button
-                  className="border-0 px-2 bg-white text-black hover:bg-transparent hover:text-orange-400 gap-1"
-                  variant={"outline"}
+                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+                  variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -238,7 +238,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
             {/* Country and State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="country">Country *</Label>
+                <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="country"
                   bindValue={formData.country ?? ""}
@@ -246,7 +246,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="state">State *</Label>
+                <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
                 <MetadataSelectComponent
                   type="state"
                   bindValue={formData.state ?? ""}
@@ -259,24 +259,22 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
             {/* City and ZIP */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="city">City *</Label>
+                <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
                 <Input
                   id="city"
                   type="text"
                   value={formData.city ?? ""}
                   onChange={(e) => handleFieldChange('city', e.target.value)}
-                  placeholder="Enter city"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
               <div>
-                <Label htmlFor="zip">ZIP Code *</Label>
+                <Label htmlFor="zip">ZIP Code <span className="text-red-500">*</span></Label>
                 <Input
                   id="zip"
                   type="text"
                   value={formData.zip ?? ""}
                   onChange={(e) => handleFieldChange('zip', e.target.value)}
-                  placeholder="Enter ZIP code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -285,13 +283,12 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
             {/* Address Lines */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="address1">Complete Address *</Label>
+                <Label htmlFor="address1">Complete Address <span className="text-red-500">*</span></Label>
                 <Input
                   id="address1"
                   type="text"
                   value={formData.address_line1 ?? ""}
                   onChange={(e) => handleFieldChange('address_line1', e.target.value)}
-                  placeholder="Enter complete address"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -302,7 +299,6 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   type="text"
                   value={formData.address_line2 ?? ""}
                   onChange={(e) => handleFieldChange('address_line2', e.target.value)}
-                  placeholder="Address line 2 (optional)"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -317,7 +313,6 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   type="text"
                   value={formData.landmark1 ?? ""}
                   onChange={(e) => handleFieldChange('landmark1', e.target.value)}
-                  placeholder="Enter landmark"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -328,7 +323,6 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   type="text"
                   value={formData.landmark2 ?? ""}
                   onChange={(e) => handleFieldChange('landmark2', e.target.value)}
-                  placeholder="Enter landmark"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>

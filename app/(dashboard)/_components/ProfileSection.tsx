@@ -35,6 +35,7 @@ const ProfileSection = () => {
   const completeProfile = useAppSelector(
     (state) => state.profile.completeProfile
   );
+  
 
   const {loading} = useAppSelector(
     (state) => state.profile
@@ -251,12 +252,12 @@ const ProfileSection = () => {
                     with ease.
                   </p>
                 </div>
-                {!(selectedProfileID && selectedProfileID > 0) && (
+                {!(selectedProfileID && selectedProfileID < 0) && (
                   <Link href="/createprofile">
-                    <button className="px-5 py-2 text-white rounded-lg bg-[#f7ac03] hover:bg-[#e69a00] w-full sm:w-auto flex items-center justify-center gap-2">
+                    <Button className="px-5 py-2 text-white rounded-lg bg-[#f7ac03] hover:bg-[#e69a00] w-full sm:w-auto flex items-center justify-center gap-2">
                       <FaPlus />
                       Add Profile
-                    </button>
+                    </Button>
                   </Link>
                 )}
               </div>

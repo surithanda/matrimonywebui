@@ -11,11 +11,14 @@ import {
 } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { Button } from "@/components/ui/button";
-import { MdVerified } from "react-icons/md";
-import { IoIosHeart, IoIosHeartEmpty } from "react-icons/io";
+import { MdFamilyRestroom, MdVerified } from "react-icons/md";
+import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
 import NoData from "@/public/images/nodata.png";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
+import { IoLocationOutline } from "react-icons/io5";
+import { CiPhone } from "react-icons/ci";
+import { HiOutlineBriefcase } from "react-icons/hi";
 
 // Dummy helper functions — replace with actual implementations
 const getProfileImage = (profile: any) => profile.image_url || null;
@@ -90,6 +93,7 @@ const FavouritesPage = () => {
 
     loadFavoritesWithProfiles();
   }, [dispatch, selectedProfileID]);
+  
 
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16 w-full">
@@ -148,31 +152,46 @@ const FavouritesPage = () => {
                     )}
                   </button>
                   <div className="flex flex-col gap-1">
-                    <MdVerified
-                      className="inline text-blue-500 cursor-pointer"
-                      size={14}
-                      title="Verified Address"
-                    />
-                    <MdVerified
-                      className="inline text-red-500 cursor-pointer"
-                      size={14}
-                      title="Verified Education"
-                    />
-                    <MdVerified
-                      className="inline text-orange-500 cursor-pointer"
-                      size={14}
-                      title="Verified Contact"
-                    />
-                    <MdVerified
-                      className="inline text-yellow-500 cursor-pointer"
-                      size={14}
-                      title="Verified Employment"
-                    />
-                    <MdVerified
-                      className="inline text-sky-500 cursor-pointer"
-                      size={14}
-                      title="Verified Family"
-                    />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <IoLocationOutline color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Address"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <IoMdBook color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Education"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <CiPhone color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Contact"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <HiOutlineBriefcase color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Employment"
+                      />
+                    </div>
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
+                      <MdFamilyRestroom color="black" size={12} />
+                      <MdVerified
+                        className="inline text-blue-500 cursor-pointer"
+                        size={12}
+                        title="Verified Family"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -225,17 +244,19 @@ const FavouritesPage = () => {
                       <p className="font-bold text-lg">{profile?.age}</p>
                       <p className="text-gray-400 text-sm">Age</p>
                     </div>
-                    <div>
-                      <p className="font-bold text-lg">
-                        {profile?.religion_text || "N/A"}
-                      </p>
-                      <p className="text-gray-400 text-sm">Religion</p>
-                    </div>
+
                     <div>
                       <p className="font-bold text-lg">
                         {profile?.gender_text || "N/A"}
                       </p>
                       <p className="text-gray-400 text-sm">Gender</p>
+                    </div>
+
+                    <div>
+                      <p className="font-bold text-lg truncate overflow-hidden whitespace-nowrap">
+                        {profile?.religion_text || "N/A"}
+                      </p>
+                      <p className="text-gray-400 text-sm">Religion</p>
                     </div>
                   </div>
 

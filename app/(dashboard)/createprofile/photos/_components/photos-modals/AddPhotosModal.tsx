@@ -26,6 +26,7 @@ import {
 import { IoIosSave, IoMdCloseCircle } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
+import Image from "next/image";
 // Constants
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -248,7 +249,7 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
               <div className="grid grid-cols-2 gap-2 my-2">
                 {previews.map((preview, index) => (
                   <div key={index} className="relative">
-                    <img
+                    <Image
                       src={preview}
                       alt="Preview"
                       className="h-32 w-full object-cover rounded border"

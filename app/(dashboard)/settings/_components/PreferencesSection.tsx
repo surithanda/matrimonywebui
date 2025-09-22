@@ -244,10 +244,10 @@ const PreferencesSection = () => {
         <div className="px-4 py-4 m-1 bg-white rounded-md">
           {/* Age Range */}
           <div className=" w-full">
-            <label className="block BRCobane20600 text-gray-950 mb-2">
+            <label >
               Age Range: {minAge} - {maxAge} years
             </label>
-            <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-2 gap-4 w-full mt-2">
               <div>
                 <Label className="block text-sm text-gray-600 mb-1">
                   Min Age
@@ -284,10 +284,10 @@ const PreferencesSection = () => {
           </div>
 
           {/* Select Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-4 mt-4 gap-6 w-full">
             {/* Gender */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Gender Preference
               </Label>
               <MetadataSelectComponent
@@ -302,7 +302,7 @@ const PreferencesSection = () => {
 
             {/* Religion */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Religion
               </Label>
               <MetadataSelectComponent
@@ -317,7 +317,7 @@ const PreferencesSection = () => {
 
             {/* Max Education */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Education Level
               </Label>
               <MetadataSelectComponent
@@ -332,7 +332,7 @@ const PreferencesSection = () => {
 
             {/* Occupation */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Occupation
               </Label>
               <MetadataSelectComponent
@@ -347,7 +347,7 @@ const PreferencesSection = () => {
 
             {/* Country */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Country
               </Label>
               <MetadataSelectComponent
@@ -362,7 +362,7 @@ const PreferencesSection = () => {
 
             {/* Caste */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Caste
               </Label>
               <MetadataSelectComponent
@@ -377,7 +377,7 @@ const PreferencesSection = () => {
 
             {/* Marital Status */}
             <div className="">
-              <Label className="block BRCobane20600 text-gray-950 mb-2">
+              <Label >
                 Marital Status
               </Label>
               <MetadataSelectComponent

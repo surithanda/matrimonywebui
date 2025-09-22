@@ -126,6 +126,8 @@ const FormSection = () => {
     }
   }, [selectedProfileID, loadStates, fetchProfileAddress]);
 
+  console.log("address data", fields)
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -192,6 +194,7 @@ const FormSection = () => {
     setCurrentAddress({ ...defaultAddress });
     setOpenModal({ open: false, mode: 'add' });
   };
+
   const handleAddOrUpdate = async () => {
     if (
       !currentAddress.city &&

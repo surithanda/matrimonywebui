@@ -247,11 +247,31 @@ const ProfileGeneral = () => {
   return (
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+                {/* Buttons */}
+        {/* <div className="flex justify-end gap-4 mb-3">
+          <Button
+            type="button"
+            onClick={handleCancel}
+            disabled={loading}
+            variant={"outline"}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            variant={"default"}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            Save
+          </Button>
+        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Personal Details */}
           <div className="border border-gray-100  bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Personal Details
@@ -346,9 +366,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Contact Details */}
-          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
+          <div className="border border-gray-100 bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Contact Details
@@ -419,15 +439,15 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Demographics */}
-          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
+          <div className="border border-gray-100 bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Demographics
             </h3>
             <div className="px-4 py-4 m-1 bg-white rounded-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {/* Nationality */}
                 <div className="">
                   <Label>
@@ -508,9 +528,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Physical Attributes */}
-          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
+          <div className="border border-gray-100 bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Physical Attributes
@@ -614,9 +634,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Professional & Social Details */}
-          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
+          <div className="border border-gray-100 bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Professional & Social Details
@@ -696,9 +716,9 @@ const ProfileGeneral = () => {
           </div>
 
           {/* Summary */}
-          <div className="border border-gray-100 bg-gray-200 rounded shadow h-full">
+          <div className="border border-gray-100 bg-gray-200 rounded-lg shadow h-full">
             <h3
-              className="text-lg font-semibold bg-gray-200 px-4 py-3"
+              className="text-lg font-semibold bg-gray-200 px-4 py-2"
               style={{ fontFamily: "BR Cobane" }}
             >
               Summary

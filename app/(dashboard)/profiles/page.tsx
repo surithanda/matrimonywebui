@@ -194,19 +194,21 @@ const Page = () => {
                         </p>
                         <p className="text-gray-400 text-sm">Age</p>
                       </div>
-                      <div>
-                        <p className="font-bold text-lg">
-                          {findReligionName(
-                            profile?.religion ?? profile?.religion ?? 0
-                          ) || "N/A"}
-                        </p>
-                        <p className="text-gray-400 text-sm">Religion</p>
-                      </div>
+
                       <div>
                         <p className="font-bold text-lg">
                           {profile.gender || "N/A"}
                         </p>
                         <p className="text-gray-400 text-sm">Gender</p>
+                      </div>
+
+                      <div className="max-w-[100px]">
+                        {" "}
+                        {/* limit width so truncate works */}
+                        <p className="font-bold text-lg truncate overflow-hidden whitespace-nowrap">
+                          {findReligionName(profile?.religion ?? 0) || "N/A"}
+                        </p>
+                        <p className="text-gray-400 text-sm">Religion</p>
                       </div>
                     </div>
 
@@ -232,18 +234,18 @@ const Page = () => {
             })}
           </div>
         ) : (
-           <div className="col-span-full text-center py-10 flex flex-col items-center">
-          <Image
-            src={NoData}
-            alt="No favourites"
-            width={220}
-            height={220}
-            className="mb-4 opacity-80"
-          />
-          <p className="text-gray-500 text-lg font-medium">
-            No favourites available.
-          </p>
-        </div>
+          <div className="col-span-full text-center py-10 flex flex-col items-center">
+            <Image
+              src={NoData}
+              alt="No favourites"
+              width={220}
+              height={220}
+              className="mb-4 opacity-80"
+            />
+            <p className="text-gray-500 text-lg font-medium">
+              No favourites available.
+            </p>
+          </div>
         )}
       </div>
     </div>

@@ -47,8 +47,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [loadMetaData]);
 
   return (
-    <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
-      <div className="flex justify-between items-center w-full mb-4">
+    <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[25px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
+      <div className="flex justify-between items-center w-full mb-2">
         <div>
           {/* Title */}
           <h2 className="dmserif32600 mt-2">Create Profile</h2>

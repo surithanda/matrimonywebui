@@ -380,6 +380,7 @@ const FormSection = () => {
                           Edit
                         </button>
                         <button
+                          disabled
                           type="button"
                           onClick={() => {
                             handleDelete(index);

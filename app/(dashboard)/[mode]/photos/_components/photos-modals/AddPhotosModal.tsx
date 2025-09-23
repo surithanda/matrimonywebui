@@ -47,12 +47,14 @@ interface AddPhotosModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   profileId: number;
+   onUploadSuccess:any
 }
 
 const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
   open,
   onOpenChange,
   profileId,
+   onUploadSuccess,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -149,8 +151,11 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
       }
 
       toast.success("Photo(s) uploaded successfully!");
-      await dispatch(getProfilePhotosAsync(profileId));
+      // await dispatch(getProfilePhotosAsync(profileId));
 
+      if (onUploadSuccess) {
+        onUploadSuccess(); // <-- Trigger the callback
+      }
       removeSelection();
       onOpenChange(false);
     } catch (err: any) {

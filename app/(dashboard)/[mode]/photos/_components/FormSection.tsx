@@ -57,6 +57,10 @@ const FormSection = () => {
     loadPhotos();
   }, [loadPhotos]);
 
+  const handleAfterUpload = () => {
+    loadPhotos();
+  };
+
   // Find specific types
   const profilePhoto = photos.find(
     (p) => Number(p.photo_type) === photoTypeAssociation.profile
@@ -393,6 +397,7 @@ const FormSection = () => {
         profileId={selectedProfileID}
         open={openModal.add}
         onOpenChange={closeAddModal}
+        onUploadSuccess={handleAfterUpload}
       />
 
       {/* Preview Modal */}

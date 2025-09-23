@@ -194,7 +194,7 @@ export const updatePropertyAsync = createAsyncThunk(
   'profile/updateProperty',
   async (propertyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/property/${propertyData.id}`, propertyData);
+      const response = await api.put(`/profile/property/${propertyData.profile_property_id}`, propertyData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -242,7 +242,7 @@ export const updateReferenceAsync = createAsyncThunk(
   'profile/updateReference',
   async (referenceData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/reference/${referenceData.id}`, referenceData);
+      const response = await api.put(`/profile/reference/${referenceData.eb_profile_family_reference_id}`, referenceData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -505,7 +505,7 @@ export const updateEmploymentAsync = createAsyncThunk(
   'profile/updateEmployment',
   async (employmentData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/employment/${employmentData.employment_id}`, employmentData);
+      const response = await api.put(`/profile/employment/${employmentData.profile_employment_id}`, employmentData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');

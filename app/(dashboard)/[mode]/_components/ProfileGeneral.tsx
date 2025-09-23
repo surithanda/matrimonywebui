@@ -520,7 +520,7 @@ const ProfileGeneral = () => {
                 </div>
                 {/* Marital Status */}
                 <div className="">
-                  <Label>Marital Status</Label>
+                  <Label>Marital Status <span className="text-red-500">*</span></Label>
                   <MetadataSelectComponent
                     type="marital_status"
                     {...register("marital_status")}

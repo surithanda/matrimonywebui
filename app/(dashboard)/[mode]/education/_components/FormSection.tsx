@@ -106,7 +106,7 @@ const FormSection = () => {
     try {
       const result = await dispatch(getEducationAsync(data)).unwrap();
 
-      console.log("fetch data", result);
+      // console.log("fetch data", result);
 
       if (result?.success && result.data) {
         reset({ educations: result.data?.educations });

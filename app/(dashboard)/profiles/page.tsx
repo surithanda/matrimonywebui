@@ -12,12 +12,14 @@ import { useProfileContext } from "@/app/utils/useProfileContext";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import Lottie from "lottie-react";
 import Loading from "@/public/lottie/Loading.json";
-import { IoLocationOutline } from "react-icons/io5";
+import { IoBook, IoLocationOutline, IoLocationSharp } from "react-icons/io5";
 import { IoMdBook } from "react-icons/io";
 import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { toAbsoluteUrl } from "@/app/lib/env";
 import NoData from "@/public/images/nodata.png";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FaBriefcase } from "react-icons/fa6";
 
 // ✅ Utility functions
 function getInitials(firstName?: string, lastName?: string) {
@@ -95,45 +97,20 @@ const Page = () => {
                   {/* Verified Badges */}
                   <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
                     <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                        <IoLocationOutline color="black" size={12} />
-                        <MdVerified
-                          className="inline text-blue-500 cursor-pointer"
-                          size={12}
-                          title="Verified Address"
-                        />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <IoLocationSharp size={12} />
                       </div>
-                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                        <IoMdBook color="black" size={12} />
-                        <MdVerified
-                          className="inline text-blue-500 cursor-pointer"
-                          size={12}
-                          title="Verified Education"
-                        />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <IoBook size={12} />
                       </div>
-                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                        <CiPhone color="black" size={12} />
-                        <MdVerified
-                          className="inline text-blue-500 cursor-pointer"
-                          size={12}
-                          title="Verified Contact"
-                        />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <FaPhoneAlt size={12} />
                       </div>
-                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                        <HiOutlineBriefcase color="black" size={12} />
-                        <MdVerified
-                          className="inline text-blue-500 cursor-pointer"
-                          size={12}
-                          title="Verified Employment"
-                        />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <FaBriefcase size={12} />
                       </div>
-                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                        <MdFamilyRestroom color="black" size={12} />
-                        <MdVerified
-                          className="inline text-blue-500 cursor-pointer"
-                          size={12}
-                          title="Verified Family"
-                        />
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <MdFamilyRestroom size={12} />
                       </div>
                     </div>
                   </div>

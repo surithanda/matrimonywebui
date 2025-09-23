@@ -107,7 +107,7 @@ const FormSection = ({
     mode: 'add' as 'add' | 'edit',
   });
 
-  console.log("Current Family Member:", fields);
+  // console.log("Current Family Member:", fields);
 
   // Check if currentFamilyMember has any meaningful data
   const hasUnsavedFamilyData = () => {

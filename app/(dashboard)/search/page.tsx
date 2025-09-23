@@ -22,9 +22,16 @@ import { Label } from "@/components/ui/label";
 import Lottie from "lottie-react";
 import Loading from "@/public/lottie/Loading.json";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { IoBook, IoLocation, IoLocationOutline } from "react-icons/io5";
+import {
+  IoBook,
+  IoLocation,
+  IoLocationOutline,
+  IoLocationSharp,
+} from "react-icons/io5";
 import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FaBriefcase } from "react-icons/fa6";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -62,7 +69,6 @@ const Page = () => {
     loading = false,
     error = null,
   } = searchState || {};
-
 
   const { loading: metadataLoading = false } = metaDataState || {};
 
@@ -301,7 +307,7 @@ const Page = () => {
   // Generate age options
   const ageOptions = Array.from({ length: 63 }, (_, i) => i + 21);
 
-  console.log("search profiles", profiles)
+  console.log("search profiles", profiles);
 
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
@@ -572,45 +578,20 @@ const Page = () => {
                     )}
                   </button>
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                      <IoLocationOutline color="black" size={12} />
-                      <MdVerified
-                        className="inline text-blue-500 cursor-pointer"
-                        size={12}
-                        title="Verified Address"
-                      />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                      <IoLocationSharp size={12} />
                     </div>
-                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                      <IoMdBook color="black" size={12} />
-                      <MdVerified
-                        className="inline text-blue-500 cursor-pointer"
-                        size={12}
-                        title="Verified Education"
-                      />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                      <IoBook size={12} />
                     </div>
-                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                      <CiPhone color="black" size={12} />
-                      <MdVerified
-                        className="inline text-blue-500 cursor-pointer"
-                        size={12}
-                        title="Verified Contact"
-                      />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                      <FaPhoneAlt size={12} />
                     </div>
-                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                      <HiOutlineBriefcase color="black" size={12} />
-                      <MdVerified
-                        className="inline text-blue-500 cursor-pointer"
-                        size={12}
-                        title="Verified Employment"
-                      />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                      <FaBriefcase size={12} />
                     </div>
-                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md">
-                    <MdFamilyRestroom color="black" size={12}/>
-                    <MdVerified
-                      className="inline text-blue-500 cursor-pointer"
-                      size={12}
-                      title="Verified Family"
-                    />
+                    <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                      <MdFamilyRestroom size={12} />
                     </div>
                   </div>
                 </div>

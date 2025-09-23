@@ -398,6 +398,7 @@ const FormSection = () => {
         open={openModal.add}
         onOpenChange={closeAddModal}
         onUploadSuccess={handleAfterUpload}
+        uploadedPhotos={photos}
       />
 
       {/* Preview Modal */}

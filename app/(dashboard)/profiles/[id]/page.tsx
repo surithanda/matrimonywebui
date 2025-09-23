@@ -713,7 +713,7 @@ const ViewProfile = () => {
                                     >
                                       {title}
                                     </h3>
-                                    {/* <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" /> */}
+                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
                                   </div>
                                 </div>
 
@@ -765,6 +765,9 @@ const ViewProfile = () => {
                             <th className="px-2 py-2 border-b text-base font-bold">
                               City & Country
                             </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Verified
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -796,6 +799,15 @@ const ViewProfile = () => {
                                   {findCountryName(
                                     edu?.country_id ?? edu?.country_name ?? 0
                                   ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-500 text-white dark:bg-blue-600"
+                                  >
+                                    <BadgeCheckIcon size={14} />
+                                    Verified
+                                  </Badge>
                                 </td>
                               </tr>
                             );
@@ -866,7 +878,7 @@ const ViewProfile = () => {
                                   variant="secondary"
                                   className="bg-blue-500 text-white dark:bg-blue-600"
                                 >
-                                  <BadgeCheckIcon size={14}/>
+                                  <BadgeCheckIcon size={14} />
                                   Verified
                                 </Badge>
                               </td>
@@ -909,6 +921,9 @@ const ViewProfile = () => {
                               <th className="px-2 py-2 border-b text-base font-bold">
                                 Relation
                               </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verified
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -925,6 +940,15 @@ const ViewProfile = () => {
                                 <td className="px-4 py-3 border-b">
                                   {member?.type_name}
                                 </td>
+                                   <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14}/>
+                                  Verified
+                                </Badge>
+                              </td>
                               </tr>
                             ))}
                           </tbody>
@@ -957,6 +981,9 @@ const ViewProfile = () => {
                               <th className="px-2 py-2 border-b text-base font-bold">
                                 Relation
                               </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verifed
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -971,6 +998,15 @@ const ViewProfile = () => {
                                 <td className="px-4 py-3 border-b">
                                   {ref?.type_name}
                                 </td>
+                                   <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14}/>
+                                  Verified
+                                </Badge>
+                              </td>
                               </tr>
                             ))}
                           </tbody>

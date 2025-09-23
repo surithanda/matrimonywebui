@@ -253,6 +253,8 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
                       src={preview}
                       alt="Preview"
                       className="h-32 w-full object-cover rounded border"
+                      width={100}
+                      height={100}
                     />
                     <button
                       type="button"

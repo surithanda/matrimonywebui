@@ -348,7 +348,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="relationshiptoyou">
+                <Label htmlFor="relationshiptoyou" className="mb-2">
                   Relationship to You <span className="text-red-500">*</span>
                 </Label>
                 <MetadataSelectComponent
@@ -359,7 +359,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                     handleFieldChange("relationshiptoyou", e.target.value)
                   }
                   //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  //   className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg"
+                    className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg mt-1"
                 />
               </div>
             </div>

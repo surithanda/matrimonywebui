@@ -115,7 +115,7 @@ export default function Tabs() {
   return (
     <div>
       {/* Tabs container */}
-      <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1 gap-0.5">
+      <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1">
         {menu.map((item, index) => {
           const isCompleted =
             menu.findIndex((m) => m.id === activeItem) > index;
@@ -131,7 +131,7 @@ export default function Tabs() {
                 setActiveItem(item.id);
                 router.push(item.link);
               }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200
+              className={`flex items-center gap-2 px-[15.5px] py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200
             ${
               item.disabled
                 ? "cursor-not-allowed text-gray-400 bg-gray-100"

@@ -3,6 +3,7 @@ import MetadataSelectComponent from "@/app/_components/custom_components/Metadat
 import {
   createEmploymentAsync,
   getEmploymentAsync,
+  updateEmploymentAsync,
 } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
@@ -198,6 +199,7 @@ const FormSection = () => {
     }
 
     setCurrentEmployment({ ...defaultEmployment });
+    fetchProfileData(); // Refresh the list from server
   };
 
   // Close dropdown when clicking outside
@@ -251,19 +253,18 @@ const FormSection = () => {
 
     if (mode === 'edit' && editIndex !== null) {
       // Update existing employment
-      // Uncomment when update API is ready
-      // try {
-      //   const result = await dispatch(updateEmploymentAsync(sectionData)).unwrap();
-      //   if (result && result.status === 'success') {
-      //     proceedwithAddUpdate(result?.profile_employment_id);
-      //   }
-      // } catch (err: any) {
-      //   console.error("Error updating employment:", err);
-      //   throw err;
-      // }
+      try {
+        const result = await dispatch(updateEmploymentAsync(sectionData)).unwrap();
+        if (result && result.status === 'success') {
+          proceedwithAddUpdate(result?.profile_employment_id);
+        }
+      } catch (err: any) {
+        console.error("Error updating employment:", err);
+        throw err;
+      }
       
       // For now, update locally
-      proceedwithAddUpdate(employmentData.id);
+      // proceedwithAddUpdate(employmentData.id);
     } else {
       // Add new employment
       try {

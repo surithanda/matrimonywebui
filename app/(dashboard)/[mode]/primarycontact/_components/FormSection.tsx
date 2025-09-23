@@ -239,7 +239,7 @@ const FormSection = () => {
       //add
       try {
         const result = await dispatch(createAddressAsync(addressData)).unwrap();
-        console.log(result);
+        // console.log(result);
         if (result && result.status === "success") {
           // toast.success("Address added successfully!");
           proceedwithAddUpdate(result?.profile_address_id);
@@ -256,7 +256,7 @@ const FormSection = () => {
     const updatedAddress = updateID
       ? { ...currentAddress, id: updateID }
       : { ...currentAddress };
-    console.log(updatedAddress, currentAddress, editIndex);
+    // console.log(updatedAddress, currentAddress, editIndex);
     if (editIndex !== null) {
       update(editIndex, updatedAddress);
       setEditIndex(null);
@@ -265,6 +265,8 @@ const FormSection = () => {
     }
     setCurrentAddress({ ...defaultAddress });
     setOpenModal({ open: false, mode: 'add' });
+
+    fetchProfileAddress(); // Refresh the address list from server
   };
 
   // On submit, check for unsaved data and show confirmation if needed

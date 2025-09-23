@@ -35,11 +35,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   
   useEffect(() => {
     if(selectedProfileID > 0 && isCreateMode) {
-      localStorage.setItem("selectedProfile", selectedProfileID.toString());
-      setSelectedProfileID(0);
+      // Don't redirect - let the component handle this in render
+      // router.push("dashboard");
+      // localStorage.setItem("selectedProfile", selectedProfileID.toString());
+      // setSelectedProfileID(0);
     }
   }, [selectedProfileID, isCreateMode, setSelectedProfileID]);
-  
+
   // Use ref to store the original profile ID when entering create mode
   const originalProfileIDRef = useRef<number | null>(null);
   const previousModeRef = useRef<string | null>(null);
@@ -172,6 +174,50 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     loadMetaData();
   }, [loadMetaData]);
+
+  // Show custom message when user tries to create profile but already has one
+  if (selectedProfileID > 0 && isCreateMode) {
+    return (
+      <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
+        <div className="flex justify-between items-center w-full mb-4">
+          <div>
+            <h2 className="dmserif32600 mt-2">Create Profile</h2>
+            <AppBreadcrumb
+              items={[
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Create Profile" },
+              ]}
+            />
+          </div>
+        </div>
+
+        <div className="profile-details-box w-full text-center py-16">
+          <div className="max-w-md mx-auto">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Profile Already Exists
+              </h3>
+              <p className="text-gray-600 mb-6">
+                The current site configuration allows you to create only one profile per account.
+              </p>
+            </div>
+            
+            <Button 
+              onClick={() => router.push('/dashboard')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+            >
+              Go Back to Dashboard
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">

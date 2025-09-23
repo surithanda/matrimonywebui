@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
@@ -153,32 +153,43 @@ const FormSection = ({
     }
   };
 
+  const fetchProfileData = useCallback(async () => {
+    const data = {
+      profile_id: selectedProfileID,
+    };
+    try {
+      dispatch(
+        getFamilyAsync({ profile_id: selectedProfileID, type: category })
+      ).then((result: any) => {
+        if (result.payload?.success && result.payload.data) {
+          const formattedData = result.payload.data?.family?.map((item: any) => ({
+            id: item.profile_family_reference_id,
+            firstname: item.first_name,
+            lastname: item.last_name,
+            dob: item.date_of_birth,
+            contactnumber: item.primary_phone,
+            contactnumber_country: item.contactnumber_country, // Assuming this field exists
+            email: item.email,
+            relationshiptoyou: item.reference_type,
+            address_line: item.address_line1,
+            city: item.city,
+            state_id: item.state_id,
+            country_id: item.country_id,
+            zip: item.zip,
+          }));
+          reset({ family: formattedData || [] });
+        }
+      });
+    } catch (err: any) {
+      console.error("Error getting profile section details:", err);
+    }
+  }, [dispatch, reset, selectedProfileID, category]);
+
   // Fetch family members from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(
-      getFamilyAsync({ profile_id: selectedProfileID, type: category })
-    ).then((result: any) => {
-      if (result.payload?.success && result.payload.data) {
-        const formattedData = result.payload.data?.family?.map((item: any) => ({
-          id: item.profile_family_reference_id,
-          firstname: item.first_name,
-          lastname: item.last_name,
-          dob: item.date_of_birth,
-          contactnumber: item.primary_phone,
-          contactnumber_country: item.contactnumber_country, // Assuming this field exists
-          email: item.email,
-          relationshiptoyou: item.reference_type,
-          address_line: item.address_line1,
-          city: item.city,
-          state_id: item.state_id,
-          country_id: item.country_id,
-          zip: item.zip,
-        }));
-        reset({ family: formattedData || [] });
-      }
-    });
-  }, [selectedProfileID, dispatch, category, reset]);
+    fetchProfileData();
+  }, [selectedProfileID, fetchProfileData]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -264,6 +275,7 @@ const FormSection = ({
       append(updatedData);
     }
     setCurrentFamilyMember({ ...defaultFamilyMember });
+    fetchProfileData(); // Refresh the list from server
   };
 
   // When editing, load the family member into local state
@@ -371,18 +383,18 @@ const FormSection = ({
     if (mode === 'edit' && editIndex !== null) {
       // Update existing family member
       // Uncomment when update API is ready
-      // try {
-      //   const result = await dispatch(updateFamilyAsync(familyPayload)).unwrap();
-      //   if (result && result.data.status === 'success') {
-      //     proceedwithAddUpdate(result.data.profile_family_reference_id);
-      //   }
-      // } catch (err: any) {
-      //   console.error("Error updating family member:", err);
-      //   throw err;
-      // }
+      try {
+        const result = await dispatch(updateFamilyAsync(familyPayload)).unwrap();
+        if (result && result.data.status === 'success') {
+          proceedwithAddUpdate(result.data.profile_family_reference_id);
+        }
+      } catch (err: any) {
+        console.error("Error updating family member:", err);
+        throw err;
+      }
       
       // For now, update locally
-      proceedwithAddUpdate(familyData.id);
+      // proceedwithAddUpdate(familyData.id);
     } else {
       // Add new family member
       try {

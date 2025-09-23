@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
@@ -149,6 +149,7 @@ const FormSection = () => {
       append(updatedData);
     }
     setCurrentProperty({ ...defaultProperty });
+
   };
 
   // Load property into form for editing
@@ -242,17 +243,28 @@ const FormSection = () => {
     }
   }, [activeDropdown]);
 
+    const fetchProfileData = useCallback(async () => {
+      const data = {
+        profile_id: selectedProfileID,
+      };
+      try {
+        dispatch(getPropertiesAsync({ profile_id: selectedProfileID })).then(
+          (result: any) => {
+            if (result.payload?.data) {
+              reset(result.payload.data);
+            }
+          }
+        );
+      } catch (err: any) {
+        console.error("Error getting property details:", err);
+      }
+    }, [dispatch, reset, selectedProfileID]);
+  
   // Fetch properties from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
-    dispatch(getPropertiesAsync({ profile_id: selectedProfileID })).then(
-      (result: any) => {
-        if (result.payload?.data) {
-          reset(result.payload.data);
-        }
-      }
-    );
-  }, [selectedProfileID, dispatch, reset]);
+    fetchProfileData();
+  }, [selectedProfileID, fetchProfileData]);
 
   const closeAddModal = () => {
     setOpenModal({
@@ -280,6 +292,7 @@ const FormSection = () => {
         if (result && result.status === "success") {
           update(editIndex, { ...propertyData, id: fields[editIndex].id });
           setEditIndex(null);
+          fetchProfileData(); // Refresh the list from server
         }
       } else {
         // Add new property
@@ -291,6 +304,7 @@ const FormSection = () => {
         ).unwrap();
         if (result && result.data.status === "success") {
           append({ ...propertyData, id: result.data.profile_property_id });
+          fetchProfileData(); // Refresh the list from server
         }
       }
       setOpenModal({ open: false, mode: 'add' });

@@ -3,6 +3,7 @@ import MetadataSelectComponent from "@/app/_components/custom_components/Metadat
 import {
   createEducationAsync,
   getEducationAsync,
+  updateEducationAsync,
 } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getNextRoute } from "@/app/utils/routeOrder";
@@ -28,6 +29,7 @@ import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IEducation {
   id: string | number;
+  profile_education_id?: string | number;
   education_level: number;
   year_completed: string | number;
   institution_name: string;
@@ -45,6 +47,7 @@ interface IFormValues {
 
 const defaultEducation = {
   id: "",
+  profile_education_id: "",
   education_level: 1,
   year_completed: "",
   institution_name: "",
@@ -109,7 +112,7 @@ const FormSection = () => {
         reset({ educations: result.data?.educations });
       }
     } catch (err: any) {
-      console.error("Error getting profile address details:", err);
+      console.error("Error getting profile education details:", err);
     }
   }, [dispatch, reset, selectedProfileID]);
 
@@ -218,6 +221,7 @@ const FormSection = () => {
     }
 
     setCurrentEducation({ ...defaultEducation });
+    fetchProfileData(); // Refresh the list from server
   };
 
   // When editing, load the education into local state
@@ -304,18 +308,18 @@ const FormSection = () => {
     if (mode === 'edit' && editIndex !== null) {
       // Update existing education
       // Uncomment when update API is ready
-      // try {
-      //   const result = await dispatch(updateEducationAsync(educationPayload)).unwrap();
-      //   if (result && result.status === 'success') {
-      //     proceedwithAddUpdate(result?.profile_education_id);
-      //   }
-      // } catch (err: any) {
-      //   console.error("Error updating education:", err);
-      //   throw err;
-      // }
+      try {
+        const result = await dispatch(updateEducationAsync(educationPayload)).unwrap();
+        if (result && result.status === 'success') {
+          proceedwithAddUpdate(result?.profile_education_id);
+        }
+      } catch (err: any) {
+        console.error("Error updating education:", err);
+        throw err;
+      }
       
       // For now, update locally
-      proceedwithAddUpdate(educationData.id);
+      // proceedwithAddUpdate(educationData.id);
     } else {
       // Add new education
       try {
@@ -384,7 +388,6 @@ const FormSection = () => {
                     {activeDropdown === index && (
                       <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[140px]">
                         <button
-                          disabled
                           type="button"
                           onClick={() => {
                             handleEdit(index);

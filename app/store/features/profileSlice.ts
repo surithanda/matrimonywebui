@@ -457,7 +457,7 @@ export const updateEducationAsync = createAsyncThunk(
   'profile/updateEducation',
   async (educationData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/education/${educationData.education_id}`, educationData);
+      const response = await api.put(`/profile/education/${educationData.profile_education_id}`, educationData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');

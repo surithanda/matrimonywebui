@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   createPersonalProfileAsync,
   getPersonalProfileAsync,
+  updatePersonalProfileAsync,
 } from "@/app/store/features/profileSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +28,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { FaqSection } from "@/components/blocks/faq";
 import Loader from "../../_components/Loader";
+import { useProfileModeInfo } from "../hooks/useValidatedProfileMode";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Extended form data interface
 interface FormData extends IProfilePersonal {
@@ -52,6 +62,10 @@ const ProfileGeneral = () => {
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
   const { setSelectedProfileID, selectedProfileID } = useProfileContext();
+  const { isCreateMode } = useProfileModeInfo();
+  
+  // Modal state for profile creation success
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const dummy = {
     profile_id: 1,
@@ -212,11 +226,19 @@ const ProfileGeneral = () => {
           setSelectedProfileID(result?.data?.profile_id);
           toast.success("Profile created successfully!");
           reset();
-          router.push("/updateprofile/primarycontact");
+          
+          setShowSuccessModal(true);
         }
       } else {
         //update
-        router.push("/updateprofile/primarycontact");
+        const result = await dispatch(
+          updatePersonalProfileAsync({ ...mappedData, profile_id: selectedProfileID })
+        ).unwrap();
+        if (result) {
+          toast.success("Profile updated successfully!");
+          reset();
+          router.push("/updateprofile/primarycontact");
+        }
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to create profile");
@@ -224,7 +246,16 @@ const ProfileGeneral = () => {
     }
   };
 
-  const handleCancel = (e: React.MouseEvent) => {
+  // Handle modal actions
+  const handleContinueEditing = () => {
+    setShowSuccessModal(false);
+    router.push("/updateprofile/primarycontact");
+  };
+
+  const handleGoToDashboard = () => {
+    setShowSuccessModal(false);
+    router.push("/dashboard");
+  };  const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
     reset();
   };
@@ -759,6 +790,59 @@ const ProfileGeneral = () => {
           </Button>
         </div>
       </form>
+      
+      {/* Success Modal - Only shown in create mode */}
+      <Dialog open={showSuccessModal} onOpenChange={() => {}}>
+        <DialogContent 
+          className="sm:max-w-lg p-0"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle className="text-center text-xl font-semibold text-green-600 mb-3">
+              🎉 Profile Created Successfully!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-700 leading-relaxed space-y-4">
+              <p className="text-base">
+                Basic profile creation successful. You can choose to come back later and fill the other pieces of your profile.
+              </p>
+              
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 my-4">
+                <p className="text-sm">
+                  <span className="font-semibold text-orange-700">
+                    Note:
+                  </span>{" "}
+                  <span className="text-orange-600">
+                    Partially filled profile won't be active on the portal.
+                  </span>
+                </p>
+              </div>
+              
+              <p className="text-base font-medium text-gray-800">
+                Would you like to continue editing your profile?
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="px-6 pb-6 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:justify-end">
+              <Button
+                variant="outline"
+                onClick={handleGoToDashboard}
+                className="w-full sm:w-auto px-6 py-2 order-2 sm:order-1"
+              >
+                Go to Dashboard
+              </Button>
+              <Button
+                onClick={handleContinueEditing}
+                className="w-full sm:w-auto px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white order-1 sm:order-2"
+              >
+                Continue Editing Profile
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <ToastContainer />
     </section>
   );

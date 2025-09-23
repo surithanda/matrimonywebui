@@ -4,6 +4,8 @@ import { createContext, useContext, useState, ReactNode, useMemo, useEffect, use
 type ProfileContextType = {
   selectedProfileID: number;
   setSelectedProfileID: (id: number) => void;
+  isNew: boolean;
+  setIsNew: (isNew: boolean) => void;
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -14,7 +16,8 @@ interface ProfileContextProviderProps {
 
 export function ProfileContextProvider({ children }: ProfileContextProviderProps) {
   const [selectedProfileID, setSelectedProfileIDState] = useState<number>(Number(localStorage.getItem("profile")) || 0);
-
+  const [isNew, setIsNew] = useState<boolean>(false);
+  
   useEffect(() => {
     localStorage.setItem("profile", String(selectedProfileID));
   }, [selectedProfileID]);
@@ -26,8 +29,10 @@ export function ProfileContextProvider({ children }: ProfileContextProviderProps
 
   const value = useMemo(() => ({
     selectedProfileID,
-    setSelectedProfileID
-  }), [selectedProfileID, setSelectedProfileID]);
+    setSelectedProfileID,
+    isNew,
+    setIsNew
+  }), [selectedProfileID, setSelectedProfileID, isNew, setIsNew]);
 
   return (
     <ProfileContext.Provider value={value}>

@@ -61,7 +61,7 @@ const ProfileGeneral = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
-  const { setSelectedProfileID, selectedProfileID } = useProfileContext();
+  const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } = useProfileContext();
   const { isCreateMode } = useProfileModeInfo();
   
   // Modal state for profile creation success
@@ -216,6 +216,7 @@ const ProfileGeneral = () => {
 
     try {
       if (!selectedProfileID) {
+        setIsNew(true);
         const result = await dispatch(
           createPersonalProfileAsync(mappedData)
         ).unwrap();
@@ -246,14 +247,18 @@ const ProfileGeneral = () => {
 
   // Handle modal actions
   const handleContinueEditing = () => {
+    setIsNew(false);
     setShowSuccessModal(false);
     router.push("/updateprofile/primarycontact");
   };
 
   const handleGoToDashboard = () => {
+    setIsNew(false);
     setShowSuccessModal(false);
     router.push("/dashboard");
-  };  const handleCancel = (e: React.MouseEvent) => {
+  };  
+  
+  const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
     reset();
   };

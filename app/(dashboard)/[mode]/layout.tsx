@@ -27,7 +27,7 @@ import { useProfileModeInfo } from "./hooks/useValidatedProfileMode";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { loadMetaData } = useMetaDataLoader();
-  const { setSelectedProfileID, selectedProfileID } = useProfileContext();
+  const { setSelectedProfileID, selectedProfileID, isNew } = useProfileContext();
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
@@ -176,7 +176,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [loadMetaData]);
 
   // Show custom message when user tries to create profile but already has one
-  if (selectedProfileID > 0 && isCreateMode) {
+  if (selectedProfileID > 0 && isCreateMode && !isNew) {
     return (
       <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
         <div className="flex justify-between items-center w-full mb-4">

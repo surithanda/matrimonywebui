@@ -79,13 +79,12 @@ const FormSection = () => {
   });
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
-  const { loadStates, formatWithMetaData, findCountryName, findStateName } =
-    useMetaDataLoader();
+  const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
   const { countryList } = useAppSelector((state) => state.metaData);
-  const {loading} = useAppSelector((state)=> state.profile)
+  const { loading } = useAppSelector((state) => state.profile);
   const [openModal, setOpenModal] = useState({
     open: false,
-    mode: 'add' as 'add' | 'edit',
+    mode: "add" as "add" | "edit",
   });
 
   // Check if currentAddress has any meaningful data
@@ -126,8 +125,6 @@ const FormSection = () => {
     }
   }, [selectedProfileID, loadStates, fetchProfileAddress]);
 
-  console.log("address data", fields)
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -153,7 +150,7 @@ const FormSection = () => {
     setCurrentAddress(mappedAddress);
     setOpenModal({
       open: true,
-      mode: 'edit',
+      mode: "edit",
     });
   };
 
@@ -169,12 +166,14 @@ const FormSection = () => {
     }
 
     try {
-      const result = await dispatch(deleteAddressAsync({
-        addressId: String(addressToDelete.profile_address_id),
-        profileId: selectedProfileID
-      })).unwrap();
-      
-      if (result && result.status === 'success') {
+      const result = await dispatch(
+        deleteAddressAsync({
+          addressId: String(addressToDelete.profile_address_id),
+          profileId: selectedProfileID,
+        })
+      ).unwrap();
+
+      if (result && result.status === "success") {
         remove(index);
         setEditIndex(null);
         setCurrentAddress({ ...defaultAddress });
@@ -192,7 +191,7 @@ const FormSection = () => {
   const handleCancelEdit = () => {
     setEditIndex(null);
     setCurrentAddress({ ...defaultAddress });
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   const handleAddOrUpdate = async () => {
@@ -227,7 +226,7 @@ const FormSection = () => {
       //update
       try {
         const result = await dispatch(updateAddressAsync(addressData)).unwrap();
-        if (result && result.status === 'success') {
+        if (result && result.status === "success") {
           // toast.success("Address updated successfully!");
           proceedwithAddUpdate(currentAddress.profile_address_id);
         }
@@ -270,21 +269,21 @@ const FormSection = () => {
   };
 
   // On submit, check for unsaved data and show confirmation if needed
-const onSubmit = useCallback(
-  async (data: IFormData) => {
-    console.log("Form submitted:", data, hasUnsavedAddressData());
-    if (hasUnsavedAddressData()) {
-      setShowConfirmation(true);
-    } else {
-      moveToNext();
-    }
-  },
-  [hasUnsavedAddressData] // ✅ dependencies
-);
+  const onSubmit = useCallback(
+    async (data: IFormData) => {
+      console.log("Form submitted:", data, hasUnsavedAddressData());
+      if (hasUnsavedAddressData()) {
+        setShowConfirmation(true);
+      } else {
+        moveToNext();
+      }
+    },
+    [hasUnsavedAddressData] // ✅ dependencies
+  );
 
-useEffect(() => {
-  console.log("Effect triggered because onSubmit changed");
-}, [onSubmit]);
+  useEffect(() => {
+    console.log("Effect triggered because onSubmit changed");
+  }, [onSubmit]);
 
   // Handle confirmation - save address and proceed
   const handleConfirmSaveAndContinue = async () => {
@@ -332,13 +331,16 @@ useEffect(() => {
   }, [handleSubmit, onSubmit]);
 
   const closeAddModal = () => {
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // Handle modal save
-  const handleModalSave = async (addressData: IAddress, mode: 'add' | 'edit') => {
+  const handleModalSave = async (
+    addressData: IAddress,
+    mode: "add" | "edit"
+  ) => {
     setCurrentAddress(addressData);
-    
+
     // Use existing handleAddOrUpdate logic
     const addressPayload = {
       profile_id: selectedProfileID,
@@ -349,12 +351,14 @@ useEffect(() => {
     console.log(addressPayload);
     // return;
 
-    if (mode === 'edit' && editIndex !== null) {
+    if (mode === "edit" && editIndex !== null) {
       // Update existing address
       try {
-        const result = await dispatch(updateAddressAsync(addressPayload)).unwrap();
+        const result = await dispatch(
+          updateAddressAsync(addressPayload)
+        ).unwrap();
         console.log(result);
-        if (result && result.status === 'success') {
+        if (result && result.status === "success") {
           // proceedwithAddUpdate(addressData.profile_address_id);
           fetchProfileAddress(); // Refresh the address list
         }
@@ -365,7 +369,9 @@ useEffect(() => {
     } else {
       // Add new address
       try {
-        const result = await dispatch(createAddressAsync(addressPayload)).unwrap();
+        const result = await dispatch(
+          createAddressAsync(addressPayload)
+        ).unwrap();
         if (result && result.status === "success") {
           proceedwithAddUpdate(result?.profile_address_id);
         }
@@ -377,9 +383,7 @@ useEffect(() => {
   };
 
   if (loading) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -392,7 +396,7 @@ useEffect(() => {
               onClick={() =>
                 setOpenModal({
                   open: true,
-                  mode: 'add',
+                  mode: "add",
                 })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
@@ -508,8 +512,7 @@ useEffect(() => {
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">State:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {findStateName(field.state_id ?? field.state ?? 0) ||
-                            "N/A"}
+                          {findStateName(field.state || 0) || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -563,7 +566,7 @@ useEffect(() => {
             </div>
           )}
         </div>
-          {/* Address Form */}
+        {/* Address Form */}
         {/* <form className="w-full px-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -778,18 +781,18 @@ useEffect(() => {
           </div>
         )}
       </section>
-      <AddEditAddressModal 
-        open={openModal.open} 
+      <AddEditAddressModal
+        open={openModal.open}
         onOpenChange={(open) => {
           if (!open) {
             // Reset editing state when modal is closed
             setEditIndex(null);
             setCurrentAddress({ ...defaultAddress });
           }
-          setOpenModal(prev => ({ ...prev, open }));
+          setOpenModal((prev) => ({ ...prev, open }));
         }}
         mode={openModal.mode}
-        addressData={openModal.mode === 'edit' ? currentAddress : undefined}
+        addressData={openModal.mode === "edit" ? currentAddress : undefined}
         onSave={handleModalSave}
         onCancel={handleCancelEdit}
       />

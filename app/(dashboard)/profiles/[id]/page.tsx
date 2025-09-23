@@ -34,6 +34,8 @@ import {
 import Card from "@/components/ui/carousel-card-1";
 import { Button } from "@/components/ui/button";
 import AppBreadcrumb from "../../_components/AppBreadcrumb";
+import { BadgeCheckIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -831,6 +833,9 @@ const ViewProfile = () => {
                             <th className="px-2 py-2 border-b text-base font-bold">
                               State & Country
                             </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Verified
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -848,13 +853,22 @@ const ViewProfile = () => {
                                 ) || "N/A"}
                               </td>
                               <td className="px-4 py-3 border-b">
-                                {emp?.start_year} - {emp?.end_year}
+                                {emp?.start_year} - {emp?.end_year || "Present"}
                               </td>
                               <td className="px-4 py-3 border-b">
                                 {emp?.city || "N/A"},{" "}
                                 {findCountryName(
                                   emp?.country_id ?? emp?.country_name ?? 0
                                 ) || "N/A"}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14}/>
+                                  Verified
+                                </Badge>
                               </td>
                             </tr>
                           ))}
@@ -1066,8 +1080,8 @@ const ViewProfile = () => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
-                  {/* <div className="border border-gray-100 rounded-lg shadow-md h-full ">
+                {/* <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
+                  <div className="border border-gray-100 rounded-lg shadow-md h-full ">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -1102,7 +1116,7 @@ const ViewProfile = () => {
                         </tbody>
                       </table>
                     </div>
-                  </div> */}
+                  </div>
                   <div className="border border-gray-100 rounded-lg shadow-md  h-full">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
@@ -1120,7 +1134,7 @@ const ViewProfile = () => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

@@ -88,6 +88,11 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
   const getVisibleCards = () => {
     if (!showCarousel || !data) return data || [];
 
+    // If there's only one image, return it once
+    if (data.length === 1) {
+      return data;
+    }
+
     const visibleCards = [];
     const totalCards = data.length;
 
@@ -101,13 +106,13 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
   };
 
   if (!data || data.length === 0) {
-    return <div>No card data available</div>;
+    return null;
   }
 
   return (
     <div className="w-full">
       <div
-        className={`relative ${isSingleCard ? "max-w-sm mx-auto" : "w-full"}`}
+        className={`relative ${isSingleCard ? "w-full" : "w-full"}`}
       >
         {showCarousel && data.length > cardsPerView && (
           <>
@@ -147,11 +152,13 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
               <div
                 key={`card-${currentIndex}-${idx}`}
                 style={{
-                  width: showCarousel
+                  width: isSingleCard
+                    ? "50%" // single image -> 50% width
+                    : showCarousel
                     ? `${100 / (cardsPerView + 1)}%`
                     : `${100 / Math.min(cardsPerView, data.length)}%`,
                 }}
-                className="px-1"
+                className={`px-1 ${isSingleCard ? "" : ""}`} // center it
               >
                 <div className="relative overflow-hidden rounded-lg shadow-md group h-full">
                   <div className="w-full h-52">

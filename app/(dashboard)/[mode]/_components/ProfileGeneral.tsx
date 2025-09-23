@@ -122,8 +122,6 @@ const ProfileGeneral = () => {
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
 
-      console.log("dsmfvds", result)
-
       if (result) {
         reset(result?.data);
       }
@@ -573,7 +571,7 @@ const ProfileGeneral = () => {
                   <Label>Height (inches)</Label>
                   <Input
                     type="text"
-                    {...register("height")}
+                    {...register("height_inches")}
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>

@@ -170,52 +170,52 @@ const AccountSettings = () => {
 
   return (
     <section className="account-details-box w-full">
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-      <div className="flex justify-between items-center w-full">
-        <div className="flex items-center gap-4">
-          {imageError ? (
-            <Image
-              src={dp}
-              alt="Profile"
-              width={96}
-              height={96}
-              className="md:h-24 md:w-24 object-cover rounded-full"
-            />
-          ) : (
-            <Image
-              src={profilePhoto || dp}
-              alt="Profile"
-              width={96}
-              height={96}
-              className="md:h-24 md:w-24 object-cover rounded-full"
-              unoptimized
-              onError={() => setImageError(true)}
-            />
-          )}
-          <div>
-            <Input
-              type="file"
-              id="photo-upload"
-              className="hidden"
-              accept="image/*"
-              onChange={handlePhotoChange}
-            />
-            <Label
-              htmlFor="photo-upload"
-              className="white-btn hover:bg-gray-200 cursor-pointer"
-            >
-              {photoLoading ? "Uploading..." : "Change Photo"}
-            </Label>
-          </div>
-        </div>
-        {/* <Button className="red-btn hover:bg-red-600">Deactivate Account</Button> */}
-      </div>
-
       <form onSubmit={handleSubmit} className="w-full">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-4">
+            {imageError ? (
+              <Image
+                src={dp}
+                alt="Profile"
+                width={96}
+                height={96}
+                className="md:h-24 md:w-24 object-cover rounded-full"
+              />
+            ) : (
+              <Image
+                src={profilePhoto || dp}
+                alt="Profile"
+                width={96}
+                height={96}
+                className="md:h-24 md:w-24 object-cover rounded-full"
+                unoptimized
+                onError={() => setImageError(true)}
+              />
+            )}
+            <div>
+              <Input
+                type="file"
+                id="photo-upload"
+                className="hidden"
+                accept="image/*"
+                onChange={handlePhotoChange}
+              />
+              <Label
+                htmlFor="photo-upload"
+                className="cursor-pointer border rounded-md px-2 py-2 bg-orange-500 hover:bg-orange-600 transition text-white"
+              >
+                {photoLoading ? "Uploading..." : "Change Photo"}
+              </Label>
+            </div>
+          </div>
+          {/* <Button className="red-btn hover:bg-red-600">Deactivate Account</Button> */}
+        </div>
+
         <div className="border border-gray-100 rounded-lg shadow-lg mb-4">
           <h2
             className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"

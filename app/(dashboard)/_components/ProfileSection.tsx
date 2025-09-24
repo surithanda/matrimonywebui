@@ -3,92 +3,110 @@
 import Image from "next/image";
 import Link from "next/link";
 import profile1 from "@/public/images/dashboard/profile1.png";
-import profile2 from "@/public/images/dashboard/profile2.png";
-import profile3 from "@/public/images/dashboard/profile3.png";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
-import { fetchAccountDetailsAsync, setUser } from "@/app/store/features/authSlice";
-import { getPersonalProfileAsync, getProfilePhotosAsync } from "@/app/store/features/profileSlice";
-import { decodeJWT } from "@/app/utils/jwtUtils";
+import {
+  getCompleteProfileAsync,
+  getPersonalProfileAsync,
+  getProfilePhotosAsync,
+} from "@/app/store/features/profileSlice";
 import { useFetchUser } from "@/app/utils/useFetchUser";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
-
+import { API_ORIGIN, toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { FaPlus } from "react-icons/fa6";
+import { FaqSection } from "@/components/blocks/faq";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+import Lottie from "lottie-react";
+import loaderAnimation from "@/public/lottie/Loading.json";
+import { FaRegEdit } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import Loader from "./Loader";
+import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
-  const personalProfile = useAppSelector((state) => state.profile.personalProfile);
+    const router = useRouter();
+  // const personalProfile = useAppSelector(
+  //   (state) => state.profile.personalProfile
+  // );
   const profilePhotos = useAppSelector((state) => state.profile.photos);
-  const {fetchAccountDetls} = useFetchUser();
-  const {loadMetaData} = useMetaDataLoader();
+  const completeProfile = useAppSelector(
+    (state) => state.profile.completeProfile
+  );
+  
+
+  const {loading} = useAppSelector(
+    (state) => state.profile
+  );
+  const { fetchAccountDetls } = useFetchUser();
   const { selectedProfileID } = useProfileContext();
 
+
   // API origin and image URL utility
-  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    if (!u || typeof u !== 'string') return null;
-    if (u.startsWith('http')) return u;
-    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
-    return u.startsWith('/') ? u : `/${u}`;
-  }, [apiOrigin]);
+    return envToAbsoluteUrl(u);
+  }, []);
 
-   // Profile Data for dynamic rendering
+  // Profile Data for dynamic rendering
   const [profilesData, setProfilesData] = useState<any>([]);
-  
-  useEffect(() => {
-    if(selectedProfileID && selectedProfileID > 0) {
-      // Fetch profile data and photos
-      (dispatch as any)(getPersonalProfileAsync({profile_id: selectedProfileID}));
-      (dispatch as any)(getProfilePhotosAsync(selectedProfileID));
-    }
-  }, [selectedProfileID, dispatch])
 
-  // Transform API data to component format
   useEffect(() => {
-    if (personalProfile && selectedProfileID) {
+    if (selectedProfileID && selectedProfileID > 0) {
+      (dispatch as any)(getCompleteProfileAsync(selectedProfileID))
+        .unwrap()
+    } else {
+    }
+  }, [selectedProfileID, dispatch]);
+
+  useEffect(() => {
+    if (completeProfile && selectedProfileID) {
       const calculateAge = (birthDate: string) => {
         if (!birthDate) return null;
         const today = new Date();
         const birth = new Date(birthDate);
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < birth.getDate())
+        ) {
           age--;
         }
         return age;
       };
 
       const getProfileImage = () => {
-        if (profilePhotos && profilePhotos.length > 0) {
-          // Find profile photo (photo_type === 450) or use first available
-          const profilePhoto = profilePhotos.find(photo => photo.photo_type === 450) || profilePhotos[0];
-          return toAbsoluteUrl(profilePhoto.url);
+        if (completeProfile) {
+          return toAbsoluteUrl(completeProfile?.profile_photo_url);
         }
-        return profile1; // fallback to default image
+        return profile1;
       };
 
-      const profile = personalProfile?.data || personalProfile;
+      const profile = completeProfile?.data || completeProfile;
       const transformedData = {
-        name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
+        name: `${profile.first_name || ""} ${profile.last_name || ""}`.trim(),
         age: calculateAge(profile.birth_date),
-        location: profile?.current_city,// || `${profile.city || ''}, ${profile.state || ''}`.replace(', ,', '').trim(),
+        location: profile?.current_city,
         imageSrc: getProfileImage(),
       };
 
-      console.log('Transformed Profile Data:', transformedData, personalProfile); // Debug log
-
       setProfilesData([transformedData]);
     }
-  }, [personalProfile, profilePhotos, selectedProfileID])
-  
+  }, [completeProfile, selectedProfileID, toAbsoluteUrl]);
+
+  console.log("complete profile data", completeProfile)
+
+
   useEffect(() => {
-    if (userData && userData?.token) fetchAccountDetls();
-    else if(userData && userData?.email) fetchAccountDetls();
-    loadMetaData();
-  },[userData, fetchAccountDetls]);
-        
+    if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
+    // loadMetaData();
+  }, [userData, fetchAccountDetls]);
+
   const faqData = [
     {
       question: "How do I create a new profile?",
@@ -132,135 +150,202 @@ const ProfileSection = () => {
     },
   ];
 
+  const StatCard = (props: any) => {
+    return (
+      <div
+        style={{ backgroundColor: props.bg1 }}
+        className="rounded-xl overflow-hidden flex flex-col justify-between"
+      >
+        <p className="text-center py-4 text-3xl font-bold">{props.number}</p>
+        <p
+          className="py-2 px-3 text-sm h-[50%] flex items-center justify-center text-center"
+          style={{ backgroundColor: props.bg2 }}
+        >
+          {props.name}
+        </p>
+      </div>
+    );
+  };
+
+  const goTo = (path: string) => {
+    if (!path) return;
+    Router.push('/updateprofile');
+  };
+
+  const stats = [
+    {
+      number: completeProfile?.profile_id ? 1 : 0,
+      name: "My Profiles",
+      bg1: "#E4F1FF",
+      bg2: "#D6E9FF",
+    },
+    {
+      number: completeProfile?.profiles_viewed_by_me ?? 0,
+      name: "Profiles Viewed",
+      bg1: "#FFF0D0",
+      bg2: "#FFE8B7",
+    },
+    {
+      number: completeProfile?.favourites ?? 0,
+      name: "Favourites",
+      bg1: "#FFECE9",
+      bg2: "#FCDEDA",
+    },
+    {
+      number: completeProfile?.profiles_viewed_me ?? 0,
+      name: "Viewed My Profile(s)",
+      bg1: "#DAFBF2",
+      bg2: "#AFFEE8",
+    },
+    {
+      number: completeProfile?.profiles_searched ?? 0,
+      name: "Top Searches",
+      bg1: "#FFEDF0",
+      bg2: "#FFE0E5",
+    },
+    {
+      number: completeProfile?.shortlisted ?? 0,
+      name: "Shortlisted",
+      bg1: "#DEF3C5",
+      bg2: "#CEEFA7",
+    },
+    {
+      number: completeProfile?.interested ?? 0,
+      name: "Interested",
+      bg1: "#EBE9F8",
+      bg2: "#E4DFF7",
+    },
+    {
+      number: completeProfile?.connected ?? 0,
+      name: "Connected",
+      bg1: "#FFECE9",
+      bg2: "#FCDEDA",
+    },
+  ];0
+
+  if(loading){
+    return(
+      <Loader />
+    )
+  }
+
   return (
-    <section className="flex flex-col md:gap-8 w-full">
-      <div className="flex flex-row md:gap-8 w-full">
-        {/* Profiles Section */}
-        <div className="dashboard-sections md:w-4/5">
-          <div className="flex justify-between items-center w-full">
-            <h2 className="dmserif32600">Profiles</h2>
-            {!(selectedProfileID && selectedProfileID > 0) && 
-            <Link href="/createprofile">
-              <button className="px-5 py-3 bg-gray-950 text-white rounded-[12px] hover:bg-gray-600">
-                Add Profile
-              </button>
-            </Link>
-            }
-          </div>
+    <section className="flex flex-col w-full mt-20 gap-6 md:gap-8">
+      {/* Profiles Section */}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {profilesData && profilesData.length > 0 && profilesData?.map((profile:IProfile, index:number) => (
-              <Link href={`/profiles/${selectedProfileID}`} key={index}>
-                
-              <div
-                key={index}
-                className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit cursor-pointer hover:shadow-lg transition-shadow duration-200"
-                title={`${profile.name}, ${profile.age} years old`}
-              >
-                {/* <div>
-                    <Link href={`/profiles/${selectedProfileID}`}>
-                      <button className="bg-gray-950 text-white hover:bg-gray-600 w-full">
-                        View Profile
-                      </button>
-                    </Link>
-                    <Link href="/createprofile">
-                      <button className="bg-gray-950 text-white hover:bg-gray-600 w-full">
-                        Update Profile
-                      </button>
-                    </Link>
-                    </div> */}
-                <Image
-                  src={profile.imageSrc}
-                  alt={profile.name}
-                  width={typeof profile.imageSrc === 'string' && profile.imageSrc.startsWith('http') ? 282 : undefined}
-                  height={typeof profile.imageSrc === 'string' && profile.imageSrc.startsWith('http') ? 300 : undefined}
-                  className="w-[282px] h-auto object-cover"
-                />
-                <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
-                  <div>
-                    <p className="BRCobane20600 text-yellow-50 text-sm">
-                      {profile.name}, {profile.age}
-                    </p>
-                    {profile.location && 
-                    <div className="flex items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="19"
-                        viewBox="0 0 18 19"
-                        fill="none"
-                      >
-                        <path
-                          d="M9 2.02463C5.89465 2.02463 3.375 4.29256 3.375 7.08713C3.375 11.5871 9 17.7746 9 17.7746C9 17.7746 14.625 11.5871 14.625 7.08713C14.625 4.29256 12.1054 2.02463 9 2.02463ZM9 9.89963C8.55499 9.89963 8.11998 9.76767 7.74997 9.52043C7.37996 9.2732 7.09157 8.9218 6.92127 8.51067C6.75097 8.09953 6.70642 7.64713 6.79323 7.21067C6.88005 6.77422 7.09434 6.37331 7.40901 6.05864C7.72368 5.74397 8.12459 5.52968 8.56105 5.44286C8.9975 5.35604 9.4499 5.4006 9.86104 5.5709C10.2722 5.7412 10.6236 6.02958 10.8708 6.39959C11.118 6.76961 11.25 7.20462 11.25 7.64963C11.2493 8.24616 11.0121 8.81808 10.5903 9.2399C10.1685 9.66171 9.59654 9.89898 9 9.89963Z"
-                          fill="white"
-                        />
-                      </svg>
-                      <p className="BRCobane14500">{profile.location}</p>
-                    </div>   
-                    } 
-                  </div>
+      {loading ? (
+        // 🔹 Show loader while API fetching
+        <div className="flex justify-center items-center col-span-4 h-80">
+          <Lottie
+            animationData={loaderAnimation}
+            loop={true}
+            className="w-40 h-40"
+          />
+        </div>
+      ) : (
+        <>
+          <div className="dashboard-sections w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Left Section */}
+            <div
+              className={`flex flex-col ${
+                profilesData?.length > 0 ? "lg:col-span-3" : "lg:col-span-4"
+              }`}
+            >
+              {/* Header with Button */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="dmserif32600">Profiles</h2>
+                  <p className="text-gray-600 text-sm sm:text-base mt-2">
+                    Browse detailed member profiles to find your perfect match
+                    with ease.
+                  </p>
                 </div>
+                {!(selectedProfileID && selectedProfileID > 0) && (
+                  <Link href="/createprofile">
+                    <Button className="px-5 py-2 text-white rounded-lg bg-[#f7ac03] hover:bg-[#e69a00] w-full sm:w-auto flex items-center justify-center gap-2">
+                      <FaPlus />
+                      Add Profile
+                    </Button>
+                  </Link>
+                )}
               </div>
-              </Link>
-            ))}
-          </div>
-        </div>
 
-        {/* Account Info Section */}
- <div className="dashboard-sections md:w-1/5">
-          <h2 className="dmserif32600">Account Info</h2>
-          <div className="dashboard-inner-sections">
-            <p className="font-medium">
-              <span>Full Name:</span>
-              <span className="text-gray-600">{userData?.first_name + " " + userData?.last_name || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Email:</span>
-              <span className="text-gray-600">{userData?.email || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Phone:</span>{" "}
-              <span className="text-gray-600">{userData?.primary_phone || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Date of Birth:</span>{" "}
-              <span className="text-gray-600">{userData?.birth_date || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Address:</span>
-              <span className="text-gray-600">{userData?.address_line1 || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>City:</span>{" "}
-              <span className="text-gray-600">{userData?.city || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>State:</span>{" "}
-              <span className="text-gray-600">{userData?.state || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Country:</span>
-              <span className="text-gray-600">{userData?.country || 'N/A'}</span>
-            </p>
-            <p className="font-medium">
-              <span>Zip Code:</span>{" "}
-              <span className="text-gray-600">{userData?.zip || 'N/A'}</span>
-            </p>
-          </div>
-        </div>
-      </div>
-      {/* Account Info Section */}
-      <div className="dashboard-sections md:w-full">
-        <h2 className="dmserif32600">Frequently Asked Questions</h2>
-        <div className="flex flex-col md:h-[700px] flex-wrap md:gap-6">
-          {faqData.map((faq, index) => (
-            <div key={index} className="dashboard-inner-sections md:w-[49%]">
-              <h3 className="BRCobane18600">{faq.question}</h3>
-              <p className="BRCobane18500 opacity-50">{faq.answer}</p>
+              {/* Stat Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6 mb-6">
+                {stats.map((stat, idx) => (
+                  <StatCard
+                    key={idx}
+                    number={String(stat.number).padStart(2, "0")}
+                    name={stat.name}
+                    bg1={stat.bg1}
+                    bg2={stat.bg2}
+                  />
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
+
+            {/* Right Section: Profile Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-1 gap-4 sm:gap-6 lg:col-span-1">
+              {profilesData?.length > 0 &&
+                profilesData.map((profile: IProfile, index: number) => (
+                  <React.Fragment key={selectedProfileID ?? index}>
+                    <Link href="/updateprofile">
+                      <div
+                        className="relative w-full h-96 rounded-lg overflow-hidden cursor-pointer group"
+                        title="Edit Profile Details"
+                      >
+                        <Image
+                          src={profile.imageSrc || profile1}
+                          alt={profile.name}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                          className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
+                        />
+
+                        {/* Hover Edit Button (Top Right) */}
+                          <Button
+                          onClick={()=>goTo}
+                            variant={"default"}
+                            size={"sm"}
+                            className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
+                          >
+                            <CiEdit size={22} />
+                          </Button>
+
+                        <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
+                          <p className="text-white font-semibold text-lg sm:text-xl">
+                            {profile.name}
+                          </p>
+                          <p className="text-gray-200 text-sm sm:text-base">
+                            {profile.age} Years old
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                    <Link href={`/profiles/${selectedProfileID}`}>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <Eye size={20} />
+                        Preview My Profile
+                      </Button>
+                    </Link>
+                  </React.Fragment>
+                ))}
+            </div>
+          </div>
+          {/* FAQ Section */}
+          <div className="dashboard-sections w-full p-4 sm:p-6 lg:p-8">
+            <h2 className="dmserif32600 mb-4 sm:mb-6 text-center text-xl sm:text-2xl lg:text-3xl">
+              Frequently Asked Questions
+            </h2>
+            <div className="max-w-7xl mx-auto">
+              <FaqSection items={faqData} />
+            </div>
+          </div>
+        </>
+      )}
     </section>
   );
 };

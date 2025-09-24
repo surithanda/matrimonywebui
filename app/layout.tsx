@@ -6,6 +6,8 @@ import { inter } from "@/app/ui/fonts";
 import ClientProvider from "./ClientProvider";
 import ReduxProvider from "./providers/ReduxProvider";
 import { ProfileContextProvider } from "./utils/useProfileContext";
+import BackToTopButton from "./components/BackToTopButton";
+import { useAOS } from "./utils/aos";
 
 // export const metadata: Metadata = {
 //   title: "Chaturvarnam",
@@ -17,11 +19,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useAOS();
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.className} antialiased`}
+        suppressHydrationWarning
+      >
         <ReduxProvider>
-          <ClientProvider><ProfileContextProvider>{children}</ProfileContextProvider></ClientProvider>
+          <ClientProvider>
+            <ProfileContextProvider>
+              {children}
+              <BackToTopButton />
+            </ProfileContextProvider>
+          </ClientProvider>
         </ReduxProvider>
       </body>
     </html>

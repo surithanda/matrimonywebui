@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -16,45 +16,68 @@ import {
   createFavoriteAsync,
   deleteFavoriteAsync,
   getFavoritesAsync,
-  getProfilePhotosAsync
+  getProfilePhotosAsync,
+  getLifestyleAsync,
 } from "@/app/store/features/profileSlice";
+import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import femaleProfile from "@/public/images/dashboard/profile1.png";
-import maleProfile from "@/public/images/dashboard/profile3.png";
 import { useProfileContext } from "@/app/utils/useProfileContext";
-import { profile } from "console";
+import { MdEmail, MdLocalPhone } from "react-icons/md";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaLocationDot, FaPlus, FaTwitter } from "react-icons/fa6";
+import { BiSolidBadgeCheck } from "react-icons/bi";
+import {
+  AiOutlineHeart,
+  AiFillHeart,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
+import Card from "@/components/ui/carousel-card-1";
+import { Button } from "@/components/ui/button";
+import AppBreadcrumb from "../../_components/AppBreadcrumb";
+import { BadgeCheckIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const searchParams = useSearchParams();
   const profileId = parseInt(params.id as string);
-  const fromSearch = searchParams.get('fromSearch') === 'true';
-  const { findJobTitleName, findCountryName, findStateName, findPropertyTypeName, findOwnershipTypeName } = useMetaDataLoader();
-  
-  const { 
-    personalProfile, 
-    address, 
-    education, 
-    employment, 
-    family, 
-    properties, 
-    hobbies, 
+  const fromSearch = searchParams.get("fromSearch") === "true";
+  const {
+    findJobTitleName,
+    findCountryName,
+    findStateName,
+    findPropertyTypeName,
+    findOwnershipTypeName,
+    findGenderName,
+    findMaritalStatusName,
+    findReligionName,
+    findFieldOfStudy,
+  } = useMetaDataLoader();
+
+  const {
+    personalProfile,
+    address,
+    education,
+    employment,
+    family,
+    properties,
+    hobbies,
     interests,
     references,
     photos,
-    loading, 
-    error 
+    loading,
+    error,
+    lifestyle
   } = useSelector((state: RootState) => state.profile);
-  
+
   interface ImageFile {
     url: string;
     file?: File | null;
   }
 
-  const [activeTab, setActiveTab] = useState('personal');
-  const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
+  const { loadMetaData } = useMetaDataLoader();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
   const { selectedProfileID } = useProfileContext();
@@ -66,190 +89,180 @@ const ViewProfile = () => {
   const [individualImages, setIndividualImages] = useState<ImageFile[]>([]);
 
   // Hoisted helpers for photos (avoid hooks inside conditional renders)
-  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
-  const photoTypeAssociation = useMemo(() => ({
+  const toAbsoluteUrl = useCallback((u?: string | null) => {
+    return envToAbsoluteUrl(u);
+  }, []);
+
+  // 1. Source of truth for type codes
+  const PHOTO_TYPES = {
     profile: 450,
     cover: 454,
-    individual: 456
-  }), []);
+    individual: 456,
+  } as const;
 
-  const toAbsoluteUrl = useCallback((u?: string | null) => {
-    if (!u || typeof u !== 'string') return null;
-    if (u.startsWith('http')) return u;
-    if (apiOrigin) return `${apiOrigin}${u.startsWith('/') ? '' : '/'}${u}`;
-    return u.startsWith('/') ? u : `/${u}`;
-  }, [apiOrigin]);
+
+  // 3. Role-based association (internal usage)
+  const photoTypeAssociation = useMemo(() => PHOTO_TYPES, []);
 
   // Derive display images from redux photos once, not during render
   useEffect(() => {
-    const photoData = (photos as any)?.data || photos;
-    if (!Array.isArray(photoData)) return;
+    let photoData: any[] = [];
+
+    // Handle different possible structures safely
+    if (Array.isArray((photos as any)?.data)) {
+      photoData = (photos as any).data;
+    } else if (Array.isArray((photos as any)?.photos)) {
+      photoData = (photos as any).photos;
+    } else if (Array.isArray(photos)) {
+      photoData = photos;
+    }
+
+    if (photoData.length === 0) return;
 
     const resolved = photoData
-      .map((p: any) => ({ ...p, _rawUrl: p?.url || p?.photo_url || p?.file_url }))
+      .map((p: any) => ({
+        ...p,
+        _rawUrl: p?.url || p?.photo_url || p?.file_url,
+      }))
       .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?._rawUrl) }))
       .filter((p: any) => !!p._src);
 
-    const prof = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.profile);
-    const cov = resolved.find((p: any) => Number(p.photo_type) === photoTypeAssociation.cover);
-    const others = resolved.filter((p: any) => Number(p.photo_type) === photoTypeAssociation.individual);
+    // Use role-based association
+    const prof = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
+    );
+    const cov = resolved.find(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
+    );
+    const others = resolved.filter(
+      (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
+    );
 
     setProfileImage(prof ? { url: prof._src, file: null } : null);
     setCoverImage(cov ? { url: cov._src, file: null } : null);
     setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
   }, [photos, toAbsoluteUrl, photoTypeAssociation]);
-  
+
   useEffect(() => {
     const loadFavorites = async () => {
       if (accountProfileID > 0) {
-        const response = await dispatch(getFavoritesAsync({ profileId: accountProfileID })).unwrap();
+        const response = await dispatch(
+          getFavoritesAsync({ profileId: accountProfileID })
+        ).unwrap();
         // console.log(response, profileId);
         response.data.map((item: any) => {
-          if(item.to_profile_id === profileId && item.is_active) {
+          if (item.to_profile_id === profileId && item.is_active) {
             setFavoriteProfile(item);
             setIsFavorite(true);
           }
-        })
+        });
       }
     };
-    console.log(accountProfileID);
     loadFavorites();
   }, [dispatch, accountProfileID, profileId]);
 
-  const toggleSection = (sectionKey: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionKey]: !prev[sectionKey]
-    }));
-  };
-
   const handleToggleFavorite = async () => {
     if (isUpdatingFavorite) return;
-    if(accountProfileID > 0) {
+    if (accountProfileID > 0) {
       try {
         setIsUpdatingFavorite(true);
-        if(isFavorite){
-          await dispatch(deleteFavoriteAsync({
-            profileId: accountProfileID,
-            favoriteProfileId: favoriteProfile?.profile_favorite_id,
-          })).unwrap();
+        if (isFavorite) {
+          await dispatch(
+            deleteFavoriteAsync({
+              profileId: accountProfileID,
+              favoriteProfileId: favoriteProfile?.profile_favorite_id,
+            })
+          ).unwrap();
         } else {
-          const result = await dispatch(createFavoriteAsync({
-            profileId: accountProfileID,
-            favoriteProfileId: profileId,
-            isFavorite: !isFavorite
-          })).unwrap();
-          setFavoriteProfile({profile_favorite_id:result?.data?.id});
+          const result = await dispatch(
+            createFavoriteAsync({
+              profileId: accountProfileID,
+              favoriteProfileId: profileId,
+              isFavorite: !isFavorite,
+            })
+          ).unwrap();
+          setFavoriteProfile({ profile_favorite_id: result?.data?.id });
         }
-        
-        setIsFavorite(prev => !prev);
+
+        setIsFavorite((prev) => !prev);
         // Toggle the local state if the API call is successful
       } catch (error) {
-        console.error('Failed to update favorite status:', error);
+        console.error("Failed to update favorite status:", error);
         // You might want to show an error toast/notification here
       } finally {
         setIsUpdatingFavorite(false);
       }
     }
-  }
-
-  const ProfileSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
-    return (
-      <div className="bg-[#F3F3F3] mt-10 rounded-xl overflow-hidden">
-        <p className="bg-[#2F3C1F] px-6 py-4 text-white text-xl">{title}</p>
-        <div className="p-6">{children}</div>
-      </div>
-    );
-  };
-  const ProfileDetail = ({ title, value, colspan = null }: { title: string; value: string; colspan?: number | null }) => {
-    return (
-      <div className={colspan ? `col-span-${colspan}` : ""}>
-        <p className="text- text-slate-500">{title}</p>
-        <p className="text-black font-semibold mt-1 text-xl">{value}</p>
-      </div>
-    );
-  };
-
-  // Accordion component for array items
-  const AccordionItem = ({ title, children, sectionKey, defaultExpanded = false }: {
-    title: string;
-    children: React.ReactNode;
-    sectionKey: string;
-    defaultExpanded?: boolean;
-  }) => {
-    const isExpanded = expandedSections[sectionKey] ?? defaultExpanded;
-    
-    return (
-      <div className="border border-gray-200 rounded-lg mb-3">
-        <button
-          onClick={() => toggleSection(sectionKey)}
-          className="w-full px-4 py-3 text-left bg-orange-50 hover:bg-orange-100 rounded-t-lg flex justify-between items-center transition-colors"
-        >
-          <span className="font-medium text-gray-800">{title}</span>
-          <svg
-            className={`w-5 h-5 text-gray-600 transform transition-transform ${
-              isExpanded ? 'rotate-180' : ''
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        {isExpanded && (
-          <div className="p-4 border-t border-gray-200">
-            {children}
-          </div>
-        )}
-      </div>
-    );
   };
 
   useEffect(() => {
-    console.log('Profile ID:', profileId);
-    console.log('From search:', fromSearch);
     if (profileId && fromSearch) {
-      console.log('Tracking profile view for profile ID:', profileId);
+      console.log("Tracking profile view for profile ID:", profileId);
       try {
-        if(accountProfileID > 0){
-          dispatch(trackProfileViewAsync({ profileId: accountProfileID, viewedProfileId: profileId }));
+        if (accountProfileID > 0) {
+          dispatch(
+            trackProfileViewAsync({
+              profileId: accountProfileID,
+              viewedProfileId: profileId,
+            })
+          );
         }
       } catch (error) {
-        console.error('Error tracking profile view:', error);
+        console.error("Error tracking profile view:", error);
       }
     }
   }, [profileId, fromSearch, accountProfileID, dispatch]);
 
   useEffect(() => {
+    loadMetaData();
     if (profileId) {
       // Load all profile sections
       dispatch(getPersonalProfileAsync({ profile_id: profileId }));
       dispatch(getAddressAsync({ profile_id: profileId }));
       dispatch(getEducationAsync({ profile_id: profileId }));
       dispatch(getEmploymentAsync({ profile_id: profileId }));
-      dispatch(getFamilyAsync({ profile_id: profileId, type: 'family' }));
-      dispatch(getFamilyAsync({ profile_id: profileId, type: 'references' }));
+      dispatch(getFamilyAsync({ profile_id: profileId, type: "family" }));
+      dispatch(getFamilyAsync({ profile_id: profileId, type: "reference" }));
       dispatch(getPropertiesAsync({ profile_id: profileId }));
-      dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'hobby' }));
-      dispatch(getHobbiesInterestsAsync({ profile_id: profileId, category: 'interest' }));
+      dispatch(
+        getHobbiesInterestsAsync({ profile_id: profileId, category: "hobby" })
+      );
+      dispatch(
+        getHobbiesInterestsAsync({
+          profile_id: profileId,
+          category: "interest",
+        })
+      );
       dispatch(getProfilePhotosAsync(Number(profileId)));
+      dispatch(getLifestyleAsync({ profile_id: profileId }));
     }
   }, [dispatch, profileId]);
 
   // Debug: Log the Redux state data
   // useEffect(() => {
-  //   console.log('Redux State Debug:');
-  //   console.log('personalProfile:', personalProfile);
-  //   console.log('address:', address);
-  //   console.log('education:', education);
-  //   console.log('employment:', employment);
-  //   console.log('family:', family);
-  //   console.log('properties:', properties);
-  //   console.log('hobbies:', hobbies); 
-  //   console.log('interests:', interests);
-  //   console.log('references:', references);
-  // }, [personalProfile, address, education, employment, family, properties, hobbies, interests, references]);
+  //   // console.log("Redux State Debug:");
+  //   // console.log("personalProfile:", personalProfile);
+  //   // console.log("address:", address);
+  //   // console.log("education:", education);
+  //   // console.log("employment:", employment);
+  //   // console.log("family:", family);
+  //   // console.log("properties:", properties);
+  //   // console.log("hobbies:", hobbies);
+  //   // console.log("interests:", interests);
+  //   // console.log("references:", references);
+    console.log("life style",lifestyle)
+
+  // }, [
+  //   personalProfile,
+  //   address,
+  //   education,
+  //   employment,
+  //   family,
+  //   properties,
+  //   hobbies,
+  //   interests,
+  //   references,
+  // ]);
 
   if (loading) {
     return (
@@ -270,503 +283,889 @@ const ViewProfile = () => {
     );
   }
 
-  const tabs = [
-    { id: 'personal', label: 'Personal', icon: '👤' },
-    { id: 'contact', label: 'Contact', icon: '📍' },
-    { id: 'education', label: 'Education', icon: '🎓' },
-    { id: 'career', label: 'Career', icon: '💼' },
-    { id: 'family', label: 'Family', icon: '👨‍👩‍👧‍👦' },
-    { id: 'lifestyle', label: 'Lifestyle', icon: '🌟' },
-    { id: 'properties', label: 'Properties', icon: '🏠' },
-    { id: 'references', label: 'References', icon: '📋' },
-    { id: 'photos', label: 'Photos', icon: '👤'}
+  const profileData = personalProfile?.data || personalProfile;
+  const addressList = address?.data?.addresses || (address ? [address] : []);
+  const educationList =
+    education?.data?.educations || (education ? [education] : []);
+
+  const categoryMapping = [
+    
+    {habitQuestion:"What best describes your eating habits?", habitAnswer:lifestyle?.data?.lifestyles?.[0].eating_habit,},
+    {habitQuestion:"Do you follow any specific diet plan?", habitAnswer:lifestyle?.data?.lifestyles?.[0].diet_habit,},
+    {habitQuestion:"How many cigarettes do you smoke per day on average?", habitAnswer:lifestyle?.data?.lifestyles?.[0].cigarettes_per_day,},
+    {habitQuestion:"How frequently do you drink?", habitAnswer:lifestyle?.data?.lifestyles?.[0].drink_frequency,},
+    {habitQuestion:"What type of gambling do you engage in?", habitAnswer:lifestyle?.data?.lifestyles?.[0].gambling_engage,},
+    {habitQuestion:"How would you describe your physical activity level?", habitAnswer:lifestyle?.data?.lifestyles?.[0].physical_activity_level,},
+    {habitQuestion:"Do you practice any relaxation techniques?", habitAnswer:lifestyle?.data?.lifestyles?.[0].relaxation_methods,},
+  
+  ]
+
+  let employmentList = [];
+  if (Array.isArray(employment?.data)) {
+    employmentList = employment.data;
+  } else if (employment?.data?.employments) {
+    employmentList = employment.data.employments;
+  } else if (employment) {
+    employmentList = [employment];
+  }
+
+  const familyList = (family as any)?.family || [];
+  const referencesList = (references as any)?.family || [];
+
+  const formatWeight = (weight?: number | string, pound?: string) => {
+    if (!weight) return null;
+
+    const num = Number(weight);
+    return Number.isInteger(num)
+      ? `${num}${pound ?? ""}`
+      : `${num.toFixed(2)}${pound ?? ""}`;
+  };
+
+  const allImages = [
+    ...individualImages.map((img: any) => ({ imgUrl: img.url })),
   ];
-
-
-  const renderPhotos = () => {
-    return (
-      <ProfileSection title="Photos">
-        {/* Photos (by type) */}
-        <div className="mt-8 w-full">
-          <div className="flex flex-wrap gap-6">
-            {/* Profile (450) */}
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Profile</p>
-              <div className="relative w-[200px] h-[200px] border rounded-lg bg-gray-50 overflow-hidden">
-                {profileImage ? (
-                  <Image src={profileImage.url} alt="Profile photo" fill sizes="200px" className="object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
-                )}
-              </div>
+  return (
+    <>
+      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
+        {/* ✅ Breadcrumb added here */}
+        <AppBreadcrumb
+          items={[
+            { label: "Dahsboard", href: "/dashboard" },
+            { label: "Preview My Profile" },
+          ]}
+        />
+        {/* Profile Header */}
+        <div>
+          <div className="w-full rounded-lg overflow-hidden shadow-md  relative mb-4">
+            {/* Banner with gradient background */}
+            <div className="relative h-32 sm:h-40 lg:h-56 w-full">
+              {coverImage ? (
+                <Image
+                  width={100}
+                  height={100}
+                  src={coverImage.url}
+                  alt="Banner"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                // Gradient banner matching your example
+                <div className="w-full h-full bg-gradient-to-br from-orange-400 via-pink-400 via-blue-400 to-purple-600 relative overflow-hidden">
+                  {/* Geometric overlay shapes for more visual interest */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10"></div>
+                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-purple-500/30 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-gradient-to-tr from-blue-500/20 to-transparent"></div>
+                </div>
+              )}
             </div>
 
-            {/* Cover (454) */}
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Cover</p>
-              <div className="relative w-[300px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
-                {coverImage ? (
-                  <Image src={coverImage.url} alt="Cover photo" fill sizes="300px" className="object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
-                )}
-              </div>
-            </div>
-
-            {/* Additional (456) */}
-            <div className="flex-1 min-w-full">
-              <p className="text-sm font-medium mb-2">Additional</p>
-              <div className="flex flex-wrap gap-3">
-                {individualImages && individualImages.length > 0 ? (
-                  individualImages.map((img, idx) => (
-                    <div key={idx} className="relative w-[150px] h-[150px] border rounded-lg bg-gray-50 overflow-hidden">
-                      <Image src={img.url} alt={`Additional ${idx + 1}`} fill sizes="150px" className="object-cover" />
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-xs text-gray-500">No photos</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </ProfileSection>
-    );
-  };
-
-
-  const renderPersonalInfo = () => {
-    const profileData = personalProfile?.data || personalProfile;
-    
-    return (
-      <ProfileSection title="Personal Information">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {profileData ? (
-            // Object.entries(profileData)
-            //   .filter(([key, value]) => value !== null && value !== undefined && value !== '')
-            //   .map(([key, value]) => (
-            //     <ProfileDetail key={key} title={key.replace(/_/g, ' ')} value={String(value)} />
-            //   ))
-            <>
-            <ProfileDetail title="First Name" value={profileData?.first_name} />
-            <ProfileDetail title="Last Name" value={profileData?.last_name} />
-            <ProfileDetail title="Gender" value={profileData?.gender} />
-            <ProfileDetail title="DOB" value={profileData?.dob} />
-            <ProfileDetail title="Religion" value={profileData?.religion} />
-            <ProfileDetail title="Mother Tounge" value={profileData?.mother_tounge} />
-            <ProfileDetail title="Marital Status" value={profileData?.marital_status} />
-            <ProfileDetail title="Height" value={profileData?.height} />
-            <ProfileDetail title="Weight" value={profileData?.weight} />
-            </>
-            
-          ) : (
-            <p className="text-gray-500 col-span-2">No personal information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderContactInfo = () => {
-    const addressList = address?.data?.addresses || (address ? [address] : []);
-    
-    return (
-      <ProfileSection title="Contact Information">
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <ProfileDetail title="Email" value={personalProfile?.data?.email} />
-            <ProfileDetail title="Phone" value={personalProfile?.data?.phone} />
-          </div>
-          
-          {addressList.length > 0 ? (
-            addressList.map((addr: any, index: number) => {
-              const title = `Address ${index + 1}${addr.type ? ` (${addr.type})` : ''}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`address-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Type" value={addr?.type || addr?.address_type} />
-                    <ProfileDetail title="Street" value={addr?.street} />
-                    <ProfileDetail title="City" value={addr?.city} />
-                    <ProfileDetail title="State" value={addr?.state} />
-                    <ProfileDetail title="Country" value={addr?.country} />
-                    <ProfileDetail title="Pincode" value={addr?.pincode} />
-                    <ProfileDetail title="Is Current" value={addr?.is_current ? 'Yes' : 'No'} />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No address information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderEducation = () => {
-    const educationList = education?.data?.educations || (education ? [education] : []);
-    
-    return (
-      <ProfileSection title="Education">
-        <div className="space-y-4">
-          {educationList.length > 0 ? (
-            educationList.map((edu: any, index: number) => {
-              const title = edu?.degree || `Education ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`education-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Institution" value={edu?.institution} />
-                    <ProfileDetail title="Field of Study" value={edu?.field_of_study} />
-                    <ProfileDetail title="Degree" value={edu?.degree} />
-                    <ProfileDetail title="Year of Completion" value={edu?.year_of_completion} />
-                    <ProfileDetail title="Grade/Percentage" value={edu?.grade} />
-                    <ProfileDetail title="Is Current" value={edu?.is_current ? 'Yes' : 'No'} />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No education information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderCareer = () => {
-    // Handle both array and object responses from the API
-    let employmentList = [];
-    
-    if (Array.isArray(employment?.data)) {
-      employmentList = employment.data;
-    } else if (employment?.data?.employments) {
-      employmentList = employment.data.employments;
-    } else if (employment) {
-      employmentList = [employment];
-    }
-    
-    return (
-      <ProfileSection title="Career">
-        <div className="space-y-4">
-          {employmentList.length > 0 ? (
-            employmentList.map((emp: any, index: number) => {
-              const title = emp?.job_title || emp?.company || `Employment ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`employment-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Company" value={emp?.company} />
-                    <ProfileDetail title="Job Title" value={emp?.job_title} />
-                    <ProfileDetail title="Job Type" value={emp?.job_type} />
-                    <ProfileDetail title="Annual Income" value={emp?.annual_income} />
-                    <ProfileDetail title="Industry" value={emp?.industry} />
-                    <ProfileDetail title="Start Date" value={emp?.start_date} />
-                    <ProfileDetail title="End Date" value={emp?.end_date || (emp?.is_current ? 'Present' : 'Not specified')} />
-                    <ProfileDetail title="Is Current" value={emp?.is_current ? 'Yes' : 'No'} />
-                    {emp?.description && (
-                      <div className="md:col-span-3">
-                        <ProfileDetail title="Description" value={emp.description} />
+            {/* Bottom Content */}
+            <div className="relative px-4 sm:px-6 py-4">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                {/* Left Section: Image + User Info */}
+                <div className="flex flex-row items-start gap-4 w-full md:w-auto">
+                  {/* Profile Image */}
+                  <div
+                    className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 
+        border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
+                  >
+                    {profileImage?.url ? (
+                      <Image
+                        width={100}
+                        height={100}
+                        src={profileImage.url}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-400 flex items-center justify-center">
+                        <svg
+                          className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-gray-600"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
+                1.79-4 4 1.79 4 4 4zm0 2c-2.67 
+                0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                          />
+                        </svg>
                       </div>
                     )}
                   </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No employment information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
 
-  const renderFamily = () => {
-    const familyList = (family as any)?.data?.family || (family ? [family] : []);
-    
-    return (
-      <ProfileSection title="Family Information">
-        <div className="space-y-4">
-          {familyList.length > 0 ? (
-            familyList.map((member: any, index: number) => {
-              const title = member?.name || `Family Member ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`family-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Relation" value={member?.relation} />
-                    <ProfileDetail title="Age" value={member?.age} />
-                    <ProfileDetail title="Occupation" value={member?.occupation} />
-                    <ProfileDetail title="Marital Status" value={member?.marital_status} />
-                    <ProfileDetail title="Contact" value={member?.contact_number} />
-                    <ProfileDetail title="Is Dependent" value={member?.is_dependent ? 'Yes' : 'No'} />
+                  {/* User Info - Always to the right of the image */}
+                  <div className="flex-1 min-w-0">
+                    <h1
+                      className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 text-black truncate"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      {profileData?.first_name ||
+                        profileData?.name ||
+                        "Unknown"}{" "}
+                      {profileData?.last_name || ""}
+                    </h1>
+
+                    {/* Additional Info */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-gray-600 text-xs sm:text-sm md:text-base flex-wrap">
+                      {/* Phone */}
+                      {profileData?.phone_mobile && (
+                        <div className="flex items-center gap-1">
+                          <MdLocalPhone className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.phone_mobile}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Email */}
+                      {profileData?.email_id && (
+                        <div className="flex items-center gap-1">
+                          <MdEmail className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.email_id}
+                          </span>
+                        </div>
+                      )}
+                      {/* Location */}
+                      {profileData?.location && (
+                        <div className="flex items-center gap-1">
+                          <FaLocationDot className="flex-shrink-0" />
+                          <span className="truncate">
+                            {profileData.location}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No family information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderLifestyle = () => {
-    // Handle different data structures for hobbies and interests
-    const hobbiesData = Array.isArray(hobbies) ? hobbies : (hobbies as any)?.data?.hobby_interests || [];
-    const interestsData = Array.isArray(interests) ? interests : (interests as any)?.data?.hobby_interests || [];
-    
-    return (
-      <ProfileSection title="Lifestyle & Interests">
-        <div className="space-y-6">
-          {/* Hobbies */}
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Hobbies</h4>
-            <div className="flex flex-wrap gap-2">
-              {Array.isArray(hobbiesData) && hobbiesData.length > 0 ? (
-                hobbiesData.map((hobby: any, index: number) => (
-                  <span key={index} className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
-                    {typeof hobby === 'string' ? hobby : hobby.name || hobby.hobby || hobby.title}
-                  </span>
-                ))
-              ) : (
-                <p className="text-gray-500">No hobbies listed</p>
-              )}
-            </div>
-          </div>
-
-          {/* Interests */}
-          <div>
-            <h4 className="font-semibold text-gray-700 mb-2">Interests</h4>
-            <div className="flex flex-wrap gap-2">
-              {Array.isArray(interestsData) && interestsData.length > 0 ? (
-                interestsData.map((interest: any, index: number) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {typeof interest === 'string' ? interest : interest.name || interest.interest || interest.title}
-                  </span>
-                ))
-              ) : (
-                <p className="text-gray-500">No interests listed</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderProperties = () => {
-    console.log("properties", properties);
-    const propertiesData = Array.isArray(properties) ? properties : (properties as any)?.properties || [];
-    
-    return (
-      <ProfileSection title="Properties">
-        <div className="space-y-4">
-          {propertiesData.length > 0 ? (
-            propertiesData.map((property: any, index: number) => {
-              const title = property.type || findPropertyTypeName(property.property_type) || `Property ${index + 1}`;
-              return (
-                <AccordionItem
-                  key={index}
-                  title={title}
-                  sectionKey={`property-${index}`}
-                  defaultExpanded={index === 0}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ProfileDetail title="Type" value={findPropertyTypeName(property.property_type)} />
-                    <ProfileDetail title="Ownership" value={findOwnershipTypeName(property.ownership_type)} />
-                    <ProfileDetail title="Location" value={property.property_address} />
-                    <ProfileDetail title="Value" value={property.property_value} />
-                  </div>
-                </AccordionItem>
-              );
-            })
-          ) : (
-            <p className="text-gray-500">No property information available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
-
-  const renderReferences = () => {
-    const referencesList = (references as any)?.data?.family || (references ? [references] : []);
-    
-    return (
-      <ProfileSection title="References">
-        <div className="space-y-4">
-          {referencesList.length > 0 ? (
-            referencesList.map((ref: any, index: number) => (
-              <AccordionItem
-                key={index}
-                title={ref?.name || `Reference ${index + 1}`}
-                sectionKey={`reference-${index}`}
-                defaultExpanded={index === 0}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <ProfileDetail title="Relation" value={ref?.relation} />
-                  <ProfileDetail title="Contact Number" value={ref?.contact_number} />
-                  <ProfileDetail title="Email" value={ref?.email} />
-                  <ProfileDetail title="Address" value={ref?.address} colspan={3} />
-                  <ProfileDetail title="Known Since" value={ref?.known_since} />
-                  <ProfileDetail title="Occupation" value={ref?.occupation} />
                 </div>
-              </AccordionItem>
-            ))
-          ) : (
-            <p className="text-gray-500">No references available</p>
-          )}
-        </div>
-      </ProfileSection>
-    );
-  };
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'personal':
-        return renderPersonalInfo();
-      case 'contact':
-        return renderContactInfo();
-      case 'education':
-        return renderEducation();
-      case 'career':
-        return renderCareer();
-      case 'family':
-        return renderFamily();
-      case 'lifestyle':
-        return renderLifestyle();
-      case 'properties':
-        return renderProperties();
-      case 'references':
-        return renderReferences();
-      case 'photos':
-        return renderPhotos();
-      default:
-        return renderPersonalInfo();
-    }
-  };
+                {/* Right Section: Buttons */}
+                {fromSearch && (
+                  <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
+                    <Button className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                      Send Interest
+                    </Button>
 
-  return (
-    <div className="dashboard-background min-h-screen md:px-[120px] md:pt-8">
-      {/* Profile Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="relative">
-            {profileImage ? (
-              <Image
-                src={profileImage?.url}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover"
-                width={128}
-                height={128}
-              />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No photo</div>
+                    <Button
+                      variant="outline"
+                      onClick={handleToggleFavorite}
+                      disabled={isUpdatingFavorite}
+                      className={`flex items-center justify-center gap-1 sm:gap-2 border ${
+                        isFavorite
+                          ? "bg-orange-100 border-orange-500 text-orange-700"
+                          : "border-orange-500 text-orange-500 hover:bg-orange-50"
+                      } px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md transition-colors whitespace-nowrap text-sm sm:text-base`}
+                    >
+                      {isUpdatingFavorite ? (
+                        <>
+                          <AiOutlineLoading3Quarters className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
+                          <span>
+                            {isFavorite ? "Removing..." : "Saving..."}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {isFavorite ? (
+                            <AiFillHeart className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+                          ) : (
+                            <AiOutlineHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+                          )}
+                          <span>
+                            {isFavorite ? "Favorited" : "Add to Favorites"}
+                          </span>
+                        </>
+                      )}
+                    </Button>
+
+                    <Button
+                      variant={"outline"}
+                      className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
+                    >
+                      Send Message
+                    </Button>
+                  </div>
                 )}
-            
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            {(() => {
-              const profileData = personalProfile?.data || personalProfile;
-              return (
-                <>
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                    {profileData?.first_name || profileData?.name || 'Unknown'} {profileData?.last_name || ''}
-                  </h1>
-                  <p className="text-gray-600 mb-2">
-                    {profileData?.age && `${profileData.age} years`} 
-                    {profileData?.age && (profileData?.city || profileData?.country) && ' • '}
-                    {profileData?.city && `${profileData.city}`}
-                    {profileData?.city && profileData?.country && ', '}
-                    {profileData?.country && `${profileData.country}`}
-                  </p>
-                  <p className="text-gray-600 mb-4">
-                    {profileData?.occupation && `${profileData.occupation}`}
-                    {profileData?.occupation && profileData?.education && ' • '}
-                    {profileData?.education && `${profileData.education}`}
-                  </p>
-                </>
-              );
-            })()}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-              <button className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors">
-                Send Interest
-              </button>
-              <button 
-                onClick={handleToggleFavorite}
-                disabled={isUpdatingFavorite}
-                className={`flex items-center gap-2 border ${isFavorite ? 'bg-orange-100 border-orange-500 text-orange-700' : 'border-orange-500 text-orange-500 hover:bg-orange-50'} px-6 py-2 rounded-md transition-colors`}
-              >
-                {isUpdatingFavorite ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {isFavorite ? 'Removing...' : 'Saving...'}
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill={isFavorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
-                    {isFavorite ? 'Favorited' : 'Add to Favorites'}
-                  </>
-                )}
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors">
-                Message
-              </button>
+              </div>
             </div>
           </div>
-        </div>
-      
 
-        {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow-md mt-6">
-          <div className="flex flex-wrap border-b border-gray-200">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-b-2 border-orange-500 text-orange-600'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
+          <div className="sticky top-0 z-10 bg-white dark:bg-zinc-900 border-b">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-8 px-2 md:px-0">
+              {/* Personal Details */}
+              <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
+                <div className="border border-gray-100 rounded-lg shadow-md mb-2">
+                  <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <h2
+                      className=" text-black text-xl font-bold "
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Personal Information
+                    </h2>
+                    <BiSolidBadgeCheck className="text-gray-500" size={22} />
+                  </div>
+                  <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Age</p>
+                      <p>
+                        {profileData?.birth_date
+                          ? (() => {
+                              const dob = new Date(profileData.birth_date);
+                              const today = new Date();
+                              let age = today.getFullYear() - dob.getFullYear();
+                              const m = today.getMonth() - dob.getMonth();
+                              if (
+                                m < 0 ||
+                                (m === 0 && today.getDate() < dob.getDate())
+                              ) {
+                                age--;
+                              }
+                              return `${age} years`;
+                            })()
+                          : "N/A"}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Marital Status</p>
+                      <p>
+                        {findMaritalStatusName(
+                          profileData?.marital_status_id ??
+                            profileData?.marital_status ??
+                            0
+                        ) || "N/A"}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Gender</p>
+                      <p>
+                        {findGenderName(
+                          profileData?.gender_id ?? profileData?.gender ?? 0
+                        ) || "N/A"}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Religion</p>
+                      <p>
+                        {findReligionName(
+                          profileData?.religion_id ?? profileData?.religion ?? 0
+                        ) || "N/A"}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Weight</p>
+                      <p>
+                        {formatWeight(
+                          profileData?.weight,
+                          profileData?.weight_units
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center gap-4">
+                      <p className="text-gray-400">Height</p>
+                      <p>
+                        {profileData?.height_cms
+                          ? `${profileData.height_cms} cm`
+                          : "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {(profileData?.phone_emergency ||
+                  profileData?.phone_home ||
+                  profileData?.whatsapp_number) && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-2">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold "
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Contact Information
+                      </h2>
+                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-md gap-4 mt-4 space-y-4">
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">Emergency Contact</p>
+                        <p className="font-medium">
+                          {profileData?.phone_emergency
+                            ? profileData.phone_emergency
+                            : "N/A"}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">Home Phone</p>
+                        <p className="font-medium">
+                          {profileData?.phone_home || "N/A"}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center gap-8">
+                        <p className="text-gray-400">WhatsApp</p>
+                        <p className="font-medium">
+                          {profileData?.whatsapp_number || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {(profileData?.facebook ||
+                  profileData?.instagram ||
+                  profileData?.linkedin) && (
+                  <div className="border border-gray-100 rounded-lg shadow-md ">
+                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className=" text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Social Information
+                      </h2>
+                      <BiSolidBadgeCheck className="text-sky-500" size={18} />
+                    </div>
+
+                    <div className="px-4 py-8 bg-white rounded-md gap-4 space-y-4">
+                      {/* Social Media Links */}
+                      <div className="flex items-center gap-8">
+                        {profileData?.facebook && (
+                          <a
+                            href={profileData.facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 text-4xl"
+                          >
+                            <FaFacebook />
+                          </a>
+                        )}
+
+                        {profileData?.instagram && (
+                          <a
+                            href={profileData.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-pink-500 hover:text-pink-700 text-4xl"
+                          >
+                            <FaInstagram />
+                          </a>
+                        )}
+
+                        {profileData?.linkedin && (
+                          <a
+                            href={profileData.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-700 hover:text-blue-900 text-4xl"
+                          >
+                            <FaLinkedin />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2  lg:col-span-3">
+                <div className="mb-3">
+                  <Card data={allImages} />
+                </div>
+
+                {addressList?.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Address
+                      </h2>
+                      {/* <BiSolidBadgeCheck className="text-slate-500" size={24} /> */}
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3 pb-3">
+                        {addressList.map((addr: any, index: number) => {
+                          const title = `Address ${index + 1}${
+                            addr.type ? ` (${addr.type})` : ""
+                          }`;
+
+                          return (
+                            <div
+                              key={index}
+                              className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+                            >
+                              <div className="px-6 py-4">
+                                {/* Title */}
+                                    <div className="flex justify-between items-center gap-2 mb-2">
+                                    <h3
+                                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                      style={{ fontFamily: "BR Cobane" }}
+                                    >
+                                      {title}
+                                    </h3>
+                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                  </div>
+
+                                {/* Content */}
+                                <p className="text-zinc-600 dark:text-zinc-300">
+                                  {addr.address_line1}, {addr.year || "2024"}
+                                  <br />
+                                  {addr.address_line2 || "Near by Max"}
+                                  <br />
+                                  {addr?.city},{" "}
+                                  {findCountryName(
+                                    addr?.country_id ?? addr?.country_name
+                                  )}
+                                  , {addr?.zip}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {educationList.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-1">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold "
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Educational Information
+                      </h2>
+                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <table className="min-w-full text-sm sm:text-base mt-2">
+                        <thead className="">
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Institute Name
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Year Completed
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Field of Study
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              City & Country
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Verified
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {educationList.map((edu: any, index: number) => {
+                            return (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {edu?.institution_name || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.year_completed || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findFieldOfStudy(
+                                    edu?.field_of_study_id ??
+                                      edu?.field_of_study ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.city || "N/A"},{" "}
+                                  {/* {findStateName(
+                                    edu?.state_id ?? edu?.state_name ?? 0
+                                  ) || "N/A"}
+                                  ,{" "} */}
+                                  {findCountryName(
+                                    edu?.country_id ?? edu?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-500 text-white dark:bg-blue-600"
+                                  >
+                                    <BadgeCheckIcon size={14} />
+                                    Verified
+                                  </Badge>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {employmentList.length > 0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md  mb-2">
+                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                      <h2
+                        className="text-black text-xl font-bold"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Professional Information
+                      </h2>
+                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
+                    </div>
+                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                      <table className="min-w-full text-sm sm:text-base mt-2">
+                        <thead>
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Company Name
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Job Title
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              From - To
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              State & Country
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Verified
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {employmentList.map((emp: any, index: number) => (
+                            <tr
+                              key={index}
+                              className="hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              <td className="px-2 py-3 border-b">
+                                {emp?.institution_name}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {findJobTitleName(
+                                  emp?.job_title_id ?? emp?.job_title_name ?? 0
+                                ) || "N/A"}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {emp?.start_year} - {emp?.end_year || "Present"}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                {emp?.city || "N/A"},{" "}
+                                {findCountryName(
+                                  emp?.country_id ?? emp?.country_name ?? 0
+                                ) || "N/A"}
+                              </td>
+                              <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14} />
+                                  Verified
+                                </Badge>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  className={`grid grid-cols-1 ${
+                    familyList.length > 0 && referencesList.length > 0
+                      ? "lg:grid-cols-2"
+                      : "lg:grid-cols-1"
+                  } items-center gap-2 h-full`}
+                >
+                  {familyList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Family Information
+                        </h2>
+                        {/* <BiSolidBadgeCheck
+                          className="text-gray-500"
+                          size={22}
+                        /> */}
+                      </div>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead className="">
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Full Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Relation
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verified
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {familyList.map((member: any, index: number) => (
+                              <tr
+                                key={
+                                  member.profile_family_reference_id ?? index
+                                }
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {member?.first_name} {member?.last_name}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {member?.type_name}
+                                </td>
+                                   <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14}/>
+                                  Verified
+                                </Badge>
+                              </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {referencesList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Friends & Reference
+                        </h2>
+                        {/* <BiSolidBadgeCheck
+                          className="text-gray-500"
+                          size={22}
+                        /> */}
+                      </div>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead className="">
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Full Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Relation
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verifed
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {referencesList.map((ref: any, index: number) => (
+                              <tr
+                                key={ref.profile_reference_id ?? index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {ref?.first_name} {ref?.last_name}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {ref?.type_name}
+                                </td>
+                                   <td className="px-4 py-3 border-b">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-blue-500 text-white dark:bg-blue-600"
+                                >
+                                  <BadgeCheckIcon size={14}/>
+                                  Verified
+                                </Badge>
+                              </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                    <h2
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Lifestyle
+                    </h2>
+                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                      <table className="w-full text-sm sm:text-base">
+                        <thead className="">
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Questions
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Answer
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {categoryMapping.map(
+                            (category:any, index:any) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {category?.habitQuestion}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                    {category?.habitAnswer}
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {[
+                    ...((hobbies as any)?.hobby_interests || []),
+                    ...((interests as any)?.hobby_interests || []),
+                  ].length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                      <h2
+                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Hobbies & Interests
+                      </h2>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead>
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Description
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              ...((hobbies as any)?.hobby_interests || []),
+                              ...((interests as any)?.hobby_interests || []),
+                            ]?.length ? (
+                              [
+                                ...((hobbies as any)?.hobby_interests || []),
+                                ...((interests as any)?.hobby_interests || []),
+                              ].map((item: any, index: number) => (
+                                <tr
+                                  key={item.hobby_interest_id ?? index}
+                                  className="hover:bg-gray-50 transition-colors text-sm"
+                                >
+                                  <td className="px-4 py-2 border-b">
+                                    {item.hobby_interest_name}
+                                  </td>
+                                  <td className="px-4 py-2 border-b">
+                                    {item.hobby_interest_description || "-"}
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td
+                                  colSpan={3}
+                                  className="px-4 py-3 text-center text-gray-500 border-b"
+                                >
+                                  No hobbies or interests available
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
+                  <div className="border border-gray-100 rounded-lg shadow-md h-full ">
+                    <h2
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Partner Preferences
+                    </h2>
+                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                      <table className="w-full text-sm sm:text-base">
+                        <thead className="">
+                          <tr className="text-left">
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Age Range
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Religion
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Location
+                            </th>
+                            <th className="px-2 py-2 border-b text-base font-bold">
+                              Professional
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="hover:bg-gray-50 transition-colors text-sm">
+                            <td className="px-2 py-3 border-b">28-35</td>
+                            <td className="px-4 py-3 border-b">Hindu</td>
+                            <td className="px-4 py-3 border-b">Hyderabad</td>
+                            <td className="px-4 py-3 border-b">Softwear</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div className="border border-gray-100 rounded-lg shadow-md  h-full">
+                    <h2
+                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                      style={{ fontFamily: "BR Cobane" }}
+                    >
+                      Profile Summary
+                    </h2>
+                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                      <p>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing
+                        elit. Nobis ex unde eius doloribus ducimus, magni fugit
+                        ipsa reprehenderit tenetur, labore maiores voluptatibus
+                        dolore. Id quisquam possimus eos dignissimos? Corrupti,
+                        nisi?
+                      </p>
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
           </div>
-        </div>
-        
-
-        {/* Tab Content */}
-        <div className="mb-3">
-          {renderTabContent()}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

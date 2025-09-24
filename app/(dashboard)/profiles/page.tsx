@@ -1,101 +1,233 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import profile1 from "@/public/images/dashboard/profile1.png";
-import profile2 from "@/public/images/dashboard/profile2.png";
-import profile3 from "@/public/images/dashboard/profile3.png";
-import profile4 from "@/public/images/dashboard/profile4.png";
+import Link from "next/link";
+import { MdFamilyRestroom, MdVerified } from "react-icons/md";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+import { AppDispatch, useAppSelector } from "@/app/store/store";
+import { useDispatch } from "react-redux";
+import { getAllProfillesAsync } from "@/app/store/features/profileSlice";
+import { useProfileContext } from "@/app/utils/useProfileContext";
+import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
+import Lottie from "lottie-react";
+import Loading from "@/public/lottie/Loading.json";
+import { IoBook, IoLocationOutline, IoLocationSharp } from "react-icons/io5";
+import { IoMdBook } from "react-icons/io";
+import { CiPhone } from "react-icons/ci";
+import { HiOutlineBriefcase } from "react-icons/hi";
+import { toAbsoluteUrl } from "@/app/lib/env";
+import NoData from "@/public/images/nodata.png";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FaBriefcase } from "react-icons/fa6";
 
-const page = () => {
-  const recommendedProfiles = [
-    {
-      name: "Shruti K.",
-      age: 24,
-      location: "Naperville",
-      imageSrc: profile1,
-    },
-    {
-      name: "Rashmi",
-      age: 23,
-      location: "Pinnacles",
-      imageSrc: profile2,
-    },
-    {
-      name: "Kaushik",
-      age: 28,
-      location: "Toledo",
-      imageSrc: profile3,
-    },
-    {
-      name: "Shruti K.",
-      age: 24,
-      location: "Austin",
-      imageSrc: profile4,
-    },
-    {
-      name: "Rashmi",
-      age: 23,
-      location: "Pinnacles",
-      imageSrc: profile2,
-    },
+// ✅ Utility functions
+function getInitials(firstName?: string, lastName?: string) {
+  if (!firstName && !lastName) return "?";
+  return `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase();
+}
+
+function getAvatarColor(name: string) {
+  const colors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
   ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
+
+const Page = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { selectedProfileID } = useProfileContext();
+  const allProfiles = useAppSelector((state) => state.profile.allProfiles);
+  const { findReligionName } = useMetaDataLoader();
+  const [loading, setLoading] = useState(false);
+
+  const getProfileImage = (profile: any) => {
+    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
+    if (profile?.url) return toAbsoluteUrl(profile.url);
+
+    return null;
+  };
+
+  useEffect(() => {
+    if (selectedProfileID) {
+      setLoading(true);
+
+      (dispatch as any)(getAllProfillesAsync(selectedProfileID))
+        .unwrap()
+        .finally(() => setLoading(false));
+    }
+  }, [selectedProfileID, dispatch]);
+
   return (
-    <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8">
-      <div className="flex justify-between items-center w-full">
-        <h2 className="dmserif32600">Profiles</h2>
-        <button className="yellow-btn">Add Profile</button>
+    <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
+      <div className="flex justify-between items-center w-full px-3 mt-4 lg:px-0 lg:mt-4">
+        <h2 className="dmserif32600" style={{ fontFamily: "BR Cobane" }}>
+          All Profiles
+        </h2>
       </div>
-      <div className="flex gap-6">
-        {recommendedProfiles.map((profile, index) => (
-          <div
-            key={index}
-            className="relative bg-white rounded-lg shadow-md overflow-hidden w-fit"
-          >
-            <Image
-              src={profile.imageSrc}
-              alt={profile.name}
-              className="w-[282px] h-auto object-cover"
+
+      <div className="w-full px-4 lg:px-0 mt-3 lg:mt-0">
+        {loading ? (
+          // Loader
+          <div className="flex justify-center items-center h-64">
+            <Lottie
+              animationData={Loading}
+              loop
+              autoplay
+              style={{ width: 150, height: 150 }}
             />
-            <div className="absolute bottom-0 left-0 w-full flex justify-between p-4">
-              <div>
-                <p className="BRCobane20600 text-white">
-                  {profile.name}, {profile.age}
-                </p>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="19"
-                    viewBox="0 0 18 19"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 2.02463C5.89465 2.02463 3.375 4.29256 3.375 7.08713C3.375 11.5871 9 17.7746 9 17.7746C9 17.7746 14.625 11.5871 14.625 7.08713C14.625 4.29256 12.1054 2.02463 9 2.02463ZM9 9.89963C8.55499 9.89963 8.11998 9.76767 7.74997 9.52043C7.37996 9.2732 7.09157 8.9218 6.92127 8.51067C6.75097 8.09953 6.70642 7.64713 6.79323 7.21067C6.88005 6.77422 7.09434 6.37331 7.40901 6.05864C7.72368 5.74397 8.12459 5.52968 8.56105 5.44286C8.9975 5.35604 9.4499 5.4006 9.86104 5.5709C10.2722 5.7412 10.6236 6.02958 10.8708 6.39959C11.118 6.76961 11.25 7.20462 11.25 7.64963C11.2493 8.24616 11.0121 8.81808 10.5903 9.2399C10.1685 9.66171 9.59654 9.89898 9 9.89963Z"
-                      fill="white"
-                    />
-                  </svg>
-                  <p className="BRCobane14500">{profile.location}</p>
-                </div>
-              </div>
-              <button className="message-btn">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="21"
-                  viewBox="0 0 20 21"
-                  fill="none"
-                >
-                  <path
-                    d="M5.625 19.0246C5.45924 19.0246 5.30027 18.9588 5.18306 18.8416C5.06585 18.7244 5 18.5654 5 18.3996V15.8996H4.0625C3.31683 15.8988 2.60194 15.6022 2.07468 15.075C1.54741 14.5477 1.25083 13.8328 1.25 13.0871V5.58713C1.25083 4.84146 1.54741 4.12657 2.07468 3.5993C2.60194 3.07204 3.31683 2.77545 4.0625 2.77463H15.9375C16.6832 2.77545 17.3981 3.07204 17.9253 3.5993C18.4526 4.12657 18.7492 4.84146 18.75 5.58713V13.0871C18.7492 13.8328 18.4526 14.5477 17.9253 15.075C17.3981 15.6022 16.6832 15.8988 15.9375 15.8996H9.59922L6.02539 18.8797C5.91292 18.9732 5.77128 19.0245 5.625 19.0246Z"
-                    fill="white"
-                  />
-                </svg>
-              </button>
-            </div>
           </div>
-        ))}
+        ) : allProfiles?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 lg:px-0 mt-3 lg:mt-0">
+            {allProfiles?.map((profile: any, index: number) => {
+              return (
+                <div
+                  key={profile.profile_id || index}
+                  className="relative bg-white rounded-md shadow-md overflow-hidden"
+                >
+                  {/* Top Cover Photo */}
+                  <div className="h-36 w-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                    {(() => {
+                      const profileImage = getProfileImage(profile);
+                      return profileImage ? (
+                        <Image
+                          className="w-full h-36 object-cover"
+                          src={profileImage}
+                          alt={profile.first_name || "Profile Cover"}
+                          width={500}
+                          height={144}
+                        />
+                      ) : (
+                        <div className="w-full h-36 flex items-center justify-center bg-gray-300 text-gray-600 text-lg">
+                          No Image
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Verified Badges */}
+                  <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <IoLocationSharp size={12} />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <IoBook size={12} />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <FaPhoneAlt size={12} />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <FaBriefcase size={12} />
+                      </div>
+                      <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
+                        <MdFamilyRestroom size={12} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="px-6 pb-4">
+                    {/* Profile Image + Name/Details Side by Side */}
+                    <div className="flex items-center gap-4">
+                      <div className="absolute left-3 top-[7rem]">
+                        <div
+                          className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
+                            profile.first_name || "Unknown"
+                          )}`}
+                        >
+                          {getInitials(profile.first_name, profile.last_name)}
+                        </div>
+                      </div>
+
+                      {/* Name + Location */}
+                      <div className="flex flex-col ms-[6rem] mt-1 w-[calc(100%-6rem)]">
+                        <h2
+                          className="font-bold text-lg truncate"
+                          style={{ fontFamily: "BR Cobane" }}
+                          title={`${profile.first_name} ${profile.last_name}`}
+                        >
+                          {profile.first_name} {profile.last_name}
+                        </h2>
+                        <p
+                          className="text-gray-500 text-xs min-h-[1rem] truncate"
+                          title={profile.city}
+                        >
+                          {profile.city}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex justify-around mt-3">
+                      <div>
+                        <p className="font-bold text-lg">
+                          {profile.age || "N/A"}
+                        </p>
+                        <p className="text-gray-400 text-sm">Age</p>
+                      </div>
+
+                      <div>
+                        <p className="font-bold text-lg">
+                          {profile.gender || "N/A"}
+                        </p>
+                        <p className="text-gray-400 text-sm">Gender</p>
+                      </div>
+
+                      <div className="max-w-[100px]">
+                        {" "}
+                        {/* limit width so truncate works */}
+                        <p className="font-bold text-lg truncate overflow-hidden whitespace-nowrap">
+                          {findReligionName(profile?.religion ?? 0) || "N/A"}
+                        </p>
+                        <p className="text-gray-400 text-sm">Religion</p>
+                      </div>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex justify-between items-center gap-4 mt-6 overflow-hidden">
+                      <Button
+                        asChild
+                        className="w-full text-white rounded-md bg-orange-500 hover:bg-orange-600 transition-colors"
+                        size="md"
+                      >
+                        <Link
+                          href={`/profiles/${profile.profile_id}?fromSearch=true`}
+                          className="flex items-center gap-2"
+                        >
+                          <Eye size={18} />
+                          View Profile
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="col-span-full text-center py-10 flex flex-col items-center">
+            <Image
+              src={NoData}
+              alt="No favourites"
+              width={220}
+              height={220}
+              className="mb-4 opacity-80"
+            />
+            <p className="text-gray-500 text-lg font-medium">
+              No favourites available.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

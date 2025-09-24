@@ -194,7 +194,7 @@ export const updatePropertyAsync = createAsyncThunk(
   'profile/updateProperty',
   async (propertyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/property/${propertyData.id}`, propertyData);
+      const response = await api.put(`/profile/property/${propertyData.property_id}`, propertyData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -242,7 +242,7 @@ export const updateReferenceAsync = createAsyncThunk(
   'profile/updateReference',
   async (referenceData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/reference/${referenceData.id}`, referenceData);
+      const response = await api.put(`/profile/reference/${referenceData.eb_profile_family_reference_id}`, referenceData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -329,6 +329,8 @@ interface ProfileState {
   references: any[];
   favorites: any[];
   photos?: any[];
+  completeProfile: any; // Complete profile data from eb_profile_get_complete_data
+  allProfiles: any[]; // All profiles from eb_profile_search_get_all
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -348,6 +350,30 @@ export const createPersonalProfileAsync = createAsyncThunk(
   async (profileData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/personal', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const updatePersonalProfileAsync = createAsyncThunk(
+  'profile/updatePersonal',
+  async (profileData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/personal/${profileData.profile_id}`, profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deletePersonalProfileAsync = createAsyncThunk(
+  'profile/deletePersonal',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/personal/${profileId}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -379,6 +405,30 @@ export const createAddressAsync = createAsyncThunk(
   }
 );
 
+export const updateAddressAsync = createAsyncThunk(
+  'profile/updateAddress',
+  async (addressData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/address/${addressData.profile_address_id}`, addressData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteAddressAsync = createAsyncThunk(
+  'profile/deleteAddress',
+  async (payload: { addressId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/address/${payload.addressId}?profile_id=${payload.profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const getEducationAsync = createAsyncThunk(
   'profile/getEducation',
   async (data: any, { rejectWithValue }) => {
@@ -403,6 +453,30 @@ export const createEducationAsync = createAsyncThunk(
   }
 );
 
+export const updateEducationAsync = createAsyncThunk(
+  'profile/updateEducation',
+  async (educationData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/education/${educationData.profile_education_id}`, educationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteEducationAsync = createAsyncThunk(
+  'profile/deleteEducation',
+  async (payload: { educationId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/education/${payload.educationId}?profile_id=${payload.profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
 export const getEmploymentAsync = createAsyncThunk(
   'profile/getEmployment',
   async (data: any, { rejectWithValue }) => {
@@ -420,6 +494,30 @@ export const createEmploymentAsync = createAsyncThunk(
   async (employmentData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/employment', employmentData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const updateEmploymentAsync = createAsyncThunk(
+  'profile/updateEmployment',
+  async (employmentData: any, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/profile/employment/${employmentData.profile_employment_id}`, employmentData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteEmploymentAsync = createAsyncThunk(
+  'profile/deleteEmployment',
+  async (payload: { employmentId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/employment/${payload.employmentId}?profile_id=${payload.profileId}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -455,7 +553,47 @@ export const updateLifestyleAsync = createAsyncThunk(
   'profile/updateLifestyle',
   async (lifestyleData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put('/profile/lifestyle', lifestyleData);
+      const response = await api.put(`/profile/lifestyle/${lifestyleData.lifestyle_id}`, lifestyleData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteLifestyleAsync = createAsyncThunk(
+  'profile/deleteLifestyle',
+  async (payload: { lifestyleId: string, profileId: number }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/profile/lifestyle/${payload.lifestyleId}?profile_id=${payload.profileId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+// Get complete profile data using stored procedure eb_profile_get_complete_data
+export const getCompleteProfileAsync = createAsyncThunk(
+  'profile/getCompleteProfile',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const profileData = { profile_id: profileId };
+      const response = await api.post('/profile/completeProfile', profileData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+// Get all profiles using stored procedure eb_profile_search_get_all
+export const getAllProfillesAsync = createAsyncThunk(
+  'profile/getAllProfiles',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const profileData = { profile_id: profileId };
+      const response = await api.post('/profile/allProfiles', profileData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -479,6 +617,8 @@ const initialState: ProfileState = {
   references: [],
   favorites: [],
   photos: [],
+  completeProfile: null,
+  allProfiles: [],
 };
 
 const profileSlice = createSlice({
@@ -735,6 +875,30 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload as any;
       })
+      .addCase(updateAddressAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.address = action.payload;
+      })
+      .addCase(updateAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteAddressAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddressAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Address deleted successfully
+      })
+      .addCase(deleteAddressAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
       .addCase(createEducationAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -801,8 +965,13 @@ const profileSlice = createSlice({
         state.error = null;
       })
       .addCase(getFamilyAsync.fulfilled, (state, action) => {
+        // console.log('Family payload:', action);
         state.loading = false;
+        if(action.meta.arg.type === 'family') {
         state.family = action.payload?.data || [];
+        } else if(action.meta.arg.type === 'reference') {
+        state.references = action.payload?.data || [];
+        }
       })
       .addCase(getFamilyAsync.rejected, (state, action) => {
         state.loading = false;
@@ -893,6 +1062,94 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload as any;
       })
+      // EDUCATION UPDATE/DELETE
+      .addCase(updateEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update state.education
+      })
+      .addCase(updateEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteEducationAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteEducationAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.education
+      })
+      .addCase(deleteEducationAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // EMPLOYMENT UPDATE/DELETE
+      .addCase(updateEmploymentAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEmploymentAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update state.employment
+      })
+      .addCase(updateEmploymentAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deleteEmploymentAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteEmploymentAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.employment
+      })
+      .addCase(deleteEmploymentAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // LIFESTYLE DELETE
+      .addCase(deleteLifestyleAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteLifestyleAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally remove from state.lifestyle
+      })
+      .addCase(deleteLifestyleAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // PERSONAL PROFILE UPDATE/DELETE
+      .addCase(updatePersonalProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePersonalProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.personalProfile = action.payload?.data || null;
+      })
+      .addCase(updatePersonalProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      .addCase(deletePersonalProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePersonalProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.personalProfile = null;
+      })
+      .addCase(deletePersonalProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
       // PHOTO UPLOAD
       .addCase(createPhotoAsync.pending, (state) => {
         state.loading = true;
@@ -904,6 +1161,32 @@ const profileSlice = createSlice({
         // state.photos could be updated here if needed
       })
       .addCase(createPhotoAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // GET COMPLETE PROFILE
+      .addCase(getCompleteProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCompleteProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.completeProfile = action.payload?.data || null;
+      })
+      .addCase(getCompleteProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+      // GET ALL PROFILES
+      .addCase(getAllProfillesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllProfillesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allProfiles = action.payload?.data || [];
+      })
+      .addCase(getAllProfillesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

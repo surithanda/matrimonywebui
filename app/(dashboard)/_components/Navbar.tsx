@@ -580,22 +580,22 @@ const Navbar = () => {
         <div className="absolute right-4 sm:right-6 md:right-8 lg:right-[120px] top-[61px] w-48 bg-white rounded-[12px] shadow-md z-10 hidden lg:block">
           <ul className="space-y-2 p-2">
             <li>
-              <a
+              <Link
                 href="/account"
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md text-sm sm:text-base"
                 onClick={closeMobileMenu}
               >
                 Account
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/changepassword"
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md text-sm sm:text-base"
                 onClick={closeMobileMenu}
               >
                 Change Password
-              </a>
+              </Link>
             </li>
             <li>
               <a

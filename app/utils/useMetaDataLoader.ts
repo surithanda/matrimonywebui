@@ -211,13 +211,10 @@ loadMetaData();
     return match?.name;
   }
 
-  const findReferenceName = (compareVal:number): string => {
-    let match:any;
-    referenceList?.map((i:any) => {
-      if(i.id === compareVal) match = i;
-    })
-    return match?.name;
-  }
+const findReferenceName = (compareVal: number): string => {
+  const match = referenceList?.find((i: any) => i.id === compareVal);
+  return match?.name || "";
+};
 
   return {
     loadIndividualMetaData,

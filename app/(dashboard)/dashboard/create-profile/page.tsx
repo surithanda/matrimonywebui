@@ -51,8 +51,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CiMail } from "react-icons/ci";
-import { AddAddressModal } from "../../createprofile/primarycontact/_components/address-modals/AddAddressModal";
-import { EditAddressModal } from "../../createprofile/primarycontact/_components/address-modals/EditAddressModal";
+
 
 
 const ViewProfile = () => {
@@ -1488,16 +1487,6 @@ const ViewProfile = () => {
           </div>
         </div>
       </div>
-      <AddAddressModal open={openModal.add} onOpenChange={closeAddModal} />
-      <EditAddressModal
-        open={openModal.edit}
-        onOpenChange={(value: boolean) =>
-          setOpenModal((prev) => ({
-            ...prev,
-            edit: value,
-          }))
-        }
-      />
     </>
   );
 };

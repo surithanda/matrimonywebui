@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
+import Link from "next/link";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -201,12 +202,12 @@ const ForgotPassword = () => {
               <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
                 Back to login page?{" "}
               </p>
-              <a
+              <Link
                 href="/login"
                 className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
               >
                 Login Now
-              </a>
+              </Link>
             </div>
           </form>
         )}

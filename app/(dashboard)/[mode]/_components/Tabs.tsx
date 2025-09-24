@@ -91,11 +91,11 @@ export default function Tabs() {
 
   // Highlight active tab on route change
   useEffect(() => {
-    menu.forEach((item) => {
+    menuItems.forEach((item) => {
       if (pathname.startsWith(item.link)) setActiveItem(item.id);
     });
     setLoading(false); // stop loader after navigation
-  }, [pathname, searchParams, menu]);
+  }, [pathname, searchParams]);
 
   // Unlock tabs
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function Tabs() {
         }))
       );
     }
-  }, [selectedProfileID, validMode, menuItems]);
+  }, [selectedProfileID, validMode]);
 
   return (
     <>

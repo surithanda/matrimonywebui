@@ -52,8 +52,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CiMail } from "react-icons/ci";
 
-
-
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();

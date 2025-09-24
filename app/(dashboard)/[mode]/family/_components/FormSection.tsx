@@ -173,8 +173,8 @@ const FormSection = ({
             relationshiptoyou: item.reference_type,
             address_line: item.address_line1,
             city: item.city,
-            state_id: item.state_id,
-            country_id: item.country_id,
+            state_id: item.state,
+            country_id: item.country,
             zip: item.zip,
           }));
           reset({ family: formattedData || [] });

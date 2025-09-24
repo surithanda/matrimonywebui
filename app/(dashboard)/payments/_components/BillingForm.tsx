@@ -38,12 +38,12 @@ export default function BillingForm({ planName }: BillingFormProps) {
     if (selectedCountry) {
       loadStates(selectedCountry);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, loadStates]);
 
   // Load initial metadata
   useEffect(() => {
     loadNecessaryMetaData();
-  }, []);
+  }, [loadNecessaryMetaData]);
 
   const onSubmit = (data: any) => {
      console.log("Form Submitted:", {

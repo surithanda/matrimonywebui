@@ -194,7 +194,7 @@ export const updatePropertyAsync = createAsyncThunk(
   'profile/updateProperty',
   async (propertyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/property/${propertyData.profile_property_id}`, propertyData);
+      const response = await api.put(`/profile/property/${propertyData.property_id}`, propertyData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');

@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
-import Link from "next/link";
 
 const ForgotPassword = () => {
   const router = useRouter();

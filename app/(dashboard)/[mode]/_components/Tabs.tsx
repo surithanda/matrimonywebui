@@ -112,7 +112,7 @@ export default function Tabs() {
         }))
       );
     }
-  }, [selectedProfileID, validMode]);
+  }, [selectedProfileID, validMode, menuItems]);
 
   return (
     <>

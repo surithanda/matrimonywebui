@@ -38,30 +38,6 @@ export const useMetaDataLoader = () => {
     'interest'
   ];
 
-  const loadIndividualMetaData = useCallback(async () => {
-    try {
-      categories.forEach(category => {
-        loadMetaDataCategory(category);
-      });
-
-      loadCountries();
-    } catch (error) {
-      // Handle error if needed
-    }
-  }, [dispatch, loadMetaDataCategory]);
-
-  const loadNecessaryMetaData = useCallback(async () => {
-    try {
-      loadMetaDataCategory('gender');
-      loadCountries();
-    } catch (error) {
-      // Handle error if needed
-    }
-  }, [dispatch, loadMetaDataCategory]);
-
-  useEffect(() => {
-loadMetaData();
-  }, []);
 
   const loadMetaData = useCallback(async () => {
     try {
@@ -115,7 +91,7 @@ loadMetaData();
     } catch (error) {
       // Handle error if needed
     }
-  }, [dispatch]);
+  }, [dispatch, loadCountries]);
 
   const formatWithMetaData = (data: any): any => {
     console.log(data)
@@ -218,6 +194,31 @@ loadMetaData();
     })
     return match?.name;
   }
+
+    const loadIndividualMetaData = useCallback(async () => {
+    try {
+      categories.forEach(category => {
+        loadMetaDataCategory(category);
+      });
+
+      loadCountries();
+    } catch (error) {
+      // Handle error if needed
+    }
+  }, [dispatch, loadMetaDataCategory, categories, loadCountries]);
+
+  const loadNecessaryMetaData = useCallback(async () => {
+    try {
+      loadMetaDataCategory('gender');
+      loadCountries();
+    } catch (error) {
+      // Handle error if needed
+    }
+  }, [dispatch, loadMetaDataCategory, loadCountries]);
+
+  useEffect(() => {
+loadMetaData();
+  }, [loadMetaData]);
 
   return {
     loadIndividualMetaData,

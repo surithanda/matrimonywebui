@@ -6,6 +6,7 @@ import {
 } from "@/app/store/features/authSlice";
 import { useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -201,12 +202,12 @@ const ForgotPassword = () => {
               <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
                 Back to login page?{" "}
               </p>
-              <a
+              <Link
                 href="/login"
                 className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
               >
                 Login Now
-              </a>
+              </Link>
             </div>
           </form>
         )}

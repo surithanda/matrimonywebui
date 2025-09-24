@@ -585,7 +585,7 @@ const FormSection = ({
                       <div className="pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500 mb-1">Address:</p>
                         <p className="text-sm text-gray-700">
-                          {field.address_line}
+                          {field.address_line || "N/A"}
                         </p>
                       </div>
                     )}

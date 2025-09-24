@@ -286,7 +286,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="firstname"
                   type="text"
-                  value={formData.firstname}
+                  value={formData.firstname || ""}
                   onChange={(e) =>
                     handleFieldChange("firstname", e.target.value)
                   }
@@ -300,7 +300,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="lastname"
                   type="text"
-                  value={formData.lastname}
+                  value={formData.lastname || ""}
                   onChange={(e) =>
                     handleFieldChange("lastname", e.target.value)
                   }
@@ -316,7 +316,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="dob"
                   type="date"
-                  value={formData.dob}
+                  value={formData.dob || ""}
                   onChange={(e) => handleFieldChange("dob", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -327,8 +327,8 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                   <CustomPhoneComponent
                     type="contactnumber"
                     changeHandler={handlePhoneChange}
-                    bindValue={formData.contactnumber}
-                    bindValue2={formData.contactnumber_country}
+                    bindValue={formData.contactnumber || ""}
+                    bindValue2={formData.contactnumber_country || ""}
                     disabled={false}
                   />
                 </div>
@@ -342,7 +342,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="email"
                   type="email"
-                  value={formData.email}
+                  value={formData.email || ""}
                   onChange={(e) => handleFieldChange("email", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -401,7 +401,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="city"
                   type="text"
-                  value={formData.city}
+                  value={formData.city || ""}
                   onChange={(e) => handleFieldChange("city", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -411,7 +411,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="zip"
                   type="text"
-                  value={formData.zip}
+                  value={formData.zip || ""}
                   onChange={(e) => handleFieldChange("zip", e.target.value)}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
@@ -427,7 +427,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 <Input
                   id="address_line"
                   type="text"
-                  value={formData.address_line}
+                  value={formData.address_line || ""}
                   onChange={(e) =>
                     handleFieldChange("address_line", e.target.value)
                   }

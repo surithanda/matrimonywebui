@@ -99,7 +99,7 @@ const FormSection = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
-  const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
+  const { loadStates, findCountryName, findStateName,findReferenceName } = useMetaDataLoader();
   const {loading: loader} = useAppSelector((state)=>state.profile)
 
   const [openModal, setOpenModal] = useState({
@@ -173,8 +173,8 @@ const FormSection = ({
             relationshiptoyou: item.reference_type,
             address_line: item.address_line1,
             city: item.city,
-            state_id: item.state_id,
-            country_id: item.country_id,
+            state_id: item.state,
+            country_id: item.country,
             zip: item.zip,
           }));
           reset({ family: formattedData || [] });
@@ -184,6 +184,8 @@ const FormSection = ({
       console.error("Error getting profile section details:", err);
     }
   }, [dispatch, reset, selectedProfileID, category]);
+
+  console.log("list", fields)
 
   // Fetch family members from backend on mount
   useEffect(() => {
@@ -522,8 +524,7 @@ const FormSection = ({
                   {/* Family Member Content */}
                   <div>
                     <p className="text-gray-900 font-medium leading-relaxed">
-                      {/* {findPropertyTypeName(field.relationshiptoyou ?? -1) || 'Unknown'} */}
-                      {field.relationshiptoyou}
+                      {findReferenceName(Number(field.relationshiptoyou) || 0) || ''}
                     </p>
                   </div>
 

@@ -17,6 +17,7 @@ import {
   deleteFavoriteAsync,
   getFavoritesAsync,
   getProfilePhotosAsync,
+  getLifestyleAsync,
 } from "@/app/store/features/profileSlice";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 
@@ -68,6 +69,7 @@ const ViewProfile = () => {
     photos,
     loading,
     error,
+    lifestyle
   } = useSelector((state: RootState) => state.profile);
 
   interface ImageFile {
@@ -139,12 +141,6 @@ const ViewProfile = () => {
     setProfileImage(prof ? { url: prof._src, file: null } : null);
     setCoverImage(cov ? { url: cov._src, file: null } : null);
     setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
-
-    // 🔍 Debug logs
-    console.log("📷 Resolved photos:", resolved);
-    console.log("👤 Profile Image:", prof);
-    console.log("🖼️ Cover Image:", cov);
-    console.log("📸 Individual Images:", others);
   }, [photos, toAbsoluteUrl, photoTypeAssociation]);
 
   useEffect(() => {
@@ -238,21 +234,24 @@ const ViewProfile = () => {
         })
       );
       dispatch(getProfilePhotosAsync(Number(profileId)));
+      dispatch(getLifestyleAsync({ profile_id: profileId }));
     }
   }, [dispatch, profileId]);
 
   // Debug: Log the Redux state data
   // useEffect(() => {
-  //   console.log("Redux State Debug:");
-  //   console.log("personalProfile:", personalProfile);
-  //   console.log("address:", address);
-  //   console.log("education:", education);
-  //   console.log("employment:", employment);
-  //   console.log("family:", family);
-  //   console.log("properties:", properties);
-  //   console.log("hobbies:", hobbies);
-  //   console.log("interests:", interests);
-  //   console.log("references:", references);
+  //   // console.log("Redux State Debug:");
+  //   // console.log("personalProfile:", personalProfile);
+  //   // console.log("address:", address);
+  //   // console.log("education:", education);
+  //   // console.log("employment:", employment);
+  //   // console.log("family:", family);
+  //   // console.log("properties:", properties);
+  //   // console.log("hobbies:", hobbies);
+  //   // console.log("interests:", interests);
+  //   // console.log("references:", references);
+    console.log("life style",lifestyle)
+
   // }, [
   //   personalProfile,
   //   address,
@@ -289,16 +288,17 @@ const ViewProfile = () => {
   const educationList =
     education?.data?.educations || (education ? [education] : []);
 
-  const categoryMapping = {
-    "What best describes your eating habits?": "eatingHabit",
-    "Do you follow any specific diet plan?": "dietHabit",
-    "How many cigarettes do you smoke per day on average?": "cigarettesPerDay",
-    "How frequently do you drink?": "drinkFrequency",
-    "What type of gambling do you engage in?": "gamblingEngage",
-    "How would you describe your physical activity level?":
-      "physicalActivityLevel",
-    "Do you practice any relaxation techniques?": "relaxationMethods",
-  };
+  const categoryMapping = [
+    
+    {habitQuestion:"What best describes your eating habits?", habitAnswer:lifestyle?.data?.lifestyles?.[0].eating_habit,},
+    {habitQuestion:"Do you follow any specific diet plan?", habitAnswer:lifestyle?.data?.lifestyles?.[0].diet_habit,},
+    {habitQuestion:"How many cigarettes do you smoke per day on average?", habitAnswer:lifestyle?.data?.lifestyles?.[0].cigarettes_per_day,},
+    {habitQuestion:"How frequently do you drink?", habitAnswer:lifestyle?.data?.lifestyles?.[0].drink_frequency,},
+    {habitQuestion:"What type of gambling do you engage in?", habitAnswer:lifestyle?.data?.lifestyles?.[0].gambling_engage,},
+    {habitQuestion:"How would you describe your physical activity level?", habitAnswer:lifestyle?.data?.lifestyles?.[0].physical_activity_level,},
+    {habitQuestion:"Do you practice any relaxation techniques?", habitAnswer:lifestyle?.data?.lifestyles?.[0].relaxation_methods,},
+  
+  ]
 
   let employmentList = [];
   if (Array.isArray(employment?.data)) {
@@ -1024,16 +1024,18 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {Object.keys(categoryMapping).map(
-                            (category, index) => (
+                          {categoryMapping.map(
+                            (category:any, index:any) => (
                               <tr
                                 key={index}
                                 className="hover:bg-gray-50 transition-colors text-sm"
                               >
                                 <td className="px-2 py-3 border-b">
-                                  {category}
+                                  {category?.habitQuestion}
                                 </td>
-                                <td className="px-4 py-3 border-b"></td>
+                                <td className="px-4 py-3 border-b">
+                                    {category?.habitAnswer}
+                                </td>
                               </tr>
                             )
                           )}

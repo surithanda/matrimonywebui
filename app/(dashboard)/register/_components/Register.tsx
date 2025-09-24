@@ -23,10 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectScrollUpButton, SelectViewport } from "@radix-ui/react-select";
+import loaderAnimation from "@/public/lottie/Loading.json";
+import Lottie from "lottie-react";
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.register);
+  const [redirecting, setRedirecting] = useState(false);
   const { countryList, stateList, genderList } = useAppSelector(
     (state) => state.metaData
   );
@@ -108,9 +111,11 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setRedirecting(true);
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
+      setRedirecting(false);
       return;
     }
 
@@ -144,6 +149,7 @@ const Register = () => {
       toast.error(error || "Registration failed!", {
         autoClose: 5000,
       });
+      setRedirecting(false);
     }
   };
 
@@ -459,6 +465,16 @@ const Register = () => {
           </div>
         </form>
       </section>
+      {redirecting && (
+        <div className="fixed inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
+          <Lottie
+            animationData={loaderAnimation}
+            loop
+            autoplay
+            style={{ height: 150, width: 150 }}
+          />
+        </div>
+      )}
       <ToastContainer />
     </>
   );

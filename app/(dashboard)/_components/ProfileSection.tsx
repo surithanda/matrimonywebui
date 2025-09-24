@@ -24,10 +24,13 @@ import loaderAnimation from "@/public/lottie/Loading.json";
 import { FaRegEdit } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import Loader from "./Loader";
+import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
+    const router = useRouter();
   // const personalProfile = useAppSelector(
   //   (state) => state.profile.personalProfile
   // );
@@ -164,6 +167,11 @@ const ProfileSection = () => {
     );
   };
 
+  const goTo = (path: string) => {
+    if (!path) return;
+    Router.push('/updateprofile');
+  };
+
   const stats = [
     {
       number: completeProfile?.profile_id ? 1 : 0,
@@ -213,7 +221,7 @@ const ProfileSection = () => {
       bg1: "#FFECE9",
       bg2: "#FCDEDA",
     },
-  ];
+  ];0
 
   if(loading){
     return(
@@ -295,15 +303,14 @@ const ProfileSection = () => {
                         />
 
                         {/* Hover Edit Button (Top Right) */}
-                        <Link href="/updateprofile">
                           <Button
+                          onClick={()=>goTo}
                             variant={"default"}
                             size={"sm"}
                             className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
                           >
                             <CiEdit size={22} />
                           </Button>
-                        </Link>
 
                         <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
                           <p className="text-white font-semibold text-lg sm:text-xl">

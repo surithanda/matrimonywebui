@@ -43,12 +43,12 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
     if (selectedCountry) {
       loadStates(selectedCountry);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, loadStates]);
 
   // Load initial metadata
   useEffect(() => {
     loadNecessaryMetaData();
-  }, []);
+  }, [loadNecessaryMetaData]);
 
   const openWindow = async (url: string) => {
     window.open(url, "_self");

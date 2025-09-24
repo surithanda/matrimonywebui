@@ -590,7 +590,7 @@ const ProfileGeneral = () => {
                       control={control}
                       render={({ field }) => (
                         <Select
-                          value={field.value}
+                          value={field.value ? String(field.value) : ""}
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger className=" w-32 focus:outline-none focus:border-b focus:border-orange-500">

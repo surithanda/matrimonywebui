@@ -226,16 +226,6 @@ export function AddAddressModal({
     setCurrentAddress({ ...defaultAddress });
   };
 
-  // On submit, check for unsaved data and show confirmation if needed
-  const onSubmit = async (data: IFormData) => {
-    console.log("Form submitted:", data, hasUnsavedAddressData());
-    if (hasUnsavedAddressData()) {
-      setShowConfirmation(true);
-    } else {
-      moveToNext();
-    }
-  };
-
   // Handle confirmation - save address and proceed
   const handleConfirmSaveAndContinue = async () => {
     setShowConfirmation(false);
@@ -269,6 +259,17 @@ export function AddAddressModal({
     router.push(nextRoute);
   };
 
+  
+  // On submit, check for unsaved data and show confirmation if needed
+  const onSubmit = useCallback(async (data: IFormData) => {
+    console.log("Form submitted:", data, hasUnsavedAddressData());
+    if (hasUnsavedAddressData()) {
+      setShowConfirmation(true);
+    } else {
+      moveToNext();
+    }
+  }, [hasUnsavedAddressData, moveToNext]);
+
   // Listen for continue event from top navigation
   useEffect(() => {
     const handleContinueEvent = () => {
@@ -280,6 +281,8 @@ export function AddAddressModal({
     return () =>
       window.removeEventListener("profile-continue", handleContinueEvent);
   }, [handleSubmit, onSubmit]);
+
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm md:max-w-2xl">

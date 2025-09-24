@@ -19,9 +19,7 @@ export default function Page() {
   const [mondalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<any>(null);
 
-  if (!selectedPlan) {
-    return <div className="text-center mt-10">Plan not found.</div>;
-  }
+
 
   useEffect(() => {
     let paymentStatus = searchParams.get("status");
@@ -34,7 +32,9 @@ export default function Page() {
       setModalType("failed");
     }
   }, [searchParams]);
-
+  if (!selectedPlan) {
+    return <div className="text-center mt-10">Plan not found.</div>;
+  }
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-20">
       <div className="flex justify-center items-center w-full">

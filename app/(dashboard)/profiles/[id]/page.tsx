@@ -98,17 +98,6 @@ const ViewProfile = () => {
     individual: 456,
   } as const;
 
-  // 2. Label → type mapping (UI usage)
-  const photoTypeLabels: Record<string, number> = {
-    "Clear Headshot": PHOTO_TYPES.profile,
-    "Cover Photo": PHOTO_TYPES.cover,
-    "Full-body shot": PHOTO_TYPES.individual,
-    "Casual or Lifestyle Shot": PHOTO_TYPES.individual,
-    "Family Photo": PHOTO_TYPES.individual,
-    "Candid or Fun Moment": PHOTO_TYPES.individual,
-    "Hobby or Activity Photo": PHOTO_TYPES.individual,
-    Other: PHOTO_TYPES.individual,
-  };
 
   // 3. Role-based association (internal usage)
   const photoTypeAssociation = useMemo(() => PHOTO_TYPES, []);
@@ -705,8 +694,7 @@ const ViewProfile = () => {
                             >
                               <div className="px-6 py-4">
                                 {/* Title */}
-                                <div className="flex items-center justify-between mb-2">
-                                  <div className="flex items-center gap-2">
+                                    <div className="flex justify-between items-center gap-2 mb-2">
                                     <h3
                                       className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
                                       style={{ fontFamily: "BR Cobane" }}
@@ -715,7 +703,6 @@ const ViewProfile = () => {
                                     </h3>
                                     <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
                                   </div>
-                                </div>
 
                                 {/* Content */}
                                 <p className="text-zinc-600 dark:text-zinc-300">
@@ -747,7 +734,7 @@ const ViewProfile = () => {
                       >
                         Educational Information
                       </h2>
-                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
+                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
@@ -827,7 +814,7 @@ const ViewProfile = () => {
                       >
                         Professional Information
                       </h2>
-                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
+                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
@@ -906,10 +893,10 @@ const ViewProfile = () => {
                         >
                           Family Information
                         </h2>
-                        <BiSolidBadgeCheck
+                        {/* <BiSolidBadgeCheck
                           className="text-gray-500"
                           size={22}
-                        />
+                        /> */}
                       </div>
                       <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                         <table className="w-full text-sm sm:text-base">
@@ -966,10 +953,10 @@ const ViewProfile = () => {
                         >
                           Friends & Reference
                         </h2>
-                        <BiSolidBadgeCheck
+                        {/* <BiSolidBadgeCheck
                           className="text-gray-500"
                           size={22}
-                        />
+                        /> */}
                       </div>
                       <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                         <table className="w-full text-sm sm:text-base">

@@ -1,32 +1,39 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BillingForm from "../_components/BillingForm";
 import { useSearchParams } from "next/navigation";
 import { plans } from "../_components/PricingCard";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { FaCircleCheck } from "react-icons/fa6";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Calendar } from "lucide-react"; // You were using Calendar, make sure it's imported
 import Link from "next/link";
 import { IoMdArrowBack } from "react-icons/io";
+import SuccessModal from "../_components/SuccessModal";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const requiredPlanName = searchParams.get("plan");
   const selectedPlan = plans.find((pla) => pla.name === requiredPlanName);
+  const [mondalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<any>(null);
 
   if (!selectedPlan) {
     return <div className="text-center mt-10">Plan not found.</div>;
   }
+
+  useEffect(() => {
+    let paymentStatus = searchParams.get("status");
+    if (paymentStatus === "success") {
+      setModalOpen(true);
+      setModalType("success");
+    }
+    if (paymentStatus === "failed") {
+      setModalOpen(true);
+      setModalType("failed");
+    }
+  }, [searchParams]);
 
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-20">
@@ -82,17 +89,38 @@ export default function Page() {
             </Card>
             <div className="flex items-center gap-2 justify-center">
               <IoMdArrowBack />
-            <Link href="/payments" className="text-base cursor-pointer" style={{ fontFamily: "BR Cobane" }}>Choose diffrent plan</Link>
+              <Link
+                href="/payments"
+                className="text-base cursor-pointer"
+                style={{ fontFamily: "BR Cobane" }}
+              >
+                Choose diffrent plan
+              </Link>
             </div>
           </div>
           <div className="col-span-2">
-                <h2
+            <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}
             >
               Billing Information
             </h2>
-            <BillingForm planName={selectedPlan.name}/>
+            <BillingForm
+              planName={selectedPlan.name}
+              planPrice={selectedPlan.price}
+            />
+            <SuccessModal
+              open={mondalOpen}
+              plan={{
+                name: selectedPlan.name,
+                price: selectedPlan.monthlyPrice,
+                duration: "1 Month",
+              }}
+              onOpenChange={() => {
+                setModalOpen(false);
+              }}
+              type={modalType}
+            />
           </div>
         </div>
       </div>

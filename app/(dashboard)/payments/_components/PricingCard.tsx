@@ -42,6 +42,7 @@ export const plans = [
       { text: "Email Support" },
       { text: "1 device login" },
     ],
+    price: 9.99,
   },
   {
     id: "Silver",
@@ -53,6 +54,7 @@ export const plans = [
       { text: "3 device logins" },
       { text: "Ad-free experience" },
     ],
+    price: 19.99,
   },
   {
     id: "Gold",
@@ -64,14 +66,16 @@ export const plans = [
       { text: "5 device logins" },
       { text: "Personalized recommendations" },
     ],
+
+    price: 29.99,
   },
 ];
 
 const PricingCard = () => {
-const router = useRouter();
-  const handlePlan =(plan:string) =>{
-    router.push(`/payments/billings?plan=${plan}`)
-  }
+  const router = useRouter();
+  const handlePlan = (plan: string) => {
+    router.push(`/payments/billings?plan=${plan}`);
+  };
   return (
     <div className="flex flex-col items-stretch gap-6 md:flex-row">
       {plans.map((plan, index) => (

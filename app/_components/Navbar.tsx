@@ -10,7 +10,11 @@ import RegisterIcon from "../../public/images/RegisterIcon.svg";
 import dp from "../../public/images/p-i.png";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useProfileContext } from "../utils/useProfileContext";
-import { isAuthenticated, clearAllAuthData, syncTokenToCookies } from "../utils/authToken";
+import {
+  isAuthenticated,
+  clearAllAuthData,
+  syncTokenToCookies,
+} from "../utils/authToken";
 import Lottie from "lottie-react";
 import Loading from "@/public/lottie/Loading.json";
 import {
@@ -33,6 +37,7 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const userData = useAppSelector((state) => state.auth.userData);
   const { selectedProfileID, setSelectedProfileID } = useProfileContext();
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const checkToken = () => isAuthenticated();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -58,15 +63,18 @@ export const Navbar = () => {
 
   useEffect(() => {
     setIsLoggedIn(checkToken());
-    
+
     // Sync existing localStorage token to cookies for existing users
     syncTokenToCookies();
-    
+
     // Also check and restore profile ID from localStorage on page load
     if (checkToken()) {
       const storedProfileID = localStorage.getItem("selectedProfile");
       if (storedProfileID) {
-        console.log("Restoring profile ID from localStorage on page load:", storedProfileID);
+        console.log(
+          "Restoring profile ID from localStorage on page load:",
+          storedProfileID
+        );
         setSelectedProfileID(parseInt(storedProfileID, 10));
         localStorage.removeItem("selectedProfile");
       }
@@ -85,6 +93,20 @@ export const Navbar = () => {
       document.body.style.overflow = "unset";
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    // Trigger loader whenever pathname changes
+    if (pathname) {
+      setIsNavigating(true);
+
+      // Small delay to show loader (until page content renders)
+      const timer = setTimeout(() => {
+        setIsNavigating(false);
+      }, 300); // adjust if needed
+
+      return () => clearTimeout(timer);
+    }
+  }, [pathname]);
 
   const darkPages = [
     "/login",
@@ -143,11 +165,14 @@ export const Navbar = () => {
   // Navigation tracking function
   const trackNavLinkClick = () => {
     console.log("Nav link clicked");
-    
+
     // Check if localStorage has selectedProfile value and set it in context
     const storedProfileID = localStorage.getItem("selectedProfile");
     if (storedProfileID) {
-      console.log("Restoring profile ID from localStorage on nav click:", storedProfileID);
+      console.log(
+        "Restoring profile ID from localStorage on nav click:",
+        storedProfileID
+      );
       setSelectedProfileID(parseInt(storedProfileID, 10));
       localStorage.removeItem("selectedProfile");
     }
@@ -336,9 +361,9 @@ export const Navbar = () => {
                     <Link
                       href={link.href}
                       onClick={() => {
-                      if (isLoggedIn) trackNavLinkClick();
-                      setMenuOpen(false);
-                    }}
+                        if (isLoggedIn) trackNavLinkClick();
+                        setMenuOpen(false);
+                      }}
                       className={`block py-2 border-b border-gray-100 transition-colors ${
                         isActive
                           ? "text-yellow-500 font-semibold"
@@ -387,13 +412,15 @@ export const Navbar = () => {
         )}
       </nav>
       {/* Full-screen loader overlay */}
-      {isLoggingOut && (
+      {(isNavigating || isLoggingOut) && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="w-32 h-32">
             <Lottie animationData={Loading} loop={true} />
           </div>
         </div>
       )}
+
+
     </>
   );
 };

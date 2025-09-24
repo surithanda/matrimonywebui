@@ -92,7 +92,24 @@ const Page = () => {
                   className="relative bg-white rounded-md shadow-md overflow-hidden"
                 >
                   {/* Top Cover Photo */}
-                  <div className="h-36 w-full overflow-hidden bg-gray-200"></div>
+                  <div className="h-36 w-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                    {(() => {
+                      const profileImage = getProfileImage(profile);
+                      return profileImage ? (
+                        <Image
+                          className="w-full h-36 object-cover"
+                          src={profileImage}
+                          alt={profile.first_name || "Profile Cover"}
+                          width={500}
+                          height={144}
+                        />
+                      ) : (
+                        <div className="w-full h-36 flex items-center justify-center bg-gray-300 text-gray-600 text-lg">
+                          No Image
+                        </div>
+                      );
+                    })()}
+                  </div>
 
                   {/* Verified Badges */}
                   <div className="flex flex-col justify-center items-center gap-2 my-2 text-white absolute top-0 right-2">
@@ -120,29 +137,13 @@ const Page = () => {
                     {/* Profile Image + Name/Details Side by Side */}
                     <div className="flex items-center gap-4">
                       <div className="absolute left-3 top-[7rem]">
-                        {(() => {
-                          const profileImage = getProfileImage(profile);
-                          return profileImage ? (
-                            <Image
-                              className="w-24 h-24 rounded-full border-4 border-white object-cover"
-                              src={profileImage}
-                              alt={profile.first_name || "Profile"}
-                              width={96}
-                              height={96}
-                            />
-                          ) : (
-                            <div
-                              className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
-                                profile.first_name || "Unknown"
-                              )}`}
-                            >
-                              {getInitials(
-                                profile.first_name,
-                                profile.last_name
-                              )}
-                            </div>
-                          );
-                        })()}
+                        <div
+                          className={`w-24 h-24 flex items-center justify-center text-white text-2xl font-bold rounded-full border-4 border-white ${getAvatarColor(
+                            profile.first_name || "Unknown"
+                          )}`}
+                        >
+                          {getInitials(profile.first_name, profile.last_name)}
+                        </div>
                       </div>
 
                       {/* Name + Location */}

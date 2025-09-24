@@ -5,7 +5,7 @@ import { useAppSelector } from '../store/store';
 
 export const useMetaDataLoader = () => {
   const dispatch = useDispatch();
-  const { countryList, stateList, job_titleList, property_typeList, ownership_typeList, photo_typeList, genderList, marital_statusList, religionList, field_of_studyList } = useAppSelector((state) => state.metaData);
+  const { countryList, stateList, job_titleList, property_typeList, ownership_typeList, photo_typeList, genderList, marital_statusList, religionList, field_of_studyList, referenceList } = useAppSelector((state) => state.metaData);
 
   const loadMetaDataCategory = useCallback(async (category?: string) => {
     const result = await (dispatch as any)(getMetaDataAsync({ category })).unwrap();
@@ -211,6 +211,14 @@ loadMetaData();
     return match?.name;
   }
 
+  const findReferenceName = (compareVal:number): string => {
+    let match:any;
+    referenceList?.map((i:any) => {
+      if(i.id === compareVal) match = i;
+    })
+    return match?.name;
+  }
+
   return {
     loadIndividualMetaData,
     loadNecessaryMetaData,
@@ -227,6 +235,7 @@ loadMetaData();
     findGenderName,
     findMaritalStatusName,
     findReligionName,
-    findFieldOfStudy
+    findFieldOfStudy,
+    findReferenceName
   };
 };

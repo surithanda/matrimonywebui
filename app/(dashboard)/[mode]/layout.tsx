@@ -221,7 +221,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="dashboard-background mt-20 md:mt-16 md:px-[20px] lg:px-[40px] 2xl:px-[80px] md:py-8 flex flex-col items-center">
-      <div className="flex justify-between items-center w-full mb-4">
+      <div className="flex flex-row md:flex-row justify-between items-start md:items-center w-full mb-4 px-2 py-2 md:px-0 md:py-0">
         <div>
           {/* Title */}
           <h2 className="dmserif32600 mt-2">
@@ -236,7 +236,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Right-side buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row items-center gap-2">
           <Button variant="outline">
             <Link href={`/settings`} className="flex items-center gap-2">
               <FaMagnifyingGlass size={17} />

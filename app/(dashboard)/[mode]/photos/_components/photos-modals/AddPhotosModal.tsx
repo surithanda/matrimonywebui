@@ -27,15 +27,16 @@ import { IoIosSave, IoMdCloseCircle } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import Image from "next/image";
+
 // Constants
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_PHOTOS = 8;
 
 const photoTypeAssociation: Record<string, number> = {
-  "Clear Headshot": 450, // Profile
-  "Full-body shot": 456, 
-  "Cover Photo": 454,// Cover
+  "Clear Headshot": 450,
+  "Full-body shot": 456,
+  "Cover Photo": 454,
   "Casual or Lifestyle Shot": 456,
   "Family Photo": 456,
   "Candid or Fun Moment": 456,
@@ -47,12 +48,16 @@ interface AddPhotosModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   profileId: number;
+  onUploadSuccess: any;
+  uploadedPhotos: any[];
 }
 
 const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
   open,
   onOpenChange,
   profileId,
+  onUploadSuccess,
+  uploadedPhotos,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -70,6 +75,19 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
       });
     };
   }, [previews]);
+
+  // Get already uploaded photo type IDs
+  const uploadedTypeIds = new Set(
+    uploadedPhotos.map((photo) => Number(photo.photo_type))
+  );
+
+  // Filter dropdown photo types based on uploaded photos
+  const photoOptions = Object.entries(photoTypeAssociation).filter(
+    ([label, id]) => {
+      if (id === 456) return true; // allow multiple
+      return !uploadedTypeIds.has(id); // exclude if already uploaded
+    }
+  );
 
   const handleFileChange = (fileList: FileList | null) => {
     if (!fileList) return;
@@ -90,7 +108,6 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
       newPreviews.push(URL.createObjectURL(file));
     });
 
-    // Replace for single uploads, append for multiple
     if (selectedType === "Individual Photo") {
       setFiles((prev) => [...prev, ...newFiles]);
       setPreviews((prev) => [...prev, ...newPreviews]);
@@ -102,7 +119,6 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
 
   const removeSelection = (index?: number) => {
     if (index !== undefined) {
-      // Remove single photo
       const updatedFiles = [...files];
       const updatedPreviews = [...previews];
 
@@ -115,7 +131,6 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
       setFiles(updatedFiles);
       setPreviews(updatedPreviews);
     } else {
-      // Reset all
       previews.forEach((p) => {
         if (p.startsWith("blob:")) URL.revokeObjectURL(p);
       });
@@ -135,7 +150,7 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
 
     setIsLoading(true);
     try {
-      const typeId = photoTypeAssociation[selectedType] || 456; // default to individual
+      const typeId = photoTypeAssociation[selectedType] || 456;
 
       for (const file of files) {
         const formData = new FormData();
@@ -149,7 +164,10 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
       }
 
       toast.success("Photo(s) uploaded successfully!");
-      await dispatch(getProfilePhotosAsync(profileId));
+
+      if (onUploadSuccess) {
+        onUploadSuccess(); // Refresh photos
+      }
 
       removeSelection();
       onOpenChange(false);
@@ -174,15 +192,15 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
               </DialogTitle>
 
               <div className="flex items-center gap-3">
-            <Button
-  className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
-  variant="default"
-  size="sm"
-  disabled={isLoading}
->
-  <IoIosSave size={20} />
-  {isLoading ? "Saving..." : "Save"}
-</Button>
+                <Button
+                  className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+                  variant="default"
+                  size="sm"
+                  disabled={isLoading}
+                >
+                  <IoIosSave size={20} />
+                  {isLoading ? "Saving..." : "Save"}
+                </Button>
                 <DialogClose asChild>
                   <Button
                     type="button"
@@ -199,34 +217,27 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
           <div className="px-4 pb-4">
             {/* Select Type */}
             <div>
-              <Label>Photo Type <span className="text-red-500">*</span></Label>
+              <Label>
+                Photo Type <span className="text-red-500">*</span>
+              </Label>
               <Select
                 value={selectedType ?? ""}
                 onValueChange={(val) => {
                   setSelectedType(val);
-                  setFiles([]); // reset files on type change
-                  setPreviews([]); // reset previews on type change
-                  setDescription(""); // reset description on type change
+                  setFiles([]);
+                  setPreviews([]);
+                  setDescription("");
                 }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Clear Headshot">Clear Headshot</SelectItem>
-                  <SelectItem value="Full-body shot">Full-body shot</SelectItem>
-                  <SelectItem value="Cover Photo">Cover Photo</SelectItem>
-                  <SelectItem value="Casual or Lifestyle Shot">
-                    Casual or Lifestyle Shot
-                  </SelectItem>
-                  <SelectItem value="Family Photo">Family Photo</SelectItem>
-                  <SelectItem value="Candid or Fun Moment">
-                    Candid or Fun Moment
-                  </SelectItem>
-                  <SelectItem value="Hobby or Activity Photo">
-                    Hobby or Activity Photo
-                  </SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  {photoOptions.map(([label]) => (
+                    <SelectItem key={label} value={label}>
+                      {label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -234,7 +245,8 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
             {/* File Upload */}
             <div className="mt-2">
               <Label>
-                Upload File{selectedType === "Other" ? "s" : ""} <span className="text-red-500">*</span>
+                Upload File{selectedType === "Other" ? "s" : ""}{" "}
+                <span className="text-red-500">*</span>
               </Label>
               <Input
                 type="file"

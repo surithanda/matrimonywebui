@@ -99,7 +99,7 @@ const FormSection = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
-  const { loadStates, findCountryName, findStateName } = useMetaDataLoader();
+  const { loadStates, findCountryName, findStateName,findReferenceName } = useMetaDataLoader();
   const {loading: loader} = useAppSelector((state)=>state.profile)
 
   const [openModal, setOpenModal] = useState({
@@ -107,7 +107,7 @@ const FormSection = ({
     mode: 'add' as 'add' | 'edit',
   });
 
-  console.log("Current Family Member:", fields);
+  // console.log("Current Family Member:", fields);
 
   // Check if currentFamilyMember has any meaningful data
   const hasUnsavedFamilyData = () => {
@@ -184,6 +184,8 @@ const FormSection = ({
       console.error("Error getting profile section details:", err);
     }
   }, [dispatch, reset, selectedProfileID, category]);
+
+  console.log("list", fields)
 
   // Fetch family members from backend on mount
   useEffect(() => {
@@ -522,8 +524,7 @@ const FormSection = ({
                   {/* Family Member Content */}
                   <div>
                     <p className="text-gray-900 font-medium leading-relaxed">
-                      {/* {findPropertyTypeName(field.relationshiptoyou ?? -1) || 'Unknown'} */}
-                      {field.relationshiptoyou}
+                      {findReferenceName(Number(field.relationshiptoyou) || 0) || ''}
                     </p>
                   </div>
 
@@ -585,7 +586,7 @@ const FormSection = ({
                       <div className="pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500 mb-1">Address:</p>
                         <p className="text-sm text-gray-700">
-                          {field.address_line}
+                          {field.address_line || "N/A"}
                         </p>
                       </div>
                     )}

@@ -31,15 +31,15 @@ export default function Page() {
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-20">
       <div className="flex justify-center items-center w-full">
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-1">
+        <div className="grid grid-cols-6 gap-6">
+          <div className="col-span-2">
             <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}
             >
               Selected Plan Details
             </h2>
-            <Card className="relative flex w-80 flex-col justify-between text-left overflow-hidden shadow-xl mb-4">
+            <Card className="relative flex w-full flex-col justify-between text-left overflow-hidden shadow-xl mb-4">
               <BorderBeam size={250} duration={6} delay={4} />
 
               <CardHeader>
@@ -49,18 +49,18 @@ export default function Page() {
                       {selectedPlan.name}
                     </p>
                   </CardTitle>
-                  <span className="text-4xl font-bold">
+                  <span className="text-2xl font-bold">
                     {selectedPlan.monthlyPrice}
-                    <span className="text-xl">/ mo</span>
+                    {/* <span className="text-xl">/ mo</span> */}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar size={22} />
                   <p
-                    className="text-muted-foreground"
+                    className="text-muted-foreground text-sm"
                     style={{ fontFamily: "BR Cobane" }}
                   >
-                    30 days from purchase
+                    1 year (365 days from Payment date)
                   </p>
                 </div>
               </CardHeader>
@@ -85,7 +85,7 @@ export default function Page() {
             <Link href="/payments" className="text-base cursor-pointer" style={{ fontFamily: "BR Cobane" }}>Choose diffrent plan</Link>
             </div>
           </div>
-          <div className="col-span-2">
+          <div className="col-span-4">
                 <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}

@@ -6,7 +6,6 @@ import {
 } from "@/app/store/features/authSlice";
 import { useAppDispatch } from "@/app/store/store";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

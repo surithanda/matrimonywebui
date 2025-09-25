@@ -186,7 +186,7 @@ const ProfileSection = () => {
       bg2: "#FFE8B7",
     },
     {
-      number: completeProfile?.favourites ?? 0,
+      number: completeProfile?.profile_favorites ?? 0,
       name: "Favourites",
       bg1: "#FFECE9",
       bg2: "#FCDEDA",

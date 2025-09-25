@@ -53,7 +53,7 @@ export default function BillingForm({ planName }: BillingFormProps) {
   };
 
   return (
-    <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
+    <section className="account-details-box w-full max-w-full mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-4 sm:gap-4 text-left"

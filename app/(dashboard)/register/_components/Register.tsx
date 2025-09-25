@@ -96,18 +96,47 @@ const Register = () => {
     };
   }
 
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  //   if (name === "country") {
+  //     loadStates(value);
+  //   }
+  // };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (name === "country") {
-      loadStates(value);
-    }
+
+    setFormData((prev: any) => {
+      let updatedData: any = { ...prev, [name]: value };
+
+      // 👇 when country changes, also update phone country code
+      if (name === "country") {
+        const selectedCountry = countryList?.find(
+          (c: any) => c.country_id.toString() === value
+        );
+        if (selectedCountry) {
+          updatedData.primaryPhoneCountry =
+            selectedCountry.country_calling_code;
+        }
+      }
+
+      return updatedData;
+    });
   };
+
+  useEffect(() => {
+    if (formData.country) {
+      loadStates(formData.country);
+    }
+  }, [formData.country, loadStates]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -380,7 +409,7 @@ const Register = () => {
                 <Label className="mb-1">Primary Phone</Label>
                 <div className="flex w-full gap-2">
                   <Select
-                    value={formData.primaryPhoneCountry || "+91"}
+                    value={formData.primaryPhoneCountry} // default fallback
                     onValueChange={(value) =>
                       handleChange({
                         target: { name: "primaryPhoneCountry", value },
@@ -388,7 +417,7 @@ const Register = () => {
                     }
                   >
                     <SelectTrigger className="sm:w-32 md:w-52 text-xs sm:text-sm">
-                      <SelectValue placeholder="Select Country Code" />
+                      <SelectValue placeholder="" />
                     </SelectTrigger>
 
                     <SelectContent className="sm:w-32 md:w-52">
@@ -396,7 +425,7 @@ const Register = () => {
                         {countryList?.map((country: any) => (
                           <SelectItem
                             key={country.country_id}
-                            value={country.country_calling_code} // ✅ now matches "+91"
+                            value={country.country_calling_code}
                           >
                             {country.flag_emoji} {country.country_calling_code}
                           </SelectItem>

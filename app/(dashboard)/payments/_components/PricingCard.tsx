@@ -33,36 +33,49 @@ interface Pricing2Props {
 }
 
 export const plans = [
-  {
-    id: "Basic",
-    name: "Basic",
-    monthlyPrice: "$9.99",
+  // {
+  //   id: "Basic",
+  //   name: "Basic",
+  //   monthlyPrice: "$9.99",
+  //   features: [
+  //     { text: "Access to standard features" },
+  //     { text: "Email Support" },
+  //     { text: "1 device login" },
+  //   ],
+  // },
+  // {
+  //   id: "Silver",
+  //   name: "Silver",
+  //   monthlyPrice: "$19.99",
+  //   features: [
+  //     { text: "All Basic features" },
+  //     { text: "Priority support" },
+  //     { text: "3 device logins" },
+  //     { text: "Ad-free experience" },
+  //   ],
+  // },
+  // {
+  //   id: "Gold",
+  //   name: "Gold",
+  //   monthlyPrice: "$29.99",
+  //   features: [
+  //     { text: "All Silver features" },
+  //     { text: "Exclusive content" },
+  //     { text: "5 device logins" },
+  //     { text: "Personalized recommendations" },
+  //   ],
+  // },
+    {
+    id: "Annual",
+    name: "Annual Donation",
+    monthlyPrice: "$99.99",
     features: [
-      { text: "Access to standard features" },
-      { text: "Email Support" },
-      { text: "1 device login" },
-    ],
-  },
-  {
-    id: "Silver",
-    name: "Silver",
-    monthlyPrice: "$19.99",
-    features: [
-      { text: "All Basic features" },
-      { text: "Priority support" },
-      { text: "3 device logins" },
-      { text: "Ad-free experience" },
-    ],
-  },
-  {
-    id: "Gold",
-    name: "Gold",
-    monthlyPrice: "$29.99",
-    features: [
-      { text: "All Silver features" },
-      { text: "Exclusive content" },
-      { text: "5 device logins" },
-      { text: "Personalized recommendations" },
+      { text: "Background Verfication" },
+      { text: "Email / Phone Support" },
+      // { text: "Zoom Call" },
+      { text: "Unlimited Search" },
+      { text: "Favorites" },
+      { text: "Unlimited Profile Views" },
     ],
   },
 ];
@@ -73,11 +86,12 @@ const router = useRouter();
     router.push(`/payments/billings?plan=${plan}`)
   }
   return (
-    <div className="flex flex-col items-stretch gap-6 md:flex-row">
+    // <div className="flex flex-col items-stretch gap-6 md:flex-row">
+    <div className="flex justify-center items-center w-full">
       {plans.map((plan, index) => (
         <Card
           key={plan.id}
-          className="relative flex w-80 flex-col justify-between text-left overflow-hidden shadow-xl"
+          className="relative flex w-[50%] flex-col justify-between text-left overflow-hidden shadow-xl"
         >
           {/* BorderBeam Effect */}
           <BorderBeam size={250} duration={6} delay={index * 4} />
@@ -87,7 +101,7 @@ const router = useRouter();
               <CardTitle>
                 <p style={{ fontFamily: "BR Cobane" }}>{plan.name}</p>
               </CardTitle>
-              <span className="text-4xl font-bold">
+              <span className="text-3xl font-bold">
                 {plan.monthlyPrice}
                 <span className="text-xl">/ mo</span>
               </span>
@@ -98,7 +112,7 @@ const router = useRouter();
                 className="text-muted-foreground"
                 style={{ fontFamily: "BR Cobane" }}
               >
-                30 days from purchase
+                1 year (365 days from Payment date)
               </p>
             </div>
           </CardHeader>
@@ -124,7 +138,7 @@ const router = useRouter();
               variant="outline"
               onClick={() => handlePlan(plan.name)}
             >
-              Purchase
+              Donate Now
               <ArrowRight className="ml-2 size-4" />
             </Button>
           </CardFooter>

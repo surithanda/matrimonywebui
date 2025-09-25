@@ -85,7 +85,30 @@ export default function Page() {
                 </ul>
               </CardContent>
             </Card>
-            <div className="flex items-center gap-2 justify-center">
+            <div className="bg-gradient-to-r bg-white shadow-xl rounded-md p-6 w-full max-w-sm text-white">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="text-lg text-black font-semibold" style={{ fontFamily: "BR Cobane" }}>Test Payment Card</h2>
+              </div>
+
+              <div className="text-2xl text-black font-mono tracking-widest mb-1">
+                4242 4242 4242 4242
+              </div>
+
+              <div className="flex justify-between text-sm">
+                <div>
+                  <p className="uppercase text-black ">Expiry</p>
+                  <p className="text-black">12/34</p>
+                </div>
+                <div>
+                  <p className="uppercase text-black">CVV</p>
+                  <p className="text-black">123</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-1 ps-2">
+              <p className="text-red-500 text-base" style={{ fontFamily: "BR Cobane" }}>This is only for test payment</p>
+            </div>
+            {/* <div className="flex items-center gap-2 justify-center">
               <IoMdArrowBack />
               <Link
                 href="/payments"
@@ -94,10 +117,10 @@ export default function Page() {
               >
                 Choose diffrent plan
               </Link>
-            </div>
+            </div> */}
           </div>
-          <div className="col-span-4">
-                <h2
+          <div className="col-span-4 h-full">
+            <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}
             >

@@ -17,6 +17,7 @@ import { SelectViewport } from "@radix-ui/react-select";
 import { api } from "@/app/lib/axios";
 import { CONSTANTS } from "@/constants";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 type BillingFormProps = {
   planName: string;
@@ -95,18 +96,20 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         <div className="pb-4 sm:pb-6">
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
             <div className="grow text-left flex flex-col items-start">
-              <Label className="mb-1">Name</Label>
+              <Label className="mb-1">Name <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("name")}
+                required
                 className="stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
             </div>
             <div className="grow text-left flex flex-col items-start">
-              <Label className="mb-1">Address</Label>
+              <Label className="mb-1">Address <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("address")}
+                required
                 className="stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
             </div>
@@ -116,7 +119,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {/* Country */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">Country</Label>
+              <Label className="mb-1">Country <span className="text-red-500">*</span></Label>
               <Select onValueChange={(value) => setValue("country", value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select country" />
@@ -136,7 +139,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* State */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">State</Label>
+              <Label className="mb-1">State <span className="text-red-500">*</span></Label>
               <Select onValueChange={(value) => setValue("state", value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select state" />
@@ -155,7 +158,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* City */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">City</Label>
+              <Label className="mb-1">City <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("city")}
@@ -165,7 +168,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* Zip Code */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">Zip Code</Label>
+              <Label className="mb-1">Zip Code <span className="text-red-500">*</span></Label>
               <Input
                 type="number"
                 {...register("zipCode")}
@@ -178,7 +181,9 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-4">
           <Button type="button" variant={"outline"}>
+            <Link href={"/payments"}>
             Back to plan
+            </Link>
           </Button>
           <Button
             type="submit"

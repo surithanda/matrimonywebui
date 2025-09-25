@@ -57,6 +57,8 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
   const onSubmit = async (data: any) => {
     try {
       setLoading(true);
+
+      const currentUrl = window.location.origin + window.location.pathname;
       let payData = {
         name: data.name,
         address: data.address,
@@ -66,8 +68,8 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         zip_code: data.zip,
         amount: planPrice,
         plan: planName,
-        front_end_success_uri: `${CONSTANTS.front_end_success_uri}?plan=${planName}&status=success`,
-        front_end_failed_uri: `${CONSTANTS.front_end_failed_uri}?plan=${planName}&status=failed`,
+        front_end_success_uri: `${currentUrl}?plan=${planName}&status=success`,
+        front_end_failed_uri: `${currentUrl}?plan=${planName}&status=failed`,
         currency: CONSTANTS.currency,
       };
       let res = await api.post("/stripe/create-session", payData);

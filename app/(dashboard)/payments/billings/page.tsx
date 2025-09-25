@@ -19,8 +19,6 @@ export default function Page() {
   const [mondalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<any>(null);
 
-
-
   useEffect(() => {
     let paymentStatus = searchParams.get("status");
     if (paymentStatus === "success") {

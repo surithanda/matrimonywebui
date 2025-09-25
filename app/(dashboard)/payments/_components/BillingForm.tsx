@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppSelector } from "@/app/store/store";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
@@ -14,14 +14,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectViewport } from "@radix-ui/react-select";
+import { api } from "@/app/lib/axios";
+import { CONSTANTS } from "@/constants";
+import { toast } from "react-toastify";
 
 type BillingFormProps = {
   planName: string;
+  planPrice: number;
 };
-
-export default function BillingForm({ planName }: BillingFormProps) {
+export default function BillingForm({ planName, planPrice }: BillingFormProps) {
   const { countryList, stateList } = useAppSelector((state) => state.metaData);
   const { loadNecessaryMetaData, loadStates } = useMetaDataLoader();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const {
     register,
@@ -29,6 +33,7 @@ export default function BillingForm({ planName }: BillingFormProps) {
     setValue,
     watch,
     formState: { errors },
+    reset,
   } = useForm();
 
   const selectedCountry = watch("country");
@@ -45,11 +50,39 @@ export default function BillingForm({ planName }: BillingFormProps) {
     loadNecessaryMetaData();
   }, [loadNecessaryMetaData]);
 
-  const onSubmit = (data: any) => {
-     console.log("Form Submitted:", {
-    ...data,
-    selectedPlan: planName,
-  });
+  const openWindow = async (url: string) => {
+    window.open(url, "_self");
+  };
+
+  const onSubmit = async (data: any) => {
+    try {
+      setLoading(true);
+
+      const currentUrl = window.location.origin + window.location.pathname;
+      let payData = {
+        name: data.name,
+        address: data.address,
+        country: data.country,
+        state: data.state,
+        city: data.city,
+        zip_code: data.zip,
+        amount: planPrice,
+        plan: planName,
+        front_end_success_uri: `${currentUrl}?plan=${planName}&status=success`,
+        front_end_failed_uri: `${currentUrl}?plan=${planName}&status=failed`,
+        currency: CONSTANTS.currency,
+      };
+      let res = await api.post("/stripe/create-session", payData);
+      if (res && res.status === 201) {
+        let payUrl = res.data.data.url;
+        openWindow(payUrl);
+        reset();
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Unable to complete the payment");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -150,6 +183,7 @@ export default function BillingForm({ planName }: BillingFormProps) {
           <Button
             type="submit"
             variant={"default"}
+            disabled={loading}
             className="bg-orange-500 hover:bg-orange-600"
           >
             Complete Payment

@@ -77,14 +77,16 @@ export const plans = [
       { text: "Favorites" },
       { text: "Unlimited Profile Views" },
     ],
+
+    price: 29.99,
   },
 ];
 
 const PricingCard = () => {
-const router = useRouter();
-  const handlePlan =(plan:string) =>{
-    router.push(`/payments/billings?plan=${plan}`)
-  }
+  const router = useRouter();
+  const handlePlan = (plan: string) => {
+    router.push(`/payments/billings?plan=${plan}`);
+  };
   return (
     // <div className="flex flex-col items-stretch gap-6 md:flex-row">
     <div className="flex justify-center items-center w-full">

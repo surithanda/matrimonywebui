@@ -7,7 +7,7 @@ import flowerbackground from "@/public/images/flower.png";
 
 const page = () => {
   return (
-    <div className="dashboard-background px-4 md:px-[120px] mt-4 md:mt-8 lg:mt-24 2xl:mt-6 flex flex-col items-center md:gap-8 h-[90vh] lg:h-[100vh] xl:h-[90vh] relative">
+    <div className="dashboard-background px-4 md:px-[120px] mt-4 md:mt-8 lg:mt-16 2xl:mt-6 flex flex-col items-center md:gap-8 h-[90vh] lg:h-[100vh] xl:h-[90vh] relative">
       <Image
         src={patternbackground}
         alt="card background"

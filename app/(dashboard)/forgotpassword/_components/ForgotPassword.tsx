@@ -99,11 +99,11 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/5 2xl:w-1/4 text-left shadow-xl">
-        <h3 className="BRCobane32600 text-3xl md:mb-0 mt-4">
+      <div className="account-details-box w-full sm:w-1/2 md:w-3/4 lg:w-2/5 2xl:w-1/4 text-left shadow-xl mt-24">
+        <h3 className="BRCobane32600 text-3xl md:mb-0 mt-2">
           Forgot password?
         </h3>
-        <ToastContainer />
+  
 
         {current === 0 && (
           <form onSubmit={handleSubmit} className="w-full  md:mb-16">
@@ -131,27 +131,27 @@ const ForgotPassword = () => {
             </div>
 
             {/* Register Link */}
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center items-center gap-2">
               <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
                 Login to your account?{" "}
               </p>
-              <a
-                href="#"
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   setRedirecting(true); // Show loader immediately
                   router.push("/login");
                 }}
-                className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
+                className="text-white font-semibold hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
               >
                 Login Now
-              </a>
+              </Button>
             </div>
           </form>
         )}
+        
 
         {current === 1 && (
-          <form onSubmit={handleSubmitReset} className="w-full md:mb-16">
+          <form onSubmit={handleSubmitReset} className="w-full">
             <div className="mb-6 flex flex-col items-start">
               <Label className="block BRCobane18600 mb-2.5">OTP</Label>
               <Input
@@ -193,21 +193,23 @@ const ForgotPassword = () => {
             <div className="mb-6">
               <Button
                 type="submit"
-                className="w-full yellow-btn hover:bg-orange-600"
+                className="w-full bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-xl font-semibold"
               >
                 Reset Password
               </Button>
             </div>
-            <div className="flex gap-2">
+            <div className="flex justify-center items-center gap-2">
               <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
                 Back to login page?{" "}
               </p>
+              <Button>
               <Link
                 href="/login"
-                className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
+                className="text-white font-semibold hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
               >
                 Login Now
               </Link>
+              </Button>
             </div>
           </form>
         )}
@@ -223,6 +225,7 @@ const ForgotPassword = () => {
           />
         </div>
       )}
+            <ToastContainer />
     </>
   );
 };

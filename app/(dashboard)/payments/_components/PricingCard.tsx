@@ -93,7 +93,7 @@ const PricingCard = () => {
       {plans.map((plan, index) => (
         <Card
           key={plan.id}
-          className="relative flex w-[50%] flex-col justify-between text-left overflow-hidden shadow-xl"
+          className="relative flex w-full mx-2 mt-4 lg:mt-0 lg:mx-0 md:w-[50%] flex-col justify-between text-left overflow-hidden shadow-xl"
         >
           {/* BorderBeam Effect */}
           <BorderBeam size={250} duration={6} delay={index * 4} />

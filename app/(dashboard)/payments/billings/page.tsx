@@ -36,8 +36,8 @@ export default function Page() {
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-20">
       <div className="flex justify-center items-center w-full">
-        <div className="grid grid-cols-6 gap-6">
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+          <div className="lg:col-span-2 w-full">
             <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}
@@ -119,7 +119,7 @@ export default function Page() {
               </Link>
             </div> */}
           </div>
-          <div className="col-span-4 h-full">
+          <div className="lg:col-span-4 h-full">
             <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}

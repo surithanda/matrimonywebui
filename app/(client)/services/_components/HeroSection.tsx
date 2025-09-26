@@ -8,7 +8,7 @@ const HeroSection = () => {
       height="min-h-[600px] sm:min-h-[550px] lg:min-h-screen xl:min-h-screen"
       className="px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 flex flex-col items-start justify-center relative"
     >
-      <div className="absolute inset-0 bg-black/40 -z-10"></div>
+      <div className="absolute inset-0 bg-black/65 -z-10"></div>
       <div data-aos='fade-right' className=" w-full sm:w-full md:w-[500px] lg:w-full space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-[20px]">
         <h1 className="BRCobane64600 text-[#fafafa] mt-12 sm:mt-20 md:mt-auto mb-3 text-5xl sm:text-3xl md:text-5xl lg:text-6xl leading-tight">
           Our Services

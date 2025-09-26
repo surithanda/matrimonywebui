@@ -25,11 +25,14 @@ import {
 import { SelectScrollUpButton, SelectViewport } from "@radix-ui/react-select";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import Lottie from "lottie-react";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const Register = () => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.register);
   const [redirecting, setRedirecting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { countryList, stateList, genderList } = useAppSelector(
     (state) => state.metaData
   );
@@ -195,7 +198,9 @@ const Register = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="grow">
-              <Label>Email</Label>
+              <Label>
+                Email <span className="text-red-500">*</span>
+              </Label>
               <Input
                 type="email"
                 name="email"
@@ -204,25 +209,43 @@ const Register = () => {
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
             </div>
-            <div className="grow">
-              <Label>Password</Label>
+            <div className="relative grow">
+              <Label>
+                Password <span className="text-red-500">*</span>
+              </Label>
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-12 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
             </div>
-            <div className="grow">
-              <Label>Re-enter Password</Label>
+            <div className="relative grow">
+              <Label>
+                Re-enter Password <span className="text-red-500">*</span>
+              </Label>
               <Input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="absolute right-3 top-12 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
             </div>
           </div>
 
@@ -233,7 +256,9 @@ const Register = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="grow text-left flex flex-col items-start">
-                <Label className="mb-1">First Name</Label>
+                <Label className="mb-1">
+                  First Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="text"
                   name="firstName"
@@ -253,7 +278,9 @@ const Register = () => {
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <Label className="mb-1">Last Name</Label>
+                <Label className="mb-1">
+                  Last Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="text"
                   name="lastName"
@@ -266,7 +293,9 @@ const Register = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grow flex flex-col items-start">
-                <Label className="mb-1">Birth Date</Label>
+                <Label className="mb-1">
+                  Birth Date <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="date"
                   name="birthDate"
@@ -276,7 +305,9 @@ const Register = () => {
                 />
               </div>
               <div className="grow flex flex-col items-start">
-                <Label className="mb-1">Gender</Label>
+                <Label className="mb-1">
+                  Gender <span className="text-red-500">*</span>
+                </Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value) =>
@@ -302,23 +333,12 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="mt-4 w-full">
-              <div className="flex flex-col items-start">
-                <Label className="mb-1">Complete Address</Label>
-                <Input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                />
-              </div>
-            </div>
-
             {/* City, State, Country, Zip Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="flex flex-col items-start w-full">
-                <Label className="mb-1">Country</Label>
+                <Label className="mb-1">
+                  Country <span className="text-red-500">*</span>
+                </Label>
                 <Select
                   value={formData.country}
                   onValueChange={(value) =>
@@ -343,7 +363,9 @@ const Register = () => {
                 </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <Label className="mb-1">State</Label>
+                <Label className="mb-1">
+                  State <span className="text-red-500">*</span>
+                </Label>
                 <Select
                   value={formData.state}
                   onValueChange={(value) =>
@@ -375,7 +397,9 @@ const Register = () => {
                 </Select>
               </div>
               <div className="flex flex-col items-start w-full">
-                <Label className="mb-1">City</Label>
+                <Label className="mb-1">
+                  City <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="text"
                   name="city"
@@ -386,7 +410,9 @@ const Register = () => {
               </div>
 
               <div className="flex flex-col items-start w-full">
-                <Label className="mb-1">Zip Code</Label>
+                <Label className="mb-1">
+                  Zip Code <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   name="zipCode"
@@ -394,6 +420,20 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                   maxLength={7}
+                />
+              </div>
+            </div>
+            <div className="mt-4 w-full">
+              <div className="flex flex-col items-start">
+                <Label className="mb-1">
+                  Complete Address <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -406,7 +446,9 @@ const Register = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="mb-4 grow flex flex-col items-start">
-                <Label className="mb-1">Primary Phone</Label>
+                <Label className="mb-1">
+                  Primary Phone <span className="text-red-500">*</span>
+                </Label>
                 <div className="flex w-full gap-2">
                   <Select
                     value={formData.primaryPhoneCountry} // default fallback
@@ -462,7 +504,8 @@ const Register = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-4">
             <Button
               type="button"
-              className="white-btn hover:bg-gray-400 w-full sm:w-auto px-6 py-3 rounded-md text-xl sm:text-base"
+              className=" hover:bg-gray-100 w-full sm:w-auto px-6 py-3 rounded-md text-xl sm:text-base"
+              variant={"outline"}
               onClick={() =>
                 setFormData({
                   email: "",
@@ -486,6 +529,7 @@ const Register = () => {
             </Button>
             <Button
               type="submit"
+              variant={"default"}
               className="bg-[#f7ac03] hover:bg-[#e69a00] p-2 rounded-md text-xl w-full sm:w-auto px-6 py-3 font-semibold sm:text-base"
               disabled={loading}
             >

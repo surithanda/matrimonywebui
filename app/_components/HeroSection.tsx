@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export const HeroSection = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -25,7 +26,7 @@ export const HeroSection = () => {
         sizes="100vw"
         onLoad={() => setIsImageLoaded(true)}
       />
-      <div className="absolute bg-black/40 top-0 w-full h-full -z-10"></div>
+      <div className="absolute bg-black/65 top-0 w-full h-full -z-10"></div>
       {/* Content */}
       <div data-aos='fade-right' className="heroHeadings w-full sm:w-full md:w-[500px] lg:w-full flex flex-col gap-4 px-6 md:px-12 lg:px-32  md:text-left items-center md:items-start">
         <h1 className="text-5xl sm:text-3xl md:text-5xl lg:text-6xl  text-white leading-tight">
@@ -37,12 +38,12 @@ export const HeroSection = () => {
           practices, and passes on family legacy, stories, wisdom, and teachings
           to future generations.
         </p>
-        <Link
-          href="#"
-          className="WhiteBtn text-sm md:text-base px-4 md:px-6 py-2 md:py-3 mt-2"
+        <Button
+          className="text-lg bg-orange-500 hover:bg-orange-600"
+          size={"lg"}
         >
-          Start Your Search Today
-        </Link>
+          <Link href={'/register'}>Start Your Search Today</Link>
+        </Button>
       </div>
     </section>
   );

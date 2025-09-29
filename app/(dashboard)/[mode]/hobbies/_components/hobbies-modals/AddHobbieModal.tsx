@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { IoIosSave, IoMdClose, IoMdCloseCircle } from "react-icons/io";
 import React, { useEffect, useState, useContext } from "react";
-import Autosuggest from "react-autosuggest";
+import CustomAutocomplete from "@/app/_components/custom_components/CustomAutocomplete";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
@@ -35,7 +35,9 @@ import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 
 interface HobbyInterestData {
+  hobby_interest_id?: number;
   hobby_interest_name: string;
+  id?: number; // Add ID field for deletion
 }
 
 export function AddHobbieModal({
@@ -54,8 +56,8 @@ export function AddHobbieModal({
   );
   const hobbySuggestions = hobbyList.map((hobby) => hobby.name);
   const interestSuggestions = interestList.map((interest) => interest.name);
-  const [hobbies, setHobbies] = useState<string[]>([]);
-  const [interests, setInterests] = useState<string[]>([]);
+  const [hobbies, setHobbies] = useState<HobbyInterestData[]>([]);
+  const [interests, setInterests] = useState<HobbyInterestData[]>([]);
   const loading = reduxProfile.loading;
   const error = reduxProfile.error;
   const { register, setValue, watch, reset } = useForm<{
@@ -64,13 +66,6 @@ export function AddHobbieModal({
   }>({ defaultValues: { hobbyInput: "", interestInput: "" } });
   const hobbyInput = watch("hobbyInput") || "";
   const interestInput = watch("interestInput") || "";
-  // Autosuggest state
-  const [hobbySuggestionsList, setHobbySuggestionsList] = useState<string[]>(
-    []
-  );
-  const [interestSuggestionsList, setInterestSuggestionsList] = useState<
-    string[]
-  >([]);
   const [localError, setLocalError] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState({
     add: false,
@@ -91,10 +86,8 @@ export function AddHobbieModal({
         result.payload?.success &&
         Array.isArray(result.payload.data?.hobby_interests)
       ) {
-        const hobbyNames = result.payload.data?.hobby_interests
-          .map((h: HobbyInterestData) => h.hobby_interest_name)
-          .filter(Boolean) as string[];
-        setHobbies(hobbyNames);
+        const hobbyData = result.payload.data?.hobby_interests.filter(Boolean) as HobbyInterestData[];
+        setHobbies(hobbyData);
       }
     });
     dispatch(
@@ -107,42 +100,11 @@ export function AddHobbieModal({
         result.payload?.success &&
         Array.isArray(result.payload.data?.hobby_interests)
       ) {
-        const interestNames = result.payload.data?.hobby_interests
-          .map((i: HobbyInterestData) => i.hobby_interest_name)
-          .filter(Boolean) as string[];
-        setInterests(interestNames);
+        const interestData = result.payload.data?.hobby_interests.filter(Boolean) as HobbyInterestData[];
+        setInterests(interestData);
       }
     });
   }, [selectedProfileID, dispatch]);
-
-  // Autosuggest handlers
-  const getSuggestions = (value: string, suggestions: string[]): string[] => {
-    const inputValue = value.trim().toLowerCase();
-    return inputValue.length === 0
-      ? []
-      : suggestions.filter(
-          (s) =>
-            s.toLowerCase().includes(inputValue) &&
-            inputValue !== s.toLowerCase()
-        );
-  };
-
-  const onHobbySuggestionsFetchRequested = ({ value }: { value: string }) => {
-    setHobbySuggestionsList(getSuggestions(value, hobbySuggestions));
-  };
-  const onHobbySuggestionsClearRequested = () => {
-    setHobbySuggestionsList([]);
-  };
-  const onInterestSuggestionsFetchRequested = ({
-    value,
-  }: {
-    value: string;
-  }) => {
-    setInterestSuggestionsList(getSuggestions(value, interestSuggestions));
-  };
-  const onInterestSuggestionsClearRequested = () => {
-    setInterestSuggestionsList([]);
-  };
 
   // Add on Enter or on suggestion select
   const handleAdd = async (type: "hobbies" | "interests", value: string) => {
@@ -161,17 +123,24 @@ export function AddHobbieModal({
       if (
         !selection ||
         !value.trim() ||
-        hobbies?.includes(selection.name.trim())
+        hobbies?.some(h => h.hobby_interest_name === selection.name.trim())
       )
         return;
       try {
-        await dispatch(
+        const result = await dispatch(
           addHobbyAsync({
             profile_id: selectedProfileID,
             hobby: String(selection.id),
           })
         ).unwrap();
-        setHobbies((prev) => [...prev, selection.name.trim()]);
+        
+        // Add the new hobby with both name and id if available
+        const newHobby: HobbyInterestData = {
+          hobby_interest_name: selection.name.trim(),
+          hobby_interest_id: result?.data?.hobby_interest_id || selection.id,
+          id: result?.data?.hobby_interest_id || selection.id
+        };
+        setHobbies((prev) => [...prev, newHobby]);
         setValue("hobbyInput", "");
       } catch (err: any) {
         setLocalError(err.message || "Error adding hobby");
@@ -180,17 +149,24 @@ export function AddHobbieModal({
       if (
         !selection ||
         !value.trim() ||
-        interests?.includes(selection.name.trim())
+        interests?.some(i => i.hobby_interest_name === selection.name.trim())
       )
         return;
       try {
-        await dispatch(
+        const result = await dispatch(
           addInterestAsync({
             profile_id: selectedProfileID,
             hobby: String(selection.id),
           })
         ).unwrap();
-        setInterests((prev) => [...prev, selection.name.trim()]);
+        
+        // Add the new interest with both name and id if available
+        const newInterest: HobbyInterestData = {
+          hobby_interest_name: selection.name.trim(),
+          hobby_interest_id: result?.data?.hobby_interest_id || selection.id,
+          id: result?.data?.hobby_interest_id || selection.id
+        };
+        setInterests((prev) => [...prev, newInterest]);
         setValue("interestInput", "");
       } catch (err: any) {
         setLocalError(err.message || "Error adding interest");
@@ -222,37 +198,42 @@ export function AddHobbieModal({
     }
     setLocalError(null);
     if (type === "hobbies") {
-      const hobby = hobbies[index];
+      const hobbyItem = hobbies[index];
+      const hobbyId = hobbyItem.hobby_interest_id || hobbyItem.id;
+      if (!hobbyId) {
+        setLocalError("Hobby ID not found for deletion.");
+        return;
+      }
       try {
         await dispatch(
-          removeHobbyAsync({ profile_id: selectedProfileID, hobby })
+          removeHobbyAsync({ 
+            id: hobbyId,
+            created_user: "user" // You may want to get this from auth context
+          })
         ).unwrap();
         setHobbies((prev) => prev.filter((_, i) => i !== index));
       } catch (err: any) {
         setLocalError(err.message || "Error removing hobby");
       }
     } else {
-      const interest = interests[index];
+      const interestItem = interests[index];
+      const interestId = interestItem.hobby_interest_id || interestItem.id;
+      if (!interestId) {
+        setLocalError("Interest ID not found for deletion.");
+        return;
+      }
       try {
         await dispatch(
-          removeInterestAsync({ profile_id: selectedProfileID, interest })
+          removeInterestAsync({ 
+            id: interestId,
+            created_user: "user" // You may want to get this from auth context
+          })
         ).unwrap();
         setInterests((prev) => prev.filter((_, i) => i !== index));
       } catch (err: any) {
         setLocalError(err.message || "Error removing interest");
       }
     }
-  };
-  // Custom styles for react-autosuggest to match input and dropdown
-  const autosuggestTheme = {
-    container: "relative",
-    input:
-      "w-full bg-white border rounded-lg py-2 px-4 text-gray-700 focus:ring-2 focus:ring-orange-400 focus:outline-none",
-    suggestionsContainer:
-      "absolute z-10 w-full bg-white rounded-lg mt-1 shadow-lg",
-    suggestionsList: "m-0 p-0 list-none",
-    suggestion: "px-4 py-2 cursor-pointer text-gray-700 hover:bg-orange-100",
-    suggestionHighlighted: "bg-orange-200 text-orange-900",
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -292,29 +273,13 @@ export function AddHobbieModal({
             <h3 className="BRCobane18600 mb-3">Hobbies</h3>
             <div>
               <div className="flex flex-col gap-2">
-                <Autosuggest
-                  suggestions={hobbySuggestionsList}
-                  onSuggestionsFetchRequested={onHobbySuggestionsFetchRequested}
-                  onSuggestionsClearRequested={onHobbySuggestionsClearRequested}
-                  getSuggestionValue={(suggestion: string) => suggestion}
-                  renderSuggestion={(suggestion: string) => (
-                    <span>{suggestion}</span>
-                  )}
-                  inputProps={{
-                    ...register("hobbyInput"),
-                    placeholder: "Type to search",
-                    className: autosuggestTheme.input,
-                    value: hobbyInput,
-                    onChange: (_: any, { newValue }: { newValue: string }) =>
-                      setValue("hobbyInput", newValue),
-                    onKeyDown: handleHobbyKeyDown,
-                    disabled: loading,
-                  }}
-                  onSuggestionSelected={(
-                    _: any,
-                    { suggestion }: { suggestion: string }
-                  ) => handleAdd("hobbies", suggestion)}
-                  theme={autosuggestTheme}
+                <CustomAutocomplete
+                  suggestions={hobbySuggestions}
+                  value={hobbyInput}
+                  onChange={(value) => setValue("hobbyInput", value)}
+                  onSuggestionSelect={(suggestion) => handleAdd("hobbies", suggestion)}
+                  placeholder="Type to search hobbies"
+                  disabled={loading}
                 />
                 <div className="flex gap-2 flex-wrap">
                   {hobbies &&
@@ -323,7 +288,7 @@ export function AddHobbieModal({
                         key={index}
                         className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
                       >
-                        {hobby}
+                        {hobby.hobby_interest_name}
                         <button
                           onClick={() => removeTag("hobbies", index)}
                           disabled={loading}
@@ -343,33 +308,13 @@ export function AddHobbieModal({
             <h3 className="BRCobane18600 mb-3">Interests</h3>
             <div>
               <div className="flex flex-col gap-2">
-                <Autosuggest
-                  suggestions={interestSuggestionsList}
-                  onSuggestionsFetchRequested={
-                    onInterestSuggestionsFetchRequested
-                  }
-                  onSuggestionsClearRequested={
-                    onInterestSuggestionsClearRequested
-                  }
-                  getSuggestionValue={(suggestion: string) => suggestion}
-                  renderSuggestion={(suggestion: string) => (
-                    <span>{suggestion}</span>
-                  )}
-                  inputProps={{
-                    ...register("interestInput"),
-                    placeholder: "Type to search",
-                    className: autosuggestTheme.input,
-                    value: interestInput,
-                    onChange: (_: any, { newValue }: { newValue: string }) =>
-                      setValue("interestInput", newValue),
-                    onKeyDown: handleInterestKeyDown,
-                    disabled: loading,
-                  }}
-                  onSuggestionSelected={(
-                    _: any,
-                    { suggestion }: { suggestion: string }
-                  ) => handleAdd("interests", suggestion)}
-                  theme={autosuggestTheme}
+                <CustomAutocomplete
+                  suggestions={interestSuggestions}
+                  value={interestInput}
+                  onChange={(value) => setValue("interestInput", value)}
+                  onSuggestionSelect={(suggestion) => handleAdd("interests", suggestion)}
+                  placeholder="Type to search interests"
+                  disabled={loading}
                 />
                 <div className="flex gap-2 flex-wrap">
                   {interests &&
@@ -378,7 +323,7 @@ export function AddHobbieModal({
                         key={index}
                         className="bg-gray-100 text-gray-700 rounded-[10px] p-[8px_12px] text-sm flex items-center shadow-sm border"
                       >
-                        {interest}
+                        {interest.hobby_interest_name}
                         <button
                           onClick={() => removeTag("interests", index)}
                           disabled={loading}

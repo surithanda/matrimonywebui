@@ -17,6 +17,7 @@ import { SelectViewport } from "@radix-ui/react-select";
 import { api } from "@/app/lib/axios";
 import { CONSTANTS } from "@/constants";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 type BillingFormProps = {
   planName: string;
@@ -57,6 +58,8 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
   const onSubmit = async (data: any) => {
     try {
       setLoading(true);
+
+      const currentUrl = window.location.origin + window.location.pathname;
       let payData = {
         name: data.name,
         address: data.address,
@@ -64,10 +67,10 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         state: data.state,
         city: data.city,
         zip_code: data.zip,
-        amount: planPrice,
+        amount:1,
         plan: planName,
-        front_end_success_uri: `${CONSTANTS.front_end_success_uri}?plan=${planName}&status=success`,
-        front_end_failed_uri: `${CONSTANTS.front_end_failed_uri}?plan=${planName}&status=failed`,
+        front_end_success_uri: `${currentUrl}?plan=${planName}&status=success`,
+        front_end_failed_uri: `${currentUrl}?plan=${planName}&status=failed`,
         currency: CONSTANTS.currency,
       };
       let res = await api.post("/stripe/create-session", payData);
@@ -84,7 +87,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
   };
 
   return (
-    <section className="account-details-box w-full max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
+    <section className="account-details-box w-full max-w-full mx-auto text-left px-4 sm:px-6 lg:px-0 shadow-xl">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-4 sm:gap-4 text-left"
@@ -93,18 +96,20 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         <div className="pb-4 sm:pb-6">
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
             <div className="grow text-left flex flex-col items-start">
-              <Label className="mb-1">Name</Label>
+              <Label className="mb-1">Name <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("name")}
+                required
                 className="stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
             </div>
             <div className="grow text-left flex flex-col items-start">
-              <Label className="mb-1">Address</Label>
+              <Label className="mb-1">Address <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("address")}
+                required
                 className="stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
             </div>
@@ -114,7 +119,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {/* Country */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">Country</Label>
+              <Label className="mb-1">Country <span className="text-red-500">*</span></Label>
               <Select onValueChange={(value) => setValue("country", value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select country" />
@@ -134,7 +139,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* State */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">State</Label>
+              <Label className="mb-1">State <span className="text-red-500">*</span></Label>
               <Select onValueChange={(value) => setValue("state", value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select state" />
@@ -153,7 +158,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* City */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">City</Label>
+              <Label className="mb-1">City <span className="text-red-500">*</span></Label>
               <Input
                 type="text"
                 {...register("city")}
@@ -163,7 +168,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
 
             {/* Zip Code */}
             <div className="flex flex-col items-start w-full">
-              <Label className="mb-1">Zip Code</Label>
+              <Label className="mb-1">Zip Code <span className="text-red-500">*</span></Label>
               <Input
                 type="number"
                 {...register("zipCode")}
@@ -176,7 +181,9 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-4">
           <Button type="button" variant={"outline"}>
+            <Link href={"/payments"}>
             Back to plan
+            </Link>
           </Button>
           <Button
             type="submit"

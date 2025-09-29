@@ -69,7 +69,7 @@ const ViewProfile = () => {
     photos,
     loading,
     error,
-    lifestyle
+    lifestyle,
   } = useSelector((state: RootState) => state.profile);
 
   interface ImageFile {
@@ -99,7 +99,6 @@ const ViewProfile = () => {
     cover: 454,
     individual: 456,
   } as const;
-
 
   // 3. Role-based association (internal usage)
   const photoTypeAssociation = useMemo(() => PHOTO_TYPES, []);
@@ -250,7 +249,7 @@ const ViewProfile = () => {
   //   // console.log("hobbies:", hobbies);
   //   // console.log("interests:", interests);
   //   // console.log("references:", references);
-    console.log("life style",lifestyle)
+  console.log("life style", lifestyle);
 
   // }, [
   //   personalProfile,
@@ -289,16 +288,35 @@ const ViewProfile = () => {
     education?.data?.educations || (education ? [education] : []);
 
   const categoryMapping = [
-    
-    {habitQuestion:"What best describes your eating habits?", habitAnswer:lifestyle?.data?.lifestyles?.[0].eating_habit,},
-    {habitQuestion:"Do you follow any specific diet plan?", habitAnswer:lifestyle?.data?.lifestyles?.[0].diet_habit,},
-    {habitQuestion:"How many cigarettes do you smoke per day on average?", habitAnswer:lifestyle?.data?.lifestyles?.[0].cigarettes_per_day,},
-    {habitQuestion:"How frequently do you drink?", habitAnswer:lifestyle?.data?.lifestyles?.[0].drink_frequency,},
-    {habitQuestion:"What type of gambling do you engage in?", habitAnswer:lifestyle?.data?.lifestyles?.[0].gambling_engage,},
-    {habitQuestion:"How would you describe your physical activity level?", habitAnswer:lifestyle?.data?.lifestyles?.[0].physical_activity_level,},
-    {habitQuestion:"Do you practice any relaxation techniques?", habitAnswer:lifestyle?.data?.lifestyles?.[0].relaxation_methods,},
-  
-  ]
+    {
+      habitQuestion: "What best describes your eating habits?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].eating_habit,
+    },
+    {
+      habitQuestion: "Do you follow any specific diet plan?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].diet_habit,
+    },
+    {
+      habitQuestion: "How many cigarettes do you smoke per day on average?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].cigarettes_per_day,
+    },
+    {
+      habitQuestion: "How frequently do you drink?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].drink_frequency,
+    },
+    {
+      habitQuestion: "What type of gambling do you engage in?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].gambling_engage,
+    },
+    {
+      habitQuestion: "How would you describe your physical activity level?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].physical_activity_level,
+    },
+    {
+      habitQuestion: "Do you practice any relaxation techniques?",
+      habitAnswer: lifestyle?.data?.lifestyles?.[0].relaxation_methods,
+    },
+  ];
 
   let employmentList = [];
   if (Array.isArray(employment?.data)) {
@@ -490,7 +508,7 @@ const ViewProfile = () => {
             </div>
           </div>
 
-          <div className="sticky top-0 z-10 bg-white dark:bg-zinc-900 border-b">
+          <div className="sticky top-0 z-10 bg-white dark:bg-zinc-900">
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-8 px-2 md:px-0">
               {/* Personal Details */}
               <div className="flex flex-col sm:flex-col gap-2 mb-3 lg:col-span-1">
@@ -694,15 +712,15 @@ const ViewProfile = () => {
                             >
                               <div className="px-6 py-4">
                                 {/* Title */}
-                                    <div className="flex justify-between items-center gap-2 mb-2">
-                                    <h3
-                                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                                      style={{ fontFamily: "BR Cobane" }}
-                                    >
-                                      {title}
-                                    </h3>
-                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
-                                  </div>
+                                <div className="flex justify-between items-center gap-2 mb-2">
+                                  <h3
+                                    className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                    style={{ fontFamily: "BR Cobane" }}
+                                  >
+                                    {title}
+                                  </h3>
+                                  <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                </div>
 
                                 {/* Content */}
                                 <p className="text-zinc-600 dark:text-zinc-300">
@@ -927,15 +945,15 @@ const ViewProfile = () => {
                                 <td className="px-4 py-3 border-b">
                                   {member?.type_name}
                                 </td>
-                                   <td className="px-4 py-3 border-b">
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-blue-500 text-white dark:bg-blue-600"
-                                >
-                                  <BadgeCheckIcon size={14}/>
-                                  Verified
-                                </Badge>
-                              </td>
+                                <td className="px-4 py-3 border-b">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-500 text-white dark:bg-blue-600"
+                                  >
+                                    <BadgeCheckIcon size={14} />
+                                    Verified
+                                  </Badge>
+                                </td>
                               </tr>
                             ))}
                           </tbody>
@@ -985,15 +1003,15 @@ const ViewProfile = () => {
                                 <td className="px-4 py-3 border-b">
                                   {ref?.type_name}
                                 </td>
-                                   <td className="px-4 py-3 border-b">
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-blue-500 text-white dark:bg-blue-600"
-                                >
-                                  <BadgeCheckIcon size={14}/>
-                                  Verified
-                                </Badge>
-                              </td>
+                                <td className="px-4 py-3 border-b">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-500 text-white dark:bg-blue-600"
+                                  >
+                                    <BadgeCheckIcon size={14} />
+                                    Verified
+                                  </Badge>
+                                </td>
                               </tr>
                             ))}
                           </tbody>
@@ -1004,45 +1022,47 @@ const ViewProfile = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
-                  <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                    <h2
-                      className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                      style={{ fontFamily: "BR Cobane" }}
-                    >
-                      Lifestyle
-                    </h2>
-                    <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                      <table className="w-full text-sm sm:text-base">
-                        <thead className="">
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Questions
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Answer
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {categoryMapping.map(
-                            (category:any, index:any) => (
-                              <tr
-                                key={index}
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-2 py-3 border-b">
-                                  {category?.habitQuestion}
-                                </td>
-                                <td className="px-4 py-3 border-b">
+                  {categoryMapping.some((c: any) => c?.habitAnswer) && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                      <h2
+                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                        style={{ fontFamily: "BR Cobane" }}
+                      >
+                        Lifestyle
+                      </h2>
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                        <table className="w-full text-sm sm:text-base">
+                          <thead>
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Questions
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Answer
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {categoryMapping
+                              .filter((category: any) => category?.habitAnswer)
+                              .map((category: any, index: any) => (
+                                <tr
+                                  key={index}
+                                  className="hover:bg-gray-50 transition-colors text-sm"
+                                >
+                                  <td className="px-2 py-3 border-b">
+                                    {category?.habitQuestion}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
                                     {category?.habitAnswer}
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                      </table>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {[
                     ...((hobbies as any)?.hobby_interests || []),

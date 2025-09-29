@@ -15,7 +15,7 @@ const Page = () => {
           className="text-pretty text-4xl font-bold lg:text-6xl"
           style={{ fontFamily: "BR Cobane" }}
         >
-          Payments Plans
+          Required Donation
         </h2>
       </div>
           {/* <BillingForm /> */}

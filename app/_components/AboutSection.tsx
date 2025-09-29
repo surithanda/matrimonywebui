@@ -55,9 +55,15 @@ export const AboutSection = () => {
       className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 text-gray-800"
       id="services"
     >
-      <h1 data-aos="fade-up" className="font-bold text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center leading-tight max-w-5xl mx-auto text-gray-900">
-        Why Thousands Trust Chaturvarnam
-      </h1>
+      <div
+        data-aos="fade-up"
+        className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center "
+      >
+        <h1 className="font-bold text-3xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  leading-tight max-w-5xl mx-auto text-gray-900">
+          Why Thousands Trust Chaturvarnam
+        </h1>
+        <p className="text-xl mt-2">Explaining why these features matter</p>
+      </div>
 
       <div className="max-w-7xl mx-auto grid gap-12 lg:grid-cols-3 lg:gap-16 items-center">
         {/* Left Column - First 3 */}
@@ -66,7 +72,7 @@ export const AboutSection = () => {
             <div
               key={index}
               className="space-y-4 text-center lg:text-left flex flex-col items-center lg:items-start"
-               data-aos="fade-left"
+              data-aos="fade-left"
             >
               <div className="flex items-center gap-3">
                 {service.image && (
@@ -92,11 +98,11 @@ export const AboutSection = () => {
         {/* Center Image */}
         <div className="w-full">
           <Image
-          data-aos="zoom-in"
-              data-aos-delay="150"
+            data-aos="zoom-in"
+            data-aos-delay="150"
             src={coupleImage}
             alt="Elegant wedding couple"
-            className="w-full h-auto rounded-t-full object-cover aspect-[4/5] sm:aspect-[4/5] md:aspect-[5/6] lg:aspect-[6/7]"
+            className="w-full h-[32rem] rounded-t-full object-cover aspect-[4/5] sm:aspect-[4/5] md:aspect-[5/6] lg:aspect-[6/7]"
           />
         </div>
 

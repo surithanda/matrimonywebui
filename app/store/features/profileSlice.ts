@@ -132,9 +132,10 @@ export const addHobbyAsync = createAsyncThunk(
 
 export const removeHobbyAsync = createAsyncThunk(
   'profile/removeHobby',
-  async (payload: { profile_id: number, hobby: string }, { rejectWithValue }) => {
+  async (payload: { id: number, created_user: string }, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`/profile/hobby`, { data: payload });
+      const sanitizedData = sanitizeDataForDatabase(payload);
+      const response = await api.delete(`/profile/hobby`, { data: sanitizedData });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -156,9 +157,10 @@ export const addInterestAsync = createAsyncThunk(
 
 export const removeInterestAsync = createAsyncThunk(
   'profile/removeInterest',
-  async (payload: { profile_id: number, interest: string }, { rejectWithValue }) => {
+  async (payload: { id: number, created_user: string }, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`/profile/interest`, { data: payload });
+      const sanitizedData = sanitizeDataForDatabase(payload);
+      const response = await api.delete(`/profile/hobby`, { data: sanitizedData });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -182,7 +184,8 @@ export const createPropertyAsync = createAsyncThunk(
   'profile/createProperty',
   async (propertyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/property', propertyData);
+      const sanitizedData = sanitizeDataForDatabase(propertyData);
+      const response = await api.post('/profile/property', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -194,7 +197,8 @@ export const updatePropertyAsync = createAsyncThunk(
   'profile/updateProperty',
   async (propertyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/property/${propertyData.property_id}`, propertyData);
+      const sanitizedData = sanitizeDataForDatabase(propertyData);
+      const response = await api.put(`/profile/property/${sanitizedData.property_id || sanitizedData.profile_property_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -230,7 +234,8 @@ export const createReferenceAsync = createAsyncThunk(
   'profile/createReference',
   async (referenceData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/reference', referenceData);
+      const sanitizedData = sanitizeDataForDatabase(referenceData);
+      const response = await api.post('/profile/reference', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -242,7 +247,8 @@ export const updateReferenceAsync = createAsyncThunk(
   'profile/updateReference',
   async (referenceData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/reference/${referenceData.eb_profile_family_reference_id}`, referenceData);
+      const sanitizedData = sanitizeDataForDatabase(referenceData);
+      const response = await api.put(`/profile/reference/${sanitizedData.profile_family_reference_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -278,7 +284,8 @@ export const createFamilyAsync = createAsyncThunk(
   'profile/createFamily',
   async (familyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/family', familyData);
+      const sanitizedData = sanitizeDataForDatabase(familyData);
+      const response = await api.post('/profile/family', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -290,7 +297,8 @@ export const updateFamilyAsync = createAsyncThunk(
   'profile/updateFamily',
   async (familyData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/family/${familyData.id}`, familyData);
+      const sanitizedData = sanitizeDataForDatabase(familyData);
+      const response = await api.put(`/profile/family-reference/${sanitizedData.profile_family_reference_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -312,6 +320,26 @@ export const deleteFamilyAsync = createAsyncThunk(
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../lib/axios';
+
+// Utility function to convert undefined to null for MySQL compatibility
+const sanitizeDataForDatabase = (data: any) => {
+  if (data === null || data === undefined) return null;
+  if (typeof data === 'object' && !Array.isArray(data)) {
+    const sanitized: any = {};
+    Object.keys(data).forEach(key => {
+      const value = data[key];
+      if (value === undefined || value === '') {
+        sanitized[key] = null;
+      } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        sanitized[key] = sanitizeDataForDatabase(value);
+      } else {
+        sanitized[key] = value;
+      }
+    });
+    return sanitized;
+  }
+  return data;
+};
 
 interface ProfileState {
   loading: boolean;
@@ -349,7 +377,8 @@ export const createPersonalProfileAsync = createAsyncThunk(
   'profile/createPersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/personal', profileData);
+      const sanitizedData = sanitizeDataForDatabase(profileData);
+      const response = await api.post('/profile/personal', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -361,7 +390,8 @@ export const updatePersonalProfileAsync = createAsyncThunk(
   'profile/updatePersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/personal/${profileData.profile_id}`, profileData);
+      const sanitizedData = sanitizeDataForDatabase(profileData);
+      const response = await api.put(`/profile/personal/${sanitizedData.profile_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -397,7 +427,8 @@ export const createAddressAsync = createAsyncThunk(
   'profile/createAddress',
   async (addressData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/address', addressData);
+      const sanitizedData = sanitizeDataForDatabase(addressData);
+      const response = await api.post('/profile/address', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -409,7 +440,8 @@ export const updateAddressAsync = createAsyncThunk(
   'profile/updateAddress',
   async (addressData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/address/${addressData.profile_address_id}`, addressData);
+      const sanitizedData = sanitizeDataForDatabase(addressData);
+      const response = await api.put(`/profile/address/${sanitizedData.profile_address_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -445,7 +477,8 @@ export const createEducationAsync = createAsyncThunk(
   'profile/createEducation',
   async (educationData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/education', educationData);
+      const sanitizedData = sanitizeDataForDatabase(educationData);
+      const response = await api.post('/profile/education', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -457,7 +490,8 @@ export const updateEducationAsync = createAsyncThunk(
   'profile/updateEducation',
   async (educationData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/education/${educationData.profile_education_id}`, educationData);
+      const sanitizedData = sanitizeDataForDatabase(educationData);
+      const response = await api.put(`/profile/education/${sanitizedData.profile_education_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -493,7 +527,8 @@ export const createEmploymentAsync = createAsyncThunk(
   'profile/createEmployment',
   async (employmentData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/employment', employmentData);
+      const sanitizedData = sanitizeDataForDatabase(employmentData);
+      const response = await api.post('/profile/employment', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -505,7 +540,8 @@ export const updateEmploymentAsync = createAsyncThunk(
   'profile/updateEmployment',
   async (employmentData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/employment/${employmentData.profile_employment_id}`, employmentData);
+      const sanitizedData = sanitizeDataForDatabase(employmentData);
+      const response = await api.put(`/profile/employment/${sanitizedData.profile_employment_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -541,7 +577,8 @@ export const createLifestyleAsync = createAsyncThunk(
   'profile/createLifestyle',
   async (lifestyleData: any, { rejectWithValue }) => {
     try {
-      const response = await api.post('/profile/lifestyle', lifestyleData);
+      const sanitizedData = sanitizeDataForDatabase(lifestyleData);
+      const response = await api.post('/profile/lifestyle', sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -553,7 +590,8 @@ export const updateLifestyleAsync = createAsyncThunk(
   'profile/updateLifestyle',
   async (lifestyleData: any, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/profile/lifestyle/${lifestyleData.lifestyle_id}`, lifestyleData);
+      const sanitizedData = sanitizeDataForDatabase(lifestyleData);
+      const response = await api.put(`/profile/lifestyle/${sanitizedData.profile_lifestyle_id}`, sanitizedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');
@@ -788,9 +826,8 @@ const profileSlice = createSlice({
         }
       })
       .addCase(removeHobbyAsync.fulfilled, (state, action) => {
-        if (action.meta.arg && action.meta.arg.hobby) {
-          state.hobbies = (state.hobbies || []).filter((h) => h !== action.meta.arg.hobby);
-        }
+        // Hobby removal is now handled by ID, state management happens in components
+        // This reducer is kept for consistency but doesn't modify state directly
       })
       .addCase(addInterestAsync.fulfilled, (state, action) => {
         if (action.payload?.interest) {
@@ -798,9 +835,8 @@ const profileSlice = createSlice({
         }
       })
       .addCase(removeInterestAsync.fulfilled, (state, action) => {
-        if (action.meta.arg && action.meta.arg.interest) {
-          state.interests = (state.interests || []).filter((i) => i !== action.meta.arg.interest);
-        }
+        // Interest removal is now handled by ID, state management happens in components
+        // This reducer is kept for consistency but doesn't modify state directly
       })
       // PROPERTY
       .addCase(getPropertiesAsync.pending, (state) => {

@@ -154,7 +154,7 @@ export const Navbar = () => {
     { href: "/favourites", label: "Favourites" },
     { href: "/profiles", label: "Profiles" },
     { href: "/recommendations", label: "Recommendations" },
-    { href: "/payments", label: "Payments" },
+    { href: "/payments", label: "Donation" },
   ];
 
   const navLinks = isLoggedIn ? dashboardLinks : publicLinks;

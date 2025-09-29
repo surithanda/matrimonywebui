@@ -76,7 +76,7 @@ const Footer = () => {
               href="mailto:info@matimony.org"
               className="font-semibold hover:text-yellow-500 transition-colors"
             >
-              info@matimony.org
+              info@matrimony.org
             </a>
           </p>
         </div>

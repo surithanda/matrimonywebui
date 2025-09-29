@@ -91,13 +91,34 @@ const ForgotPassword = () => {
       const response = await api.post("/auth/verify-otp", payload);
       console.log("OTP Verified:", response.data);
 
-      if (response.data.token) {
+      if (
+        !response.data.token ||
+        !response.data.user ||
+        !response?.data?.user?.account_id
+      ) {
+        throw new Error("Wrong Otp Entered");
+      }
+      if (
+        response.data.token &&
+        response.data.user &&
+        response?.data?.user?.account_id
+      ) {
         setAuthToken(response.data.token);
       }
 
-      dispatch(setUser(response.data));
+      if (
+        response.data.token &&
+        response.data.user &&
+        response?.data?.user?.account_id
+      ) {
+        dispatch(setUser(response.data));
+      }
 
-      if (response?.data?.user) {
+      if (
+        response.data.token &&
+        response.data.user &&
+        response?.data?.user?.account_id
+      ) {
         const result: any = await (dispatch as any)(
           getProfilesByAccountIdAsync(response?.data?.user?.account_id)
         ).unwrap();

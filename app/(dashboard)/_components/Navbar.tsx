@@ -275,7 +275,6 @@ const Navbar = () => {
 
         {/* Desktop Login/Register Buttons */}
         {!isAccountOpen && (
-
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/login"

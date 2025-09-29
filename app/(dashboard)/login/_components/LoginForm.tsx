@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import Lottie from "lottie-react";
+import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -138,17 +139,17 @@ const LoginForm = () => {
             <p className="text-sm sm:text-base md:text-lg lg:text-base font-medium text-gray-700">
               Don't have an account yet?
             </p>
-            <a
-              href="#"
+            <Button
+            size={"md"}
               onClick={(e) => {
                 e.preventDefault();
                 setRedirecting(true); // Show loader immediately
                 router.push("/register");
               }}
-              className="text-[#f7ac03] font-semibold hover:underline hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-lg"
+              className="text-white font-semibold hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-lg"
             >
               Register Now
-            </a>
+            </Button>
           </div>
         </form>
       </div>

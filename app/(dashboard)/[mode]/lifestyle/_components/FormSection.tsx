@@ -2,6 +2,7 @@
 import {
   createLifestyleAsync,
   getLifestyleAsync,
+  updateLifestyleAsync,
 } from "@/app/store/features/profileSlice";
 import { AppDispatch, useAppDispatch, useAppSelector } from "@/app/store/store";
 import { useRouter } from "next/navigation";
@@ -116,6 +117,8 @@ const FormSection = () => {
       gambling_engage: selections.gamblingEngage,
       physical_activity_level: selections.physicalActivityLevel,
       relaxation_methods: selections.relaxationMethods,
+      additional_info: '', // Optional field for additional information
+      modified_user: 'user', // Current user identifier
       is_active: true,
       profile_id: selectedProfileID,
     };
@@ -123,7 +126,7 @@ const FormSection = () => {
     try {
       let result;
       if (requestData.profile_lifestyle_id) {
-        // result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
+        result = await dispatch(updateLifestyleAsync(requestData)).unwrap();
         result = [];
       } else {
         result = await dispatch(createLifestyleAsync(requestData)).unwrap();

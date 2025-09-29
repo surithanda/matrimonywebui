@@ -19,8 +19,6 @@ export default function Page() {
   const [mondalOpen, setModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<any>(null);
 
-
-
   useEffect(() => {
     let paymentStatus = searchParams.get("status");
     if (paymentStatus === "success") {
@@ -38,15 +36,15 @@ export default function Page() {
   return (
     <div className="dashboard-background md:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-20">
       <div className="flex justify-center items-center w-full">
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+          <div className="lg:col-span-2 w-full">
             <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}
             >
               Selected Plan Details
             </h2>
-            <Card className="relative flex w-80 flex-col justify-between text-left overflow-hidden shadow-xl mb-4">
+            <Card className="relative flex w-full flex-col justify-between text-left overflow-hidden shadow-xl mb-4">
               <BorderBeam size={250} duration={6} delay={4} />
 
               <CardHeader>
@@ -56,18 +54,18 @@ export default function Page() {
                       {selectedPlan.name}
                     </p>
                   </CardTitle>
-                  <span className="text-4xl font-bold">
+                  <span className="text-2xl font-bold">
                     {selectedPlan.monthlyPrice}
-                    <span className="text-xl">/ mo</span>
+                    {/* <span className="text-xl">/ mo</span> */}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar size={22} />
                   <p
-                    className="text-muted-foreground"
+                    className="text-muted-foreground text-sm"
                     style={{ fontFamily: "BR Cobane" }}
                   >
-                    30 days from purchase
+                    1 year (365 days from Payment date)
                   </p>
                 </div>
               </CardHeader>
@@ -87,7 +85,30 @@ export default function Page() {
                 </ul>
               </CardContent>
             </Card>
-            <div className="flex items-center gap-2 justify-center">
+            <div className="bg-gradient-to-r bg-white shadow-xl rounded-md p-6 w-full max-w-sm text-white">
+              <div className="flex justify-between items-center mb-1">
+                <h2 className="text-lg text-black font-semibold" style={{ fontFamily: "BR Cobane" }}>Test Payment Card</h2>
+              </div>
+
+              <div className="text-2xl text-black font-mono tracking-widest mb-1">
+                4242 4242 4242 4242
+              </div>
+
+              <div className="flex justify-between text-sm">
+                <div>
+                  <p className="uppercase text-black ">Expiry</p>
+                  <p className="text-black">12/34</p>
+                </div>
+                <div>
+                  <p className="uppercase text-black">CVV</p>
+                  <p className="text-black">123</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-1 ps-2">
+              <p className="text-red-500 text-base" style={{ fontFamily: "BR Cobane" }}>This is only for test payment</p>
+            </div>
+            {/* <div className="flex items-center gap-2 justify-center">
               <IoMdArrowBack />
               <Link
                 href="/payments"
@@ -96,9 +117,9 @@ export default function Page() {
               >
                 Choose diffrent plan
               </Link>
-            </div>
+            </div> */}
           </div>
-          <div className="col-span-2">
+          <div className="lg:col-span-4 h-full">
             <h2
               className="text-2xl font-semibold mb-4"
               style={{ fontFamily: "BR Cobane" }}

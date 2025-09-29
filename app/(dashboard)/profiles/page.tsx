@@ -49,7 +49,7 @@ const Page = () => {
 
   const getProfileImage = (profile: any) => {
     if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
-    if (profile?.url) return toAbsoluteUrl(profile.url);
+    if (profile?.url) return profile.url;
 
     return null;
   };

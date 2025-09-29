@@ -196,7 +196,7 @@ export const Navbar = () => {
             <Image
               src={Logo}
               alt="Logo"
-              className="w-[160px] md:w-[200px] lg:w-[221px]"
+              className="w-[160px] md:w-[200px] lg:w-[251px]"
               priority
             />
           </Link>

@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { isValidProfileMode, type ProfileMode } from "../types/profileMode";
 import Lottie from "lottie-react";
-import loaderAnimation from "@/public/lottie/Loading.json"
+import loaderAnimation from "@/public/lottie/Loading.json";
 
 export default function Tabs() {
   const params = useParams();
@@ -83,7 +83,7 @@ export default function Tabs() {
   const [activeItem, setActiveItem] = useState("personal");
   const { selectedProfileID } = useProfileContext();
   const [menu, setMenu] = useState(menuItems);
-  const [loading, setLoading] = useState(false); // 🔹 full-screen loader state
+  const [loading, setLoading] = useState(false); // full-screen loader
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -94,7 +94,7 @@ export default function Tabs() {
     menuItems.forEach((item) => {
       if (pathname.startsWith(item.link)) setActiveItem(item.id);
     });
-    setLoading(false); // stop loader after navigation
+    setLoading(false);
   }, [pathname, searchParams]);
 
   // Unlock tabs
@@ -106,16 +106,57 @@ export default function Tabs() {
       setMenu(menuItems.map((item) => ({ ...item, disabled: false })));
     } else {
       setMenu(
-        menuItems.map((item, index) => ({
-          ...item,
-          disabled: index !== 0,
-        }))
+        menuItems.map((item, index) => ({ ...item, disabled: index !== 0 }))
       );
     }
   }, [selectedProfileID, validMode]);
 
+  // Navigate to previous tab
+  const goToPreviousTab = () => {
+    const currentIndex = menu.findIndex((item) => item.id === activeItem);
+    let prevIndex = currentIndex - 1;
+    while (prevIndex >= 0 && menu[prevIndex].disabled) prevIndex--;
+    if (prevIndex >= 0) {
+      setActiveItem(menu[prevIndex].id);
+      setLoading(true);
+      router.push(menu[prevIndex].link);
+    }
+  };
+
+  // Navigate to next tab
+  const goToNextTab = () => {
+    const currentIndex = menu.findIndex((item) => item.id === activeItem);
+    let nextIndex = currentIndex + 1;
+    while (nextIndex < menu.length && menu[nextIndex].disabled) nextIndex++;
+    if (nextIndex < menu.length) {
+      setActiveItem(menu[nextIndex].id);
+      setLoading(true);
+      router.push(menu[nextIndex].link);
+    }
+  };
+
   return (
     <>
+      {/* Next & Previous Buttons */}
+      <div className="flex justify-between mb-4">
+        <button
+          onClick={goToPreviousTab}
+          disabled={menu.findIndex((item) => item.id === activeItem) === 0}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors"
+        >
+          Previous
+        </button>
+
+        <button
+          onClick={goToNextTab}
+          disabled={
+            menu.findIndex((item) => item.id === activeItem) === menu.length - 1
+          }
+          className="px-4 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 transition-colors"
+        >
+          Next
+        </button>
+      </div>
       {/* Tabs container */}
       <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1 2xl:gap-2">
         {menu.map((item, index) => {
@@ -131,7 +172,7 @@ export default function Tabs() {
                   return;
                 }
                 setActiveItem(item.id);
-                setLoading(true); // 🔹 show loader before navigating
+                setLoading(true);
                 router.push(item.link);
               }}
               className={`flex items-center gap-2 px-[15.5px] 2xl:px-[1.9rem] py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200
@@ -168,7 +209,7 @@ export default function Tabs() {
         })}
       </div>
 
-      {/* 🔹 Full-screen loader overlay */}
+      {/* Full-screen loader overlay */}
       {loading && (
         <div className="fixed inset-0 bg-white/70 flex flex-col items-center justify-center z-50">
           <Lottie

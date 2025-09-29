@@ -1,6 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -27,9 +32,9 @@ interface IAddress {
 interface AddEditAddressModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode: 'add' | 'edit';
+  mode: "add" | "edit";
   addressData?: IAddress;
-  onSave: (address: IAddress, mode: 'add' | 'edit') => void;
+  onSave: (address: IAddress, mode: "add" | "edit") => void;
   onCancel: () => void;
 }
 
@@ -62,7 +67,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
   // Initialize form data when modal opens
   useEffect(() => {
     if (open) {
-      if (mode === 'edit' && addressData) {
+      if (mode === "edit" && addressData) {
         // Map the address data properly, ensuring we use the correct field names
         const mappedData = {
           ...addressData,
@@ -70,7 +75,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
           state: addressData.state_id || addressData.state || 0,
         };
         setFormData(mappedData);
-        
+
         // Load states for the selected country in edit mode
         if (mappedData.country && mappedData.country !== 0) {
           loadStates(String(mappedData.country));
@@ -99,9 +104,9 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
 
   // Handle form field changes
   const handleFieldChange = (field: keyof IAddress, value: string | number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setIsFormDirty(true);
   };
@@ -109,8 +114,8 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
   // Handle country change and load states
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const countryValue = Number(e.target.value);
-    handleFieldChange('country', countryValue);
-    handleFieldChange('state', 0); // Reset state when country changes
+    handleFieldChange("country", countryValue);
+    handleFieldChange("state", 0); // Reset state when country changes
     loadStates(e.target.value);
   };
 
@@ -140,12 +145,12 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
         country_id: formData.country,
         state_id: formData.state,
       };
-      
+
       await onSave(dataToSave, mode);
       setIsFormDirty(false);
       onOpenChange(false);
     } catch (error) {
-      console.error('Error saving address:', error);
+      console.error("Error saving address:", error);
     } finally {
       setIsLoading(false);
     }
@@ -197,7 +202,10 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
 
   return (
     <>
-      <Dialog open={open && !showExitConfirmation} onOpenChange={handleCloseAttempt}>
+      <Dialog
+        open={open && !showExitConfirmation}
+        onOpenChange={handleCloseAttempt}
+      >
         <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto bg-white">
           <DialogHeader className="bg-[#0d0d0d]/50 p-1 rounded-t-sm">
             <div className="flex items-center justify-between gap-4">
@@ -206,14 +214,13 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 className="text-white text-xl"
                 style={{ fontFamily: "BR Cobane" }}
               >
-                {mode === 'edit' ? 'Edit Address' : 'Add Address'}
+                {mode === "edit" ? "Edit Address" : "Add Address"}
               </DialogTitle>
 
               {/* Button right */}
               <div className="flex items-center gap-3">
-
                 <Button
-                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+                  className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
                   variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
@@ -235,60 +242,19 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
           </DialogHeader>
 
           <div className="space-y-4 py-4 p-6">
-            {/* Country and State */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="country">Country <span className="text-red-500">*</span></Label>
-                <MetadataSelectComponent
-                  type="country"
-                  bindValue={formData.country ?? ""}
-                  changeHandler={handleCountryChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">State <span className="text-red-500">*</span></Label>
-                <MetadataSelectComponent
-                  type="state"
-                  bindValue={formData.state ?? ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('state', Number(e.target.value))}
-                //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-            </div>
-
-            {/* City and ZIP */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">City <span className="text-red-500">*</span></Label>
-                <Input
-                  id="city"
-                  type="text"
-                  value={formData.city ?? ""}
-                  onChange={(e) => handleFieldChange('city', e.target.value)}
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="zip">ZIP Code <span className="text-red-500">*</span></Label>
-                <Input
-                  id="zip"
-                  type="text"
-                  value={formData.zip ?? ""}
-                  onChange={(e) => handleFieldChange('zip', e.target.value)}
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-            </div>
-
             {/* Address Lines */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="address1">Complete Address <span className="text-red-500">*</span></Label>
+                <Label htmlFor="address1">
+                  Complete Address <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="address1"
                   type="text"
                   value={formData.address_line1 ?? ""}
-                  onChange={(e) => handleFieldChange('address_line1', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("address_line1", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -298,7 +264,9 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   id="address2"
                   type="text"
                   value={formData.address_line2 ?? ""}
-                  onChange={(e) => handleFieldChange('address_line2', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("address_line2", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -312,7 +280,9 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   id="landmark1"
                   type="text"
                   value={formData.landmark1 ?? ""}
-                  onChange={(e) => handleFieldChange('landmark1', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("landmark1", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
@@ -322,8 +292,64 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                   id="landmark2"
                   type="text"
                   value={formData.landmark2 ?? ""}
-                  onChange={(e) => handleFieldChange('landmark2', e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("landmark2", e.target.value)
+                  }
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* City and ZIP */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="city">
+                  City <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="city"
+                  type="text"
+                  value={formData.city ?? ""}
+                  onChange={(e) => handleFieldChange("city", e.target.value)}
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <Label htmlFor="zip">
+                  ZIP Code <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="zip"
+                  type="text"
+                  value={formData.zip ?? ""}
+                  onChange={(e) => handleFieldChange("zip", e.target.value)}
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+            </div>
+            {/* Country and State */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="country">
+                  Country <span className="text-red-500">*</span>
+                </Label>
+                <MetadataSelectComponent
+                  type="country"
+                  bindValue={formData.country ?? ""}
+                  changeHandler={handleCountryChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">
+                  State <span className="text-red-500">*</span>
+                </Label>
+                <MetadataSelectComponent
+                  type="state"
+                  bindValue={formData.state ?? ""}
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("state", Number(e.target.value))
+                  }
+                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
@@ -360,19 +386,23 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
       </Dialog>
 
       {/* Exit Confirmation Dialog */}
-      <Dialog open={showExitConfirmation} onOpenChange={setShowExitConfirmation}>
+      <Dialog
+        open={showExitConfirmation}
+        onOpenChange={setShowExitConfirmation}
+      >
         <DialogContent className="max-w-md p-6 bg-white">
           <DialogHeader className="pb-4">
             <DialogTitle className="text-lg font-semibold text-gray-800">
               Save Address Changes?
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <p className="text-gray-600">
-              You have unsaved address information. Would you like to save this address before closing?
+              You have unsaved address information. Would you like to save this
+              address before closing?
             </p>
-            
+
             <div className="flex gap-3">
               <Button
                 onClick={handleSaveAndExit}

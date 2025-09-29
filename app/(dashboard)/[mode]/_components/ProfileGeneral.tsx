@@ -41,6 +41,8 @@ import {
 // Extended form data interface
 interface FormData extends IProfilePersonal {
   phone_mobile_country: string;
+  phone_home_country:string;
+  phone_emergency_country:string;
   summary: string;
 }
 
@@ -61,9 +63,10 @@ const ProfileGeneral = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
-  const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } = useProfileContext();
+  const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } =
+    useProfileContext();
   const { isCreateMode } = useProfileModeInfo();
-  
+
   // Modal state for profile creation success
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -187,7 +190,9 @@ const ProfileGeneral = () => {
       phone_mobile: data.phone_mobile?.trim() || null,
       phone_mobile_country: data.phone_mobile_country?.trim() || null,
       phone_home: data.phone_home?.trim() || null,
+      phone_home_country: data.phone_home_country?.trim() || null,
       phone_emergency: data.phone_emergency?.trim() || null,
+      phone_emergency_country: data.phone_emergency_country?.trim() || null,
       email_id: data.email_id?.trim() || null,
       marital_status: data.marital_status ? Number(data.marital_status) : null,
       religion: data.religion ? Number(data.religion) : null,
@@ -225,13 +230,16 @@ const ProfileGeneral = () => {
           setSelectedProfileID(result?.data?.profile_id);
           toast.success("Profile created successfully!");
           reset();
-          
+
           setShowSuccessModal(true);
         }
       } else {
         //update
         const result = await dispatch(
-          updatePersonalProfileAsync({ ...mappedData, profile_id: selectedProfileID })
+          updatePersonalProfileAsync({
+            ...mappedData,
+            profile_id: selectedProfileID,
+          })
         ).unwrap();
         if (result) {
           toast.success("Profile updated successfully!");
@@ -256,8 +264,8 @@ const ProfileGeneral = () => {
     setIsNew(false);
     setShowSuccessModal(false);
     router.push("/dashboard");
-  };  
-  
+  };
+
   const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
     reset();
@@ -272,35 +280,13 @@ const ProfileGeneral = () => {
     ) : null;
   };
 
-    if (loading) {
-      return (
-        <Loader />
-      );
-    }
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <section className="px-4 py-5 md:px-0 md:py-2 w-full">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-                {/* Buttons */}
-        {/* <div className="flex justify-end gap-4 mb-3">
-          <Button
-            type="button"
-            onClick={handleCancel}
-            disabled={loading}
-            variant={"outline"}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={loading}
-            variant={"default"}
-            className="bg-orange-500 hover:bg-orange-600 text-white"
-          >
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            Save
-          </Button>
-        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Personal Details */}
           <div className="border border-gray-100  bg-gray-200 rounded-lg shadow h-full">
@@ -313,16 +299,24 @@ const ProfileGeneral = () => {
             <div className="px-4 py-4 m-1 bg-white rounded-md">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
                 {/* First Name */}
-                <div className="">
+                <div>
                   <Label>
                     First Name <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     type="text"
+                    maxLength={45}
                     {...register("first_name", {
                       required: "First name is required",
+                      pattern: {
+                        value: /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/,
+                        message:
+                          "Only letters, spaces, hyphens, and apostrophes are allowed",
+                      },
+                      validate: (value) =>
+                        value.trim() !== "" || "Name cannot be only spaces",
                     })}
-                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                    className={`w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.first_name ? "border-red-500" : ""
                     }`}
                   />
@@ -338,16 +332,24 @@ const ProfileGeneral = () => {
                   />
                 </div>
                 {/* Last Name */}
-                <div className="">
+                <div>
                   <Label>
                     Last Name <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     type="text"
+                    maxLength={45}
                     {...register("last_name", {
                       required: "Last name is required",
+                      pattern: {
+                        value: /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/,
+                        message:
+                          "Only letters, spaces, hyphens, and apostrophes are allowed",
+                      },
+                      validate: (value) =>
+                        value.trim() !== "" || "Name cannot be only spaces",
                     })}
-                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                    className={`w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.last_name ? "border-red-500" : ""
                     }`}
                   />
@@ -424,30 +426,39 @@ const ProfileGeneral = () => {
                     {...register("phone_mobile", {
                       required: "Primary phone is required",
                     })}
-                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                    className={`w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.phone_mobile ? "border-red-500" : ""
                     }`}
                   />
                   {getFieldError("phone_mobile")}
                 </div>
+
                 {/* Home Phone */}
                 <div className="">
                   <Label>Home Phone</Label>
-                  <Input
-                    type="text"
+                  <CustomPhoneComponent
+                    type="phone_home"
+                    callingCodeBinding={{
+                      ...register("phone_home_country"),
+                    }}
                     {...register("phone_home")}
-                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    className="w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
+
                 {/* Emergency Phone */}
                 <div className="">
                   <Label>Emergency Phone</Label>
-                  <Input
-                    type="text"
+                  <CustomPhoneComponent
+                    type="phone_emergency"
+                    callingCodeBinding={{
+                      ...register("phone_emergency_country"),
+                    }}
                     {...register("phone_emergency")}
-                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    className="w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
+
                 {/* Email */}
                 <div className="">
                   <Label>
@@ -462,7 +473,7 @@ const ProfileGeneral = () => {
                         message: "Invalid email format",
                       },
                     })}
-                    className={` w-full focus:outline-none focus:border-b focus:border-orange-500 ${
+                    className={`w-full focus:outline-none focus:border-b focus:border-orange-500 ${
                       errors.email_id ? "border-red-500" : ""
                     }`}
                   />
@@ -525,7 +536,9 @@ const ProfileGeneral = () => {
                 </div>
                 {/* Marital Status */}
                 <div className="">
-                  <Label>Marital Status <span className="text-red-500">*</span></Label>
+                  <Label>
+                    Marital Status <span className="text-red-500">*</span>
+                  </Label>
                   <MetadataSelectComponent
                     type="marital_status"
                     {...register("marital_status")}
@@ -573,7 +586,7 @@ const ProfileGeneral = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {/* Height */}
                 <div className="">
-                  <Label>Height (inches)</Label>
+                  <Label>Height</Label>
                   <Input
                     type="text"
                     {...register("height_inches")}
@@ -582,7 +595,7 @@ const ProfileGeneral = () => {
                 </div>
                 {/* Weight */}
                 <div className=" flex flex-col">
-                  <Label className="mb-2.5">Weight</Label>
+                  <Label className="mb-1.5">Weight</Label>
                   <div className="flex gap-2">
                     {/* Select for weight units */}
                     <Controller
@@ -760,7 +773,7 @@ const ProfileGeneral = () => {
             <div className="px-4 pt-4 pb-6 m-1 bg-white rounded-md">
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div className="w-full md:mb-4">
-                  <Label>Brief summary about you</Label>
+                  <Label>Write a Brief Summary About Yourself…</Label>
                   <textarea
                     {...register("summary")}
                     className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
@@ -793,10 +806,10 @@ const ProfileGeneral = () => {
           </Button>
         </div>
       </form>
-      
+
       {/* Success Modal - Only shown in create mode */}
       <Dialog open={showSuccessModal} onOpenChange={() => {}}>
-        <DialogContent 
+        <DialogContent
           className="sm:max-w-lg p-0"
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
@@ -807,20 +820,19 @@ const ProfileGeneral = () => {
             </DialogTitle>
             <DialogDescription className="text-center text-gray-700 leading-relaxed space-y-4">
               <p className="text-base">
-                Basic profile creation successful. You can choose to come back later and fill the other pieces of your profile.
+                Basic profile creation successful. You can choose to come back
+                later and fill the other pieces of your profile.
               </p>
-              
+
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 my-4">
                 <p className="text-sm">
-                  <span className="font-semibold text-orange-700">
-                    Note:
-                  </span>{" "}
+                  <span className="font-semibold text-orange-700">Note:</span>{" "}
                   <span className="text-orange-600">
                     Partially filled profile won't be active on the portal.
                   </span>
                 </p>
               </div>
-              
+
               <p className="text-base font-medium text-gray-800">
                 Would you like to continue editing your profile?
               </p>
@@ -845,7 +857,7 @@ const ProfileGeneral = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       <ToastContainer />
     </section>
   );

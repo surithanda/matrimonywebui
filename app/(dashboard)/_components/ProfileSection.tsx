@@ -86,7 +86,9 @@ const ProfileSection = () => {
 
       const getProfileImage = () => {
         if (completeProfile) {
-          return toAbsoluteUrl(completeProfile?.profile_photo_url);
+
+          console.log(completeProfile?.profile_photo_url)
+          return completeProfile?.profile_photo_url
         }
         return profile1;
       };

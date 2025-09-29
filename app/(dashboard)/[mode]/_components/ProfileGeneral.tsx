@@ -40,10 +40,13 @@ import {
 
 // Extended form data interface
 interface FormData extends IProfilePersonal {
-  phone_mobile_country: string;
-  phone_home_country:string;
-  phone_emergency_country:string;
+  phone_mobile_country?: string;
+  phone_home_country?: string;
+  phone_emergency_country?: string;
   summary: string;
+  height_units?: string;
+  whtasapp_country?: string;
+  profession_other?: string;
 }
 
 interface ValidationErrors {
@@ -89,6 +92,7 @@ const ProfileGeneral = () => {
     religion: null,
     nationality: 166,
     caste: null,
+    height_units: null,
     height_inches: null,
     height_cms: null,
     weight: null,
@@ -97,8 +101,10 @@ const ProfileGeneral = () => {
     linkedin: null,
     facebook: null,
     instagram: null,
+    whtasapp_country: null,
     whatsapp_number: null,
     profession: null,
+    profession_other: null,
     disability: null,
     created_user: "genius.gen2k@gmail.com",
     summary: null,
@@ -124,6 +130,7 @@ const ProfileGeneral = () => {
     };
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
+      console.log("personal data", result)
 
       if (result) {
         reset(result?.data);
@@ -157,6 +164,11 @@ const ProfileGeneral = () => {
   const weightUnitsOptions = [
     { value: "kg", label: "Kilograms" },
     { value: "lbs", label: "Pounds" },
+  ];
+
+  const heightUnitsOptions = [
+    { value: "feet", label: "Feet" },
+    { value: "inches", label: "Inches" },
   ];
 
   // Display error with Toastify if error changes
@@ -198,6 +210,7 @@ const ProfileGeneral = () => {
       religion: data.religion ? Number(data.religion) : null,
       nationality: data.nationality ? Number(data.nationality) : null,
       caste: data.caste ? Number(data.caste) : null,
+      height_units: data.height_units?.trim() || "feet",
       height_inches: inches || null,
       height_cms: inches ? Math.round(inches * 2.54) : null,
       weight: data.weight ? Number(data.weight) : null,
@@ -416,7 +429,10 @@ const ProfileGeneral = () => {
                   <Label>
                     Primary Phone <span className="text-red-500">*</span>
                   </Label>
-                  <CustomPhoneComponent
+                    <span className="text-sm text-gray-500 ml-1">
+                    (with country code)
+                  </span>
+                  {/* <CustomPhoneComponent
                     type="phone_mobile"
                     callingCodeBinding={{
                       ...register("phone_mobile_country", {
@@ -430,32 +446,36 @@ const ProfileGeneral = () => {
                       errors.phone_mobile ? "border-red-500" : ""
                     }`}
                   />
-                  {getFieldError("phone_mobile")}
+                  {getFieldError("phone_mobile")} */}
+                  <Input
+                    type="text"
+                    {...register("phone_mobile")}
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                  />
                 </div>
 
                 {/* Home Phone */}
                 <div className="">
                   <Label>Home Phone</Label>
-                  <CustomPhoneComponent
-                    type="phone_home"
-                    callingCodeBinding={{
-                      ...register("phone_home_country"),
-                    }}
+                    <span className="text-sm text-gray-500 ml-1">
+                    (with country code)
+                  </span>
+                  <Input
+                    type="text"
                     {...register("phone_home")}
-                    className="w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
-
                 {/* Emergency Phone */}
                 <div className="">
                   <Label>Emergency Phone</Label>
-                  <CustomPhoneComponent
-                    type="phone_emergency"
-                    callingCodeBinding={{
-                      ...register("phone_emergency_country"),
-                    }}
+                    <span className="text-sm text-gray-500 ml-1">
+                    (with country code)
+                  </span>
+                  <Input
+                    type="text"
                     {...register("phone_emergency")}
-                    className="w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
 
@@ -562,15 +582,21 @@ const ProfileGeneral = () => {
                     value={watch("caste")}
                     className=" flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
                   />
-                  {/* <option value="">Select Caste</option>
-              {casteOptions.map((option) => (
-                <option key={option?.value} value={option?.value}>
-                  {option?.label}
-                </option>
-              ))}
-            </select> */}
                 </div>
               </div>
+              {/* Show extra input if "Other" is selected */}
+              {/* <div>
+                {String(watch("caste")) === "5" && (
+                  <Input
+                    type="text"
+                    placeholder="Enter your profession"
+                    {...register("profession_other", {
+                      required: "Please enter your profession",
+                    })}
+                    className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                )}
+              </div> */}
             </div>
           </div>
 
@@ -585,13 +611,39 @@ const ProfileGeneral = () => {
             <div className="px-4 py-5 m-1 bg-white rounded-md">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 {/* Height */}
-                <div className="">
-                  <Label>Height</Label>
-                  <Input
-                    type="text"
-                    {...register("height_inches")}
-                    className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
-                  />
+                <div>
+                  <Label className="mb-1.5">Height</Label>
+                  <div className="flex gap-2">
+                    <Controller
+                      name="height_units"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value ? String(field.value) : ""}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className=" w-32 focus:outline-none focus:border-b focus:border-orange-500">
+                            <SelectValue placeholder="Unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {heightUnitsOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <Input
+                      type="text"
+                      {...register("height_cms")}
+                      className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                    />
+                  </div>
                 </div>
                 {/* Weight */}
                 <div className=" flex flex-col">
@@ -692,7 +744,8 @@ const ProfileGeneral = () => {
             <div className="px-4 py-2 m-1 bg-white rounded-md">
               {/* Profession */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5 mt-1">
-                <div className="">
+                {/* Profession */}
+                <div>
                   <Label>Profession</Label>
                   <Controller
                     name="profession"
@@ -719,15 +772,33 @@ const ProfileGeneral = () => {
                     )}
                   />
                 </div>
+
                 {/* WhatsApp Number */}
-                <div className="">
-                  <Label>WhatsApp Number</Label>
+                <div>
+                  <Label htmlFor="whatsapp_number">WhatsApp Number</Label>
+                  <span className="text-sm text-gray-500 ml-1">
+                    (with country code)
+                  </span>
+
                   <Input
                     type="text"
                     {...register("whatsapp_number")}
                     className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
                   />
                 </div>
+              </div>
+              <div>
+                {/* Show extra input if "Other" is selected */}
+                {String(watch("profession")) === "5" && (
+                  <Input
+                    type="text"
+                    placeholder="Enter your profession"
+                    {...register("profession_other", {
+                      required: "Please enter your profession",
+                    })}
+                    className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-b focus:border-orange-500"
+                  />
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">

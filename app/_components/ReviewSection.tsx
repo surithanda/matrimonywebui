@@ -81,7 +81,7 @@ const ReviewSection = () => {
           className="invitation-form-div relative z-10 w-[95%] sm:w-[90%] md:w-[100%] lg:w-full xl:w-[60%] h-[50vh] sm:h-[60vh] md:h-[50vh] lg:h-[527px] xl:h-[650px] flex flex-col justify-center items-center overflow-hidden rounded-[150px_0_150px_0] sm:rounded-[250px_0_250px_0] lg:rounded-[250px_0_250px_0] xl:rounded-[350px_0_350px_0]"
         >
           {/* Overlay */}
-          <div className="absolute inset-0 bg-black/30 rounded-[150px_0_150px_0] sm:rounded-[250px_0_250px_0] lg:rounded-[250px_0_250px_0] xl:rounded-[350px_0_350px_0]"></div>
+          <div className="absolute inset-0 bg-black/60 rounded-[150px_0_150px_0] sm:rounded-[250px_0_250px_0] lg:rounded-[250px_0_250px_0] xl:rounded-[350px_0_350px_0]"></div>
 
           {/* Text Content */}
           <h1 className="coloredTextOne relative z-10 w-11/12 md:w-3/4 text-base sm:text-lg md:text-xl lg:text-2xl text-white text-center lg:text-left">

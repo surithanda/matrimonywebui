@@ -162,7 +162,7 @@ const ProfileSection = () => {
         className="rounded-xl overflow-hidden flex flex-col justify-between"
       >
         <div className="flex gap-2 items-center justify-center py-4">
-          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow">
+          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow mt-2">
             {props.icon}
           </div>
           <p className="text-center mt-2 text-3xl font-bold">{props.number}</p>

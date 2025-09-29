@@ -181,13 +181,13 @@ export const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-colors  duration-300 ${
-          isDarkPage
-            ? "bg-[#0d0d0d]/50 shadow-lg backdrop-blur-md"
-            : isScrolled
-            ? "bg-[#0d0d0d]/60 shadow-lg backdrop-blur-md"
-            : "bg-transparent"
-        }`}
+  className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+    isDarkPage
+      ? "bg-gradient-to-r from-[#0d0d0d] to-[#1a1a1a] backdrop-blur-md"
+      : isScrolled
+      ? "bg-gradient-to-r from-[#0d0d0d]/90 to-[#1a1a1a]/90  backdrop-blur-md"
+      : "bg-transparent"
+  }`}
       >
         {/* ... rest of your component remains the same ... */}
         <div className="flex justify-between items-center px-5 md:px-1 lg:px-0 xl:px-10 2xl:px-20 py-4">
@@ -196,7 +196,7 @@ export const Navbar = () => {
             <Image
               src={Logo}
               alt="Logo"
-              className="w-[160px] md:w-[200px] lg:w-[251px]"
+              className="w-[160px] md:w-[200px] lg:w-[240px]"
               priority
             />
           </Link>

@@ -290,31 +290,31 @@ const ViewProfile = () => {
   const categoryMapping = [
     {
       habitQuestion: "What best describes your eating habits?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].eating_habit,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.eating_habit,
     },
     {
       habitQuestion: "Do you follow any specific diet plan?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].diet_habit,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.diet_habit,
     },
     {
       habitQuestion: "How many cigarettes do you smoke per day on average?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].cigarettes_per_day,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.cigarettes_per_day,
     },
     {
       habitQuestion: "How frequently do you drink?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].drink_frequency,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.drink_frequency,
     },
     {
       habitQuestion: "What type of gambling do you engage in?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].gambling_engage,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.gambling_engage,
     },
     {
       habitQuestion: "How would you describe your physical activity level?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].physical_activity_level,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.physical_activity_level,
     },
     {
       habitQuestion: "Do you practice any relaxation techniques?",
-      habitAnswer: lifestyle?.data?.lifestyles?.[0].relaxation_methods,
+      habitAnswer: lifestyle?.data?.lifestyles?.[0]?.relaxation_methods,
     },
   ];
 

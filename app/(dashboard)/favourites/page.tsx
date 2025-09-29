@@ -203,14 +203,15 @@ const FavouritesPage = () => {
                     </div>
 
                     {/* Name + Occupation + Location */}
-                    <div className="flex flex-col ms-[6rem] mt-1">
+                    <div className="flex flex-col ms-[6rem] mt-1 w-full max-w-[calc(100%-7rem)]">
                       <h2
-                        className="font-bold text-lg"
+                        className="font-bold text-lg truncate overflow-hidden whitespace-nowrap"
                         style={{ fontFamily: "BR Cobane" }}
+                        title={`${profile.first_name} ${profile.last_name}`}
                       >
                         {profile.first_name} {profile.last_name}
                       </h2>
-                      <p className="text-gray-500 text-xs min-h-[1rem]">
+                      <p className="text-gray-500 text-xs min-h-[1rem] truncate overflow-hidden whitespace-nowrap">
                         {profile.profession_text || profile.occupation || ""}
                         {(profile.profession_text || profile.occupation) &&
                         (profile.states || profile.countries)

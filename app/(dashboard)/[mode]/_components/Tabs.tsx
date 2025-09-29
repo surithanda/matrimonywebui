@@ -138,7 +138,7 @@ export default function Tabs() {
   return (
     <>
       {/* Next & Previous Buttons */}
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between mb-4 px-1">
         <button
           onClick={goToPreviousTab}
           disabled={menu.findIndex((item) => item.id === activeItem) === 0}

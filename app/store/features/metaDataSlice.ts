@@ -153,16 +153,22 @@ export const getStatesAsync = createAsyncThunk(
   }
 );
 
+const setMetadataLists = (state: MetaState, category: string, payload: LookupPayload[]) => {
+  const formattedCategory = category.toLowerCase().replace(' ', '');
+  //alphabetically sort the payload based on name
+  const sortedPayload = payload.sort((a: LookupPayload, b: LookupPayload) => a.name.localeCompare(b.name));
+  // Dynamically set the category list based on the category name
+  (state as any)[`${formattedCategory}List`] = Array.isArray(sortedPayload) ? sortedPayload : [];
+  state.error = null;
+}
+
 const metaDataSlice = createSlice({
   name: 'metaData',
   initialState,
   reducers: {
     setMetadataCategory: (state, action) => {
       const {category, payload} = action.payload;
-      const formattedCategory = category.toLowerCase().replace(' ', '');
-      // Dynamically set the category list based on the category name
-      (state as any)[`${formattedCategory}List`] = Array.isArray(payload) ? payload : [];
-      state.error = null;
+      setMetadataLists(state, category, payload);
     },
     
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -182,12 +188,7 @@ const metaDataSlice = createSlice({
         state.loading = false;
         // Extract category from the action meta (the original payload)
         const category = action.meta.arg.category;
-        if(category) {
-          const formattedCategory = category.toLowerCase().replace(' ', '');
-          // Dynamically set the category list based on the category name
-          (state as any)[`${formattedCategory}List`] = Array.isArray(action.payload) ? action.payload : [];
-          state.error = null;
-        }
+        if(category) setMetadataLists(state, category, action.payload);
       })
       .addCase(getMetaDataAsync.rejected, (state, action) => {
         state.loading = false;

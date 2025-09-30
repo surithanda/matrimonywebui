@@ -717,7 +717,7 @@ const Page = () => {
               </div>
             );
           })
-        ) : (
+        ) : preferencesLoaded ?(
           <div className="text-center py-12 col-span-full">
             <div className="text-gray-500 text-lg mb-4">
               {showFilters
@@ -730,7 +730,7 @@ const Page = () => {
               </button>
             )}
           </div>
-        )}
+        ): null}
       </div>
     </div>
   );

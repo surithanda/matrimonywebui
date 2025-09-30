@@ -276,7 +276,7 @@ const ProfileSection = () => {
                     perfect match.
                   </p>
                 </div>
-                {!(selectedProfileID && selectedProfileID < 0) && (
+                {!(selectedProfileID && selectedProfileID > 0) && (
                   <Link href="/createprofile">
                     <Button
                       className="px-6 py-3 text-white font-semibold rounded-lg

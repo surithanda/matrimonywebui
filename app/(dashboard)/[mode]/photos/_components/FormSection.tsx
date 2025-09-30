@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  
 } from "@/components/ui/dialog";
 import Loader from "@/app/(dashboard)/_components/Loader";
 
@@ -44,7 +45,7 @@ const FormSection = () => {
       ).unwrap();
 
       const resolved = (response?.data?.photos || [])
-        .map((p: any) => ({ ...p, _src: p.url }))
+        .map((p: any) => ({ ...p, _src: normalizePhotoUrl(p.url) }))
         .filter((p: any) => !!p._src);
 
       console.log("resolved photos", resolved);
@@ -188,6 +189,7 @@ const FormSection = () => {
             {otherPhotos.length > 0 ? (
               otherPhotos.map((photo: any) => (
                 <div key={photo.profile_photo_id} className="relative group">
+                  {JSON.stringify(photo)}
                   <Image
                     src={photo._src}
                     alt={photo.caption || "Photo"}

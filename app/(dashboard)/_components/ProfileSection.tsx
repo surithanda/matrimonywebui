@@ -89,7 +89,7 @@ const ProfileSection = () => {
         if (completeProfile) {
 
           console.log(completeProfile?.profile_photo_url)
-          return completeProfile?.profile_photo_url
+          return normalizePhotoUrl(completeProfile?.profile_photo_url)
         }
         return profile1;
       };

@@ -43,9 +43,10 @@ const FormSection = () => {
       ).unwrap();
 
       const resolved = (response?.data?.photos || [])
-        .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?.url) }))
+        .map((p: any) => ({ ...p, _src: p.url }))
         .filter((p: any) => !!p._src);
 
+      console.log("resolved photos", resolved);
       setPhotos(resolved);
     } catch (e) {
       console.log("error", e);

@@ -15,7 +15,7 @@ const Footer = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-28 xl:gap-80 items-center text-center lg:text-left">
         {/* Logo + Description */}
         <div className="flex flex-col items-center lg:items-start gap-3">
-          <Image src={MainLogo} alt="Logo" className="w-40 md:w-48" />
+          <Image src={MainLogo} alt="Logo" className="w-40 md:w-56" />
           <p className="text-sm md:text-base text-gray-700 max-w-md">
             Chaturvarnam Matrimony Services – Connecting hearts and building
             lifelong relationships.
@@ -62,7 +62,7 @@ const Footer = () => {
         {/* Contact Info */}
         <div className="flex flex-col items-center lg:items-start gap-2">
           <p className="text-sm md:text-base text-gray-700">
-            Have questions? Reach us at:
+            Have questions? Contact us at:
           </p>
           <p className="text-sm md:text-base">
             <a

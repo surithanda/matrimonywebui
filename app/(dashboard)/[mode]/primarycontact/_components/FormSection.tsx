@@ -563,7 +563,7 @@ const FormSection = () => {
                 No addresses added yet
               </h3>
               <p className="text-gray-500">
-                Add your first address using the form below
+                Please add your first address using the form above.
               </p>
             </div>
           )}

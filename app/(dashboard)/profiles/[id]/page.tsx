@@ -364,6 +364,7 @@ const ViewProfile = () => {
                   src={coverImage.url}
                   alt="Banner"
                   className="w-full h-full object-cover"
+                  priority
                 />
               ) : (
                 // Gradient banner matching your example
@@ -394,6 +395,7 @@ const ViewProfile = () => {
                         alt="Profile"
                         className="w-full h-full object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                        priority
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">

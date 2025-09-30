@@ -189,7 +189,6 @@ const FormSection = () => {
             {otherPhotos.length > 0 ? (
               otherPhotos.map((photo: any) => (
                 <div key={photo.profile_photo_id} className="relative group">
-                  {JSON.stringify(photo)}
                   <Image
                     src={photo._src}
                     alt={photo.caption || "Photo"}

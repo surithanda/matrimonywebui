@@ -18,7 +18,16 @@ import { API_ORIGIN, toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
 import { FaPlus } from "react-icons/fa6";
 import { FaqSection } from "@/components/blocks/faq";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import {
+  User,
+  Eye,
+  Heart,
+  Users,
+  Search,
+  Star,
+  ThumbsUp,
+  Link2,
+} from "lucide-react";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import { FaRegEdit } from "react-icons/fa";
@@ -30,7 +39,7 @@ import { useRouter } from "next/navigation";
 const ProfileSection = () => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.auth.userData);
-    const router = useRouter();
+  const router = useRouter();
   // const personalProfile = useAppSelector(
   //   (state) => state.profile.personalProfile
   // );
@@ -38,14 +47,10 @@ const ProfileSection = () => {
   const completeProfile = useAppSelector(
     (state) => state.profile.completeProfile
   );
-  
 
-  const {loading} = useAppSelector(
-    (state) => state.profile
-  );
+  const { loading } = useAppSelector((state) => state.profile);
   const { fetchAccountDetls } = useFetchUser();
   const { selectedProfileID } = useProfileContext();
-
 
   // API origin and image URL utility
   const toAbsoluteUrl = useCallback((u?: string | null) => {
@@ -57,8 +62,7 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (selectedProfileID && selectedProfileID > 0) {
-      (dispatch as any)(getCompleteProfileAsync(selectedProfileID))
-        .unwrap()
+      (dispatch as any)(getCompleteProfileAsync(selectedProfileID)).unwrap();
     } else {
     }
   }, [selectedProfileID, dispatch]);
@@ -101,8 +105,7 @@ const ProfileSection = () => {
     }
   }, [completeProfile, selectedProfileID, toAbsoluteUrl]);
 
-  console.log("complete profile data", completeProfile)
-
+  console.log("complete profile data", completeProfile);
 
   useEffect(() => {
     if (userData && (userData?.token || userData?.email)) fetchAccountDetls();
@@ -113,42 +116,42 @@ const ProfileSection = () => {
     {
       question: "How do I create a new profile?",
       answer:
-        "Navigate to 'Add Profile' and fill out the basic details form. Upload at least 2 recent photos and complete sections for education, career, family background, and partner preferences.",
+        "To create a new profile, click on ‘Add Profile’ and complete the basic details form. Upload at least two recent photos, then fill in the sections for education, career, family background, and partner preferences.",
     },
     {
-      question: "What are the privacy settings available?",
+      question: "What privacy settings are available?",
       answer:
-        "Control who sees your profile through Privacy Settings. Options include 'Everyone', 'Premium Members Only', 'Connected Matches Only', or 'Hidden'. You can also block specific profiles.",
+        "You can control who sees your profile through Privacy Settings. Available options include Everyone, Premium Members Only, Connected Matches Only, or Hidden. You can also block specific profiles if needed.",
     },
     {
       question: "How do I search for matches?",
       answer:
-        "Use the Search tab with filters for age, location, education, profession, and more. Save searches for quick access. Premium members get advanced filters like horoscope matching.",
+        "To search for matches, use the Search tab with filters such as age, location, education, profession, and more. You can save your searches for quick access. Premium members also get access to advanced filters, including horoscope matching.",
     },
     {
       question: "What does the 'Interest Sent' status mean?",
       answer:
-        "When you send an interest, the status shows as 'Pending' until they respond. 'Accepted' means they’re interested too, while 'Declined' means they’ve passed.",
+        "When you send an interest, the status appears as Pending until the other person responds. Accepted means they’re interested too, while Declined means they’ve passed.",
     },
     {
       question: "How do I verify my profile?",
       answer:
-        "Submit government ID proof through the Verification Center. Options include passport, driver’s license, or national ID. Verification badge appears within 24-48 hours.",
+        "To verify your profile, submit a government-issued ID through the Verification Center. Accepted documents include a passport, driver’s license, or national ID. Once verified, a badge will appear on your profile within 24–48 hours.",
     },
     {
       question: "What’s included in premium membership?",
       answer:
-        "Premium gives unlimited messages, contact viewing, advanced search filters, profile highlighting, and priority customer support. Access detailed horoscopes and family background info.",
+        "Premium Membership offers unlimited messaging, contact viewing, advanced search filters, profile highlighting, and priority customer support. You’ll also get access to detailed horoscopes and family background information.",
     },
     {
       question: "Can I edit my profile after creation?",
       answer:
-        "Yes, click 'Edit Profile' to update any section. Photos can be added/removed anytime. Major changes like marital status require verification.",
+        "Yes. Click “Edit Profile” to update any section. You can add or remove photos at any time. Major changes, such as marital status, may require verification.",
     },
     {
       question: "How do I report fake profiles?",
       answer:
-        "Click the 'Report' button on any profile and select the reason. Our team reviews reports within 24 hours. Include screenshots for faster action.",
+        "To report a fake profile, click the “Report” button on any profile and select the reason. Our team reviews reports within 24 hours. Including screenshots can help us take faster action.",
     },
   ];
 
@@ -158,9 +161,14 @@ const ProfileSection = () => {
         style={{ backgroundColor: props.bg1 }}
         className="rounded-xl overflow-hidden flex flex-col justify-between"
       >
-        <p className="text-center py-4 text-3xl font-bold">{props.number}</p>
+        <div className="flex gap-2 items-center justify-center py-4">
+          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow mt-2">
+            {props.icon}
+          </div>
+          <p className="text-center mt-2 text-3xl font-bold">{props.number}</p>
+        </div>
         <p
-          className="py-2 px-3 text-sm h-[50%] flex items-center justify-center text-center"
+          className="py-2 px-3 text-base font-semibold h-[50%] flex items-center justify-center text-center"
           style={{ backgroundColor: props.bg2 }}
         >
           {props.name}
@@ -168,10 +176,9 @@ const ProfileSection = () => {
       </div>
     );
   };
-
   const goTo = (path: string) => {
     if (!path) return;
-    Router.push('/updateprofile');
+    Router.push("/updateprofile");
   };
 
   const stats = [
@@ -180,55 +187,61 @@ const ProfileSection = () => {
       name: "My Profiles",
       bg1: "#E4F1FF",
       bg2: "#D6E9FF",
+      icon: <User className="w-6 h-6 text-blue-600" />,
     },
     {
       number: completeProfile?.profiles_viewed_by_me ?? 0,
       name: "Profiles Viewed",
       bg1: "#FFF0D0",
       bg2: "#FFE8B7",
+      icon: <Eye className="w-6 h-6 text-yellow-600" />,
     },
     {
       number: completeProfile?.profile_favorites ?? 0,
       name: "Favourites",
       bg1: "#FFECE9",
       bg2: "#FCDEDA",
+      icon: <Heart className="w-6 h-6 text-red-500" />,
     },
     {
       number: completeProfile?.profiles_viewed_me ?? 0,
       name: "Viewed My Profile(s)",
       bg1: "#DAFBF2",
       bg2: "#AFFEE8",
+      icon: <Users className="w-6 h-6 text-teal-600" />,
     },
     {
       number: completeProfile?.profiles_searched ?? 0,
       name: "Top Searches",
       bg1: "#FFEDF0",
       bg2: "#FFE0E5",
+      icon: <Search className="w-6 h-6 text-pink-500" />,
     },
     {
       number: completeProfile?.shortlisted ?? 0,
       name: "Shortlisted",
       bg1: "#DEF3C5",
       bg2: "#CEEFA7",
+      icon: <Star className="w-6 h-6 text-green-600" />,
     },
     {
       number: completeProfile?.interested ?? 0,
       name: "Interested",
       bg1: "#EBE9F8",
       bg2: "#E4DFF7",
+      icon: <ThumbsUp className="w-6 h-6 text-purple-600" />,
     },
     {
       number: completeProfile?.connected ?? 0,
       name: "Connected",
       bg1: "#FFECE9",
       bg2: "#FCDEDA",
+      icon: <Link2 className="w-6 h-6 text-orange-600" />,
     },
-  ];0
+  ];
 
-  if(loading){
-    return(
-      <Loader />
-    )
+  if (loading) {
+    return <Loader />;
   }
 
   return (
@@ -258,14 +271,20 @@ const ProfileSection = () => {
                 <div>
                   <h2 className="dmserif32600">Profiles</h2>
                   <p className="text-gray-600 text-sm sm:text-base mt-2">
-                    Browse detailed member profiles to find your perfect match
-                    with ease.
+                    Browse detailed member profiles to easily discover your
+                    perfect match.
                   </p>
                 </div>
-                {!(selectedProfileID && selectedProfileID > 0) && (
+                {!(selectedProfileID && selectedProfileID < 0) && (
                   <Link href="/createprofile">
-                    <Button className="px-5 py-2 text-white rounded-lg bg-[#f7ac03] hover:bg-[#e69a00] w-full sm:w-auto flex items-center justify-center gap-2">
-                      <FaPlus />
+                    <Button
+                      className="px-6 py-3 text-white font-semibold rounded-lg
+             bg-gradient-to-r from-[#f7ac03] to-[#e69a00] 
+             hover:from-[#e69a00] hover:to-[#cc7a00] 
+             w-full sm:w-auto flex items-center justify-center gap-2 
+             shadow-md hover:shadow-lg transition-all duration-300 text-lg"
+                    >
+                      <FaPlus className="text-lg" />
                       Add Profile
                     </Button>
                   </Link>
@@ -281,6 +300,7 @@ const ProfileSection = () => {
                     name={stat.name}
                     bg1={stat.bg1}
                     bg2={stat.bg2}
+                    icon={stat.icon}
                   />
                 ))}
               </div>
@@ -305,14 +325,14 @@ const ProfileSection = () => {
                         />
 
                         {/* Hover Edit Button (Top Right) */}
-                          <Button
-                          onClick={()=>goTo}
-                            variant={"default"}
-                            size={"sm"}
-                            className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
-                          >
-                            <CiEdit size={22} />
-                          </Button>
+                        <Button
+                          onClick={() => goTo}
+                          variant={"default"}
+                          size={"sm"}
+                          className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
+                        >
+                          <CiEdit size={22} />
+                        </Button>
 
                         <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
                           <p className="text-white font-semibold text-lg sm:text-xl">

@@ -349,7 +349,7 @@ const Page = () => {
               </Label>
               <div className="flex gap-2">
                 <select
-                  value={localFilters.min_age || 21}
+                  value={localFilters.min_age ?? 21}
                   onChange={(e) =>
                     handleFilterChange("min_age", parseInt(e.target.value))
                   }
@@ -363,7 +363,7 @@ const Page = () => {
                   ))}
                 </select>
                 <select
-                  value={localFilters.max_age || 85}
+                  value={localFilters.max_age ?? 85}
                   onChange={(e) =>
                     handleFilterChange("max_age", parseInt(e.target.value))
                   }

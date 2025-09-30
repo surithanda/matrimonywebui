@@ -359,7 +359,7 @@ const FormSection = () => {
           updateAddressAsync(addressPayload)
         ).unwrap();
         console.log(result);
-        if (result && result.status === "success") {
+        if (result && result.data.status === "success") {
           // proceedwithAddUpdate(addressData.profile_address_id);
           fetchProfileAddress(); // Refresh the address list
         }
@@ -373,8 +373,8 @@ const FormSection = () => {
         const result = await dispatch(
           createAddressAsync(addressPayload)
         ).unwrap();
-        if (result && result.status === "success") {
-          proceedwithAddUpdate(result?.profile_address_id);
+        if (result && result.data.status === "success") {
+          proceedwithAddUpdate(result?.data?.profile_address_id);
         }
       } catch (err: any) {
         console.error("Error adding address:", err);
@@ -563,7 +563,7 @@ const FormSection = () => {
                 No addresses added yet
               </h3>
               <p className="text-gray-500">
-                Add your first address using the form below
+                Please add your first address using the form above.
               </p>
             </div>
           )}

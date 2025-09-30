@@ -30,6 +30,7 @@ import Loader from "@/app/(dashboard)/_components/Loader";
 
 interface IFamilyMember {
   id: string;
+  profile_family_reference_id?: number;
   firstname: string;
   lastname: string;
   dob: string;
@@ -51,6 +52,7 @@ interface IFormValues {
 
 const defaultFamilyMember: IFamilyMember = {
   id: "",
+  profile_family_reference_id: 0,
   firstname: "",
   lastname: "",
   dob: "",
@@ -164,6 +166,7 @@ const FormSection = ({
         if (result.payload?.success && result.payload.data) {
           const formattedData = result.payload.data?.family?.map((item: any) => ({
             id: item.profile_family_reference_id,
+            profile_family_reference_id: item.profile_family_reference_id,
             firstname: item.first_name,
             lastname: item.last_name,
             dob: item.date_of_birth,

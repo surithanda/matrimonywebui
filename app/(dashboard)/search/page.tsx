@@ -15,6 +15,7 @@ import MetadataSelectComponent from "@/app/_components/custom_components/Metadat
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { getFavoritesAsync } from "@/app/store/features/profileSlice";
 import { useURLFormatter } from "@/app/utils/utility";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { MdFamilyRestroom, MdFilterList, MdVerified } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
@@ -274,8 +275,8 @@ const Page = () => {
   // Helper function to get profile image with fallback
   const getProfileImage = (profile: any) => {
     // Return actual image if available
-    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
-    if (profile?.url) return toAbsoluteUrl(profile.url);
+    if (profile?.profile_image) return normalizePhotoUrl(profile.profile_image);
+    if (profile?.url) return normalizePhotoUrl(profile.url);
 
     // Return null for avatar fallback
     return null;

@@ -9,18 +9,29 @@ const nextConfig = {
       "drive.google.com",
     ],
     remotePatterns: [
-      // Local development pattern
+      // Local development patterns
       {
         protocol: "http",
         hostname: "localhost",
         port: "8080",
-        pathname: "/uploads/**",
+        pathname: "/uploads/**", // Legacy path
       },
-      // Production pattern
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8080",
+        pathname: "/photos/**", // New Render persistent storage path
+      },
+      // Production patterns
       {
         protocol: "https",
         hostname: "matrimonyservicesapi-tdcu.onrender.com",
-        pathname: "/uploads/**",
+        pathname: "/uploads/**", // Legacy path
+      },
+      {
+        protocol: "https",
+        hostname: "matrimonyservicesapi-tdcu.onrender.com",
+        pathname: "/photos/**", // New Render persistent storage path
       },
     ],
     // Optimized settings for better quality

@@ -20,6 +20,7 @@ import {
   getLifestyleAsync,
 } from "@/app/store/features/profileSlice";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
@@ -90,7 +91,7 @@ const ViewProfile = () => {
 
   // Hoisted helpers for photos (avoid hooks inside conditional renders)
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    return envToAbsoluteUrl(u);
+    return normalizePhotoUrl(u); // Use the new photo URL utility
   }, []);
 
   // 1. Source of truth for type codes

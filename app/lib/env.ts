@@ -30,8 +30,8 @@ export const toAbsoluteUrl = (url?: string | null): string | null => {
     return `${API_ORIGIN}${url}`;
   }
   
-  // For uploads and static files, use origin
-  if (url.startsWith('/uploads/') || url.startsWith('/static/')) {
+  // For photos (new Render persistent storage) and uploads (legacy), use origin
+  if (url.startsWith('/photos/') || url.startsWith('/uploads/') || url.startsWith('/static/')) {
     return `${API_ORIGIN}${url}`;
   }
   

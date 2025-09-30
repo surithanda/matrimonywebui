@@ -15,6 +15,7 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { IProfile } from "@/app/models/Profile";
 import { API_ORIGIN, toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { FaPlus } from "react-icons/fa6";
 import { FaqSection } from "@/components/blocks/faq";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ const ProfileSection = () => {
 
   // API origin and image URL utility
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    return envToAbsoluteUrl(u);
+    return normalizePhotoUrl(u); // Use the new photo URL utility
   }, []);
 
   // Profile Data for dynamic rendering

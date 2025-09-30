@@ -6,6 +6,7 @@ import { AppDispatch, useAppSelector } from "@/app/store/store";
 import { getProfilePhotosAsync } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import AddPhotosModal from "./photos-modals/AddPhotosModal";
@@ -31,7 +32,7 @@ const FormSection = () => {
   };
 
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    return envToAbsoluteUrl(u);
+    return normalizePhotoUrl(u); // Use the new photo URL utility
   }, []);
 
   // Load photos

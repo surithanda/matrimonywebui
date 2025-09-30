@@ -17,6 +17,7 @@ import { IoMdBook } from "react-icons/io";
 import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { toAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import NoData from "@/public/images/nodata.png";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
@@ -48,8 +49,8 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   const getProfileImage = (profile: any) => {
-    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
-    if (profile?.url) return toAbsoluteUrl(profile.url);
+    if (profile?.profile_image) return normalizePhotoUrl(profile.profile_image);
+    if (profile?.url) return normalizePhotoUrl(profile.url);
 
     return null;
   };

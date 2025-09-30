@@ -10,6 +10,7 @@ import {
   getFavoritesAsync,
 } from "@/app/store/features/profileSlice";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { Button } from "@/components/ui/button";
 import { MdFamilyRestroom, MdVerified } from "react-icons/md";
 import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
@@ -23,7 +24,15 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
 
 // Dummy helper functions — replace with actual implementations
-const getProfileImage = (profile: any) => profile.image_url || null;
+const getProfileImage = (profile: any) => {
+  // Return normalized photo URL if available
+  if (profile?.profile_image) return normalizePhotoUrl(profile.profile_image);
+  if (profile?.image_url) return normalizePhotoUrl(profile.image_url);
+  if (profile?.url) return normalizePhotoUrl(profile.url);
+  
+  // Return null for avatar fallback
+  return null;
+};
 const getAvatarColor = (name: string) => "bg-gray-500";
 const getInitials = (first: string, last: string) =>
   `${first?.[0] || ""}${last?.[0] || ""}`;

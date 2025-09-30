@@ -29,6 +29,7 @@ import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import femaleProfile from "@/public/images/dashboard/profile1.png";
 import maleProfile from "@/public/images/dashboard/profile3.png";
 import { useProfileContext } from "@/app/utils/useProfileContext";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { profile } from "console";
 import coverPhoto from "@/public/images/couple1.jpg";
 import {
@@ -125,12 +126,9 @@ const ViewProfile = () => {
 
   const toAbsoluteUrl = useCallback(
     (u?: string | null) => {
-      if (!u || typeof u !== "string") return null;
-      if (u.startsWith("http")) return u;
-      if (apiOrigin) return `${apiOrigin}${u.startsWith("/") ? "" : "/"}${u}`;
-      return u.startsWith("/") ? u : `/${u}`;
+      return normalizePhotoUrl(u); // Use the new photo URL utility
     },
-    [apiOrigin]
+    []
   );
 
   // Derive display images from redux photos once, not during render

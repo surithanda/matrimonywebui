@@ -14,6 +14,7 @@ import {
   getHobbiesInterestsAsync
 } from "@/app/store/features/profileSlice";
 import profile1 from "@/public/images/dashboard/profile1.png";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import ViewProfileDummy from "./view-profile";
 
 const ViewProfile = () => {
@@ -558,7 +559,7 @@ const ViewProfile = () => {
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="relative">
             <Image
-              src={(personalProfile?.data || personalProfile)?.profile_image || profile1}
+              src={normalizePhotoUrl((personalProfile?.data || personalProfile)?.profile_image) || profile1}
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover"
               width={128}

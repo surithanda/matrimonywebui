@@ -359,13 +359,18 @@ const ViewProfile = () => {
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
-                <a href={coverImage.url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={coverImage.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
-                    width={100}
-                    height={100}
                     src={coverImage.url}
                     alt="Cover Image"
+                    width={1200} // or actual cover width
+                    height={400} // or actual cover height
                     className="w-full h-full object-cover"
+                    quality={100}
                   />
                 </a>
               ) : (
@@ -402,6 +407,8 @@ const ViewProfile = () => {
                           alt="Profile"
                           className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                          priority
+                          quality={100}
                         />
                       </a>
                     ) : (

@@ -645,7 +645,7 @@ export const getProfileCompltionCounts = createAsyncThunk(
   async (profileId: number, { rejectWithValue }) => {
     try {
       const response = await api.get('/profile/profile-completion/' + profileId);
-      console.log("Get Profile Complition", response?.data)
+      // console.log("Get Profile Complition", response?.data)
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'An error occurred');

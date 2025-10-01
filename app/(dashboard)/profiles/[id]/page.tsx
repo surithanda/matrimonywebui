@@ -250,7 +250,7 @@ const ViewProfile = () => {
   //   // console.log("hobbies:", hobbies);
   //   // console.log("interests:", interests);
   //   // console.log("references:", references);
-  console.log("life style", lifestyle);
+  // console.log("life style", lifestyle);
 
   // }, [
   //   personalProfile,
@@ -363,9 +363,11 @@ const ViewProfile = () => {
                   width={100}
                   height={100}
                   src={coverImage.url}
-                  alt="Banner"
+                  alt="Cover Image"
                   className="w-full h-full object-cover"
                   priority
+                  unoptimized
+                  quality={1000}
                 />
               ) : (
                 // Gradient banner matching your example
@@ -402,6 +404,8 @@ const ViewProfile = () => {
                           className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                           priority
+                          unoptimized
+                          quality={1000}
                         />
                       </a>
                     ) : (

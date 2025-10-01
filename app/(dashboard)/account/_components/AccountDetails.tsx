@@ -14,6 +14,7 @@ import { useFetchUser } from "@/app/utils/useFetchUser";
 import MetadataSelectComponent from "@/app/_components/custom_components/MetadataSelectComponent";
 import CustomPhoneComponent from "@/app/_components/custom_components/CustomPhoneComponent";
 import { toAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ const AccountSettings = () => {
       if (response.data?.success && response.data?.data?.photo_url) {
         const photoPath = response.data.data.photo_url;
         // The photo_url will be like /uploads/photos/account/<filename>
-        const photoUrl = toAbsoluteUrl(photoPath);
+        const photoUrl = normalizePhotoUrl(photoPath);
         setProfilePhoto(photoUrl);
         setImageError(false);
       } else {
@@ -100,7 +101,7 @@ const AccountSettings = () => {
 
       if (response.data?.success && response.data?.data?.photo_url) {
         const photoPath = response.data.data.photo_url;
-        const photoUrl = toAbsoluteUrl(photoPath);
+        const photoUrl = normalizePhotoUrl(photoPath);
         setProfilePhoto(photoUrl);
         setImageError(false);
       } else {

@@ -310,8 +310,8 @@ const FormSection = () => {
       // Uncomment when update API is ready
       try {
         const result = await dispatch(updateEducationAsync(educationPayload)).unwrap();
-        if (result && result.status === 'success') {
-          proceedwithAddUpdate(result?.profile_education_id);
+        if (result && result.data.status === 'success') {
+          proceedwithAddUpdate(result?.data?.profile_education_id);
         }
       } catch (err: any) {
         console.error("Error updating education:", err);
@@ -324,8 +324,8 @@ const FormSection = () => {
       // Add new education
       try {
         const result = await dispatch(createEducationAsync(educationPayload)).unwrap();
-        if (result && result.status === "success") {
-          proceedwithAddUpdate(result?.profile_education_id);
+        if (result && result.data.status === "success") {
+          proceedwithAddUpdate(result?.data?.profile_education_id);
         }
       } catch (err: any) {
         console.error("Error adding education:", err);

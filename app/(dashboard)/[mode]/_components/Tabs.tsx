@@ -11,10 +11,33 @@ import React, { useEffect, useState } from "react";
 import { isValidProfileMode, type ProfileMode } from "../types/profileMode";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
+import { useAppDispatch, useAppSelector } from "@/app/store/store";
+import { getProfileCompltionCounts } from "@/app/store/features/profileSlice";
 
 export default function Tabs() {
   const params = useParams();
   const mode = params.mode as string;
+  const dispatch = useAppDispatch();
+  const complition = useAppSelector((state) => {
+    return state?.profile?.profileCompltion;
+  });
+
+  const {
+    personalProfile,
+    address,
+    education,
+    employment,
+    lifestyle,
+    family,
+    properties,
+    hobbies,
+    interests,
+    references,
+    favorites,
+    photos,
+  } = useAppSelector((state) => {
+    return state?.profile;
+  });
 
   if (!isValidProfileMode(mode)) {
     notFound();
@@ -23,66 +46,80 @@ export default function Tabs() {
   const validMode: ProfileMode = mode;
 
   const menuItems = [
-    { id: "personal", label: "Personal", link: `/${validMode}` },
+    {
+      id: "personal",
+      label: "Personal",
+      link: `/${validMode}`,
+      count: "personal_count",
+    },
     {
       id: "contact",
       label: "Address",
       link: `/${validMode}/primarycontact`,
       disabled: true,
+      count: "address_count",
     },
     {
       id: "education",
       label: "Education",
       link: `/${validMode}/education`,
       disabled: true,
+      count: "education_count",
     },
     {
       id: "employment",
       label: "Employment",
       link: `/${validMode}/employment`,
       disabled: true,
+      count: "employment_count",
     },
     {
       id: "family",
       label: "Family",
       link: `/${validMode}/family`,
       disabled: true,
+      count: "family_reference_count",
     },
     {
       id: "references",
       label: "Friends & References",
       link: `/${validMode}/references`,
       disabled: true,
+      count: "family_reference_count",
     },
     {
       id: "hobbies",
       label: "Hobbies",
       link: `/${validMode}/hobbies`,
       disabled: true,
+      count: "hobby_interest_count",
     },
     {
       id: "lifestyle",
       label: "Lifestyle",
       link: `/${validMode}/lifestyle`,
       disabled: true,
+      count: "lifestyle_count",
     },
     {
       id: "properties",
       label: "Properties",
       link: `/${validMode}/property`,
       disabled: true,
+      count: "property_count",
     },
     {
       id: "photos",
       label: "Photos",
       link: `/${validMode}/photos`,
       disabled: true,
+      count: "photo_count",
     },
   ];
 
   const [activeItem, setActiveItem] = useState("personal");
   const { selectedProfileID } = useProfileContext();
-  const [menu, setMenu] = useState(menuItems);
+  const [menu, setMenu] = useState<any>(menuItems);
   const [loading, setLoading] = useState(false); // full-screen loader
 
   const pathname = usePathname();
@@ -113,7 +150,7 @@ export default function Tabs() {
 
   // Navigate to previous tab
   const goToPreviousTab = () => {
-    const currentIndex = menu.findIndex((item) => item.id === activeItem);
+    const currentIndex = menu.findIndex((item: any) => item.id === activeItem);
     let prevIndex = currentIndex - 1;
     while (prevIndex >= 0 && menu[prevIndex].disabled) prevIndex--;
     if (prevIndex >= 0) {
@@ -125,7 +162,7 @@ export default function Tabs() {
 
   // Navigate to next tab
   const goToNextTab = () => {
-    const currentIndex = menu.findIndex((item) => item.id === activeItem);
+    const currentIndex = menu.findIndex((item: any) => item.id === activeItem);
     let nextIndex = currentIndex + 1;
     while (nextIndex < menu.length && menu[nextIndex].disabled) nextIndex++;
     if (nextIndex < menu.length) {
@@ -135,13 +172,38 @@ export default function Tabs() {
     }
   };
 
+  const getCounts = async () => {
+    try {
+      dispatch(getProfileCompltionCounts(selectedProfileID));
+    } catch (error) {
+      console.error("Error getting counts", error);
+    }
+  };
+
+  useEffect(() => {
+    getCounts();
+  }, [
+    personalProfile,
+    address,
+    education,
+    employment,
+    lifestyle,
+    family,
+    properties,
+    hobbies,
+    interests,
+    references,
+    favorites,
+    photos,
+  ]);
+
   return (
     <>
       {/* Next & Previous Buttons */}
       <div className="flex justify-between mb-4 px-1">
         <button
           onClick={goToPreviousTab}
-          disabled={menu.findIndex((item) => item.id === activeItem) === 0}
+          disabled={menu.findIndex((item: any) => item.id === activeItem) === 0}
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors"
         >
           Previous
@@ -150,7 +212,8 @@ export default function Tabs() {
         <button
           onClick={goToNextTab}
           disabled={
-            menu.findIndex((item) => item.id === activeItem) === menu.length - 1
+            menu.findIndex((item: any) => item.id === activeItem) ===
+            menu.length - 1
           }
           className="px-4 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 transition-colors"
         >
@@ -159,9 +222,10 @@ export default function Tabs() {
       </div>
       {/* Tabs container */}
       <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1 2xl:gap-2">
-        {menu.map((item, index) => {
+        {menu.map((item: any, index: number) => {
           const isCompleted =
-            menu.findIndex((m) => m.id === activeItem) > index;
+            // menu.findIndex((m) => m.id === activeItem) > index;
+            complition[item?.count as string] > 0;
 
           return (
             <button
@@ -201,7 +265,7 @@ export default function Tabs() {
                   }
                 `}
               >
-                {activeItem === item.id || isCompleted ? "✔" : ""}
+                {isCompleted ? "✔" : ""}
               </span>
               <span>{item.label}</span>
             </button>

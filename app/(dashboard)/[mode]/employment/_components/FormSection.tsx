@@ -255,8 +255,8 @@ const FormSection = () => {
       // Update existing employment
       try {
         const result = await dispatch(updateEmploymentAsync(sectionData)).unwrap();
-        if (result && result.status === 'success') {
-          proceedwithAddUpdate(result?.profile_employment_id);
+        if (result && result.data.status === 'success') {
+          proceedwithAddUpdate(result?.data?.profile_employment_id);
         }
       } catch (err: any) {
         console.error("Error updating employment:", err);
@@ -269,8 +269,8 @@ const FormSection = () => {
       // Add new employment
       try {
         const result = await dispatch(createEmploymentAsync(sectionData)).unwrap();
-        if (result && result.status === "success") {
-          proceedwithAddUpdate(result?.profile_employment_id);
+        if (result && result.data.status === "success") {
+          proceedwithAddUpdate(result?.data?.profile_employment_id);
         }
       } catch (err: any) {
         console.error("Error adding employment:", err);

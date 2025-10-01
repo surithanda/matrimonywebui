@@ -83,7 +83,7 @@ export const deleteFavoriteAsync = createAsyncThunk(
 // Get Interests Thunk
 export const trackProfileViewAsync = createAsyncThunk(
   'profile/trackProfileView',
-  async (data: { profileId: number, viewedProfileId:Number }, { rejectWithValue }) => {
+  async (data: { profileId: number, viewedProfileId: Number }, { rejectWithValue }) => {
     try {
       const response = await api.post('/profile/views', data);
       return response.data;
@@ -359,6 +359,7 @@ interface ProfileState {
   photos?: any[];
   completeProfile: any; // Complete profile data from eb_profile_get_complete_data
   allProfiles: any[]; // All profiles from eb_profile_search_get_all
+  profileCompltion: any
 }
 
 export const getPersonalProfileAsync = createAsyncThunk(
@@ -639,6 +640,19 @@ export const getAllProfillesAsync = createAsyncThunk(
   }
 );
 
+export const getProfileCompltionCounts = createAsyncThunk(
+  'profile/compltion-counts',
+  async (profileId: number, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/profile/profile-completion/' + profileId);
+      // console.log("Get Profile Complition", response?.data)
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+)
+
 const initialState: ProfileState = {
   loading: false,
   error: null,
@@ -657,6 +671,7 @@ const initialState: ProfileState = {
   photos: [],
   completeProfile: null,
   allProfiles: [],
+  profileCompltion: {}
 };
 
 const profileSlice = createSlice({
@@ -735,7 +750,7 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload as any;
       })
-      
+
       // PERSONAL PROFILE
       .addCase(getPersonalProfileAsync.pending, (state) => {
         state.loading = true;
@@ -1003,10 +1018,10 @@ const profileSlice = createSlice({
       .addCase(getFamilyAsync.fulfilled, (state, action) => {
         // console.log('Family payload:', action);
         state.loading = false;
-        if(action.meta.arg.type === 'family') {
-        state.family = action.payload?.data || [];
-        } else if(action.meta.arg.type === 'reference') {
-        state.references = action.payload?.data || [];
+        if (action.meta.arg.type === 'family') {
+          state.family = action.payload?.data || [];
+        } else if (action.meta.arg.type === 'reference') {
+          state.references = action.payload?.data || [];
         }
       })
       .addCase(getFamilyAsync.rejected, (state, action) => {
@@ -1223,6 +1238,19 @@ const profileSlice = createSlice({
         state.allProfiles = action.payload?.data || [];
       })
       .addCase(getAllProfillesAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as any;
+      })
+
+      .addCase(getProfileCompltionCounts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProfileCompltionCounts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profileCompltion = action.payload?.data || [];
+      })
+      .addCase(getProfileCompltionCounts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as any;
       });

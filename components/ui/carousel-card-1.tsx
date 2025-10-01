@@ -111,9 +111,7 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
 
   return (
     <div className="w-full">
-      <div
-        className={`relative ${isSingleCard ? "w-full" : "w-full"}`}
-      >
+      <div className={`relative ${isSingleCard ? "w-full" : "w-full"}`}>
         {showCarousel && data.length > cardsPerView && (
           <>
             <button
@@ -169,6 +167,8 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
                       width={100}
                       height={100}
                       priority
+                      unoptimized
+                      quality={1000}
                     />
                   </div>
                 </div>

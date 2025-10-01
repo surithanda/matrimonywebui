@@ -20,6 +20,7 @@ import {
   getLifestyleAsync,
 } from "@/app/store/features/profileSlice";
 import { toAbsoluteUrl as envToAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
 import { useProfileContext } from "@/app/utils/useProfileContext";
@@ -90,7 +91,7 @@ const ViewProfile = () => {
 
   // Hoisted helpers for photos (avoid hooks inside conditional renders)
   const toAbsoluteUrl = useCallback((u?: string | null) => {
-    return envToAbsoluteUrl(u);
+    return normalizePhotoUrl(u); // Use the new photo URL utility
   }, []);
 
   // 1. Source of truth for type codes
@@ -249,7 +250,7 @@ const ViewProfile = () => {
   //   // console.log("hobbies:", hobbies);
   //   // console.log("interests:", interests);
   //   // console.log("references:", references);
-  console.log("life style", lifestyle);
+  // console.log("life style", lifestyle);
 
   // }, [
   //   personalProfile,
@@ -362,9 +363,11 @@ const ViewProfile = () => {
                   width={100}
                   height={100}
                   src={coverImage.url}
-                  alt="Banner"
+                  alt="Cover Image"
                   className="w-full h-full object-cover"
                   priority
+                  unoptimized
+                  quality={1000}
                 />
               ) : (
                 // Gradient banner matching your example
@@ -385,18 +388,26 @@ const ViewProfile = () => {
                   {/* Profile Image */}
                   <div
                     className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 -mt-10 sm:-mt-12 lg:-mt-14 
-        border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
+    border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <Image
-                        width={100}
-                        height={100}
-                        src={profileImage.url}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
-                        priority
-                      />
+                      <a
+                        href={profileImage.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          width={100}
+                          height={100}
+                          src={profileImage.url}
+                          alt="Profile"
+                          className="w-full h-full object-cover cursor-pointer"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                          priority
+                          unoptimized
+                          quality={1000}
+                        />
+                      </a>
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">
                         <svg
@@ -406,8 +417,8 @@ const ViewProfile = () => {
                         >
                           <path
                             d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 
-                1.79-4 4 1.79 4 4 4zm0 2c-2.67 
-                0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            1.79-4 4 1.79 4 4 4zm0 2c-2.67 
+            0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                           />
                         </svg>
                       </div>

@@ -289,7 +289,7 @@ const FormSection = () => {
             profile_id: selectedProfileID,
           })
         ).unwrap();
-        if (result && result.status === "success") {
+        if (result && result.data.status === "success") {
           update(editIndex, { ...propertyData, id: fields[editIndex].id });
           setEditIndex(null);
           fetchProfileData(); // Refresh the list from server

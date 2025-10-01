@@ -17,6 +17,7 @@ import { IoMdBook } from "react-icons/io";
 import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { toAbsoluteUrl } from "@/app/lib/env";
+import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import NoData from "@/public/images/nodata.png";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
@@ -46,10 +47,9 @@ const Page = () => {
   const allProfiles = useAppSelector((state) => state.profile.allProfiles);
   const { findReligionName } = useMetaDataLoader();
   const [loading, setLoading] = useState(false);
-
   const getProfileImage = (profile: any) => {
-    if (profile?.profile_image) return toAbsoluteUrl(profile.profile_image);
-    if (profile?.url) return toAbsoluteUrl(profile.url);
+    if (profile?.profile_image) return normalizePhotoUrl(profile.profile_image);
+    if (profile?.url) return normalizePhotoUrl(profile.url);
 
     return null;
   };
@@ -64,6 +64,7 @@ const Page = () => {
     }
   }, [selectedProfileID, dispatch]);
 
+  
   return (
     <div className="dashboard-background md:px-[60px] lg:px-[60px] 2xl:px-[120px] md:pt-8 flex flex-col items-center md:gap-8 mt-16">
       <div className="flex justify-between items-center w-full px-3 mt-4 lg:px-0 lg:mt-4">

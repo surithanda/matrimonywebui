@@ -155,12 +155,16 @@ export const getStatesAsync = createAsyncThunk(
 
 const setMetadataLists = (state: MetaState, category: string, payload: LookupPayload[]) => {
   const formattedCategory = category.toLowerCase().replace(' ', '');
-  //alphabetically sort the payload based on name
-  const sortedPayload = payload.sort((a: LookupPayload, b: LookupPayload) => a.name.localeCompare(b.name));
-  // Dynamically set the category list based on the category name
-  (state as any)[`${formattedCategory}List`] = Array.isArray(sortedPayload) ? sortedPayload : [];
+  
+  // sort safely (non-mutating)
+  const sortedPayload = [...payload].sort((a, b) => a.name.localeCompare(b.name));
+  
+  // Dynamically set the category list
+  (state as any)[`${formattedCategory}List`] = sortedPayload;
+  
   state.error = null;
-}
+};
+
 
 const metaDataSlice = createSlice({
   name: 'metaData',

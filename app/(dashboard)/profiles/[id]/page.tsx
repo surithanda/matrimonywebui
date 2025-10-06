@@ -369,7 +369,7 @@ const ViewProfile = () => {
                     alt="Cover Image"
                     width={1200} // or actual cover width
                     height={400} // or actual cover height
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer"
                     quality={100}
                   />
                 </a>

@@ -160,13 +160,20 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
               >
                 <div className="relative overflow-hidden rounded-lg shadow-md group h-full">
                   <div className="w-full h-52">
-                    <Image
-                      src={card.imgUrl}
-                      alt=""
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      width={100}
-                      height={100}
-                    />
+                    <a
+                      href={card.imgUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        src={card.imgUrl}
+                        alt="other images"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                        width={100}
+                        height={100}
+                        quality={100}
+                      />
+                    </a>
                   </div>
                 </div>
               </div>

@@ -372,7 +372,7 @@ const ViewProfile = () => {
                     height={400} // or actual cover height
                     className="w-full h-full object-cover cursor-pointer"
                   />
-                </a>
+                </Link>
               ) : (
                 // Gradient banner matching your example
                 <div className="w-full h-full bg-gradient-to-br from-orange-400 via-pink-400 via-blue-400 to-purple-600 relative overflow-hidden">
@@ -395,7 +395,7 @@ const ViewProfile = () => {
     border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <a
+                      <Link
                         href={profileImage.url}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -408,7 +408,7 @@ const ViewProfile = () => {
                           className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                         />
-                      </a>
+                      </Link>
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">
                         <svg

@@ -125,7 +125,7 @@ const ViewProfile = () => {
         ...p,
         _rawUrl: p?.url || p?.photo_url || p?.file_url,
       }))
-      .map((p: any) => ({ ...p, _src: normalizePhotoUrl(p?._rawUrl) }))
+      .map((p: any) => ({ ...p, _src: p?._rawUrl }))
       .filter((p: any) => !!p._src);
 
     // Use role-based association
@@ -404,9 +404,13 @@ const ViewProfile = () => {
                           width={100}
                           height={100}
                           src={profileImage.url}
+                          onError={(err) => {
+                            console.log("error loading iimages", err);
+                          }}
+                          priority
                           alt="Profile"
-                          className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                          className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
                         />
                       </Link>
                     ) : (

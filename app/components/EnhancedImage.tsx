@@ -96,8 +96,8 @@ const EnhancedImage: React.FC<EnhancedImageProps> = ({
   // Get the optimized URL
   const optimizedSrc = getOptimizedGoogleDriveUrl(imgSrc);
 
-  // Image props setup
-  const imageProps = {
+  // Image props setup with proper typing
+  const baseProps = {
     src: optimizedSrc,
     alt,
     className: `${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`,
@@ -109,12 +109,9 @@ const EnhancedImage: React.FC<EnhancedImageProps> = ({
   };
 
   // Add width/height or fill based on props
-  if (fill) {
-    imageProps.fill = true;
-  } else {
-    imageProps.width = width || 400;
-    imageProps.height = height || 300;
-  }
+  const imageProps = fill 
+    ? { ...baseProps, fill: true }
+    : { ...baseProps, width: width || 400, height: height || 300 };
 
   return (
     <div className="relative">
@@ -136,7 +133,7 @@ const EnhancedImage: React.FC<EnhancedImageProps> = ({
           style={fill ? {} : { width, height }}
         >
           <div className="text-center">
-            <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
             </svg>
             <p>Image unavailable</p>

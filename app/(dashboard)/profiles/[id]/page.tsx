@@ -125,7 +125,7 @@ const ViewProfile = () => {
         ...p,
         _rawUrl: p?.url || p?.photo_url || p?.file_url,
       }))
-      .map((p: any) => ({ ...p, _src: toAbsoluteUrl(p?._rawUrl) }))
+      .map((p: any) => ({ ...p, _src: normalizePhotoUrl(p?._rawUrl) }))
       .filter((p: any) => !!p._src);
 
     // Use role-based association

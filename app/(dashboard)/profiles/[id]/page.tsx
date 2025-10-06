@@ -38,6 +38,7 @@ import { Button } from "@/components/ui/button";
 import AppBreadcrumb from "../../_components/AppBreadcrumb";
 import { BadgeCheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -359,7 +360,7 @@ const ViewProfile = () => {
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
-                <a
+                <Link
                   href={coverImage.url}
                   target="_blank"
                   rel="noopener noreferrer"

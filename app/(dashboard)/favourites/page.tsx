@@ -26,8 +26,7 @@ import { FaBriefcase } from "react-icons/fa6";
 // Dummy helper functions — replace with actual implementations
 const getProfileImage = (profile: any) => {
   // Return normalized photo URL if available
-  if (profile?.profile_image) return normalizePhotoUrl(profile.profile_image);
-  if (profile?.image_url) return normalizePhotoUrl(profile.image_url);
+  if (profile?.profile_photo_url) return normalizePhotoUrl(profile.profile_photo_url);
   if (profile?.url) return normalizePhotoUrl(profile.url);
   
   // Return null for avatar fallback

@@ -370,7 +370,7 @@ const ViewProfile = () => {
                     width={1200} // or actual cover width
                     height={400} // or actual cover height
                     className="w-full h-full object-cover cursor-pointer"
-                    quality={100}
+                    {/* quality={100} */}
                   />
                 </a>
               ) : (
@@ -407,8 +407,8 @@ const ViewProfile = () => {
                           alt="Profile"
                           className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
-                          priority
-                          quality={100}
+                          {/* priority
+                          quality={100} */}
                         />
                       </a>
                     ) : (

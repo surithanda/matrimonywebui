@@ -171,7 +171,7 @@ const Card = ({ data, showCarousel = true, cardsPerView = 3 }: CardProps) => {
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
                         width={100}
                         height={100}
-                        quality={100}
+                        {/* quality={100} */}
                       />
                     </a>
                   </div>

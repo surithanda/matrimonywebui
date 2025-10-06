@@ -38,7 +38,6 @@ import { Button } from "@/components/ui/button";
 import AppBreadcrumb from "../../_components/AppBreadcrumb";
 import { BadgeCheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -128,20 +127,31 @@ const ViewProfile = () => {
       .map((p: any) => ({ ...p, _src: normalizePhotoUrl(p?._rawUrl) }))
       .filter((p: any) => !!p._src);
 
-    // Use role-based association
+    // Use role-based association with graceful fallbacks
     const prof = resolved.find(
-      (p: any) => Number(p.photo_type) === photoTypeAssociation.profile
+      (p: any) => Number(p?.photo_type) === photoTypeAssociation.profile
     );
     const cov = resolved.find(
-      (p: any) => Number(p.photo_type) === photoTypeAssociation.cover
+      (p: any) => Number(p?.photo_type) === photoTypeAssociation.cover
     );
-    const others = resolved.filter(
-      (p: any) => Number(p.photo_type) === photoTypeAssociation.individual
-    );
+    // If backend uses unexpected codes, treat everything that's not profile/cover as individual
+    const others = resolved.filter((p: any) => {
+      const typeNum = Number(p?.photo_type);
+      return (
+        typeNum !== photoTypeAssociation.profile &&
+        typeNum !== photoTypeAssociation.cover
+      );
+    });
 
-    setProfileImage(prof ? { url: prof._src, file: null } : null);
+    // Fallbacks: if no explicit profile, use first available image
+    const profileCandidate = prof || resolved[0];
+
+    setProfileImage(profileCandidate ? { url: profileCandidate._src, file: null } : null);
     setCoverImage(cov ? { url: cov._src, file: null } : null);
-    setIndividualImages(others.map((p: any) => ({ url: p._src, file: null })));
+    setIndividualImages(
+      (others.length ? others : resolved.slice(1))
+        .map((p: any) => ({ url: p._src, file: null }))
+    );
   }, [photos, toAbsoluteUrl, photoTypeAssociation]);
 
   useEffect(() => {
@@ -360,7 +370,7 @@ const ViewProfile = () => {
             {/* Banner with gradient background */}
             <div className="relative h-32 sm:h-40 lg:h-56 w-full">
               {coverImage ? (
-                <Link
+                <a
                   href={coverImage.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -372,7 +382,7 @@ const ViewProfile = () => {
                     height={400} // or actual cover height
                     className="w-full h-full object-cover cursor-pointer"
                   />
-                </Link>
+                </a>
               ) : (
                 // Gradient banner matching your example
                 <div className="w-full h-full bg-gradient-to-br from-orange-400 via-pink-400 via-blue-400 to-purple-600 relative overflow-hidden">
@@ -395,7 +405,7 @@ const ViewProfile = () => {
     border-4 border-white rounded-lg overflow-hidden bg-gray-300 shadow-md flex-shrink-0"
                   >
                     {profileImage?.url ? (
-                      <Link
+                      <a
                         href={profileImage.url}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -407,8 +417,9 @@ const ViewProfile = () => {
                           alt="Profile"
                           className="w-full h-full object-cover cursor-pointer"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+
                         />
-                      </Link>
+                      </a>
                     ) : (
                       <div className="w-full h-full bg-gray-400 flex items-center justify-center">
                         <svg

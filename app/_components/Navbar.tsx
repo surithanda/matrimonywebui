@@ -137,7 +137,7 @@ export const Navbar = () => {
     { href: "/services", label: "Services" },
     { href: "/events", label: "Events" },
     { href: "/contact", label: "Contact" },
-    { href: "/dashboard", label: "Dashboard" },
+    ...(isLoggedIn ? [{ href: "/dashboard", label: "Dashboard" }] : []),
   ];
 
   // Dashboard links
@@ -176,7 +176,7 @@ export const Navbar = () => {
     pathname.startsWith("/payments") ||
     pathname.startsWith("/account") ||
     pathname.startsWith("/changepassword") ||
-    createProfileLinks.some(link => pathname.startsWith(link));
+    createProfileLinks.some((link) => pathname.startsWith(link));
 
   const navLinks =
     isLoggedIn && isDashboardRoute ? dashboardLinks : publicLinks;
@@ -275,6 +275,11 @@ export const Navbar = () => {
                 <DropdownMenuContent className="w-full bg-white rounded-lg shadow-md z-50">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="w-full">
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/account" className="w-full">
                       Account

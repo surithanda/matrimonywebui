@@ -7,7 +7,6 @@ import { LogIn, Menu, User, X } from "lucide-react";
 import Logo from "../../public/images/logowhite.png";
 import LoginIcon from "../../public/images/LoginIcon.svg";
 import RegisterIcon from "../../public/images/RegisterIcon.svg";
-import dp from "../../public/images/p-i.png";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useProfileContext } from "../utils/useProfileContext";
 import {
@@ -35,22 +34,22 @@ export const Navbar = () => {
   const [isShowDropdown, setIsShowDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const userData = useAppSelector((state) => state.auth.userData);
-  const { selectedProfileID, setSelectedProfileID } = useProfileContext();
   const [isNavigating, setIsNavigating] = useState(false);
-
-  const checkToken = () => isAuthenticated();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const userData = useAppSelector((state) => state.auth.userData);
+  const { selectedProfileID, setSelectedProfileID } = useProfileContext();
+
+  // Auth check
+  const checkToken = () => isAuthenticated();
+
+  // Handle logout
   const handleLogout = async () => {
     setIsLoggingOut(true);
-
     try {
-      // Clear local storage & reset Redux
-      clearAllAuthData(); // Use the new utility function
+      clearAllAuthData();
       dispatch({ type: "RESET_APP" });
 
-      // Optional: small delay so loader is visible
       setTimeout(() => {
         router.push("/");
         setIsLoggingOut(false);
@@ -61,32 +60,28 @@ export const Navbar = () => {
     }
   };
 
+  // Initial setup
   useEffect(() => {
     setIsLoggedIn(checkToken());
-
-    // Sync existing localStorage token to cookies for existing users
     syncTokenToCookies();
 
-    // Also check and restore profile ID from localStorage on page load
     if (checkToken()) {
       const storedProfileID = localStorage.getItem("selectedProfile");
       if (storedProfileID) {
-        console.log(
-          "Restoring profile ID from localStorage on page load:",
-          storedProfileID
-        );
         setSelectedProfileID(parseInt(storedProfileID, 10));
         localStorage.removeItem("selectedProfile");
       }
     }
   }, [pathname, setSelectedProfileID]);
 
+  // Scroll detection
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Disable scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "unset";
     return () => {
@@ -94,27 +89,23 @@ export const Navbar = () => {
     };
   }, [menuOpen]);
 
+  // Show loader during navigation
   useEffect(() => {
-    // Trigger loader whenever pathname changes
     if (pathname) {
       setIsNavigating(true);
-
-      // Small delay to show loader (until page content renders)
-      const timer = setTimeout(() => {
-        setIsNavigating(false);
-      }, 300); // adjust if needed
-
+      const timer = setTimeout(() => setIsNavigating(false), 300);
       return () => clearTimeout(timer);
     }
   }, [pathname]);
 
+  // Routes that use dark navbar
   const darkPages = [
     "/login",
     "/register",
     "/forgotpassword",
     "/otp",
     "/dashboard",
-    "/profiles", // This will match /profiles and any subpaths
+    "/profiles",
     "/settings",
     "/search",
     "/recommendations",
@@ -129,16 +120,16 @@ export const Navbar = () => {
     "/createprofile/references",
     "/createprofile/property",
     "/createprofile/photos",
-    "/updateprofile", // Added for update profile route
+    "/updateprofile",
     "/account",
     "/changepassword",
     "/dashboard/create-profile",
     "/payments",
   ];
 
-  // Check if current path starts with any of the dark pages
   const isDarkPage = darkPages.some((page) => pathname.startsWith(page));
 
+  // Public links
   const publicLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About Us" },
@@ -146,8 +137,10 @@ export const Navbar = () => {
     { href: "/services", label: "Services" },
     { href: "/events", label: "Events" },
     { href: "/contact", label: "Contact" },
+    { href: "/dashboard", label: "Dashboard" },
   ];
 
+  // Dashboard links
   const dashboardLinks = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/search", label: "Search" },
@@ -157,42 +150,69 @@ export const Navbar = () => {
     { href: "/payments", label: "Donation" },
   ];
 
-  const navLinks = isLoggedIn ? dashboardLinks : publicLinks;
-  const initials = `${userData?.first_name?.charAt(0) ?? ""}${
-    userData?.last_name?.charAt(0) ?? ""
-  }`;
+  // Create profile related links (included in dashboard links)
+  const createProfileLinks = [
+    "/createprofile",
+    "/createprofile/primarycontact",
+    "/createprofile/education",
+    "/createprofile/employment",
+    "/createprofile/hobbies",
+    "/createprofile/lifestyle",
+    "/createprofile/family",
+    "/createprofile/references",
+    "/createprofile/property",
+    "/createprofile/photos",
+    "/updateprofile",
+    "/dashboard/create-profile",
+  ];
 
-  // Navigation tracking function
+  // ✅ Determine which links to show based on route
+  const isDashboardRoute =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/profiles") ||
+    pathname.startsWith("/search") ||
+    pathname.startsWith("/favourites") ||
+    pathname.startsWith("/recommendations") ||
+    pathname.startsWith("/payments") ||
+    pathname.startsWith("/account") ||
+    pathname.startsWith("/changepassword") ||
+    createProfileLinks.some(link => pathname.startsWith(link));
+
+  const navLinks =
+    isLoggedIn && isDashboardRoute ? dashboardLinks : publicLinks;
+
+  // Handle link clicks (restore selected profile)
   const trackNavLinkClick = () => {
-    console.log("Nav link clicked");
-
-    // Check if localStorage has selectedProfile value and set it in context
     const storedProfileID = localStorage.getItem("selectedProfile");
     if (storedProfileID) {
-      console.log(
-        "Restoring profile ID from localStorage on nav click:",
-        storedProfileID
-      );
       setSelectedProfileID(parseInt(storedProfileID, 10));
       localStorage.removeItem("selectedProfile");
     }
   };
 
+  // Handle logo click - always go to home and show public links
+  const handleLogoClick = () => {
+    router.push("/");
+  };
+
+  const initials = `${userData?.first_name?.charAt(0) ?? ""}${
+    userData?.last_name?.charAt(0) ?? ""
+  }`;
+
   return (
     <>
       <nav
-  className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-    isDarkPage
-      ? "bg-gradient-to-r from-[#0d0d0d] to-[#1a1a1a] backdrop-blur-md"
-      : isScrolled
-      ? "bg-gradient-to-r from-[#0d0d0d]/90 to-[#1a1a1a]/90  backdrop-blur-md"
-      : "bg-transparent"
-  }`}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          isDarkPage
+            ? "bg-gradient-to-r from-[#0d0d0d] to-[#1a1a1a] backdrop-blur-md"
+            : isScrolled
+            ? "bg-gradient-to-r from-[#0d0d0d]/90 to-[#1a1a1a]/90 backdrop-blur-md"
+            : "bg-transparent"
+        }`}
       >
-        {/* ... rest of your component remains the same ... */}
         <div className="flex justify-between items-center px-5 md:px-1 lg:px-0 xl:px-10 2xl:px-20 py-4">
           {/* Logo */}
-          <Link href="/">
+          <Link href="/" onClick={handleLogoClick}>
             <Image
               src={Logo}
               alt="Logo"
@@ -252,7 +272,6 @@ export const Navbar = () => {
                     {initials}
                   </button>
                 </DropdownMenuTrigger>
-
                 <DropdownMenuContent className="w-full bg-white rounded-lg shadow-md z-50">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -278,7 +297,7 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Right Side (Profile + Menu) */}
+          {/* Mobile Section */}
           <div className="flex md:hidden items-center gap-3">
             {isLoggedIn && (
               <div className="relative">
@@ -287,9 +306,7 @@ export const Navbar = () => {
                   className="focus:outline-none"
                 >
                   <div className="h-10 w-10 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold">
-                    {`${userData?.first_name?.charAt(0) ?? ""}${
-                      userData?.last_name?.charAt(0) ?? ""
-                    }`}
+                    {initials}
                   </div>
                 </button>
                 {isShowDropdown && (
@@ -333,14 +350,14 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Off-Canvas Menu */}
+        {/* Mobile Drawer */}
         <div
           className={`fixed top-0 right-0 w-[75%] sm:w-[60%] h-full bg-white shadow-lg z-[60] transform transition-transform duration-300 ease-in-out ${
             menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <div className="flex justify-between items-center px-4 py-6 border-b bg-[#0d0d0d]">
-            <Link href="/" onClick={() => setMenuOpen(false)}>
+            <Link href="/" onClick={handleLogoClick}>
               <Image src={Logo} alt="Logo" className="w-[180px]" priority />
             </Link>
             <button
@@ -351,7 +368,6 @@ export const Navbar = () => {
             </button>
           </div>
 
-          {/* Links */}
           <div className="bg-white h-screen">
             <ul className="flex flex-col gap-6 p-5 text-lg text-gray-800">
               {navLinks.map((link) => {
@@ -411,6 +427,7 @@ export const Navbar = () => {
           />
         )}
       </nav>
+
       {/* Full-screen loader overlay */}
       {(isNavigating || isLoggingOut) && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
@@ -419,8 +436,6 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-
-
     </>
   );
 };

@@ -696,10 +696,12 @@ const ViewProfile = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2  lg:col-span-3">
-                <div className="mb-3">
-                  <Card data={allImages} />
-                </div>
+              <div className="grid grid-cols-1 lg:grid-cols-1 gap-2  lg:col-span-3">
+                {allImages && allImages.length > 0 && (
+                  <div className="mb-3">
+                    <Card data={allImages} />
+                  </div>
+                )}
 
                 {addressList?.length > 0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">

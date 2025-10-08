@@ -162,7 +162,7 @@ export const CustomAutocomplete: React.FC<AutocompleteProps> = ({
           <div className={finalTheme.suggestionsList}>
             {filteredSuggestions.map((suggestion, index) => (
               <div
-                key={suggestion}
+                key={`${suggestion}-${index}`}
                 className={
                   index === highlightedIndex 
                     ? finalTheme.suggestionHighlighted 

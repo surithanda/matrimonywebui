@@ -87,9 +87,8 @@ const ProfileSection = () => {
 
       const getProfileImage = () => {
         if (completeProfile) {
-
-          console.log(completeProfile?.profile_photo_url)
-          return normalizePhotoUrl(completeProfile?.profile_photo_url)
+          console.log(completeProfile?.profile_photo_url);
+          return normalizePhotoUrl(completeProfile?.profile_photo_url);
         }
         return profile1;
       };
@@ -158,25 +157,30 @@ const ProfileSection = () => {
 
   const StatCard = (props: any) => {
     return (
-      <div
-        style={{ backgroundColor: props.bg1 }}
-        className="rounded-xl overflow-hidden flex flex-col justify-between"
-      >
-        <div className="flex gap-2 items-center justify-center py-4">
-          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow mt-2">
-            {props.icon}
-          </div>
-          <p className="text-center mt-2 text-3xl font-bold">{props.number}</p>
-        </div>
-        <p
-          className="py-2 px-3 text-base font-semibold h-[50%] flex items-center justify-center text-center"
-          style={{ backgroundColor: props.bg2 }}
+      <Link href={props.href || "#"} className="block">
+        <div
+          style={{ backgroundColor: props.bg1 }}
+          className="rounded-xl overflow-hidden flex flex-col justify-between cursor-pointer hover:shadow-lg transition-shadow"
         >
-          {props.name}
-        </p>
-      </div>
+          <div className="flex gap-2 items-center justify-center py-4">
+            <div className="w-11 h-11 flex items-center justify-center rounded-full bg-white shadow mt-2">
+              {props.icon}
+            </div>
+            <p className="text-center mt-2 text-3xl font-bold">
+              {props.number}
+            </p>
+          </div>
+          <p
+            className="py-2 px-3 text-base font-semibold h-[50%] flex items-center justify-center text-center"
+            style={{ backgroundColor: props.bg2 }}
+          >
+            {props.name}
+          </p>
+        </div>
+      </Link>
     );
   };
+
   const goTo = (path: string) => {
     if (!path) return;
     Router.push("/updateprofile");
@@ -203,6 +207,7 @@ const ProfileSection = () => {
       bg1: "#FFECE9",
       bg2: "#FCDEDA",
       icon: <Heart className="w-6 h-6 text-red-500" />,
+      href:"/favourites"
     },
     {
       number: completeProfile?.profiles_viewed_me ?? 0,
@@ -302,6 +307,7 @@ const ProfileSection = () => {
                     bg1={stat.bg1}
                     bg2={stat.bg2}
                     icon={stat.icon}
+                    href={stat.href}
                   />
                 ))}
               </div>
@@ -335,7 +341,7 @@ const ProfileSection = () => {
                           <CiEdit size={22} />
                         </Button>
 
-                        <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/70 to-transparent flex flex-col items-center text-center">
+                        <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/100 to-transparent flex flex-col items-center text-center">
                           <p className="text-white font-semibold text-lg sm:text-xl">
                             {profile.name}
                           </p>

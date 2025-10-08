@@ -59,6 +59,8 @@ const AccountSettings = () => {
     }
   }, []);
 
+  console.log("form data", formData)
+
   useEffect(() => {
     fetchProfilePhoto();
     // loadMetaData(); //not required but issues with redux state, thus added
@@ -177,7 +179,7 @@ const AccountSettings = () => {
             {error}
           </div>
         )}
-        <div className="flex justify-between items-center w-full">
+        <div className="flex justify-between items-center w-full mb-2">
           <div className="flex items-center gap-4">
             {imageError ? (
               <Image
@@ -205,10 +207,12 @@ const AccountSettings = () => {
                 className="hidden"
                 accept="image/*"
                 onChange={handlePhotoChange}
+                disabled
               />
               <Label
                 htmlFor="photo-upload"
-                className="cursor-pointer border rounded-md px-2 py-2 bg-orange-500 hover:bg-orange-600 transition text-white"
+                aria-disabled
+                className="cursor-not-allowed border rounded-md px-2 py-2 bg-gray-200 hover:bg-gray-200 transition text-white"
               >
                 {photoLoading ? "Uploading..." : "Change Photo"}
               </Label>
@@ -288,22 +292,34 @@ const AccountSettings = () => {
 
             <div>
               <Label className="block text-gray-700 mb-2">Primary Phone</Label>
-              <CustomPhoneComponent
+              {/* <CustomPhoneComponent
                 type="primary_phone"
                 changeHandler={handleChange}
                 bindValue={formData.primary_phone ?? ""}
                 bindValue2={formData.primary_phone_country ?? ""}
+              /> */}
+              <Input
+                type="text"
+                name="primary_phone"
+                value={`${formData?.primary_phone_country} ${formData?.primary_phone ?? ""}`}
               />
             </div>
             <div>
               <Label className="block text-gray-700 mb-2">
                 Secondary Phone
               </Label>
-              <CustomPhoneComponent
+              {/* <CustomPhoneComponent
                 type="secondary_phone"
                 changeHandler={handleChange}
                 bindValue={formData.secondary_phone ?? ""}
                 bindValue2={formData.secondary_phone_country ?? ""}
+              /> */}
+              <Input
+                type="text"
+                name="secondary_phone"
+                value={`${formData?.secondary_phone_country ?? ""} ${
+                  formData?.secondary_phone ?? ""
+                }`}
               />
             </div>
 

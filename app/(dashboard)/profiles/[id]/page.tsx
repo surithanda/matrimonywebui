@@ -479,7 +479,7 @@ const ViewProfile = () => {
                 {/* Right Section: Buttons */}
                 {fromSearch && (
                   <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
-                    <Button className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                    <Button disabled className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
                       Send Interest
                     </Button>
 
@@ -515,6 +515,7 @@ const ViewProfile = () => {
                     </Button>
 
                     <Button
+                    disabled
                       variant={"outline"}
                       className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
                     >
@@ -700,10 +701,12 @@ const ViewProfile = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2  lg:col-span-3">
-                <div className="mb-3">
-                  <Card data={allImages} />
-                </div>
+              <div className="grid grid-cols-1 lg:grid-cols-1 gap-2  lg:col-span-3">
+                {allImages && allImages.length > 0 && (
+                  <div className="mb-3">
+                    <Card data={allImages} />
+                  </div>
+                )}
 
                 {addressList?.length > 0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">

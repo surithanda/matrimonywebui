@@ -585,16 +585,12 @@ const Page = () => {
 
                 {/* Favorite + Badges */}
                 <div className="flex flex-col justify-center items-center gap-1.5 my-2 text-white absolute top-0 right-2">
-                  <button
-                    onClick={() => handleToggleFavorite(profile.profile_id)}
-                    className="bg-white rounded-full p-1 hover:scale-110 transition-transform"
-                  >
-                    {IsFavorite ? (
+                  {IsFavorite && (
+                    <div className="bg-white rounded-full p-1 flex items-center justify-center">
                       <IoIosHeart size={20} className="text-red-500" />
-                    ) : (
-                      <IoIosHeartEmpty size={20} className="text-black" />
-                    )}
-                  </button>
+                    </div>
+                  )}
+
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-.5 bg-white p-0.5 rounded-md text-blue-500">
                       <IoLocationSharp size={12} />
@@ -692,6 +688,8 @@ const Page = () => {
                       className="w-full text-orange-500 border border-orange-500 rounded-md hover:bg-orange-600 hover:text-white transition-colors"
                       variant="outline"
                       size="md"
+                      disabled
+                      title="Coming Soon"
                     >
                       Send Interest
                     </Button>
@@ -717,7 +715,7 @@ const Page = () => {
               </div>
             );
           })
-        ) : preferencesLoaded ?(
+        ) : preferencesLoaded ? (
           <div className="text-center py-12 col-span-full">
             <div className="text-gray-500 text-lg mb-4">
               {showFilters
@@ -730,7 +728,7 @@ const Page = () => {
               </button>
             )}
           </div>
-        ): null}
+        ) : null}
       </div>
     </div>
   );

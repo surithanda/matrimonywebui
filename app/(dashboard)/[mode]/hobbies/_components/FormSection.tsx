@@ -37,8 +37,8 @@ const FormSection = () => {
   const { countryList, hobbyList, interestList } = useAppSelector(
     (state) => state.metaData
   );
-  const hobbySuggestions = hobbyList.map((hobby) => hobby.name);
-  const interestSuggestions = interestList.map((interest) => interest.name);
+  const hobbySuggestions = [...new Set(hobbyList.map((hobby) => hobby.name))];
+  const interestSuggestions = [...new Set(interestList.map((interest) => interest.name))];
   const [hobbies, setHobbies] = useState<HobbyInterestData[]>([]);
   const [interests, setInterests] = useState<HobbyInterestData[]>([]);
   const loading = reduxProfile.loading;
@@ -124,7 +124,7 @@ const FormSection = () => {
         // Add the new hobby with both name and id if available
         const newHobby: HobbyInterestData = {
           hobby_interest_name: selection.name.trim(),
-          hobby_interest_id: result?.data?.hobby_id,// || selection.id,
+          hobby_interest_id: result?.data?.id,// || selection.id,
           id: result?.data?.hobby_interest_id || selection.id
         };
         setHobbies((prev) => [...prev, newHobby]);

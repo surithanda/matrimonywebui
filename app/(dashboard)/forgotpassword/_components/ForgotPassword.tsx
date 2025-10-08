@@ -38,7 +38,7 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setRedirecting(true);
+    setRedirecting(true); // show loader immediately
 
     dispatch(forgotPasswordAsync(formData))
       .then((res: any) => {
@@ -47,7 +47,6 @@ const ForgotPassword = () => {
             ...prev,
             history_id: res.payload.history_id,
           }));
-          setRedirecting(false);
           toast.success("OTP sent successfully!");
           setCurrent(1);
         } else {
@@ -56,8 +55,10 @@ const ForgotPassword = () => {
       })
       .catch((err: any) => {
         toast.error("Error sending OTP");
+      })
+      .finally(() => {
+        setRedirecting(false); // hide loader after success or error
       });
-    setRedirecting(false);
   };
 
   const handleSubmitReset = (e: React.FormEvent) => {
@@ -72,6 +73,8 @@ const ForgotPassword = () => {
       toast.error("Password must be at least 8 characters long!");
       return;
     }
+
+    setRedirecting(true);
 
     console.log("Resetting password with payload:", formData);
     // return
@@ -94,6 +97,9 @@ const ForgotPassword = () => {
       })
       .catch((err: any) => {
         toast.error("Error resetting password");
+      })
+      .finally(() => {
+        setRedirecting(false); // hide loader after success or error
       });
   };
 
@@ -103,7 +109,6 @@ const ForgotPassword = () => {
         <h3 className="BRCobane32600 text-3xl md:mb-0 mt-2">
           Forgot password?
         </h3>
-  
 
         {current === 0 && (
           <form onSubmit={handleSubmit} className="w-full  md:mb-16">
@@ -148,7 +153,6 @@ const ForgotPassword = () => {
             </div>
           </form>
         )}
-        
 
         {current === 1 && (
           <form onSubmit={handleSubmitReset} className="w-full">
@@ -203,12 +207,12 @@ const ForgotPassword = () => {
                 Back to login page?{" "}
               </p>
               <Button>
-              <Link
-                href="/login"
-                className="text-white font-semibold hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
-              >
-                Login Now
-              </Link>
+                <Link
+                  href="/login"
+                  className="text-white font-semibold hover:text-[#e69a00] transition-colors duration-200 text-sm sm:text-base md:text-lg lg:text-l"
+                >
+                  Login Now
+                </Link>
               </Button>
             </div>
           </form>
@@ -225,7 +229,7 @@ const ForgotPassword = () => {
           />
         </div>
       )}
-            <ToastContainer />
+      <ToastContainer />
     </>
   );
 };

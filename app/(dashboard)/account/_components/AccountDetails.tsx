@@ -207,10 +207,12 @@ const AccountSettings = () => {
                 className="hidden"
                 accept="image/*"
                 onChange={handlePhotoChange}
+                disabled
               />
               <Label
                 htmlFor="photo-upload"
-                className="cursor-pointer border rounded-md px-2 py-2 bg-orange-500 hover:bg-orange-600 transition text-white"
+                aria-disabled
+                className="cursor-not-allowed border rounded-md px-2 py-2 bg-gray-200 hover:bg-gray-200 transition text-white"
               >
                 {photoLoading ? "Uploading..." : "Change Photo"}
               </Label>

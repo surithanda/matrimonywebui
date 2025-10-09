@@ -21,6 +21,7 @@ import {
   CheckCircle,
   AlertCircle,
   MapPin,
+  BadgeCheckIcon,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditAddressModal } from "./address-modals/AddEditAddressModal";
 import Loader from "@/app/(dashboard)/_components/Loader";
+import { Badge } from "@/components/ui/badge";
 
 interface IAddress {
   profile_address_id?: string | number;
@@ -43,6 +45,7 @@ interface IAddress {
   phone?: string;
   state_id?: number;
   country_id?: number;
+  isverified?: boolean;
 }
 
 interface IFormData {
@@ -263,11 +266,10 @@ const FormSection = () => {
       append(updatedAddress);
     }
     setCurrentAddress({ ...defaultAddress });
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
 
     fetchProfileAddress(); // Refresh the address list from server
   };
-
 
   // Handle confirmation - save address and proceed
   const handleConfirmSaveAndContinue = async () => {
@@ -302,7 +304,7 @@ const FormSection = () => {
     router.push(nextRoute);
   };
 
-    // On submit, check for unsaved data and show confirmation if needed
+  // On submit, check for unsaved data and show confirmation if needed
   const onSubmit = useCallback(
     async (data: IFormData) => {
       console.log("Form submitted:", data, hasUnsavedAddressData());
@@ -437,14 +439,22 @@ const FormSection = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            handleEdit(index);
-                            setActiveDropdown(null);
+                            if (!field?.isverified) {
+                              handleEdit(index);
+                              setActiveDropdown(null);
+                            }
                           }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                          disabled={field?.isverified}
+                          className={`flex items-center gap-2 w-full px-4 py-2 text-left transition-colors ${
+                            field?.isverified
+                              ? "cursor-not-allowed text-gray-400 bg-gray-50"
+                              : "hover:bg-gray-50 text-gray-700"
+                          }`}
                         >
                           <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
+
                         <button
                           disabled
                           type="button"
@@ -472,20 +482,25 @@ const FormSection = () => {
                         </span>
                       )}
                     </span>
-                    <div className="ml-auto flex items-center gap-1 mr-9">
-                      {/* {Math.random() > 0.5 ? (
-                        <>
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-xs text-green-600 font-medium">Verified</span>
-                        </>
-                      ) : ( */}
-                      <>
-                        <AlertCircle className="w-4 h-4 text-amber-500" />
-                        <span className="text-xs text-amber-600 font-medium">
-                          Pending
-                        </span>
-                      </>
-                      {/* )} */}
+                    <div className="ml-auto flex items-center gap-2 mr-9">
+                      {/* Status */}
+                      {field?.isverified ? (
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-500 text-white dark:bg-blue-600"
+                        >
+                          <BadgeCheckIcon size={14} />
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-red-500 text-white dark:bg-red-600 flex items-center gap-1"
+                        >
+                          <AlertCircle className="w-4 h-4" />
+                          Unverified
+                        </Badge>
+                      )}
                     </div>
                   </div>
 

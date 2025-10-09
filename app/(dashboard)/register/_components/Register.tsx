@@ -333,7 +333,7 @@ const Register = () => {
               </div>
             </div>
 
-            {/* City, State, Country, Zip Code */}
+            {/* City, State, Country, ZIP / PIN Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="flex flex-col items-start w-full">
                 <Label className="mb-1">
@@ -411,7 +411,7 @@ const Register = () => {
 
               <div className="flex flex-col items-start w-full">
                 <Label className="mb-1">
-                  Zip Code <span className="text-red-500">*</span>
+                  ZIP / PIN Code <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   type="number"

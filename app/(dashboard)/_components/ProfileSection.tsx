@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import profile1 from "@/public/images/dashboard/profile1.png";
+import profile1 from "@/public/images/dashboard/DefaultProfile.png";
 import React, { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import {
@@ -207,7 +207,7 @@ const ProfileSection = () => {
       bg1: "#FFECE9",
       bg2: "#FCDEDA",
       icon: <Heart className="w-6 h-6 text-red-500" />,
-      href:"/favourites"
+      href: "/favourites",
     },
     {
       number: completeProfile?.profiles_viewed_me ?? 0,
@@ -331,12 +331,12 @@ const ProfileSection = () => {
                           className="object-cover transition-all duration-500 ease-in-out hover:scale-110"
                         />
 
-                        {/* Hover Edit Button (Top Right) */}
+                        {/* Always Visible Edit Button (Top Right) */}
                         <Button
                           onClick={() => goTo}
-                          variant={"default"}
-                          size={"sm"}
-                          className="absolute top-3 py-1  right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600"
+                          variant="default"
+                          size="sm"
+                          className="absolute top-3 py-1 right-3 bg-orange-500 text-white text-sm font-semibold rounded-md shadow-md transition-all duration-300 hover:bg-orange-600"
                         >
                           <CiEdit size={22} />
                         </Button>
@@ -351,6 +351,7 @@ const ProfileSection = () => {
                         </div>
                       </div>
                     </Link>
+
                     <Link href={`/profiles/${selectedProfileID}`}>
                       <Button
                         variant="outline"

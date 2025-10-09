@@ -220,15 +220,15 @@ const FormSection = () => {
           ))}
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between mt-6 gap-4">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col md:flex-row justify-end mt-6 gap-4">
+          {/* <div className="flex flex-col sm:flex-row gap-4">
             <Button className="gray-btn hover:bg-gray-400 w-full sm:w-auto">
               Cancel
             </Button>
-          </div>
+          </div> */}
           <Button
             onClick={handleSubmit}
-            className="yellow-btn hover:bg-orange-600 w-full sm:w-auto"
+            className="bg-orange-500 hover:bg-orange-600 text-white"
           >
             Save
           </Button>

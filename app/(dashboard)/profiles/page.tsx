@@ -158,9 +158,9 @@ const Page = () => {
                         </h2>
                         <p
                           className="text-gray-500 text-xs min-h-[1rem] truncate"
-                          title={profile.city}
+                          title={profile.country_name}
                         >
-                          {profile.city}
+                          {profile.country_name}
                         </p>
                       </div>
                     </div>

@@ -744,7 +744,7 @@ const FormSection = ({
                   name="zip"
                   value={currentFamilyMember.zip}
                   onChange={handleInputChange}
-                  placeholder="Zip Code"
+                  placeholder="ZIP / PIN Code"
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   disabled={loading}
                 />

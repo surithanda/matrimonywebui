@@ -619,7 +619,7 @@ const FormSection = () => {
                 />
               </div>
               <div>
-                <Label>Zip Code</Label>
+                <Label>ZIP / PIN Code</Label>
                 <Input
                   type="text"
                   value={currentAddress.zip}

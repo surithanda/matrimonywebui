@@ -367,7 +367,7 @@ export function AddAddressModal({
                 />
               </div>
               <div>
-                <Label className="ml-1">Zip Code</Label>
+                <Label className="ml-1">ZIP / PIN Code</Label>
                 <Input
                   type="text"
                   value={currentAddress.zip}

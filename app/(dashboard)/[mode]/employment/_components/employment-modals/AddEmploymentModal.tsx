@@ -392,7 +392,7 @@ export function AddEmploymentModal({
                 />
               </div>
               <div>
-                <Label className="ml-1">Zip Code</Label>
+                <Label className="ml-1">ZIP / PIN Code</Label>
                 <Input
                   type="text"
                   name="zip"

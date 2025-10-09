@@ -326,6 +326,8 @@ const FormSection = () => {
       );
     }
 
+    console.log("properties fields:", fields);
+
   return (
     <>
     <section className="px-2 md:px-0 md:py-2 w-full">
@@ -440,9 +442,9 @@ const FormSection = () => {
                   {/* Property Details */}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500">Area:</span>
+                      <span className="text-sm text-gray-500">Property Value:</span>
                       <span className="text-sm text-gray-800 font-medium">
-                        {field.property_value ? `${field.property_value} sq. ft.` : "N/A"}
+                        {field.property_value ? `${field.property_value} ` : "N/A"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

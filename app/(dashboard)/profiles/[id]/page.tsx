@@ -39,6 +39,7 @@ import AppBreadcrumb from "../../_components/AppBreadcrumb";
 import { BadgeCheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { CiEdit } from "react-icons/ci";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -264,6 +265,7 @@ const ViewProfile = () => {
   //   interests,
   //   references,
   // ]);
+  console.log("address:", personalProfile);
 
   if (loading) {
     return (
@@ -346,7 +348,7 @@ const ViewProfile = () => {
   ];
   return (
     <>
-      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
+      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-20 md:mt-16">
         {/* ✅ Breadcrumb added here */}
         <AppBreadcrumb
           items={[
@@ -358,7 +360,7 @@ const ViewProfile = () => {
         <div>
           <div className="w-full rounded-lg overflow-hidden shadow-md  relative mb-4">
             {/* Banner with gradient background */}
-            <div className="relative h-32 sm:h-40 lg:h-56 w-full">
+            <div className="relative h-32 sm:h-40 lg:h-40 w-full">
               {coverImage ? (
                 <Link
                   href={coverImage.url}
@@ -473,12 +475,17 @@ const ViewProfile = () => {
                 </div>
 
                 {/* Right Section: Buttons */}
-                {fromSearch && (
+                {fromSearch ? (
                   <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
-                    <Button disabled className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                    {/* Send Interest */}
+                    <Button
+                      disabled
+                      className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base"
+                    >
                       Send Interest
                     </Button>
 
+                    {/* Add to Favorites */}
                     <Button
                       variant="outline"
                       onClick={handleToggleFavorite}
@@ -510,13 +517,25 @@ const ViewProfile = () => {
                       )}
                     </Button>
 
+                    {/* Send Message */}
                     <Button
-                    disabled
-                      variant={"outline"}
+                      disabled
+                      variant="outline"
                       className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
                     >
                       Send Message
                     </Button>
+                  </div>
+                ) : (
+                  // Show Edit Profile button if not fromSearch
+                  <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
+                    <Link
+                      href="/updateprofile"
+                      className="bg-orange-500 text-white px-1 sm:px-4 md:px-6 py-1.5 sm:py-1 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base flex items-center justify-center gap-2"
+                    >
+                      <CiEdit size={20} />
+                      Edit Profile
+                    </Link>
                   </div>
                 )}
               </div>
@@ -793,8 +812,9 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {educationList.map((edu: any, index: number) => {
-                            return (
+                          {educationList
+                            .filter((edu: any) => edu?.isverified)
+                            .map((edu: any, index: number) => (
                               <tr
                                 key={index}
                                 className="hover:bg-gray-50 transition-colors text-sm"
@@ -814,10 +834,6 @@ const ViewProfile = () => {
                                 </td>
                                 <td className="px-4 py-3 border-b">
                                   {edu?.city || "N/A"},{" "}
-                                  {/* {findStateName(
-                                    edu?.state_id ?? edu?.state_name ?? 0
-                                  ) || "N/A"}
-                                  ,{" "} */}
                                   {findCountryName(
                                     edu?.country_id ?? edu?.country_name ?? 0
                                   ) || "N/A"}
@@ -832,8 +848,7 @@ const ViewProfile = () => {
                                   </Badge>
                                 </td>
                               </tr>
-                            );
-                          })}
+                            ))}
                         </tbody>
                       </table>
                     </div>

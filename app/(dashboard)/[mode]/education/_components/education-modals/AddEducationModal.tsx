@@ -371,7 +371,7 @@ export function AddEducationModal({
                 />
               </div>
               <div>
-                <Label>Zip Code</Label>
+                <Label>ZIP / PIN Code</Label>
                 <Input
                   type="text"
                   name="zip"

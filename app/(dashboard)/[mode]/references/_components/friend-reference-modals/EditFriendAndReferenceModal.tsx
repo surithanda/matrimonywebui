@@ -163,7 +163,7 @@ export function AddFriendAndReferenceModal({
                 />
               </div>
               <div>
-                <Label className="ml-1">Zip Code</Label>
+                <Label className="ml-1">ZIP / PIN Code</Label>
                 <Input
                   type="text"
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"

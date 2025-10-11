@@ -141,10 +141,10 @@ export function EditEducationModal({
               />
             </div>
             <div>
-              <Label>Zip Code</Label>
+              <Label>ZIP / PIN Code</Label>
               <Input
                 type="text"
-                placeholder="Enter zip code"
+                placeholder="Enter ZIP / PIN Code"
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>

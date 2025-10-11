@@ -176,10 +176,10 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
               />
             </div>
 
-            {/* Zip Code */}
+            {/* ZIP / PIN Code */}
             <div className="flex flex-col items-start w-full">
               <Label className="mb-1">
-                Zip Code <span className="text-red-500">*</span>
+                ZIP / PIN Code <span className="text-red-500">*</span>
               </Label>
               <Input
                 type="number"

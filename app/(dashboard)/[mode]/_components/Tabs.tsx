@@ -13,6 +13,7 @@ import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getProfileCompltionCounts } from "@/app/store/features/profileSlice";
+import { Button } from "@/components/ui/button";
 
 export default function Tabs() {
   const params = useParams();
@@ -201,25 +202,39 @@ export default function Tabs() {
     <>
       {/* Next & Previous Buttons */}
       <div className="flex justify-between mb-4 px-1">
-        <button
+        {/* Previous Button */}
+        <Button
           onClick={goToPreviousTab}
           disabled={menu.findIndex((item: any) => item.id === activeItem) === 0}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors"
+          className={`px-4 py-2 rounded-lg font-medium transition-colors
+      ${
+        menu.findIndex((item: any) => item.id === activeItem) === 0
+          ? "bg-orange-200 text-gray-600 cursor-not-allowed"
+          : "bg-orange-500 text-white hover:bg-orange-600"
+      }`}
         >
           Previous
-        </button>
+        </Button>
 
-        <button
+        {/* Next Button */}
+        <Button
           onClick={goToNextTab}
           disabled={
             menu.findIndex((item: any) => item.id === activeItem) ===
             menu.length - 1
           }
-          className="px-4 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 transition-colors"
+          className={`px-4 py-2 rounded-lg font-medium transition-colors
+      ${
+        menu.findIndex((item: any) => item.id === activeItem) ===
+        menu.length - 1
+          ? "bg-orange-200 text-gray-600 cursor-not-allowed"
+          : "bg-orange-500 text-white hover:bg-orange-600"
+      }`}
         >
           Next
-        </button>
+        </Button>
       </div>
+
       {/* Tabs container */}
       <div className="flex justify-start items-start overflow-x-auto rounded-lg bg-white border border-gray-200 p-1 2xl:gap-2">
         {menu.map((item: any, index: number) => {
@@ -261,7 +276,7 @@ export default function Tabs() {
                       ? "border-white bg-white text-orange-500"
                       : isCompleted
                       ? "border-orange-500 text-orange-500"
-                      : "border-gray-400 text-gray-400"
+                      : "border-gray-400 text-black"
                   }
                 `}
               >

@@ -242,11 +242,66 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
           </DialogHeader>
 
           <div className="space-y-4 py-4 p-6">
-            {/* Address Lines */}
+            {/* Country and State */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="country">
+                  Country <span className="text-red-500">*</span>
+                </Label>
+                <MetadataSelectComponent
+                  type="country"
+                  bindValue={formData.country ?? ""}
+                  changeHandler={handleCountryChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">
+                  State <span className="text-red-500">*</span>
+                </Label>
+                <MetadataSelectComponent
+                  type="state"
+                  bindValue={formData.state ?? ""}
+                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleFieldChange("state", Number(e.target.value))
+                  }
+                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* City and ZIP */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="city">
+                  City <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="city"
+                  type="text"
+                  value={formData.city ?? ""}
+                  onChange={(e) => handleFieldChange("city", e.target.value)}
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <Label htmlFor="zip">
+                  ZIP / PIN Code <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="zip"
+                  type="text"
+                  value={formData.zip ?? ""}
+                  onChange={(e) => handleFieldChange("zip", e.target.value)}
+                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+                        {/* Address Lines */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="address1">
-                  Complete Address <span className="text-red-500">*</span>
+                  Address Line 1 <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="address1"
@@ -299,89 +354,7 @@ export const AddEditAddressModal: React.FC<AddEditAddressModalProps> = ({
                 />
               </div>
             </div>
-
-            {/* City and ZIP */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">
-                  City <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="city"
-                  type="text"
-                  value={formData.city ?? ""}
-                  onChange={(e) => handleFieldChange("city", e.target.value)}
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="zip">
-                  ZIP Code <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="zip"
-                  type="text"
-                  value={formData.zip ?? ""}
-                  onChange={(e) => handleFieldChange("zip", e.target.value)}
-                  className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-            </div>
-            {/* Country and State */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="country">
-                  Country <span className="text-red-500">*</span>
-                </Label>
-                <MetadataSelectComponent
-                  type="country"
-                  bindValue={formData.country ?? ""}
-                  changeHandler={handleCountryChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">
-                  State <span className="text-red-500">*</span>
-                </Label>
-                <MetadataSelectComponent
-                  type="state"
-                  bindValue={formData.state ?? ""}
-                  changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFieldChange("state", Number(e.target.value))
-                  }
-                  //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-            </div>
           </div>
-
-          {/* Footer Buttons */}
-          {/* <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-              className="px-6"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={handleSave}
-              disabled={!isFormValid() || isLoading}
-              className="px-6 bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  {mode === 'edit' ? 'Updating...' : 'Adding...'}
-                </>
-              ) : (
-                mode === 'edit' ? 'Update Address' : 'Add Address'
-              )}
-            </Button>
-          </div> */}
         </DialogContent>
       </Dialog>
 

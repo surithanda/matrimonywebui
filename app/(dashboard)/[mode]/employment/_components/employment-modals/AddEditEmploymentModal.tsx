@@ -299,7 +299,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
             {/* Last Salary */}
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="last_salary_drawn">Last Salary Drawn</Label>
+                <Label htmlFor="last_salary_drawn">Annual Salary</Label>
                 <Input
                   id="last_salary_drawn"
                   type="text"
@@ -349,7 +349,7 @@ export const AddEditEmploymentModal: React.FC<AddEditEmploymentModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="zip">ZIP Code</Label>
+                <Label htmlFor="zip">ZIP / PIN Code</Label>
                 <Input
                   id="zip"
                   type="text"

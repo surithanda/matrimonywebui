@@ -224,6 +224,7 @@ export const AddEditPropertyModal: React.FC<AddEditPropertyModalProps> = ({
                   value={formData.property_value || ""}
                   onChange={(e) => handleFieldChange('property_value', Number(e.target.value))}
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="Currency (e.g., ₹, $, EUR)"
                 />
               </div>
             {/* Property Address */}

@@ -157,10 +157,10 @@ export function EditEmploymentModal({
               />
             </div>
             <div>
-              <Label className="ml-1">Zip Code</Label>
+              <Label className="ml-1">ZIP / PIN Code</Label>
               <Input
                 type="text"
-                placeholder="Enter zip code"
+                placeholder="Enter ZIP / PIN Code"
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-orange-500"
               />
             </div>

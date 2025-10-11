@@ -23,10 +23,12 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
+  BadgeCheckIcon,
 } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditFamilyModal } from "./family-modals/AddEditFamilyModal";
 import Loader from "@/app/(dashboard)/_components/Loader";
+import { Badge } from "@/components/ui/badge";
 
 interface IFamilyMember {
   id: string;
@@ -44,6 +46,7 @@ interface IFamilyMember {
   country_id: number;
   zip: string;
   _id?: string; // for react-hook-form
+  isverified?: boolean; // for verification status
 }
 
 interface IFormValues {
@@ -101,12 +104,13 @@ const FormSection = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
-  const { loadStates, findCountryName, findStateName,findReferenceName } = useMetaDataLoader();
-  const {loading: loader} = useAppSelector((state)=>state.profile)
+  const { loadStates, findCountryName, findStateName, findReferenceName } =
+    useMetaDataLoader();
+  const { loading: loader } = useAppSelector((state) => state.profile);
 
   const [openModal, setOpenModal] = useState({
     open: false,
-    mode: 'add' as 'add' | 'edit',
+    mode: "add" as "add" | "edit",
   });
 
   // console.log("Current Family Member:", fields);
@@ -164,22 +168,24 @@ const FormSection = ({
         getFamilyAsync({ profile_id: selectedProfileID, type: category })
       ).then((result: any) => {
         if (result.payload?.success && result.payload.data) {
-          const formattedData = result.payload.data?.family?.map((item: any) => ({
-            id: item.profile_family_reference_id,
-            profile_family_reference_id: item.profile_family_reference_id,
-            firstname: item.first_name,
-            lastname: item.last_name,
-            dob: item.date_of_birth,
-            contactnumber: item.primary_phone,
-            contactnumber_country: item.contactnumber_country, // Assuming this field exists
-            email: item.email,
-            relationshiptoyou: item.reference_type,
-            address_line: item.address_line1,
-            city: item.city,
-            state_id: item.state,
-            country_id: item.country,
-            zip: item.zip,
-          }));
+          const formattedData = result.payload.data?.family?.map(
+            (item: any) => ({
+              id: item.profile_family_reference_id,
+              profile_family_reference_id: item.profile_family_reference_id,
+              firstname: item.first_name,
+              lastname: item.last_name,
+              dob: item.date_of_birth,
+              contactnumber: item.primary_phone,
+              contactnumber_country: item.contactnumber_country, // Assuming this field exists
+              email: item.email,
+              relationshiptoyou: item.reference_type,
+              address_line: item.address_line1,
+              city: item.city,
+              state_id: item.state,
+              country_id: item.country,
+              zip: item.zip,
+            })
+          );
           reset({ family: formattedData || [] });
         }
       });
@@ -188,7 +194,7 @@ const FormSection = ({
     }
   }, [dispatch, reset, selectedProfileID, category]);
 
-  console.log("list", fields)
+  console.log("list", fields);
 
   // Fetch family members from backend on mount
   useEffect(() => {
@@ -290,7 +296,7 @@ const FormSection = ({
     setCurrentFamilyMember(familyToEdit);
     setOpenModal({
       open: true,
-      mode: 'edit',
+      mode: "edit",
     });
   };
 
@@ -298,7 +304,7 @@ const FormSection = ({
   const handleCancelEdit = () => {
     setEditIndex(null);
     setCurrentFamilyMember({ ...defaultFamilyMember });
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // Remove family member from backend and local state
@@ -371,13 +377,16 @@ const FormSection = ({
   };
 
   const closeAddModal = () => {
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // Handle modal save
-  const handleModalSave = async (familyData: IFamilyMember, mode: 'add' | 'edit') => {
+  const handleModalSave = async (
+    familyData: IFamilyMember,
+    mode: "add" | "edit"
+  ) => {
     setCurrentFamilyMember(familyData);
-    
+
     // Use existing handleAddOrUpdate logic
     const familyPayload = {
       profile_id: selectedProfileID,
@@ -385,25 +394,29 @@ const FormSection = ({
       ...familyData,
     };
 
-    if (mode === 'edit' && editIndex !== null) {
+    if (mode === "edit" && editIndex !== null) {
       // Update existing family member
       // Uncomment when update API is ready
       try {
-        const result = await dispatch(updateFamilyAsync(familyPayload)).unwrap();
-        if (result && result.data.status === 'success') {
+        const result = await dispatch(
+          updateFamilyAsync(familyPayload)
+        ).unwrap();
+        if (result && result.data.status === "success") {
           proceedwithAddUpdate(result.data.profile_family_reference_id);
         }
       } catch (err: any) {
         console.error("Error updating family member:", err);
         throw err;
       }
-      
+
       // For now, update locally
       // proceedwithAddUpdate(familyData.id);
     } else {
       // Add new family member
       try {
-        const result = await dispatch(createFamilyAsync(familyPayload)).unwrap();
+        const result = await dispatch(
+          createFamilyAsync(familyPayload)
+        ).unwrap();
         if (result && result.data.status === "success") {
           proceedwithAddUpdate(result.data.profile_family_reference_id);
         }
@@ -414,11 +427,9 @@ const FormSection = ({
     }
   };
 
-    if (loader) {
-      return (
-        <Loader />
-      );
-    }
+  if (loader) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -429,7 +440,7 @@ const FormSection = ({
               onClick={() =>
                 setOpenModal({
                   open: true,
-                  mode: 'add',
+                  mode: "add",
                 })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
@@ -479,14 +490,22 @@ const FormSection = ({
                         <button
                           type="button"
                           onClick={() => {
-                            handleEdit(index);
-                            setActiveDropdown(null);
+                            if (!field?.isverified) {
+                              handleEdit(index);
+                              setActiveDropdown(null);
+                            }
                           }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                          disabled={field?.isverified}
+                          className={`flex items-center gap-2 w-full px-4 py-2 text-left transition-colors ${
+                            field?.isverified
+                              ? "cursor-not-allowed text-gray-400 bg-gray-50"
+                              : "hover:bg-gray-50 text-gray-700"
+                          }`}
                         >
                           <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
+
                         <button
                           disabled
                           type="button"
@@ -507,27 +526,42 @@ const FormSection = ({
                   <div className="flex items-center gap-2 mb-3">
                     <Users className="w-5 h-5 text-orange-500" />
                     <span className="font-semibold text-gray-800">
-                      {category === "family" ? "Member" : "Reference"} {index + 1}
+                      {category === "family" ? "Member" : "Reference"}{" "}
+                      {index + 1}
                       {editIndex === index && (
                         <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full animate-pulse">
                           Editing...
                         </span>
                       )}
                     </span>
-                    <div className="ml-auto flex items-center gap-1 mr-9">
-                      <>
-                        <AlertCircle className="w-4 h-4 text-amber-500" />
-                        <span className="text-xs text-amber-600 font-medium">
-                          Pending
-                        </span>
-                      </>
+                    <div className="ml-auto flex items-center gap-2 mr-9">
+                      {/* Status */}
+                      {field?.isverified ? (
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-500 text-white dark:bg-blue-600"
+                        >
+                          <BadgeCheckIcon size={14} />
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-red-500 text-white dark:bg-red-600 flex items-center gap-1"
+                        >
+                          <AlertCircle className="w-4 h-4" />
+                          Unverified
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
                   {/* Family Member Content */}
                   <div>
                     <p className="text-gray-900 font-medium leading-relaxed">
-                      {findReferenceName(Number(field.relationshiptoyou) || 0) || ''}
+                      {findReferenceName(
+                        Number(field.relationshiptoyou) || 0
+                      ) || ""}
                     </p>
                   </div>
 
@@ -607,7 +641,8 @@ const FormSection = ({
                 No {actionButton_label.toLowerCase()}s added yet
               </h3>
               <p className="text-gray-500">
-                Add your first {actionButton_label.toLowerCase()} using the form below
+                Add your first {actionButton_label.toLowerCase()} using the form
+                below
               </p>
             </div>
           )}
@@ -744,7 +779,7 @@ const FormSection = ({
                   name="zip"
                   value={currentFamilyMember.zip}
                   onChange={handleInputChange}
-                  placeholder="Zip Code"
+                  placeholder="ZIP / PIN Code"
                   className="account-input-field stretch w-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                   disabled={loading}
                 />
@@ -842,18 +877,18 @@ const FormSection = ({
           </div>
         )}
       </section>
-      <AddEditFamilyModal 
-        open={openModal.open} 
+      <AddEditFamilyModal
+        open={openModal.open}
         onOpenChange={(open) => {
           if (!open) {
             // Reset editing state when modal is closed
             setEditIndex(null);
             setCurrentFamilyMember({ ...defaultFamilyMember });
           }
-          setOpenModal(prev => ({ ...prev, open }));
+          setOpenModal((prev) => ({ ...prev, open }));
         }}
         mode={openModal.mode}
-        familyData={openModal.mode === 'edit' ? currentFamilyMember : undefined}
+        familyData={openModal.mode === "edit" ? currentFamilyMember : undefined}
         onSave={handleModalSave}
         onCancel={handleCancelEdit}
         category={category}

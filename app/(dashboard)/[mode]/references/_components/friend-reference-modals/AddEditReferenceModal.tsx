@@ -352,19 +352,19 @@ export const AddEditReferenceModal: React.FC<AddEditReferenceModalProps> = ({
                 />
               </div>
                             <div>
-                <Label htmlFor="zip">ZIP Code</Label>
+                <Label htmlFor="zip">ZIP / PIN Code</Label>
                 <Input
                   id="zip"
                   type="text"
                   value={formData.zip}
                   onChange={(e) => handleFieldChange('zip', e.target.value)}
-                  placeholder="Enter ZIP code"
+                  placeholder="Enter ZIP / PIN Code"
                   className="mt-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </div>
 
-            {/* ZIP Code and Can Communicate */}
+            {/* ZIP / PIN Code and Can Communicate */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                 <Label htmlFor="address_line1">Address</Label>

@@ -39,6 +39,7 @@ import AppBreadcrumb from "../../_components/AppBreadcrumb";
 import { BadgeCheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { CiEdit } from "react-icons/ci";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -264,6 +265,7 @@ const ViewProfile = () => {
   //   interests,
   //   references,
   // ]);
+  console.log("address:", family);
 
   if (loading) {
     return (
@@ -346,7 +348,7 @@ const ViewProfile = () => {
   ];
   return (
     <>
-      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-16">
+      <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-20 md:mt-16">
         {/* ✅ Breadcrumb added here */}
         <AppBreadcrumb
           items={[
@@ -358,7 +360,7 @@ const ViewProfile = () => {
         <div>
           <div className="w-full rounded-lg overflow-hidden shadow-md  relative mb-4">
             {/* Banner with gradient background */}
-            <div className="relative h-32 sm:h-40 lg:h-56 w-full">
+            <div className="relative h-32 sm:h-40 lg:h-40 w-full">
               {coverImage ? (
                 <Link
                   href={coverImage.url}
@@ -477,12 +479,17 @@ const ViewProfile = () => {
                 </div>
 
                 {/* Right Section: Buttons */}
-                {fromSearch && (
+                {fromSearch ? (
                   <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
-                    <Button disabled className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base">
+                    {/* Send Interest */}
+                    <Button
+                      disabled
+                      className="bg-orange-500 text-white px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base"
+                    >
                       Send Interest
                     </Button>
 
+                    {/* Add to Favorites */}
                     <Button
                       variant="outline"
                       onClick={handleToggleFavorite}
@@ -514,13 +521,25 @@ const ViewProfile = () => {
                       )}
                     </Button>
 
+                    {/* Send Message */}
                     <Button
-                    disabled
-                      variant={"outline"}
+                      disabled
+                      variant="outline"
                       className="border border-gray-300 text-gray-700 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap text-sm sm:text-base"
                     >
                       Send Message
                     </Button>
+                  </div>
+                ) : (
+                  // Show Edit Profile button if not fromSearch
+                  <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row gap-2 sm:gap-3 w-full md:w-auto justify-end">
+                    <Link
+                      href="/updateprofile"
+                      className="bg-orange-500 text-white px-1 sm:px-4 md:px-6 py-1.5 sm:py-1 rounded-md hover:bg-orange-600 transition-colors whitespace-nowrap text-sm sm:text-base flex items-center justify-center gap-2"
+                    >
+                      <CiEdit size={20} />
+                      Edit Profile
+                    </Link>
                   </div>
                 )}
               </div>
@@ -650,14 +669,14 @@ const ViewProfile = () => {
                   profileData?.instagram ||
                   profileData?.linkedin) && (
                   <div className="border border-gray-100 rounded-lg shadow-md ">
-                    <div className="flex items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                    <div className="flex items-center justify-between gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className=" text-black text-xl font-bold"
                         style={{ fontFamily: "BR Cobane" }}
                       >
                         Social Information
                       </h2>
-                      <BiSolidBadgeCheck className="text-sky-500" size={18} />
+                      <BiSolidBadgeCheck className="text-gray-500" size={22} />
                     </div>
 
                     <div className="px-4 py-8 bg-white rounded-md gap-4 space-y-4">
@@ -708,7 +727,8 @@ const ViewProfile = () => {
                   </div>
                 )}
 
-                {addressList?.length > 0 && (
+                {addressList?.filter((addr: any) => addr?.isverified).length >
+                  0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
                     <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
@@ -764,7 +784,8 @@ const ViewProfile = () => {
                   </div>
                 )}
 
-                {educationList.length > 0 && (
+                {educationList.filter((edu: any) => edu?.isverified).length >
+                  0 && (
                   <div className="border border-gray-100 rounded-lg shadow-md mb-1">
                     <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
@@ -797,8 +818,9 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {educationList.map((edu: any, index: number) => {
-                            return (
+                          {educationList
+                            .filter((edu: any) => edu?.isverified)
+                            .map((edu: any, index: number) => (
                               <tr
                                 key={index}
                                 className="hover:bg-gray-50 transition-colors text-sm"
@@ -818,10 +840,6 @@ const ViewProfile = () => {
                                 </td>
                                 <td className="px-4 py-3 border-b">
                                   {edu?.city || "N/A"},{" "}
-                                  {/* {findStateName(
-                                    edu?.state_id ?? edu?.state_name ?? 0
-                                  ) || "N/A"}
-                                  ,{" "} */}
                                   {findCountryName(
                                     edu?.country_id ?? edu?.country_name ?? 0
                                   ) || "N/A"}
@@ -836,16 +854,16 @@ const ViewProfile = () => {
                                   </Badge>
                                 </td>
                               </tr>
-                            );
-                          })}
+                            ))}
                         </tbody>
                       </table>
                     </div>
                   </div>
                 )}
 
-                {employmentList.length > 0 && (
-                  <div className="border border-gray-100 rounded-lg shadow-md  mb-2">
+                {employmentList.filter((emp: any) => emp?.isverified).length >
+                  0 && (
+                  <div className="border border-gray-100 rounded-lg shadow-md mb-2">
                     <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                       <h2
                         className="text-black text-xl font-bold"
@@ -853,7 +871,6 @@ const ViewProfile = () => {
                       >
                         Professional Information
                       </h2>
-                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
                     </div>
                     <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
                       <table className="min-w-full text-sm sm:text-base mt-2">
@@ -877,39 +894,44 @@ const ViewProfile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {employmentList.map((emp: any, index: number) => (
-                            <tr
-                              key={index}
-                              className="hover:bg-gray-50 transition-colors text-sm"
-                            >
-                              <td className="px-2 py-3 border-b">
-                                {emp?.institution_name}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {findJobTitleName(
-                                  emp?.job_title_id ?? emp?.job_title_name ?? 0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {emp?.start_year} - {emp?.end_year || "Present"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {emp?.city || "N/A"},{" "}
-                                {findCountryName(
-                                  emp?.country_id ?? emp?.country_name ?? 0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-blue-500 text-white dark:bg-blue-600"
-                                >
-                                  <BadgeCheckIcon size={14} />
-                                  Verified
-                                </Badge>
-                              </td>
-                            </tr>
-                          ))}
+                          {employmentList
+                            .filter((emp: any) => emp?.isverified)
+                            .map((emp: any, index: number) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {emp?.institution_name || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findJobTitleName(
+                                    emp?.job_title_id ??
+                                      emp?.job_title_name ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.start_year} -{" "}
+                                  {emp?.end_year || "Present"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.city || "N/A"},{" "}
+                                  {findCountryName(
+                                    emp?.country_id ?? emp?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-500 text-white dark:bg-blue-600 flex items-center gap-1 hover:bg-blue-500"
+                                  >
+                                    <BadgeCheckIcon size={14} />
+                                    Verified
+                                  </Badge>
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>
@@ -918,12 +940,15 @@ const ViewProfile = () => {
 
                 <div
                   className={`grid grid-cols-1 ${
-                    familyList.length > 0 && referencesList.length > 0
+                    familyList.filter((m: any) => m?.isverified).length > 0 &&
+                    referencesList.filter((r: any) => r?.isverified).length > 0
                       ? "lg:grid-cols-2"
                       : "lg:grid-cols-1"
                   } items-center gap-2 h-full`}
                 >
-                  {familyList.length > 0 && (
+                  {/* Family Information */}
+                  {familyList.filter((member: any) => member?.isverified)
+                    .length > 0 && (
                     <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
                       <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                         <h2
@@ -932,14 +957,10 @@ const ViewProfile = () => {
                         >
                           Family Information
                         </h2>
-                        {/* <BiSolidBadgeCheck
-                          className="text-gray-500"
-                          size={22}
-                        /> */}
                       </div>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
                         <table className="w-full text-sm sm:text-base">
-                          <thead className="">
+                          <thead>
                             <tr className="text-left">
                               <th className="px-2 py-2 border-b text-base font-bold">
                                 Full Name
@@ -953,37 +974,41 @@ const ViewProfile = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {familyList.map((member: any, index: number) => (
-                              <tr
-                                key={
-                                  member.profile_family_reference_id ?? index
-                                }
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-2 py-3 border-b">
-                                  {member?.first_name} {member?.last_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {member?.type_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-500 text-white dark:bg-blue-600"
-                                  >
-                                    <BadgeCheckIcon size={14} />
-                                    Verified
-                                  </Badge>
-                                </td>
-                              </tr>
-                            ))}
+                            {familyList
+                              .filter((member: any) => member?.isverified)
+                              .map((member: any, index: number) => (
+                                <tr
+                                  key={
+                                    member.profile_family_reference_id ?? index
+                                  }
+                                  className="hover:bg-gray-50 transition-colors text-sm"
+                                >
+                                  <td className="px-2 py-3 border-b">
+                                    {member?.first_name} {member?.last_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    {member?.type_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-blue-500 text-white dark:bg-blue-600 flex items-center gap-1 hover:bg-blue-500"
+                                    >
+                                      <BadgeCheckIcon size={14} />
+                                      Verified
+                                    </Badge>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
                     </div>
                   )}
 
-                  {referencesList.length > 0 && (
+                  {/* Friends & Reference */}
+                  {referencesList.filter((ref: any) => ref?.isverified).length >
+                    0 && (
                     <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
                       <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
                         <h2
@@ -992,14 +1017,10 @@ const ViewProfile = () => {
                         >
                           Friends & Reference
                         </h2>
-                        {/* <BiSolidBadgeCheck
-                          className="text-gray-500"
-                          size={22}
-                        /> */}
                       </div>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
                         <table className="w-full text-sm sm:text-base">
-                          <thead className="">
+                          <thead>
                             <tr className="text-left">
                               <th className="px-2 py-2 border-b text-base font-bold">
                                 Full Name
@@ -1008,33 +1029,35 @@ const ViewProfile = () => {
                                 Relation
                               </th>
                               <th className="px-2 py-2 border-b text-base font-bold">
-                                Verifed
+                                Verified
                               </th>
                             </tr>
                           </thead>
                           <tbody>
-                            {referencesList.map((ref: any, index: number) => (
-                              <tr
-                                key={ref.profile_reference_id ?? index}
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-2 py-3 border-b">
-                                  {ref?.first_name} {ref?.last_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {ref?.type_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-500 text-white dark:bg-blue-600"
-                                  >
-                                    <BadgeCheckIcon size={14} />
-                                    Verified
-                                  </Badge>
-                                </td>
-                              </tr>
-                            ))}
+                            {referencesList
+                              .filter((ref: any) => ref?.isverified)
+                              .map((ref: any, index: number) => (
+                                <tr
+                                  key={ref.profile_reference_id ?? index}
+                                  className="hover:bg-gray-50 transition-colors text-sm"
+                                >
+                                  <td className="px-2 py-3 border-b">
+                                    {ref?.first_name} {ref?.last_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    {ref?.type_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-blue-500 text-white dark:bg-blue-600 flex items-center gap-1 hover:bg-blue-500"
+                                    >
+                                      <BadgeCheckIcon size={14} />
+                                      Verified
+                                    </Badge>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>

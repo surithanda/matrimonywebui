@@ -14,7 +14,7 @@ import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { Button } from "@/components/ui/button";
 import { MdFamilyRestroom, MdVerified } from "react-icons/md";
 import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
-import NoData from "@/public/images/Nodata.png";
+import NoData from "@/public/images/noData.png";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import { IoBook, IoLocationOutline, IoLocationSharp } from "react-icons/io5";

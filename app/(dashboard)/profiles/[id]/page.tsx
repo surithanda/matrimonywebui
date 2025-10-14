@@ -41,7 +41,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { CiEdit } from "react-icons/ci";
 import Loader from "../../_components/Loader";
-import NoDataImage from "@/public/images/nodata.png";
+import NoDataImage from "@/public/images/noData.png";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();

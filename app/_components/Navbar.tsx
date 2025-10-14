@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Loader from "../(dashboard)/_components/Loader";
 
 export const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -435,11 +436,12 @@ export const Navbar = () => {
 
       {/* Full-screen loader overlay */}
       {(isNavigating || isLoggingOut) && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="w-32 h-32">
-            <Lottie animationData={Loading} loop={true} />
-          </div>
-        </div>
+        // <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+        //   <div className="w-32 h-32">
+        //     <Lottie animationData={Loading} loop={true} />
+        //   </div>
+        // </div>
+        <Loader />
       )}
     </>
   );

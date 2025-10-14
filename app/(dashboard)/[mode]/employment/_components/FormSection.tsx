@@ -434,10 +434,10 @@ const FormSection = () => {
                       ) : (
                         <Badge
                           variant="secondary"
-                          className="bg-red-500 text-white dark:bg-red-600 flex items-center gap-1"
+                          className="bg-yellow-500 text-white dark:bg-yellow-600 flex items-center gap-1"
                         >
                           <AlertCircle className="w-4 h-4" />
-                          Unverified
+                          Pending
                         </Badge>
                       )}
                     </div>

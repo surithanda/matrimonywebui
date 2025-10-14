@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import Link from "next/link";
+import Loader from "../../_components/Loader";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -220,14 +221,15 @@ const ForgotPassword = () => {
       </div>
       {/* Full-screen loader when redirecting */}
       {redirecting && (
-        <div className="fixed inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
-          <Lottie
-            animationData={loaderAnimation}
-            loop
-            autoplay
-            style={{ height: 150, width: 150 }}
-          />
-        </div>
+        // <div className="fixed inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
+        //   <Lottie
+        //     animationData={loaderAnimation}
+        //     loop
+        //     autoplay
+        //     style={{ height: 150, width: 150 }}
+        //   />
+        // </div>
+        <Loader />
       )}
       <ToastContainer />
     </>

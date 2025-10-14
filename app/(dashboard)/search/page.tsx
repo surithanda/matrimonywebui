@@ -637,14 +637,14 @@ const Page = () => {
                       <p className="text-gray-500 text-xs min-h-[1rem]">
                         {profile.occupation ||
                         profile.city ||
-                        profile.country ? (
+                        profile.country_name ? (
                           <>
                             {profile.occupation}
                             {profile.occupation &&
-                            (profile.city || profile.country)
+                            (profile.city || profile.country_name)
                               ? " · "
                               : ""}
-                            {profile.city || profile.country}
+                            {profile.city || profile.country_name}
                           </>
                         ) : null}
                       </p>

@@ -305,7 +305,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
                 />
               </div>
                         <div>
-                <Label htmlFor="zip">ZIP Code</Label>
+                <Label htmlFor="zip">ZIP / PIN Code</Label>
                 <Input
                   id="zip"
                   type="text"
@@ -316,7 +316,7 @@ export const AddEditEducationModal: React.FC<AddEditEducationModalProps> = ({
               </div>
             </div>
 
-            {/* ZIP Code */}
+            {/* ZIP / PIN Code */}
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
     
                             <div>

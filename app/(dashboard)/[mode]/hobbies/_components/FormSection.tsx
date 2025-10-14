@@ -284,7 +284,7 @@ const FormSection = () => {
         {(localError || error) && (
           <div className="mb-2 text-red-600">{localError || error}</div>
         )}
-        <div className="flex justify-between mt-[250px]">
+        {/* <div className="flex justify-between mt-[250px]">
           <div className="flex justify-start gap-4">
             <button
               className="yellow-btn hover:bg-orange-600"
@@ -300,7 +300,7 @@ const FormSection = () => {
           >
             Skip
           </button>
-        </div>
+        </div> */}
       </section>
     </>
   );

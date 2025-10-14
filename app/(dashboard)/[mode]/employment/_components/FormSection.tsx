@@ -23,10 +23,12 @@ import {
   CheckCircle,
   AlertCircle,
   Briefcase,
+  BadgeCheckIcon,
 } from "lucide-react";
 import { AddEditEmploymentModal } from "./employment-modals/AddEditEmploymentModal";
 import { AddEmploymentModal } from "./employment-modals/AddEmploymentModal";
 import Loader from "@/app/(dashboard)/_components/Loader";
+import { Badge } from "@/components/ui/badge";
 
 interface IEmployment {
   id: string | number;
@@ -40,6 +42,7 @@ interface IEmployment {
   end_year: string | null;
   job_title_id: number;
   last_salary_drawn: string;
+  isverified?: boolean;
 }
 
 const defaultEmployment: IEmployment = {
@@ -75,10 +78,10 @@ const FormSection = () => {
   const { loadStates, findCountryName, findStateName, findJobTitleName } =
     useMetaDataLoader();
   const { selectedProfileID } = useProfileContext();
-  const {loading} = useAppSelector((state)=> state.profile)
+  const { loading } = useAppSelector((state) => state.profile);
   const [openModal, setOpenModal] = useState({
     open: false,
-    mode: 'add' as 'add' | 'edit',
+    mode: "add" as "add" | "edit",
   });
 
   // Check if currentEmployment has any meaningful data
@@ -221,7 +224,7 @@ const FormSection = () => {
     setCurrentEmployment(employmentToEdit);
     setOpenModal({
       open: true,
-      mode: 'edit',
+      mode: "edit",
     });
   };
 
@@ -238,37 +241,44 @@ const FormSection = () => {
   const handleCancelEdit = () => {
     setEditIndex(null);
     setCurrentEmployment({ ...defaultEmployment });
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // Handle modal save
-  const handleModalSave = async (employmentData: IEmployment, mode: 'add' | 'edit') => {
+  const handleModalSave = async (
+    employmentData: IEmployment,
+    mode: "add" | "edit"
+  ) => {
     setCurrentEmployment(employmentData);
-    
+
     // Use existing handleAddOrUpdate logic
     const sectionData = {
       profile_id: selectedProfileID,
       ...employmentData,
     };
 
-    if (mode === 'edit' && editIndex !== null) {
+    if (mode === "edit" && editIndex !== null) {
       // Update existing employment
       try {
-        const result = await dispatch(updateEmploymentAsync(sectionData)).unwrap();
-        if (result && result.data.status === 'success') {
+        const result = await dispatch(
+          updateEmploymentAsync(sectionData)
+        ).unwrap();
+        if (result && result.data.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_employment_id);
         }
       } catch (err: any) {
         console.error("Error updating employment:", err);
         throw err;
       }
-      
+
       // For now, update locally
       // proceedwithAddUpdate(employmentData.id);
     } else {
       // Add new employment
       try {
-        const result = await dispatch(createEmploymentAsync(sectionData)).unwrap();
+        const result = await dispatch(
+          createEmploymentAsync(sectionData)
+        ).unwrap();
         if (result && result.data.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_employment_id);
         }
@@ -316,11 +326,9 @@ const FormSection = () => {
     setShowConfirmation(false);
   };
 
-    if (loading) {
-      return (
-        <Loader />
-      );
-    }
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -331,7 +339,7 @@ const FormSection = () => {
               onClick={() =>
                 setOpenModal({
                   open: true,
-                  mode: 'add',
+                  mode: "add",
                 })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
@@ -371,10 +379,17 @@ const FormSection = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            handleEdit(index);
-                            setActiveDropdown(null);
+                            if (!field?.isverified) {
+                              handleEdit(index);
+                              setActiveDropdown(null);
+                            }
                           }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                          disabled={field?.isverified}
+                          className={`flex items-center gap-2 w-full px-4 py-2 text-left transition-colors ${
+                            field?.isverified
+                              ? "cursor-not-allowed text-gray-400 bg-gray-50"
+                              : "hover:bg-gray-50 text-gray-700"
+                          }`}
                         >
                           <Edit2 className="w-4 h-4" />
                           Edit
@@ -406,11 +421,25 @@ const FormSection = () => {
                         </span>
                       )}
                     </span>
-                    <div className="ml-auto flex items-center gap-1 mr-9">
-                      <AlertCircle className="w-4 h-4 text-amber-500" />
-                      <span className="text-xs text-amber-600 font-medium">
-                        Pending
-                      </span>
+                    <div className="ml-auto flex items-center gap-2 mr-9">
+                      {/* Status */}
+                      {field?.isverified ? (
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-500 text-white dark:bg-blue-600"
+                        >
+                          <BadgeCheckIcon size={14} />
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-yellow-500 text-white dark:bg-yellow-600 flex items-center gap-1"
+                        >
+                          <AlertCircle className="w-4 h-4" />
+                          Pending
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
@@ -422,7 +451,8 @@ const FormSection = () => {
                         {field.institution_name || "N/A"}
                       </p>
                       <p className="text-gray-700 text-sm">
-                        {findJobTitleName(Number(field?.job_title_id || 0)) || "N/A"}
+                        {findJobTitleName(Number(field?.job_title_id || 0)) ||
+                          "N/A"}
                       </p>
                     </div>
 
@@ -431,12 +461,15 @@ const FormSection = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">Duration:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {field.start_year || "N/A"} - {field.end_year || "Present"}
+                          {field.start_year || "N/A"} -{" "}
+                          {field.end_year || "Present"}
                         </span>
                       </div>
                       {field.last_salary_drawn && (
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-500">Last Salary:</span>
+                          <span className="text-sm text-gray-500">
+                            Last Salary:
+                          </span>
                           <span className="text-sm text-gray-800 font-medium">
                             {field.last_salary_drawn}
                           </span>
@@ -495,7 +528,7 @@ const FormSection = () => {
             </div>
           )}
         </div>
-        
+
         {/* <form
           className="w-full px-2"
           onSubmit={(e) => {
@@ -692,18 +725,20 @@ const FormSection = () => {
           </div>
         )}
       </section>
-      <AddEditEmploymentModal 
-        open={openModal.open} 
+      <AddEditEmploymentModal
+        open={openModal.open}
         onOpenChange={(open) => {
           if (!open) {
             // Reset editing state when modal is closed
             setEditIndex(null);
             setCurrentEmployment({ ...defaultEmployment });
           }
-          setOpenModal(prev => ({ ...prev, open }));
+          setOpenModal((prev) => ({ ...prev, open }));
         }}
         mode={openModal.mode}
-        employmentData={openModal.mode === 'edit' ? currentEmployment : undefined}
+        employmentData={
+          openModal.mode === "edit" ? currentEmployment : undefined
+        }
         onSave={handleModalSave}
         onCancel={handleCancelEdit}
       />

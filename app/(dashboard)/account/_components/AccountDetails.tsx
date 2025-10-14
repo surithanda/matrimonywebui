@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { setUser } from "@/app/store/features/authSlice";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
@@ -154,7 +155,8 @@ const AccountSettings = () => {
 
       if (response.data?.success) {
         console.log("Account updated successfully");
-        fetchAccountDetls();
+        dispatch(setUser(formData));
+        // fetchAccountDetls();
         // router.push("/login");
         router.push("/dashboard");
       }

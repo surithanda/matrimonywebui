@@ -97,18 +97,20 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
 
     Array.from(fileList).forEach((file) => {
       if (!ALLOWED_TYPES.includes(file.type)) {
-        toast.error(`File type not allowed: ${file.name}`);
+        toast.error(`Invalid file type: ${file.name}. Allowed: JPG, JPEG, PNG`);
         return;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`File too large: ${file.name}`);
+        toast.error(`File too large: ${file.name}. Max allowed: 5 MB`);
         return;
       }
       newFiles.push(file);
       newPreviews.push(URL.createObjectURL(file));
     });
 
-    if (selectedType === "Individual Photo") {
+    if (newFiles.length === 0) return; // prevent invalid files from being added
+
+    if (selectedType === "Other") {
       setFiles((prev) => [...prev, ...newFiles]);
       setPreviews((prev) => [...prev, ...newPreviews]);
     } else {
@@ -248,12 +250,16 @@ const AddPhotosModal: React.FC<AddPhotosModalProps> = ({
                 Upload File{selectedType === "Other" ? "s" : ""}{" "}
                 <span className="text-red-500">*</span>
               </Label>
+
               <Input
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept={ALLOWED_TYPES.join(",")}
                 multiple={selectedType === "Other"}
                 onChange={(e) => handleFileChange(e.target.files)}
               />
+              <p className="text-xs text-red-500 mt-1">
+                (Accepted: JPG, JPEG, PNG • Max 5 MB)
+              </p>
             </div>
 
             {/* Previews */}

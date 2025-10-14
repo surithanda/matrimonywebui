@@ -240,8 +240,8 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
               {/* Button right */}
               <div className="flex items-center gap-3">
                 <Button
-                    className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
-               variant={"default"}
+                  className="px-3 bg-orange-500 text-white font-semibold hover:bg-orange-600 gap-2 rounded-md shadow-md transition-colors"
+                  variant={"default"}
                   size={"sm"}
                   onClick={handleSave}
                 >
@@ -260,22 +260,6 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
               </div>
             </div>
           </DialogHeader>
-          {/* <DialogHeader className="pb-4">
-            <div className="flex justify-between items-center">
-              <DialogTitle className="text-xl font-semibold text-gray-900">
-                {mode === 'edit' ? `Edit ${category.charAt(0).toUpperCase() + category.slice(1)}` : `Add ${category.charAt(0).toUpperCase() + category.slice(1)}`} {category.toLowerCase() === 'family' ? 'Member' : ''}
-              </DialogTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCloseAttempt}
-                className="h-8 w-8 hover:bg-gray-100 rounded-full"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader> */}
-
           <div className="space-y-4 py-4 p-6">
             {/* First Name and Last Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -323,7 +307,18 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
               </div>
               <div>
                 <Label htmlFor="contactnumber">Contact Number</Label>
-                <div className="mt-1">
+                <span className="text-sm text-gray-500 ml-1">
+                  (with country code)
+                </span>
+
+                <Input
+                  type="text"
+                  name="contactnumber"
+                  value={formData.contactnumber || ""}
+                  onChange={handlePhoneChange}
+                  className=" w-full focus:outline-none focus:border-b focus:border-orange-500"
+                />
+                {/* <div className="mt-1">
                   <CustomPhoneComponent
                     type="contactnumber"
                     changeHandler={handlePhoneChange}
@@ -331,7 +326,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                     bindValue2={formData.contactnumber_country || ""}
                     disabled={false}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -359,7 +354,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                     handleFieldChange("relationshiptoyou", e.target.value)
                   }
                   //   className="w-full mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                    className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg mt-1"
+                  className="bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] px-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-500 flex gap-10 align-self-stretch py-3 border rounded-lg mt-1"
                 />
               </div>
             </div>
@@ -407,7 +402,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="zip">ZIP Code</Label>
+                <Label htmlFor="zip">ZIP / PIN Code</Label>
                 <Input
                   id="zip"
                   type="text"
@@ -418,7 +413,7 @@ export const AddEditFamilyModal: React.FC<AddEditFamilyModalProps> = ({
               </div>
             </div>
 
-            {/* ZIP Code */}
+            {/* ZIP / PIN Code */}
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="address_line">

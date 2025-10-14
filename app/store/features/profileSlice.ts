@@ -378,10 +378,19 @@ export const createPersonalProfileAsync = createAsyncThunk(
   'profile/createPersonal',
   async (profileData: any, { rejectWithValue }) => {
     try {
+      console.log('📝 Original Profile Data:', profileData);
       const sanitizedData = sanitizeDataForDatabase(profileData);
+      console.log('🧹 Sanitized Profile Data:', sanitizedData);
+      
       const response = await api.post('/profile/personal', sanitizedData);
+      console.log('✅ Profile Creation Success:', response.data);
       return response.data;
     } catch (error: any) {
+      console.error('❌ Profile Creation Error:', {
+        error: error.response?.data,
+        status: error.response?.status,
+        originalData: profileData
+      });
       return rejectWithValue(error.response?.data || 'An error occurred');
     }
   }

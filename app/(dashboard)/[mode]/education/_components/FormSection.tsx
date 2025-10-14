@@ -22,10 +22,12 @@ import {
   CheckCircle,
   AlertCircle,
   GraduationCap,
+  BadgeCheckIcon,
 } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 import { AddEditEducationModal } from "./education-modals/AddEditEducationModal";
 import Loader from "@/app/(dashboard)/_components/Loader";
+import { Badge } from "@/components/ui/badge";
 
 interface IEducation {
   id: string | number;
@@ -39,6 +41,7 @@ interface IEducation {
   field_of_study: number;
   state_id?: number;
   country_id?: number;
+  isverified?: boolean;
 }
 
 interface IFormValues {
@@ -80,9 +83,9 @@ const FormSection = () => {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [openModal, setOpenModal] = useState({
     open: false,
-    mode: 'add' as 'add' | 'edit',
+    mode: "add" as "add" | "edit",
   });
-  const {loading} = useAppSelector((state)=>state.profile);
+  const { loading } = useAppSelector((state) => state.profile);
 
   // Check if currentEducation has any meaningful data
   const hasUnsavedEducationData = () => {
@@ -231,7 +234,7 @@ const FormSection = () => {
     setCurrentEducation(educationToEdit);
     setOpenModal({
       open: true,
-      mode: 'edit',
+      mode: "edit",
     });
   };
 
@@ -246,7 +249,7 @@ const FormSection = () => {
   const handleCancelEdit = () => {
     setEditIndex(null);
     setCurrentEducation({ ...defaultEducation });
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // On submit, check for unsaved data and show confirmation if needed
@@ -292,38 +295,45 @@ const FormSection = () => {
   };
 
   const closeAddModal = () => {
-    setOpenModal({ open: false, mode: 'add' });
+    setOpenModal({ open: false, mode: "add" });
   };
 
   // Handle modal save
-  const handleModalSave = async (educationData: IEducation, mode: 'add' | 'edit') => {
+  const handleModalSave = async (
+    educationData: IEducation,
+    mode: "add" | "edit"
+  ) => {
     setCurrentEducation(educationData);
-    
+
     // Use existing handleAddOrUpdate logic
     const educationPayload = {
       profile_id: selectedProfileID,
       ...educationData,
     };
 
-    if (mode === 'edit' && editIndex !== null) {
+    if (mode === "edit" && editIndex !== null) {
       // Update existing education
       // Uncomment when update API is ready
       try {
-        const result = await dispatch(updateEducationAsync(educationPayload)).unwrap();
-        if (result && result.data.status === 'success') {
+        const result = await dispatch(
+          updateEducationAsync(educationPayload)
+        ).unwrap();
+        if (result && result.data.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_education_id);
         }
       } catch (err: any) {
         console.error("Error updating education:", err);
         throw err;
       }
-      
+
       // For now, update locally
       // proceedwithAddUpdate(educationData.id);
     } else {
       // Add new education
       try {
-        const result = await dispatch(createEducationAsync(educationPayload)).unwrap();
+        const result = await dispatch(
+          createEducationAsync(educationPayload)
+        ).unwrap();
         if (result && result.data.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_education_id);
         }
@@ -334,11 +344,11 @@ const FormSection = () => {
     }
   };
 
-    if (loading) {
-      return (
-        <Loader />
-      );
-    }
+  if (loading) {
+    return <Loader />;
+  }
+
+  console.log("fields", fields);
 
   return (
     <>
@@ -350,7 +360,7 @@ const FormSection = () => {
               onClick={() =>
                 setOpenModal({
                   open: true,
-                  mode: 'add',
+                  mode: "add",
                 })
               }
               className=" gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-shrink-0"
@@ -390,14 +400,22 @@ const FormSection = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            handleEdit(index);
-                            setActiveDropdown(null);
+                            if (!field?.isverified) {
+                              handleEdit(index);
+                              setActiveDropdown(null);
+                            }
                           }}
-                          className="flex items-center gap-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
+                          disabled={field?.isverified}
+                          className={`flex items-center gap-2 w-full px-4 py-2 text-left transition-colors ${
+                            field?.isverified
+                              ? "cursor-not-allowed text-gray-400 bg-gray-50"
+                              : "hover:bg-gray-50 text-gray-700"
+                          }`}
                         >
                           <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
+
                         <button
                           disabled
                           type="button"
@@ -425,13 +443,26 @@ const FormSection = () => {
                         </span>
                       )}
                     </span>
-                    <div className="ml-auto flex items-center gap-1 mr-9">
-                      <>
-                        <AlertCircle className="w-4 h-4 text-amber-500" />
-                        <span className="text-xs text-amber-600 font-medium">
+
+                    <div className="ml-auto flex items-center gap-2 mr-9">
+                      {/* Status */}
+                      {field?.isverified ? (
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-500 text-white dark:bg-blue-600"
+                        >
+                          <BadgeCheckIcon size={14} />
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-yellow-500 text-white dark:bg-yellow-600 flex items-center gap-1"
+                        >
+                          <AlertCircle className="w-4 h-4" />
                           Pending
-                        </span>
-                      </>
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
@@ -440,11 +471,11 @@ const FormSection = () => {
                     {/* Institution Name */}
                     <div>
                       <p className="text-gray-900 font-medium leading-relaxed">
-                        {field.institution_name}
+                        {field?.institution_name}
                       </p>
                       {field.address_line1 && (
                         <p className="text-gray-700 text-sm">
-                          {field.address_line1}
+                          {field?.address_line1}
                         </p>
                       )}
                     </div>
@@ -454,20 +485,19 @@ const FormSection = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">Year:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {field.year_completed || "N/A"}
+                          {field?.year_completed || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">City:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {field.city || "N/A"}
+                          {field?.city || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">State:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {findStateName(Number(field?.state_id || 0)) ||
-                            "N/A"}
+                          {findStateName(Number(field?.state_id || 0)) || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -480,7 +510,7 @@ const FormSection = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">ZIP:</span>
                         <span className="text-sm text-gray-800 font-medium">
-                          {field.zip || "N/A"}
+                          {field?.zip || "N/A"}
                         </span>
                       </div>
                     </div>
@@ -503,7 +533,7 @@ const FormSection = () => {
             </div>
           )}
         </div>
-{/* 
+        {/* 
         <form
           className="w-full px-2"
           onSubmit={(e) => {
@@ -651,18 +681,18 @@ const FormSection = () => {
           </div>
         )}
       </section>
-      <AddEditEducationModal 
-        open={openModal.open} 
+      <AddEditEducationModal
+        open={openModal.open}
         onOpenChange={(open) => {
           if (!open) {
             // Reset editing state when modal is closed
             setEditIndex(null);
             setCurrentEducation({ ...defaultEducation });
           }
-          setOpenModal(prev => ({ ...prev, open }));
+          setOpenModal((prev) => ({ ...prev, open }));
         }}
         mode={openModal.mode}
-        educationData={openModal.mode === 'edit' ? currentEducation : undefined}
+        educationData={openModal.mode === "edit" ? currentEducation : undefined}
         onSave={handleModalSave}
         onCancel={handleCancelEdit}
       />

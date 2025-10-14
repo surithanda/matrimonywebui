@@ -43,7 +43,7 @@ interface FormData extends IProfilePersonal {
   phone_mobile_country?: string;
   phone_home_country?: string;
   phone_emergency_country?: string;
-  summary: string;
+  short_summary: string;
   height_units?: string;
   whtasapp_country?: string;
   profession_other?: string;
@@ -107,7 +107,7 @@ const ProfileGeneral = () => {
     profession_other: null,
     disability: null,
     created_user: "genius.gen2k@gmail.com",
-    summary: null,
+    short_summary: null,
     account_code: "20250712-155453-1",
   };
 
@@ -223,7 +223,7 @@ const ProfileGeneral = () => {
       profession: data.profession ? Number(data.profession) : null,
       disability: data.disability ? Number(data.disability) : null,
       created_user: "admin",
-      summary: data.summary?.trim() || null,
+      short_summary: data.short_summary?.trim() || null,
     };
   };
 
@@ -846,7 +846,7 @@ const ProfileGeneral = () => {
                 <div className="w-full md:mb-4">
                   <Label>Write a Brief Summary About Yourself…</Label>
                   <textarea
-                    {...register("summary")}
+                    {...register("short_summary")}
                     className="flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
                     rows={4}
                   />

@@ -384,7 +384,7 @@ export const createPersonalProfileAsync = createAsyncThunk(
       
       const response = await api.post('/profile/personal', sanitizedData);
       console.log('✅ Profile Creation Success:', response.data);
-      return response.data;
+      return response;
     } catch (error: any) {
       console.error('❌ Profile Creation Error:', {
         error: error.response?.data,

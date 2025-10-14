@@ -318,7 +318,7 @@ const FormSection = () => {
         const result = await dispatch(
           updateEducationAsync(educationPayload)
         ).unwrap();
-        if (result && result.data.status === "success") {
+        if (result && result.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_education_id);
         }
       } catch (err: any) {
@@ -347,8 +347,6 @@ const FormSection = () => {
   if (loading) {
     return <Loader />;
   }
-
-  console.log("fields", fields);
 
   return (
     <>

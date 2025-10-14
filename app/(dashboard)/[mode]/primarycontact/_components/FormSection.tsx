@@ -360,8 +360,9 @@ const FormSection = () => {
         const result = await dispatch(
           updateAddressAsync(addressPayload)
         ).unwrap();
-        console.log(result);
-        if (result && result.data.status === "success") {
+        // console.log(result, result.data.status);
+        if (result && result.status === "success") {
+          console.log("Address updated successfully!");
           // proceedwithAddUpdate(addressData.profile_address_id);
           fetchProfileAddress(); // Refresh the address list
         }

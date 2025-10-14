@@ -401,7 +401,7 @@ const FormSection = ({
         const result = await dispatch(
           updateFamilyAsync(familyPayload)
         ).unwrap();
-        if (result && result.data.status === "success") {
+        if (result && result.status === "success") {
           proceedwithAddUpdate(result.data.profile_family_reference_id);
         }
       } catch (err: any) {

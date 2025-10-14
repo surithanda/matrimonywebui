@@ -126,7 +126,7 @@ const FavouritesPage = () => {
         // ✅ No Data
         <div className="col-span-full text-center py-10 flex flex-col items-center">
           <Image
-            src={NoData}
+            src={"/images/noData.png"}
             alt="No favourites"
             width={220}
             height={220}

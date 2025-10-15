@@ -318,7 +318,7 @@ const FormSection = () => {
         const result = await dispatch(
           updateEducationAsync(educationPayload)
         ).unwrap();
-        if (result && result.status === "success") {
+        if (result && result.data.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_education_id);
         }
       } catch (err: any) {

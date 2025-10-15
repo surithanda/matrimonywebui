@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - chaturvarnam
 on:
   push:
     branches:
-      - main
+      - feature/phase1-release
   workflow_dispatch:
 
 jobs:
@@ -62,3 +62,4 @@ jobs:
           app-name: 'chaturvarnam'
           slot-name: 'Production'
           package: .
+

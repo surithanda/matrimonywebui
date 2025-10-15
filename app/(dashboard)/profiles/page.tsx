@@ -18,9 +18,10 @@ import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { toAbsoluteUrl } from "@/app/lib/env";
 import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
-import NoData from "@/public/images/nodata.png";
+import NoData from "@/public/images/Nodata.png";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
+import Loader from "../_components/Loader";
 
 // ✅ Utility functions
 function getInitials(firstName?: string, lastName?: string) {
@@ -76,14 +77,15 @@ const Page = () => {
       <div className="w-full px-4 lg:px-0 mt-3 lg:mt-0">
         {loading ? (
           // Loader
-          <div className="flex justify-center items-center h-64">
-            <Lottie
-              animationData={Loading}
-              loop
-              autoplay
-              style={{ width: 150, height: 150 }}
-            />
-          </div>
+          // <div className="flex justify-center items-center h-64">
+          //   <Lottie
+          //     animationData={Loading}
+          //     loop
+          //     autoplay
+          //     style={{ width: 150, height: 150 }}
+          //   />
+          // </div>
+          <Loader />
         ) : allProfiles?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 lg:px-0 mt-3 lg:mt-0">
             {allProfiles?.map((profile: any, index: number) => {
@@ -215,7 +217,7 @@ const Page = () => {
         ) : (
           <div className="col-span-full text-center py-10 flex flex-col items-center">
             <Image
-              src={NoData}
+              src={"/images/noData.png"}
               alt="No favourites"
               width={220}
               height={220}

@@ -348,8 +348,6 @@ const FormSection = () => {
     return <Loader />;
   }
 
-  console.log("fields", fields);
-
   return (
     <>
       <section className="px-4 py-5 md:px-0 md:py-2 w-full">

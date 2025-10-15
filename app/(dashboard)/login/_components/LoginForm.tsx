@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import Lottie from "lottie-react";
 import { Button } from "@/components/ui/button";
+import Loader from "../../_components/Loader";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -155,14 +156,15 @@ const LoginForm = () => {
       </div>
       {/* Full-screen loader when redirecting */}
       {redirecting && (
-        <div className="fixed inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
-          <Lottie
-            animationData={loaderAnimation}
-            loop
-            autoplay
-            style={{ height: 150, width: 150 }}
-          />
-        </div>
+        // <div className="fixed inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
+        //   <Lottie
+        //     animationData={loaderAnimation}
+        //     loop
+        //     autoplay
+        //     style={{ height: 150, width: 150 }}
+        //   />
+        // </div>
+        <Loader />
       )}
     </>
   );

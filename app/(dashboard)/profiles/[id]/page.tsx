@@ -40,6 +40,8 @@ import { AlertCircle, BadgeCheckIcon, XCircleIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { CiEdit } from "react-icons/ci";
+import Loader from "../../_components/Loader";
+import NoDataImage from "@/public/images/noData.png";
 
 const ViewProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -269,9 +271,10 @@ const ViewProfile = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-background min-h-screen flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+      // <div className="dashboard-background min-h-screen flex justify-center items-center">
+      //   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      // </div>
+      <Loader />
     );
   }
 
@@ -346,6 +349,19 @@ const ViewProfile = () => {
   const allImages = [
     ...individualImages.map((img: any) => ({ imgUrl: img.url })),
   ];
+
+  const isAllDataAvailable =
+    personalProfile &&
+    address &&
+    education &&
+    employment &&
+    family &&
+    hobbies &&
+    interests &&
+    references &&
+    photos &&
+    lifestyle;
+
   return (
     <>
       <div className="dashboard-background min-h-screen md:px-[20px] lg:px-[60px] md:pt-8 mt-20 md:mt-16">
@@ -558,11 +574,11 @@ const ViewProfile = () => {
                     >
                       Personal Information
                     </h2>
-                         {profileData?.isverified ? (
-                        <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
-                      ) : (
-                        <AlertCircle className="w-5 h-5 text-yellow-500" />
-                      )}
+                    {profileData?.isverified ? (
+                      <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                    )}
                   </div>
                   <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
                     <div className="flex justify-between items-center gap-4">
@@ -642,7 +658,7 @@ const ViewProfile = () => {
                       >
                         Contact Information
                       </h2>
-                         {profileData?.isverified ? (
+                      {profileData?.isverified ? (
                         <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
                       ) : (
                         <AlertCircle className="w-5 h-5 text-yellow-500" />
@@ -732,294 +748,224 @@ const ViewProfile = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-1 gap-2  lg:col-span-3">
-                {allImages && allImages.length > 0 && (
-                  <div className="mb-3">
-                    <Card data={allImages} />
-                  </div>
-                )}
-
-                {addressList?.length > 0 && (
-                  <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
-                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
-                      <h2
-                        className="text-black text-xl font-bold"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Address
-                      </h2>
-                      {/* <BiSolidBadgeCheck className="text-slate-500" size={24} /> */}
+              {isAllDataAvailable ? (
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-2  lg:col-span-3">
+                  {allImages && allImages.length > 0 && (
+                    <div className="mb-3">
+                      <Card data={allImages} />
                     </div>
-                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3 pb-3">
-                        {addressList.map((addr: any, index: number) => {
-                          const title = `Address ${index + 1}${
-                            addr.type ? ` (${addr.type})` : ""
-                          }`;
+                  )}
 
-                          return (
-                            <div
-                              key={index}
-                              className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
-                            >
-                              <div className="px-6 py-4">
-                                {/* Title */}
-                                <div className="flex justify-between items-center gap-2 mb-2">
-                                  <h3
-                                    className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
-                                    style={{ fontFamily: "BR Cobane" }}
-                                  >
-                                    {title}
-                                  </h3>
-                                  {addr.isverified ? (
-                                    <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
-                                  ) : (
-                                    <AlertCircle className="w-5 h-5 text-yellow-500" />
-                                  )}
+                  {addressList?.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-1 h-auto">
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Address
+                        </h2>
+                        {/* <BiSolidBadgeCheck className="text-slate-500" size={24} /> */}
+                      </div>
+                      <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3 pb-3">
+                          {addressList.map((addr: any, index: number) => {
+                            const title = `Address ${index + 1}${
+                              addr.type ? ` (${addr.type})` : ""
+                            }`;
+
+                            return (
+                              <div
+                                key={index}
+                                className="bg-white dark:bg-zinc-900 border rounded-xl shadow-sm"
+                              >
+                                <div className="px-6 py-4">
+                                  {/* Title */}
+                                  <div className="flex justify-between items-center gap-2 mb-2">
+                                    <h3
+                                      className="text-lg font-bold text-zinc-900 dark:text-zinc-100"
+                                      style={{ fontFamily: "BR Cobane" }}
+                                    >
+                                      {title}
+                                    </h3>
+                                    {addr.isverified ? (
+                                      <BiSolidBadgeCheck className="w-5 h-5 text-blue-500" />
+                                    ) : (
+                                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                                    )}
+                                  </div>
+
+                                  {/* Content */}
+                                  <p className="text-zinc-600 dark:text-zinc-300">
+                                    {addr.address_line1}, {addr.year || "2024"}
+                                    <br />
+                                    {addr.address_line2 || "Near by Max"}
+                                    <br />
+                                    {addr?.city},{" "}
+                                    {findCountryName(
+                                      addr?.country_id ?? addr?.country_name
+                                    )}
+                                    , {addr?.zip}
+                                  </p>
                                 </div>
-
-                                {/* Content */}
-                                <p className="text-zinc-600 dark:text-zinc-300">
-                                  {addr.address_line1}, {addr.year || "2024"}
-                                  <br />
-                                  {addr.address_line2 || "Near by Max"}
-                                  <br />
-                                  {addr?.city},{" "}
-                                  {findCountryName(
-                                    addr?.country_id ?? addr?.country_name
-                                  )}
-                                  , {addr?.zip}
-                                </p>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {educationList.length > 0 && (
-                  <div className="border border-gray-100 rounded-lg shadow-md mb-1">
-                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
-                      <h2
-                        className="text-black text-xl font-bold "
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Educational Information
-                      </h2>
-                      {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
-                    </div>
-                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                      <table className="min-w-full text-sm sm:text-base mt-2">
-                        <thead className="">
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Institute Name
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Year Completed
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Field of Study
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              City & Country
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Verified
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {educationList.map((edu: any, index: number) => (
-                            <tr
-                              key={index}
-                              className="hover:bg-gray-50 transition-colors text-sm"
-                            >
-                              <td className="px-2 py-3 border-b">
-                                {edu?.institution_name || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {edu?.year_completed || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {findFieldOfStudy(
-                                  edu?.field_of_study_id ??
-                                    edu?.field_of_study ??
-                                    0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {edu?.city || "N/A"},{" "}
-                                {findCountryName(
-                                  edu?.country_id ?? edu?.country_name ?? 0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {edu?.isverified ? (
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-500 text-white dark:bg-blue-600"
-                                  >
-                                    <BadgeCheckIcon size={14} />
-                                    Verified
-                                  </Badge>
-                                ) : (
-                                  <Badge
-                                    variant="outline"
-                                    className="bg-yellow-500 text-white dark:bg-yellow-600"
-                                  >
-                                    <AlertCircle size={14} />
-                                    Pending
-                                  </Badge>
-                                )}
-                              </td>
+                  {educationList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-1">
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold "
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Educational Information
+                        </h2>
+                        {/* <BiSolidBadgeCheck className="text-gray-500" size={22} /> */}
+                      </div>
+                      <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                        <table className="min-w-full text-sm sm:text-base mt-2">
+                          <thead className="">
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Institute Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Year Completed
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Field of Study
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                City & Country
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verified
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {educationList.map((edu: any, index: number) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {edu?.institution_name || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.year_completed || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findFieldOfStudy(
+                                    edu?.field_of_study_id ??
+                                      edu?.field_of_study ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.city || "N/A"},{" "}
+                                  {findCountryName(
+                                    edu?.country_id ?? edu?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {edu?.isverified ? (
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-blue-500 text-white dark:bg-blue-600"
+                                    >
+                                      <BadgeCheckIcon size={14} />
+                                      Verified
+                                    </Badge>
+                                  ) : (
+                                    <Badge
+                                      variant="outline"
+                                      className="bg-yellow-500 text-white dark:bg-yellow-600"
+                                    >
+                                      <AlertCircle size={14} />
+                                      Pending
+                                    </Badge>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {employmentList.length > 0 && (
-                  <div className="border border-gray-100 rounded-lg shadow-md mb-2">
-                    <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
-                      <h2
-                        className="text-black text-xl font-bold"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Professional Information
-                      </h2>
-                    </div>
-                    <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
-                      <table className="min-w-full text-sm sm:text-base mt-2">
-                        <thead>
-                          <tr className="text-left">
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Company Name
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Job Title
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              From - To
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              State & Country
-                            </th>
-                            <th className="px-2 py-2 border-b text-base font-bold">
-                              Verified
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {employmentList.map((emp: any, index: number) => (
-                            <tr
-                              key={index}
-                              className="hover:bg-gray-50 transition-colors text-sm"
-                            >
-                              <td className="px-2 py-3 border-b">
-                                {emp?.institution_name || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {findJobTitleName(
-                                  emp?.job_title_id ?? emp?.job_title_name ?? 0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {emp?.start_year} - {emp?.end_year || "Present"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {emp?.city || "N/A"},{" "}
-                                {findCountryName(
-                                  emp?.country_id ?? emp?.country_name ?? 0
-                                ) || "N/A"}
-                              </td>
-                              <td className="px-4 py-3 border-b">
-                                {/* <Badge
+                  {employmentList.length > 0 && (
+                    <div className="border border-gray-100 rounded-lg shadow-md mb-2">
+                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                        <h2
+                          className="text-black text-xl font-bold"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Professional Information
+                        </h2>
+                      </div>
+                      <div className="px-4 pb-4 bg-white rounded-b-lg overflow-x-auto">
+                        <table className="min-w-full text-sm sm:text-base mt-2">
+                          <thead>
+                            <tr className="text-left">
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Company Name
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Job Title
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                From - To
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                State & Country
+                              </th>
+                              <th className="px-2 py-2 border-b text-base font-bold">
+                                Verified
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {employmentList.map((emp: any, index: number) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-gray-50 transition-colors text-sm"
+                              >
+                                <td className="px-2 py-3 border-b">
+                                  {emp?.institution_name || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {findJobTitleName(
+                                    emp?.job_title_id ??
+                                      emp?.job_title_name ??
+                                      0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.start_year} -{" "}
+                                  {emp?.end_year || "Present"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {emp?.city || "N/A"},{" "}
+                                  {findCountryName(
+                                    emp?.country_id ?? emp?.country_name ?? 0
+                                  ) || "N/A"}
+                                </td>
+                                <td className="px-4 py-3 border-b">
+                                  {/* <Badge
                                     variant="secondary"
                                     className="bg-blue-500 text-white dark:bg-blue-600"
                                   >
                                     <BadgeCheckIcon size={14} />
                                     Verified
                                   </Badge> */}
-                                {emp?.isverified ? (
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-500 text-white dark:bg-blue-600"
-                                  >
-                                    <BadgeCheckIcon size={14} />
-                                    Verified
-                                  </Badge>
-                                ) : (
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-yellow-500 text-white dark:bg-yellow-600"
-                                  >
-                                    <AlertCircle size={14} />
-                                    Pending
-                                  </Badge>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className={`grid grid-cols-1 ${
-                    familyList.length > 0 && referencesList.length > 0
-                      ? "lg:grid-cols-2"
-                      : "lg:grid-cols-1"
-                  } items-center gap-2 h-full`}
-                >
-                  {/* Family Information */}
-                  {familyList.length > 0 && (
-                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
-                        <h2
-                          className="text-black text-xl font-bold"
-                          style={{ fontFamily: "BR Cobane" }}
-                        >
-                          Family Information
-                        </h2>
-                      </div>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
-                        <table className="w-full text-sm sm:text-base">
-                          <thead>
-                            <tr className="text-left">
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Full Name
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Relation
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Verified
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {familyList.map((member: any, index: number) => (
-                              <tr
-                                key={
-                                  member.profile_family_reference_id ?? index
-                                }
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-2 py-3 border-b">
-                                  {member?.first_name} {member?.last_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {member?.type_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {member?.isverified ? (
+                                  {emp?.isverified ? (
                                     <Badge
                                       variant="secondary"
                                       className="bg-blue-500 text-white dark:bg-blue-600"
@@ -1045,178 +991,256 @@ const ViewProfile = () => {
                     </div>
                   )}
 
-                  {/* Friends & Reference */}
-                  {referencesList.length > 0 && (
-                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
-                        <h2
-                          className="text-black text-xl font-bold"
-                          style={{ fontFamily: "BR Cobane" }}
-                        >
-                          Friends & Reference
-                        </h2>
-                      </div>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
-                        <table className="w-full text-sm sm:text-base">
-                          <thead>
-                            <tr className="text-left">
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Full Name
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Relation
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Verified
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {referencesList.map((ref: any, index: number) => (
-                              <tr
-                                key={ref.profile_reference_id ?? index}
-                                className="hover:bg-gray-50 transition-colors text-sm"
-                              >
-                                <td className="px-2 py-3 border-b">
-                                  {ref?.first_name} {ref?.last_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {ref?.type_name}
-                                </td>
-                                <td className="px-4 py-3 border-b">
-                                  {ref?.isverified ? (
-                                    <Badge
-                                      variant="secondary"
-                                      className="bg-blue-500 text-white dark:bg-blue-600"
-                                    >
-                                      <BadgeCheckIcon size={14} />
-                                      Verified
-                                    </Badge>
-                                  ) : (
-                                    <Badge
-                                      variant="secondary"
-                                      className="bg-yellow-500 text-white dark:bg-yellow-600"
-                                    >
-                                      <AlertCircle size={14} />
-                                      Pending
-                                    </Badge>
-                                  )}
-                                </td>
+                  <div
+                    className={`grid grid-cols-1 ${
+                      familyList.length > 0 && referencesList.length > 0
+                        ? "lg:grid-cols-2"
+                        : "lg:grid-cols-1"
+                    } items-center gap-2 h-full`}
+                  >
+                    {/* Family Information */}
+                    {familyList.length > 0 && (
+                      <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                        <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                          <h2
+                            className="text-black text-xl font-bold"
+                            style={{ fontFamily: "BR Cobane" }}
+                          >
+                            Family Information
+                          </h2>
+                        </div>
+                        <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
+                          <table className="w-full text-sm sm:text-base">
+                            <thead>
+                              <tr className="text-left">
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Full Name
+                                </th>
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Relation
+                                </th>
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Verified
+                                </th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-2 h-full">
-                  {categoryMapping.some((c: any) => c?.habitAnswer) && (
-                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <h2
-                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Lifestyle
-                      </h2>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                        <table className="w-full text-sm sm:text-base">
-                          <thead>
-                            <tr className="text-left">
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Questions
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Answer
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {categoryMapping
-                              .filter((category: any) => category?.habitAnswer)
-                              .map((category: any, index: any) => (
+                            </thead>
+                            <tbody>
+                              {familyList.map((member: any, index: number) => (
                                 <tr
-                                  key={index}
+                                  key={
+                                    member.profile_family_reference_id ?? index
+                                  }
                                   className="hover:bg-gray-50 transition-colors text-sm"
                                 >
                                   <td className="px-2 py-3 border-b">
-                                    {category?.habitQuestion}
+                                    {member?.first_name} {member?.last_name}
                                   </td>
                                   <td className="px-4 py-3 border-b">
-                                    {category?.habitAnswer}
+                                    {member?.type_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    {member?.isverified ? (
+                                      <Badge
+                                        variant="secondary"
+                                        className="bg-blue-500 text-white dark:bg-blue-600"
+                                      >
+                                        <BadgeCheckIcon size={14} />
+                                        Verified
+                                      </Badge>
+                                    ) : (
+                                      <Badge
+                                        variant="secondary"
+                                        className="bg-yellow-500 text-white dark:bg-yellow-600"
+                                      >
+                                        <AlertCircle size={14} />
+                                        Pending
+                                      </Badge>
+                                    )}
                                   </td>
                                 </tr>
                               ))}
-                          </tbody>
-                        </table>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {[
-                    ...((hobbies as any)?.hobby_interests || []),
-                    ...((interests as any)?.hobby_interests || []),
-                  ].length > 0 && (
-                    <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
-                      <h2
-                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Hobbies & Interests
-                      </h2>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                        <table className="w-full text-sm sm:text-base">
-                          <thead>
-                            <tr className="text-left">
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Name
-                              </th>
-                              <th className="px-2 py-2 border-b text-base font-bold">
-                                Description
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {[
-                              ...((hobbies as any)?.hobby_interests || []),
-                              ...((interests as any)?.hobby_interests || []),
-                            ]?.length ? (
-                              [
-                                ...((hobbies as any)?.hobby_interests || []),
-                                ...((interests as any)?.hobby_interests || []),
-                              ].map((item: any, index: number) => (
+                    {/* Friends & Reference */}
+                    {referencesList.length > 0 && (
+                      <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                        <div className="flex justify-between items-center gap-2 bg-gray-200 px-4 py-4 rounded-t">
+                          <h2
+                            className="text-black text-xl font-bold"
+                            style={{ fontFamily: "BR Cobane" }}
+                          >
+                            Friends & Reference
+                          </h2>
+                        </div>
+                        <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4 overflow-x-auto">
+                          <table className="w-full text-sm sm:text-base">
+                            <thead>
+                              <tr className="text-left">
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Full Name
+                                </th>
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Relation
+                                </th>
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Verified
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {referencesList.map((ref: any, index: number) => (
                                 <tr
-                                  key={item.hobby_interest_id ?? index}
+                                  key={ref.profile_reference_id ?? index}
                                   className="hover:bg-gray-50 transition-colors text-sm"
                                 >
-                                  <td className="px-4 py-2 border-b">
-                                    {item.hobby_interest_name}
+                                  <td className="px-2 py-3 border-b">
+                                    {ref?.first_name} {ref?.last_name}
                                   </td>
-                                  <td className="px-4 py-2 border-b">
-                                    {item.hobby_interest_description || "-"}
+                                  <td className="px-4 py-3 border-b">
+                                    {ref?.type_name}
+                                  </td>
+                                  <td className="px-4 py-3 border-b">
+                                    {ref?.isverified ? (
+                                      <Badge
+                                        variant="secondary"
+                                        className="bg-blue-500 text-white dark:bg-blue-600"
+                                      >
+                                        <BadgeCheckIcon size={14} />
+                                        Verified
+                                      </Badge>
+                                    ) : (
+                                      <Badge
+                                        variant="secondary"
+                                        className="bg-yellow-500 text-white dark:bg-yellow-600"
+                                      >
+                                        <AlertCircle size={14} />
+                                        Pending
+                                      </Badge>
+                                    )}
                                   </td>
                                 </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td
-                                  colSpan={3}
-                                  className="px-4 py-3 text-center text-gray-500 border-b"
-                                >
-                                  No hobbies or interests available
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
-                  {/* <div className="border border-gray-100 rounded-lg shadow-md h-full ">
+                  <div
+                    className={`grid grid-cols-1 ${
+                      categoryMapping.some((c: any) => c?.habitAnswer) &&
+                      [
+                        ...((hobbies as any)?.hobby_interests || []),
+                        ...((interests as any)?.hobby_interests || []),
+                      ].length > 0
+                        ? "lg:grid-cols-2"
+                        : "lg:grid-cols-1"
+                    } items-center gap-2 h-full`}
+                  >
+                    {categoryMapping.some((c: any) => c?.habitAnswer) && (
+                      <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                        <h2
+                          className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Lifestyle
+                        </h2>
+                        <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                          <table className="w-full text-sm sm:text-base">
+                            <thead>
+                              <tr className="text-left">
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Questions
+                                </th>
+                                <th className="px-2 py-2 border-b text-base font-bold">
+                                  Answer
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {categoryMapping
+                                .filter(
+                                  (category: any) => category?.habitAnswer
+                                )
+                                .map((category: any, index: any) => (
+                                  <tr
+                                    key={index}
+                                    className="hover:bg-gray-50 transition-colors text-sm"
+                                  >
+                                    <td className="px-2 py-3 border-b">
+                                      {category?.habitQuestion}
+                                    </td>
+                                    <td className="px-4 py-3 border-b">
+                                      {category?.habitAnswer}
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {(() => {
+                      const hobbyInterests = [
+                        ...((hobbies as any)?.hobby_interests || []),
+                        ...((interests as any)?.hobby_interests || []),
+                      ];
+
+                      return (
+                        hobbyInterests.length > 0 && (
+                          <div className="border border-gray-100 rounded-lg shadow-md mb-3 h-full">
+                            <h2
+                              className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                              style={{ fontFamily: "BR Cobane" }}
+                            >
+                              Hobbies & Interests
+                            </h2>
+                            <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                              <table className="w-full text-sm sm:text-base">
+                                <thead>
+                                  <tr className="text-left">
+                                    <th className="px-2 py-2 border-b text-base font-bold">
+                                      Name
+                                    </th>
+                                    <th className="px-2 py-2 border-b text-base font-bold">
+                                      Description
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {hobbyInterests.map(
+                                    (item: any, index: number) => (
+                                      <tr
+                                        key={item.hobby_interest_id ?? index}
+                                        className="hover:bg-gray-50 transition-colors text-sm"
+                                      >
+                                        <td className="px-4 py-2 border-b">
+                                          {item.hobby_interest_name}
+                                        </td>
+                                        <td className="px-4 py-2 border-b">
+                                          {item.hobby_interest_description ||
+                                            "-"}
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )
+                      );
+                    })()}
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-1 items-center gap-2 h-full">
+                    {/* <div className="border border-gray-100 rounded-lg shadow-md h-full ">
                     <h2
                       className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
                       style={{ fontFamily: "BR Cobane" }}
@@ -1252,21 +1276,37 @@ const ViewProfile = () => {
                       </table>
                     </div>
                   </div> */}
-                  {profileData?.short_summary && (
-                    <div className="border border-gray-100 rounded-lg shadow-md  h-full">
-                      <h2
-                        className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
-                        style={{ fontFamily: "BR Cobane" }}
-                      >
-                        Profile Summary
-                      </h2>
-                      <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
-                        <p>{profileData?.short_summary || "N/A"}</p>
+                    {profileData?.short_summary && (
+                      <div className="border border-gray-100 rounded-lg shadow-md  h-full">
+                        <h2
+                          className="bg-gray-200 text-black text-xl font-bold px-4 py-4 rounded-t"
+                          style={{ fontFamily: "BR Cobane" }}
+                        >
+                          Profile Summary
+                        </h2>
+                        <div className="px-4 pb-4 bg-white rounded-md grid grid-cols-1 gap-4 mt-4">
+                          <p>{profileData?.short_summary || "N/A"}</p>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+  <div className="lg:col-span-3 flex items-center justify-center min-h-[400px]">
+    <div className="flex flex-col items-center justify-center">
+      <Image
+        src={"/images/noData.png"}
+        alt="No more information available"
+        width={220}
+        height={220}
+        className="mb-6 opacity-80"
+      />
+      <p className="text-lg text-gray-500 font-semibold">
+        No more information available
+      </p>
+    </div>
+  </div>
+              )}
             </div>
           </div>
         </div>

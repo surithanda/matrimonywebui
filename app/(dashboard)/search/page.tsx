@@ -33,6 +33,7 @@ import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
+import Loader from "../_components/Loader";
 
 // Custom hook for toggle functionality
 const useToggle = (initialState = false) => {
@@ -451,11 +452,11 @@ const Page = () => {
                 type="country"
                 bindValue={localFilters.country || ""}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  handleFilterChange("country", e.target.value || undefined)
+                  handleFilterChange("country", parseInt(e.target.value) || undefined)
                 }
                 disabled={metadataLoading}
                 className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
-                dontUseID={true}
+                // dontUseID={true}
               />
             </div>
 
@@ -524,20 +525,21 @@ const Page = () => {
       )}
 
       {/* Error Display */}
-      {error && (
+      {/* {error && (
         <div className="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {error}
         </div>
-      )}
+      )} */}
 
       {/* Loading State */}
       {loading && (
-        <Lottie
-          animationData={Loading}
-          loop={true}
-          autoplay
-          style={{ width: 120, height: 120 }}
-        />
+        // <Lottie
+        //   animationData={Loading}
+        //   loop={true}
+        //   autoplay
+        //   style={{ width: 120, height: 120 }}
+        // />
+        <Loader />
       )}
 
       {/* Search Results */}

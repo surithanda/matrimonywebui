@@ -194,8 +194,6 @@ const FormSection = ({
     }
   }, [dispatch, reset, selectedProfileID, category]);
 
-  console.log("list", fields);
-
   // Fetch family members from backend on mount
   useEffect(() => {
     if (!selectedProfileID) return;
@@ -216,7 +214,6 @@ const FormSection = ({
 
   // Add or update family member in the field array (POST or PUT to backend)
   const handleAddOrUpdate = async () => {
-    console.log(currentFamilyMember);
     // Validation: require all key fields
     if (
       !currentFamilyMember.firstname ||
@@ -387,6 +384,7 @@ const FormSection = ({
   ) => {
     setCurrentFamilyMember(familyData);
 
+
     // Use existing handleAddOrUpdate logic
     const familyPayload = {
       profile_id: selectedProfileID,
@@ -401,13 +399,14 @@ const FormSection = ({
         const result = await dispatch(
           updateFamilyAsync(familyPayload)
         ).unwrap();
-        if (result && result.data.status === "success") {
+        if (result && result.status === "success") {
           proceedwithAddUpdate(result.data.profile_family_reference_id);
         }
       } catch (err: any) {
         console.error("Error updating family member:", err);
         throw err;
       }
+
 
       // For now, update locally
       // proceedwithAddUpdate(familyData.id);
@@ -505,6 +504,7 @@ const FormSection = ({
                           <Edit2 className="w-4 h-4" />
                           Edit
                         </button>
+
 
                         <button
                           disabled

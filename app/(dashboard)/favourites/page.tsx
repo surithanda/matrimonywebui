@@ -14,7 +14,7 @@ import { normalizePhotoUrl } from "@/app/utils/photoUrl.util";
 import { Button } from "@/components/ui/button";
 import { MdFamilyRestroom, MdVerified } from "react-icons/md";
 import { IoIosHeart, IoIosHeartEmpty, IoMdBook } from "react-icons/io";
-import NoData from "@/public/images/nodata.png";
+import NoData from "@/public/images/noData.png";
 import Lottie from "lottie-react";
 import loaderAnimation from "@/public/lottie/Loading.json";
 import { IoBook, IoLocationOutline, IoLocationSharp } from "react-icons/io5";
@@ -22,6 +22,7 @@ import { CiPhone } from "react-icons/ci";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaBriefcase } from "react-icons/fa6";
+import Loader from "../_components/Loader";
 
 // Dummy helper functions — replace with actual implementations
 const getProfileImage = (profile: any) => {
@@ -112,19 +113,20 @@ const FavouritesPage = () => {
 
       {/* ✅ Loader */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center h-[60vh] w-full">
-          <Lottie
-            animationData={loaderAnimation}
-            loop={true}
-            className="w-40 h-40"
-          />
-          <p className="text-gray-500 text-lg">Loading favourites...</p>
-        </div>
+        // <div className="flex flex-col items-center justify-center h-[60vh] w-full">
+        //   <Lottie
+        //     animationData={loaderAnimation}
+        //     loop={true}
+        //     className="w-40 h-40"
+        //   />
+        //   <p className="text-gray-500 text-lg">Loading favourites...</p>
+        // </div>
+        <Loader />
       ) : favourites.length === 0 ? (
         // ✅ No Data
         <div className="col-span-full text-center py-10 flex flex-col items-center">
           <Image
-            src={NoData}
+            src={"/images/noData.png"}
             alt="No favourites"
             width={220}
             height={220}

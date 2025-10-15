@@ -263,7 +263,7 @@ const FormSection = () => {
         const result = await dispatch(
           updateEmploymentAsync(sectionData)
         ).unwrap();
-        if (result && result.data.status === "success") {
+        if (result && result.status === "success") {
           proceedwithAddUpdate(result?.data?.profile_employment_id);
         }
       } catch (err: any) {

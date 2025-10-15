@@ -14,6 +14,9 @@ import loaderAnimation from "@/public/lottie/Loading.json";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { getProfileCompltionCounts } from "@/app/store/features/profileSlice";
 import { Button } from "@/components/ui/button";
+import Loader from "../../_components/Loader";
+import Image from "next/image";
+import logo from "@/public/images/loader.png";
 
 export default function Tabs() {
   const params = useParams();
@@ -291,14 +294,18 @@ export default function Tabs() {
       {/* Full-screen loader overlay */}
       {loading && (
         <div className="fixed inset-0 bg-white/70 flex flex-col items-center justify-center z-50">
-          <Lottie
-            animationData={loaderAnimation}
-            loop
-            autoplay
-            style={{ height: 150, width: 150 }}
-          />
-          <p className="mt-3 text-gray-600 font-medium">Loading...</p>
+          <div className="animate-[spin_4s_linear_infinite]">
+            <Image
+              src={logo}
+              alt="Loading..."
+              width={150}
+              height={150}
+              priority
+              className="select-none"
+            />
+          </div>
         </div>
+        // <Loader />
       )}
     </>
   );

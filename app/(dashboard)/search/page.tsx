@@ -452,11 +452,11 @@ const Page = () => {
                 type="country"
                 bindValue={localFilters.country || ""}
                 changeHandler={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  handleFilterChange("country", e.target.value || undefined)
+                  handleFilterChange("country", parseInt(e.target.value) || undefined)
                 }
                 disabled={metadataLoading}
                 className="w-full tab-select focus:outline-none focus:ring-2 focus:ring-orange-500"
-                dontUseID={true}
+                // dontUseID={true}
               />
             </div>
 

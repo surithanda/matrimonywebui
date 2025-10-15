@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - chaturvarnam
+name: Build and deploy Next.js app to Azure Web App
 
 on:
   push:
@@ -6,84 +6,56 @@ on:
       - main
   workflow_dispatch:
 
-# ADD THESE PERMISSIONS AT THE WORKFLOW LEVEL
 permissions:
-  id-token: write
   contents: read
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci --production=false
+      - name: Install dependencies (with dev)
+        run: npm ci
 
-      - name: Build application
-        run: npm run build
-
-      - name: Create proper deployment structure
+      - name: Promote Next.js to runtime dependency for Azure
+        shell: bash
         run: |
-          # Create a clean deployment directory
-          mkdir -p deployment
-          
-          # Copy all necessary files
-          cp -r .next/ deployment/
-          cp -r public/ deployment/ || true
-          cp -r node_modules/ deployment/
-          cp package.json deployment/
-          cp package-lock.json deployment/ || true
-          cp next.config.js deployment/ || true
-          cp *.env* deployment/ 2>/dev/null || true
-          cp -r src/ deployment/ 2>/dev/null || true
-          cp -r app/ deployment/ 2>/dev/null || true
-          cp -r components/ deployment/ 2>/dev/null || true
-          
-          # Ensure next binary is executable
-          chmod +x deployment/node_modules/.bin/next
-          chmod +x deployment/node_modules/next/dist/bin/next
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));if(p.devDependencies&&p.devDependencies.next){p.dependencies=p.dependencies||{};p.dependencies.next=p.devDependencies.next;delete p.devDependencies.next;fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');console.log('Moved next to dependencies for runtime.');} else {console.log('next not found in devDependencies or already present in dependencies.');}"
 
-      - name: Verify deployment structure
-        run: |
-          echo "Checking next binary in deployment:"
-          ls -la deployment/node_modules/.bin/next || echo "Next binary not found in .bin"
-          ls -la deployment/node_modules/next/dist/bin/next || echo "Next binary not found in dist"
+      - name: Build
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: npm run build --if-present
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: deployment/
+          name: nextjs-app
+          path: |
+            .
+            !**/.git/**
+            !**/node_modules/**
+            !**/.next/cache/**
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    # REMOVE PERMISSIONS FROM HERE AND KEEP THEM AT WORKFLOW LEVEL
-
+    environment:
+      name: production
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-          path: .
-
-      - name: Verify downloaded files
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Files in directory:"
-          ls -la
-          echo "Next binary check:"
-          ls -la node_modules/.bin/next || echo "Next not found in .bin"
-          ls -la node_modules/next/dist/bin/next || echo "Next not found in dist"
+          name: nextjs-app
 
       - name: Login to Azure
         uses: azure/login@v2

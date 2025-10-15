@@ -1295,7 +1295,7 @@ const ViewProfile = () => {
   <div className="lg:col-span-3 flex items-center justify-center min-h-[400px]">
     <div className="flex flex-col items-center justify-center">
       <Image
-        src={NoDataImage}
+        src={"/images/noData.png"}
         alt="No more information available"
         width={220}
         height={220}

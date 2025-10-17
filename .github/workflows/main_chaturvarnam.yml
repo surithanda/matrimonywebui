@@ -31,9 +31,10 @@ jobs:
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: .
+          path: |
+            ./
+            !node_modules/
+            !.next/
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,4 +63,5 @@ jobs:
           app-name: 'chaturvarnam'
           slot-name: 'Production'
           package: .
+
           

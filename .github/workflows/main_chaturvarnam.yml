@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - chaturvarnam
 on:
   push:
     branches:
-      - main
+      - staging
   workflow_dispatch:
 
 jobs:
@@ -67,6 +67,7 @@ jobs:
           package: .
 
           
+
 
 
 

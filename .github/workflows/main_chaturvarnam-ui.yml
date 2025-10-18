@@ -31,13 +31,23 @@ jobs:
         run: |
           rm -rf .deploy
           mkdir -p .deploy
+          echo "=== Inspect .next after build ==="
+          ls -la .next || true
+          ls -la .next/standalone || true
+          # Guard: ensure standalone server exists
+          if [ ! -f ".next/standalone/server.js" ]; then
+            echo "ERROR: .next/standalone/server.js not found. Check next.config.js output: 'standalone' and build logs."
+            exit 1
+          fi
           # Copy standalone server and embedded node_modules to root of deploy folder
-          cp -r .next/standalone/* .deploy/
+          cp -a .next/standalone/. .deploy/
           # Ensure Next static assets are in the expected relative path
           mkdir -p .deploy/.next
           cp -r .next/static .deploy/.next/
           # Public assets (optional but recommended)
           if [ -d "public" ]; then cp -r public .deploy/public; fi
+          echo "=== Inspect .deploy before upload ==="
+          ls -la .deploy | sed -n '1,200p'
 
       - name: Verify installation
         run: |

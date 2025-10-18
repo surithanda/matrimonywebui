@@ -51,6 +51,7 @@ jobs:
         with:
           name: node-app
           path: .deploy
+          if-no-files-found: error
           retention-days: 1
 
   deploy:
@@ -74,11 +75,9 @@ jobs:
       - name: Verify deployment setup
         run: |
           echo "=== Checking critical files ==="
-          ls -la
-          echo "Root contains:"
-          ls -la | sed -n '1,200p'
-          echo "Check server.js present:"
-          ls -la server.js || true
+          ls -la node-app | sed -n '1,200p'
+          echo "Check server.js present in node-app:"
+          ls -la node-app/server.js || true
           echo "=== Testing Next.js ==="
           npx next --version
 
@@ -94,6 +93,6 @@ jobs:
         with:
           app-name: 'chaturvarnam-ui'
           slot-name: 'production'
-          package: .
+          package: node-app
           enable-oryx-build: false
           startup-command: 'node server.js'

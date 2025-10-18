@@ -20,12 +20,11 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies with legacy peer deps
+      - name: Install dependencies
         run: |
-          # Use legacy peer deps to handle React 19 RC compatibility
-          npm install --legacy-peer-deps
-          # Explicitly ensure Next.js is installed
-          npm list next
+          # Clean install to avoid any cached React 19 issues
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Build application
         run: npm run build
@@ -35,9 +34,7 @@ jobs:
           echo "=== Next.js info ==="
           npx next --version
           echo "=== React versions ==="
-          npm list react react-dom next
-          echo "=== Checking .bin ==="
-          ls node_modules/.bin/next || echo "next not in .bin, but npx should work"
+          npm list react react-dom next --depth=0
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -59,12 +56,12 @@ jobs:
         with:
           name: node-app
 
-      - name: Verify and test startup
+      - name: Verify deployment setup
         run: |
-          echo "=== Testing if Next.js works ==="
+          echo "=== Checking critical files ==="
+          ls -la package.json next.config.js
+          echo "=== Testing Next.js ==="
           npx next --version
-          echo "=== Package info ==="
-          npm list next --depth=0
 
       - name: Login to Azure
         uses: azure/login@v2

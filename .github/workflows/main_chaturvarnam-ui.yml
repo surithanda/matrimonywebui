@@ -82,6 +82,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: node-app
 
       - name: Verify deployment setup
         run: |
@@ -89,8 +90,6 @@ jobs:
           ls -la node-app | sed -n '1,200p'
           echo "Check server.js present in node-app:"
           ls -la node-app/server.js || true
-          echo "=== Testing Next.js ==="
-          npx next --version
 
       - name: Login to Azure
         uses: azure/login@v2

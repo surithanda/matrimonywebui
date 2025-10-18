@@ -20,14 +20,26 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          npm run build
+      - name: Remove conflicting next.config.ts
+        run: rm -f next.config.ts
 
-      - name: Create production node_modules (without dev dependencies)
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Verify Next.js installation
         run: |
-          npm ci --only=production
+          ls -la node_modules/.bin/next
+          ./node_modules/.bin/next --version
+
+      - name: Create deployment package
+        run: |
+          # Remove dev dependencies to reduce size
+          npm prune --production
+          # Remove any conflicting config files
+          rm -f next.config.ts
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -49,8 +61,14 @@ jobs:
         with:
           name: node-app
 
-      - name: List files for debugging
-        run: ls -la
+      - name: Verify deployment files
+        run: |
+          echo "=== Checking critical files ==="
+          ls -la package.json
+          ls -la next.config.js
+          ls -la node_modules/.bin/next
+          echo "=== Next.js version ==="
+          ./node_modules/.bin/next --version
 
       - name: Login to Azure
         uses: azure/login@v2

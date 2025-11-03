@@ -1,34 +1,34 @@
-import team1 from "@/public/images/team1.png";
-import team2 from "@/public/images/team2.png";
-import suresh from "@/public/images/founders/suresh.jpeg";
+// import team1 from "@/public/images/team1.png";
+// import team2 from "@/public/images/team2.png";
+// import suresh from "@/public/images/founders/suresh.jpeg";
 import Image from "next/image";
 
-const teamMembers = [
-  {
-    name: "Suresh Thanda",
-    position: "Founder & CEO",
-    image: suresh,
-    alt: "Suresh Thanda",
-  },
-  {
-    name: "Prashanth Sri Perambuduru",
-    position: "President",
-    image: team2,
-    alt: "Prashanth Sri Perambuduru",
-  },
-  {
-    name: "Sadanandam Bharata",
-    position: "Vice President",
-    image: team2,
-    alt: "Sadanandam Bharata",
-  },
-  {
-    name: "Ramesh Thanda",
-    position: "CFO India",
-    image: team2,
-    alt: "Sadanandam Bharata",
-  },
-];
+// const teamMembers = [
+//   {
+//     name: "Suresh Thanda",
+//     position: "Founder & CEO",
+//     image: "",
+//     alt: "Suresh Thanda",
+//   },
+//   {
+//     name: "Prashanth Sri Perambuduru",
+//     position: "President",
+//     image: "",
+//     alt: "Prashanth Sri Perambuduru",
+//   },
+//   {
+//     name: "Sadanandam Bharata",
+//     position: "Vice President",
+//     image: "",
+//     alt: "Sadanandam Bharata",
+//   },
+//   {
+//     name: "Ramesh Thanda",
+//     position: "CFO India",
+//     image: "",
+//     alt: "Sadanandam Bharata",
+//   },
+// ];
 
 const MeetTheTeamSection = () => {
   return (
@@ -54,16 +54,16 @@ const MeetTheTeamSection = () => {
       </div>
 
       {/* Team Members Grid */}
+      {/*}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-8 md:gap-6 lg:gap-8 xl:gap-[24px] px-0 sm:px-4 md:px-8 lg:px-12 xl:px-[100px]">
-        {teamMembers.map((member, index) => (
+         {teamMembers.map((member, index) => (
           <div
             key={index}
             data-aos="zoom-in"
             data-aos-delay={`${index * 200}`} // 👈 Staggered delay
             data-aos-duration="1000"
-            className="flex flex-col items-center gap-3 sm:gap-4 md:gap-[12px] w-full sm:max-w-sm md:flex-1 max-w-xs"
-          >
-            {/* Team Member Image */}
+            className="flex flex-col items-center gap-3 sm:gap-4 md:gap-[12px] w-full sm:max-w-sm md:flex-1 max-w-xs">
+            // Team Member Image 
             <div className="relative w-[200px] sm:w-[220px] md:w-[180px] lg:w-[220px] xl:w-[250px] aspect-square rounded-full border-2 border-gray-300 overflow-hidden">
               <Image
                 src={member.image}
@@ -73,7 +73,7 @@ const MeetTheTeamSection = () => {
               />
             </div>
 
-            {/* Team Member Info */}
+            // Team Member Info
             <div className="text-center">
               <h3 className="BRCobane24400 text-lg sm:text-xl md:text-lg lg:text-xl xl:text-2xl mb-1 sm:mb-2 md:mb-1 leading-tight">
                 {member.name}
@@ -84,7 +84,7 @@ const MeetTheTeamSection = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </section>
   );
 };

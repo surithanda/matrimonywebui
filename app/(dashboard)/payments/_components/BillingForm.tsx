@@ -67,7 +67,7 @@ export default function BillingForm({ planName, planPrice }: BillingFormProps) {
         state: data.state,
         city: data.city,
         zip_code: data.zipCode,
-        amount: 1,
+        amount: planPrice ,
         plan: planName,
         front_end_success_uri: `${currentUrl}?plan=${planName}&status=success`,
         front_end_failed_uri: `${currentUrl}?plan=${planName}&status=failed`,

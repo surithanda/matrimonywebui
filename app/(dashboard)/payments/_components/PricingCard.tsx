@@ -78,7 +78,7 @@ export const plans = [
       { text: "Unlimited Profile Views" },
     ],
 
-    price: 29.99,
+    price: 99.99,
   },
 ];
 

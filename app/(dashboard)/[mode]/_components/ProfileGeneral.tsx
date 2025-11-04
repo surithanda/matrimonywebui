@@ -66,6 +66,9 @@ const ProfileGeneral = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
+  const professionList = useAppSelector(
+    (state) => state.metaData.professionList
+  );
   const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } =
     useProfileContext();
   const { isCreateMode } = useProfileModeInfo();
@@ -130,7 +133,7 @@ const ProfileGeneral = () => {
     };
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
-      console.log("personal data", result)
+      console.log("personal data", result);
 
       if (result) {
         reset(result?.data);
@@ -385,13 +388,17 @@ const ProfileGeneral = () => {
                   <Label>
                     Gender <span className="text-red-500">*</span>
                   </Label>
-                  <MetadataSelectComponent
-                    type="gender"
-                    {...register("gender", { required: "Gender is required" })}
-                    value={watch("gender")}
-                    className={`flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] ${
-                      errors.gender ? "border-red-500" : ""
-                    }`}
+                  <Controller
+                    name="gender"
+                    control={control}
+                    rules={{ required: "Gender is required" }}
+                    render={({ field }) => (
+                      <MetadataSelectComponent
+                        type="gender"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
                   />
                   {getFieldError("gender")}
                 </div>
@@ -429,7 +436,7 @@ const ProfileGeneral = () => {
                   <Label>
                     Primary Phone <span className="text-red-500">*</span>
                   </Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   {/* <CustomPhoneComponent
@@ -457,7 +464,7 @@ const ProfileGeneral = () => {
                 {/* Home Phone */}
                 <div className="">
                   <Label>Home Phone</Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   <Input
@@ -469,7 +476,7 @@ const ProfileGeneral = () => {
                 {/* Emergency Phone */}
                 <div className="">
                   <Label>Emergency Phone</Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   <Input
@@ -518,23 +525,18 @@ const ProfileGeneral = () => {
                   <Label>
                     Nationality <span className="text-red-500">*</span>
                   </Label>
-                  <MetadataSelectComponent
-                    type="nationality"
-                    value={watch("nationality")}
-                    {...register("nationality", {
-                      required: "Nationality is required",
-                    })}
-                    className={` flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)] ${
-                      errors.nationality ? "border-red-500" : ""
-                    }`}
+                  <Controller
+                    name="nationality"
+                    control={control}
+                    rules={{ required: "Nationality is required" }}
+                    render={({ field }) => (
+                      <MetadataSelectComponent
+                        type="nationality"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
                   />
-                  {/* <option value="">Select Nationality</option>
-              {nationalityOptions.map((option) => (
-                <option key={option?.value} value={option?.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select> */}
                   {getFieldError("nationality")}
                 </div>
                 {/* Religion */}
@@ -554,25 +556,28 @@ const ProfileGeneral = () => {
               ))}
             </select> */}
                 </div>
+
                 {/* Marital Status */}
                 <div className="">
                   <Label>
                     Marital Status <span className="text-red-500">*</span>
                   </Label>
-                  <MetadataSelectComponent
-                    type="marital_status"
-                    {...register("marital_status")}
-                    value={watch("marital_status")}
-                    className=" flex gap-10 align-self-stretch px-4 py-3 w-full border rounded-lg focus:outline-none focus:border-b focus:border-orange-500 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.01)_100%)]"
+                  <Controller
+                    name="marital_status"
+                    control={control}
+                    rules={{ required: "Marital status is required" }}
+                    render={({ field }) => (
+                      <MetadataSelectComponent
+                        type="marital_status"
+                        // {...register("marital_status")}
+                        value={field.value}
+                      onChange={field.onChange}
+                      />
+                    )}
                   />
-                  {/* <option value="">Select Marital Status</option>
-              {maritalStatusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select> */}
+                  {getFieldError("marital_status")}
                 </div>
+                
                 {/* Caste */}
                 <div className="">
                   <Label>Caste</Label>
@@ -759,12 +764,12 @@ const ProfileGeneral = () => {
                           <SelectValue placeholder="Select Profession" />
                         </SelectTrigger>
                         <SelectContent>
-                          {professionOptions.map((option) => (
+                          {professionList.map((profession) => (
                             <SelectItem
-                              key={option.value}
-                              value={String(option.value)}
+                              key={profession.id}
+                              value={String(profession.id)}
                             >
-                              {option.label}
+                              {profession.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

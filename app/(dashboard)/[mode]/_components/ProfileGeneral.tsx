@@ -66,6 +66,9 @@ const ProfileGeneral = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
+  const professionList = useAppSelector(
+    (state) => state.metaData.professionList
+  );
   const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } =
     useProfileContext();
   const { isCreateMode } = useProfileModeInfo();
@@ -761,12 +764,12 @@ const ProfileGeneral = () => {
                           <SelectValue placeholder="Select Profession" />
                         </SelectTrigger>
                         <SelectContent>
-                          {professionOptions.map((option) => (
+                          {professionList.map((profession) => (
                             <SelectItem
-                              key={option.value}
-                              value={String(option.value)}
+                              key={profession.id}
+                              value={String(profession.id)}
                             >
-                              {option.label}
+                              {profession.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

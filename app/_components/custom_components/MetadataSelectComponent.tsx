@@ -16,7 +16,6 @@ type componentProps = {
   dontUseID?: boolean;
 };
 
-
 const MetadataSelectComponent = (
   props: componentProps & React.SelectHTMLAttributes<HTMLSelectElement>
 ) => {

@@ -16,19 +16,6 @@ type componentProps = {
   dontUseID?: boolean;
 };
 
-const genderRefArr = [
-  { name: "Male", value: 1 },
-  { name: "Female", value: 2 },
-  { name: "Other", value: 3 },
-];
-
-const getgenderVal = (name: string) => {
-  let match;
-  genderRefArr.map((item) => {
-    if (item.name.toLowerCase() === name.toLowerCase()) match = item;
-  });
-  return match;
-};
 
 const MetadataSelectComponent = (
   props: componentProps & React.SelectHTMLAttributes<HTMLSelectElement>

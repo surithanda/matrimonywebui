@@ -66,6 +66,9 @@ const ProfileGeneral = () => {
   const router = useRouter();
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const userData = useAppSelector((state) => state.auth.userData);
+  const professionList = useAppSelector(
+    (state) => state.metaData.professionList
+  );
   const { setSelectedProfileID, selectedProfileID, isNew, setIsNew } =
     useProfileContext();
   const { isCreateMode } = useProfileModeInfo();
@@ -130,7 +133,7 @@ const ProfileGeneral = () => {
     };
     try {
       const result = await dispatch(getPersonalProfileAsync(data)).unwrap();
-      console.log("personal data", result)
+      console.log("personal data", result);
 
       if (result) {
         reset(result?.data);
@@ -429,7 +432,7 @@ const ProfileGeneral = () => {
                   <Label>
                     Primary Phone <span className="text-red-500">*</span>
                   </Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   {/* <CustomPhoneComponent
@@ -457,7 +460,7 @@ const ProfileGeneral = () => {
                 {/* Home Phone */}
                 <div className="">
                   <Label>Home Phone</Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   <Input
@@ -469,7 +472,7 @@ const ProfileGeneral = () => {
                 {/* Emergency Phone */}
                 <div className="">
                   <Label>Emergency Phone</Label>
-                    <span className="text-sm text-gray-500 ml-1">
+                  <span className="text-sm text-gray-500 ml-1">
                     (with country code)
                   </span>
                   <Input
@@ -759,12 +762,12 @@ const ProfileGeneral = () => {
                           <SelectValue placeholder="Select Profession" />
                         </SelectTrigger>
                         <SelectContent>
-                          {professionOptions.map((option) => (
+                          {professionList.map((profession) => (
                             <SelectItem
-                              key={option.value}
-                              value={String(option.value)}
+                              key={profession.id}
+                              value={String(profession.id)}
                             >
-                              {option.label}
+                              {profession.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

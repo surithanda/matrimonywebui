@@ -1,9 +1,9 @@
-// Get profiles by account ID
+// Get profiles for the authenticated account (backend uses JWT account_id from token)
 export const getProfilesByAccountIdAsync = createAsyncThunk(
   'profile/getProfilesByAccountId',
-  async (accountId: number, { rejectWithValue }) => {
+  async (_accountId: number | undefined, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/profile/account_profiles/${accountId}`);
+      const response = await api.get('/profile/list');
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'Failed to fetch profiles');

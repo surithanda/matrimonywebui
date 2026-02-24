@@ -8,7 +8,8 @@ export const useMetaDataLoader = () => {
   const { countryList, stateList, job_titleList, property_typeList, ownership_typeList, photo_typeList, genderList, marital_statusList, religionList, field_of_studyList, referenceList } = useAppSelector((state) => state.metaData);
 
   const loadMetaDataCategory = useCallback(async (category?: string) => {
-    const result = await (dispatch as any)(getMetaDataAsync({ category })).unwrap();
+    const payload = category != null ? { category } : null;
+    const result = await (dispatch as any)(getMetaDataAsync(payload)).unwrap();
     dispatch(setMetadataCategory({ category, payload: result }));
   }, [dispatch]);
 
@@ -41,7 +42,7 @@ export const useMetaDataLoader = () => {
 
   const loadMetaData = useCallback(async () => {
     try {
-      const result = await (dispatch as any)(getMetaDataAsync({ category: null })).unwrap();
+      const result = await (dispatch as any)(getMetaDataAsync(null)).unwrap();
       // console.log("Metadata loaded:", result);
 
       // Group the data by category
@@ -206,8 +207,8 @@ const findReferenceName = (compareVal: number): string => {
 
   const loadNecessaryMetaData = useCallback(async () => {
     try {
-      loadMetaDataCategory('gender');
-      loadCountries();
+      await loadMetaDataCategory('Gender');
+      await loadCountries();
     } catch (error) {
       // Handle error if needed
     }

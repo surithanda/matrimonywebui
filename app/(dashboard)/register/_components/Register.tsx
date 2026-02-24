@@ -10,7 +10,6 @@ import {
   setMetadataCategory,
 } from "@/app/store/features/metaDataSlice";
 import { useMetaDataLoader } from "@/app/utils/useMetaDataLoader";
-import { use } from "chai";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -82,6 +81,8 @@ const Register = () => {
     address_line2: null,
   });
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   function mapRequestToStoredProcedure(requestData: any) {
     return {
       email: requestData.email || "",
@@ -130,6 +131,12 @@ const Register = () => {
     setFormData((prev: any) => {
       let updatedData: any = { ...prev, [name]: value };
 
+      // ZIP / PIN Code: accept only digits (text field, numeric input only)
+      if (name === "zipCode") {
+        const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
+        updatedData[name] = digitsOnly;
+      }
+
       // 👇 when country changes, also update phone country code
       if (name === "country") {
         const selectedCountry = countryList?.find(
@@ -143,6 +150,13 @@ const Register = () => {
 
       return updatedData;
     });
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
   useEffect(() => {
@@ -151,15 +165,48 @@ const Register = () => {
     }
   }, [formData.country, loadStates]);
 
+  const requiredFields: { key: string; label: string }[] = [
+    { key: "email", label: "Email" },
+    { key: "password", label: "Password" },
+    { key: "confirmPassword", label: "Re-enter Password" },
+    { key: "firstName", label: "First Name" },
+    { key: "lastName", label: "Last Name" },
+    { key: "birthDate", label: "Birth Date" },
+    { key: "gender", label: "Gender" },
+    { key: "country", label: "Country" },
+    { key: "state", label: "State" },
+    { key: "city", label: "City" },
+    { key: "zipCode", label: "ZIP / PIN Code" },
+    { key: "address", label: "Complete Address" },
+    { key: "primaryPhone", label: "Primary Phone" },
+  ];
+
+  const validateRequired = () => {
+    const errors: Record<string, string> = {};
+    for (const { key, label } of requiredFields) {
+      const value = formData[key];
+      if (value === undefined || value === null || String(value).trim() === "") {
+        errors[key] = `${label} is required`;
+      }
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setRedirecting(true);
+
+    if (!validateRequired()) {
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
-      setRedirecting(false);
+      setFieldErrors((prev) => ({ ...prev, confirmPassword: "Passwords do not match" }));
       return;
     }
+
+    setRedirecting(true);
 
     const mappedData = mapRequestToStoredProcedure({
       email: formData.email,
@@ -188,6 +235,7 @@ const Register = () => {
       //   router.push("/");
       // }, 2000);
       setShowSuccessModal(true);
+      setFieldErrors({});
       setFormData({
         email: "",
         password: "",
@@ -232,7 +280,7 @@ const Register = () => {
             LOGIN INFORMATION
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="grow">
+            <div className="grow flex flex-col items-start">
               <Label>
                 Email <span className="text-red-500">*</span>
               </Label>
@@ -243,8 +291,11 @@ const Register = () => {
                 onChange={handleChange}
                 className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
               />
+              {fieldErrors.email && (
+                <span className="text-red-500 text-xs mt-1">{fieldErrors.email}</span>
+              )}
             </div>
-            <div className="relative grow">
+            <div className="relative grow flex flex-col items-start">
               <Label>
                 Password <span className="text-red-500">*</span>
               </Label>
@@ -262,8 +313,11 @@ const Register = () => {
               >
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </button>
+              {fieldErrors.password && (
+                <span className="text-red-500 text-xs mt-1">{fieldErrors.password}</span>
+              )}
             </div>
-            <div className="relative grow">
+            <div className="relative grow flex flex-col items-start">
               <Label>
                 Re-enter Password <span className="text-red-500">*</span>
               </Label>
@@ -281,6 +335,9 @@ const Register = () => {
               >
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
               </button>
+              {fieldErrors.confirmPassword && (
+                <span className="text-red-500 text-xs mt-1">{fieldErrors.confirmPassword}</span>
+              )}
             </div>
           </div>
 
@@ -301,6 +358,9 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
+                {fieldErrors.firstName && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.firstName}</span>
+                )}
               </div>
               <div className="grow flex flex-col items-start">
                 <Label className="mb-1">Middle Name</Label>
@@ -323,6 +383,9 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
+                {fieldErrors.lastName && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.lastName}</span>
+                )}
               </div>
             </div>
 
@@ -338,6 +401,9 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
+                {fieldErrors.birthDate && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.birthDate}</span>
+                )}
               </div>
               <div className="grow flex flex-col items-start">
                 <Label className="mb-1">
@@ -345,11 +411,16 @@ const Register = () => {
                 </Label>
                 <Select
                   value={formData.gender}
-                  onValueChange={(value) =>
-                    handleChange({
-                      target: { name: "gender", value },
-                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
-                  }
+                  onValueChange={(value) => {
+                    setFormData((prev: any) => ({ ...prev, gender: value }));
+                    if (fieldErrors.gender) {
+                      setFieldErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.gender;
+                        return next;
+                      });
+                    }
+                  }}
                 >
                   <SelectTrigger className="w-full text-sm sm:text-base placeholder:text-gray-400">
                     <SelectValue />
@@ -365,6 +436,9 @@ const Register = () => {
                     </SelectViewport>
                   </SelectContent>
                 </Select>
+                {fieldErrors.gender && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.gender}</span>
+                )}
               </div>
             </div>
 
@@ -376,26 +450,33 @@ const Register = () => {
                 </Label>
                 <Select
                   value={formData.country}
-                  onValueChange={(value) =>
+                  onValueChange={(value) => {
                     handleChange({
-                      target: { name: "country", value }, // 👈 mimic event
-                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)
-                  }
+                      target: { name: "country", value },
+                    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    {countryList?.map((country: any) => (
-                      <SelectItem
-                        key={country.country_id}
-                        value={country.country_id.toString()}
-                      >
-                        {country.country_name}
-                      </SelectItem>
-                    ))}
+                  <SelectContent className="w-full">
+                    <SelectScrollUpButton />
+                    <SelectViewport className="max-h-60 overflow-auto">
+                      {countryList?.map((country: any) => (
+                        <SelectItem
+                          key={country.country_id}
+                          value={country.country_id.toString()}
+                        >
+                          {country.country_name}
+                        </SelectItem>
+                      ))}
+                    </SelectViewport>
+                    <SelectScrollDownButton />
                   </SelectContent>
                 </Select>
+                {fieldErrors.country && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.country}</span>
+                )}
               </div>
               <div className="flex flex-col items-start w-full">
                 <Label className="mb-1">
@@ -414,10 +495,7 @@ const Register = () => {
                   </SelectTrigger>
 
                   <SelectContent className="w-full">
-                    {/* optional up button */}
                     <SelectScrollUpButton />
-
-                    {/* viewport: set a max-height and allow overflow scroll */}
                     <SelectViewport className="max-h-60 overflow-auto">
                       {stateList?.map((st: any) => (
                         <SelectItem key={st.state_id} value={st.state_name}>
@@ -425,11 +503,12 @@ const Register = () => {
                         </SelectItem>
                       ))}
                     </SelectViewport>
-
-                    {/* optional down button */}
                     <SelectScrollDownButton />
                   </SelectContent>
                 </Select>
+                {fieldErrors.state && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.state}</span>
+                )}
               </div>
               <div className="flex flex-col items-start w-full">
                 <Label className="mb-1">
@@ -442,6 +521,9 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
+                {fieldErrors.city && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.city}</span>
+                )}
               </div>
 
               <div className="flex flex-col items-start w-full">
@@ -449,13 +531,18 @@ const Register = () => {
                   ZIP / PIN Code <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
-                  maxLength={7}
+  
+                  maxLength={10}
                 />
+                {fieldErrors.zipCode && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.zipCode}</span>
+                )}
               </div>
             </div>
             <div className="mt-4 w-full">
@@ -470,6 +557,9 @@ const Register = () => {
                   onChange={handleChange}
                   className=" stretch w-full focus:outline-none focus:border-b focus:border-[#f7ac03] text-sm sm:text-base"
                 />
+                {fieldErrors.address && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.address}</span>
+                )}
               </div>
             </div>
           </div>
@@ -520,6 +610,9 @@ const Register = () => {
                     maxLength={10}
                   />
                 </div>
+                {fieldErrors.primaryPhone && (
+                  <span className="text-red-500 text-xs mt-1">{fieldErrors.primaryPhone}</span>
+                )}
               </div>
               <div className="mb-4 grow flex flex-col items-start">
                 <Label className="mb-1">Email</Label>
@@ -541,7 +634,8 @@ const Register = () => {
               type="button"
               className=" hover:bg-gray-100 w-full sm:w-auto px-6 py-3 rounded-md text-xl sm:text-base"
               variant={"outline"}
-              onClick={() =>
+              onClick={() => {
+                setFieldErrors({});
                 setFormData({
                   email: "",
                   password: "",
@@ -557,8 +651,8 @@ const Register = () => {
                   country: "",
                   zipCode: "",
                   primaryPhone: "",
-                })
-              }
+                });
+              }}
             >
               Cancel
             </Button>

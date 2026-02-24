@@ -104,14 +104,23 @@ const initialState: MetaState = {
   error: null,
 };
 
-// Async thunk for fetching metadata category
+// Async thunk for fetching metadata category (e.g. gender, religion) via GET /metadata/lookups?category=...
 export const getMetaDataAsync = createAsyncThunk(
   'metaData/metaDataCategory',
-  async (payload: any, { rejectWithValue }) => {
+  async (payload: { category: string } | null, { rejectWithValue }) => {
     try {
-      const response = await api.post('/metaData/category', payload);
-      if (response.status === 200 || response.status === 201) {
-        return response.data?.data;
+      if (payload?.category) {
+        const response = await api.get('/metadata/lookups', {
+          params: { category: payload.category }
+        });
+        if (response.status === 200) {
+          return response.data?.data;
+        }
+      } else {
+        const response = await api.get('/metadata/lookups/all');
+        if (response.status === 200) {
+          return response.data?.data;
+        }
       }
       return rejectWithValue('Failed to load Metadata');
     } catch (error: any) {
@@ -123,9 +132,9 @@ export const getMetaDataAsync = createAsyncThunk(
 
 export const getCountriesAsync = createAsyncThunk(
   'metaData/countries',
-  async (payload: any, { rejectWithValue }) => {
+  async (_payload: any, { rejectWithValue }) => {
     try {
-      const response = await api.get('/metaData/countries');
+      const response = await api.get('/metadata/countries');
       if (response.status === 200 || response.status === 201) {
         return response.data?.data;
       }
@@ -139,11 +148,17 @@ export const getCountriesAsync = createAsyncThunk(
 
 export const getStatesAsync = createAsyncThunk(
   'metaData/states',
-  async (payload: any, { rejectWithValue }) => {
+  async (payload: { country?: string | null }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/metaData/states', payload);
-      if (response.status === 200 || response.status === 201) {
-        return response.data?.data;
+      const countryId = payload?.country ?? null;
+      if (!countryId) {
+        return [];
+      }
+      const response = await api.get('/metadata/states', {
+        params: { country_id: countryId }
+      });
+      if (response.status === 200) {
+        return response.data?.data ?? [];
       }
       return rejectWithValue('Failed to load States Metadata');
     } catch (error: any) {
@@ -191,7 +206,7 @@ const metaDataSlice = createSlice({
       .addCase(getMetaDataAsync.fulfilled, (state, action) => {
         state.loading = false;
         // Extract category from the action meta (the original payload)
-        const category = action.meta.arg.category;
+        const category = action.meta?.arg?.category;
         if(category) setMetadataLists(state, category, action.payload);
       })
       .addCase(getMetaDataAsync.rejected, (state, action) => {
